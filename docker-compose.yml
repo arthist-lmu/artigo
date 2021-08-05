@@ -1,0 +1,79 @@
+version: "2.0"
+services:
+  redisai:
+    build:
+      context: https://github.com/RedisAI/RedisAI.git#0d7a952ba95972a225d8c1acbe8097754ccc6cf8 #2c3239e
+    ports:
+      - "127.0.0.1:6379:6379"
+
+  postgres:
+    image: postgres:13.2
+    volumes:
+      - /data/artigo/web/db/:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=artigo
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - "127.0.0.1:5432:5432"
+
+  api:
+    image: artigo/api
+    build:
+      context: ./api
+    network_mode: "host"
+    volumes:
+      - type: bind
+        # TODO: change path
+        source: /data/artigo/web/media/
+        target: /media
+      - type: bind
+        # TODO: change path
+        source: /data/artigo/web/dump/
+        target: /dump
+      - type: bind
+        source: ./api/
+        target: /api
+    working_dir: /api/src
+    environment:
+      - POETRY_VIRTUALENVS_CREATE=False
+      - PYTHONPATH=/api/src/
+    command: python3 manage.py runserver 0.0.0.0:8000
+    depends_on:
+      - postgres
+    
+  celery:
+    image: artigo/api
+    build:
+      context: ./api
+    network_mode: "host"
+    volumes:
+      - type: bind
+        # TODO: change path
+        source: /data/artigo/web/media/
+        target: /media
+      - type: bind
+        # TODO: change path
+        source: /data/artigo/web/dump/
+        target: /dump
+      - type: bind
+        source: ./api/
+        target: /api
+    working_dir: /api/src
+    environment:
+      - POETRY_VIRTUALENVS_CREATE=False
+      - PYTHONPATH=/api/src/
+    command: celery -A core worker -l INFO
+    depends_on:
+      - postgres
+    
+  web:
+    image: artigo/web
+    build:
+      context: ./web
+    volumes:
+      - type: bind
+        source: ./web/
+        target: /web
+    working_dir: /web
+    network_mode: "host"

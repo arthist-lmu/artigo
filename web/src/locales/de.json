@@ -1,0 +1,48 @@
+{
+  "resource": {
+    "metadata": {
+      "title": "Metadaten",
+      "fields": {
+        "titles": "Titel",
+        "creators": "Künstler:in",
+        "location": "Standort",
+        "institution": "Institution",
+        "source": "Sammlung"
+      }
+    },
+    "default": {
+      "title": "Ohne Titel",
+      "creator": "Unbekannt"
+    }
+  },
+  "user": {
+    "name": "Name",
+    "email": "E-Mail",
+    "password": "Passwort",
+    "menu": {
+      "title": "Benutzerkonto",
+      "joined": "Vor {n} Tagen beigetreten|Vor {n} Tag beigetreten|Vor {n} Tagen beigetreten"
+    },
+    "register": {
+      "title": "Registrieren",
+      "rules": {
+        "min": "Min. 5 Zeichen.",
+        "max": "Max. 50 Zeichen."
+      }
+    },
+    "login": {
+      "title": "Anmelden",
+      "text": "Noch kein Benutzerkonto?",
+      "rules": {
+        "min": "Min. 5 Zeichen.",
+        "max": "Max. 50 Zeichen."
+      }
+    },
+    "logout": {
+      "title": "Abmelden"
+    }
+  },
+  "field": {
+    "required": "Dies ist ein Pflichtfeld."
+  }
+}

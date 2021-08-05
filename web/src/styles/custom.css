@@ -1,0 +1,8 @@
+.capitalize {
+  text-transform: capitalize;
+}
+
+.clip {
+  text-overflow: ellipsis;
+  overflow: hidden;
+}

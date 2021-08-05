@@ -1,0 +1,48 @@
+{
+  "resource": {
+    "metadata": {
+      "title": "Metadata",
+      "fields": {
+        "titles": "Titles",
+        "creators": "Creator",
+        "location": "Location",
+        "institution": "Institution",
+        "source": "Collection"
+      }
+    },
+    "default": {
+      "title": "No Title",
+      "creator": "Unknown"
+    }
+  },
+  "user": {
+    "name": "Name",
+    "email": "E-Mail",
+    "password": "Password",
+    "menu": {
+      "title": "Account",
+      "joined": "Joined {n} days ago|Joined {n} day ago|Joined {n} days ago"
+    },
+    "register": {
+      "title": "Register",
+      "rules": {
+        "min": "Min. 5 characters.",
+        "max": "Max. 50 characters."
+      }
+    },
+    "login": {
+      "title": "Login",
+      "text": "Don't have an account?",
+      "rules": {
+        "min": "Min. 5 characters.",
+        "max": "Max. 50 characters."
+      }
+    },
+    "logout": {
+      "title": "Logout"
+    }
+  },
+  "field": {
+    "required": "This is a required field."
+  }
+}
