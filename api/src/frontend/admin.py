@@ -19,8 +19,22 @@ class CreatorAdmin(CustomModelAdmin):
 
 
 @admin.register(Resource)
-class ResourceAdmin(CustomModelAdmin):
-    pass
+class ResourceAdmin(admin.ModelAdmin):
+    fields = [f.name for f in Resource._meta.fields]
+    list_display = ['id', 'creator', 'title'] + fields[1:]
+
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        qs = qs.prefetch_related('creators')
+        qs = qs.prefetch_related('titles')
+
+        return qs
+
+    def creator(self, obj):
+        return list(obj.creators.all())
+
+    def title(self, obj):
+        return list(obj.titles.all())
 
 
 @admin.register(Title)
