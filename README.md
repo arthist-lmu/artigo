@@ -1,9 +1,10 @@
 # ARTigo
 
 ## Requirements
-Install [docker](https://docs.docker.com/get-docker/) 
-Install [docker-compose](https://docs.docker.com/compose/install/)
-Install [poetry](https://pypi.org/project/poetry/)
+Install:
+* [docker](https://docs.docker.com/get-docker/)
+* [docker-compose](https://docs.docker.com/compose/install/)
+* [poetry](https://pypi.org/project/poetry/)
 
 
 ## Installation
