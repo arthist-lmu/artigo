@@ -1,5 +1,11 @@
 # ARTigo
 
+## Requirements
+Install [docker](https://docs.docker.com/get-docker/) 
+Install [docker-compose](https://docs.docker.com/compose/install/)
+Install [poetry](https://pypi.org/project/poetry/)
+
+
 ## Installation
 Create the `poetry.lock` file if it does not exist:
 ```sh
