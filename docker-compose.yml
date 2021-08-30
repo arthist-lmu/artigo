@@ -11,7 +11,7 @@ services:
   postgres:
     image: postgres:13
     volumes:
-      - /data/artigo/web/db/:/var/lib/postgresql/data
+      - ./web/db/:/var/lib/postgresql/data
     environment:
       - POSTGRES_DB=artigo
       - POSTGRES_USER=postgres
