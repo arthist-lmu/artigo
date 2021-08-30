@@ -23,7 +23,7 @@ services:
     image: artigo/api
     build:
       context: ./api
-    network_mode: "host"
+#    network_mode: "host"
     volumes:
       - type: bind
         # TODO: change path
@@ -50,7 +50,7 @@ services:
     image: artigo/api
     build:
       context: ./api
-    network_mode: "host"
+#    network_mode: "host"
     volumes:
       - type: bind
         # TODO: change path
@@ -80,6 +80,6 @@ services:
         source: ./web/
         target: /web
     working_dir: /web
-    network_mode: "host"
+#    network_mode: "host"
     ports:
       - "127.0.0.1:80:80"
