@@ -1,4 +1,4 @@
-FROM nginx:1.16.1-alpine
+FROM nginx:stable-alpine
 
 RUN apk add --update npm
 COPY ./default.conf /etc/nginx/conf.d/default.conf

@@ -1,4 +1,4 @@
-FROM ubuntu:20.10
+FROM ubuntu:20.04
 
 RUN DEBIAN_FRONTEND=noninteractive apt update --fix-missing -y
 RUN DEBIAN_FRONTEND=noninteractive apt upgrade -y 
