@@ -37,15 +37,15 @@ sudo docker-compose exec web npm install
 
 And apply necessary Django operations:
 ```sh
-sudo docker-compose exec api python manage.py collectstatic
-sudo docker-compose exec api python manage.py migrate auth
-sudo docker-compose exec api python manage.py migrate
+sudo docker-compose exec api python3 manage.py collectstatic
+sudo docker-compose exec api python3 manage.py migrate auth
+sudo docker-compose exec api python3 manage.py migrate
 ```
 
 ## Import data
-To import data, `.csv` files must be stored in the `/dump` and corresponding `.jpg` files in the `/media` folder. The following command must be executed while the application is running:
+To import data, `.csv` files must be stored in the `./web/dump` and corresponding `.jpg` files in the `./web/media` folder. The following command must be executed while the application is running:
 ```sh
-sudo docker-compose exec api python manage.py import_csv /dump
+sudo docker-compose exec api python3 manage.py import_csv ./web/dump
 ```
 
 ## Update `web`
@@ -57,11 +57,11 @@ sudo docker-compose exec web npm run build
 ## Django commands
 Create superuser:
 ```sh
-sudo docker-compose exec api python manage.py createsuperuser
+sudo docker-compose exec api python3 manage.py createsuperuser
 ```
 
 Make migrations:
 ```sh
-sudo docker-compose exec api python manage.py makemigrations
-sudo docker-compose exec api python manage.py migrate
+sudo docker-compose exec api python3 manage.py makemigrations
+sudo docker-compose exec api python3 manage.py migrate
 ```
