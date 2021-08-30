@@ -6,7 +6,8 @@
 At a later point there will be a docker container provided here
 
 ##Development Setup
-
+WARNING: Because the Project uses psycopg2-binary the build will fail on Apple M1 chipsets, 
+as they are not compatible for [now](https://github.com/psycopg/psycopg2/issues/1286).
 ### Requirements
 * [docker](https://docs.docker.com/get-docker/)
 * [docker-compose](https://docs.docker.com/compose/install/)

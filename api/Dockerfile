@@ -1,9 +1,9 @@
 FROM ubuntu:20.04
 
-RUN DEBIAN_FRONTEND=noninteractive apt update --fix-missing -y
-RUN DEBIAN_FRONTEND=noninteractive apt upgrade -y 
-RUN DEBIAN_FRONTEND=noninteractive apt install python3-pip npm git -y
-RUN DEBIAN_FRONTEND=noninteractive apt install libmariadbclient-dev -y
+RUN DEBIAN_FRONTEND=noninteractive apt-get update --fix-missing -y
+RUN DEBIAN_FRONTEND=noninteractive apt-get upgrade -y
+RUN DEBIAN_FRONTEND=noninteractive apt-get install python3-pip npm git -y
+RUN DEBIAN_FRONTEND=noninteractive apt-get install libmariadbclient-dev -y
 
 RUN pip install poetry
 

@@ -54,11 +54,11 @@ services:
     volumes:
       - type: bind
         # TODO: change path
-        source: /data/artigo/web/media/
+        source: ./web/media/
         target: /media
       - type: bind
         # TODO: change path
-        source: /data/artigo/web/dump/
+        source: ./web/media/
         target: /dump
       - type: bind
         source: ./api/
