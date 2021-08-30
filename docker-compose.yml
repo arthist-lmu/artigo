@@ -25,11 +25,11 @@ services:
     volumes:
       - type: bind
         # TODO: change path
-        source: /data/artigo/web/media/
+        source: ./web/media/
         target: /media
       - type: bind
         # TODO: change path
-        source: /data/artigo/web/dump/
+        source: ./web/dump/
         target: /dump
       - type: bind
         source: ./api/
@@ -41,6 +41,8 @@ services:
     command: python3 manage.py runserver 0.0.0.0:8000
     depends_on:
       - postgres
+    ports:
+      - "127.0.0.1:8000:8000"
     
   celery:
     image: artigo/api
@@ -77,3 +79,5 @@ services:
         target: /web
     working_dir: /web
     network_mode: "host"
+    ports:
+      - "127.0.0.1:80:80"

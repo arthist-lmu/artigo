@@ -1,23 +1,28 @@
 # ARTigo
 
-## Requirements
-Install:
+
+##Installation
+
+At a later point there will be a docker container provided here
+
+##Development Setup
+
+### Requirements
 * [docker](https://docs.docker.com/get-docker/)
 * [docker-compose](https://docs.docker.com/compose/install/)
-* [poetry](https://pypi.org/project/poetry/)
+* [poetry](https://pypi.org/project/poetry/) (When building without docker)
 
-
-## Installation
+### Setup Process
 Create the `poetry.lock` file if it does not exist:
 ```sh
 cd api
 poetry install --no-root
 ```
 
-To ensure that the data is retained, local folders must be created and added to the `docker-compose.yml` file:
+To ensure that the data is retained, these local folders must be created and filled with data for migration
 ```sh
-mkdir -p /data/artigo/web/media
-mkdir -p /data/artigo/web/dump
+mkdir -p ./web/media
+mkdir -p ./web/dump
 ```
 
 The container can then be built and started:
