@@ -1,38 +1,32 @@
-import json
 import logging
 import traceback
 
 from ..serializers import SourceSerializer, ResourceSerializer
 from frontend.utils import media_url_to_image
 from frontend.models import Source, Resource
-from django.http import JsonResponse
-from django.forms.models import model_to_dict
-from django.views.decorators.http import require_http_methods
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_page
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework.exceptions import APIException
+
+logger = logging.getLogger(__name__)
 
 
-@require_http_methods(['POST'])
-def get_collection(request):
-    try:
-        body = request.body.decode('utf-8')
-    except (UnicodeDecodeError, AttributeError):
-        body = request.body
+class CollectionView(APIView):
+    @method_decorator(cache_page(60*60*2))
+    def get(self, request, format=None):
+        collection = None
 
-    try:
-        data = json.loads(body)
-    except Exception as e:
-        return JsonResponse({'status': 'error'})
+        collection_name = request.query_params.get('name')
 
-    collection = None
+        if collection_name:
+            collection = get_collection_by_name(collection_name)
 
-    collection_name = data['params'].get('name')
+        if collection:
+            return Response(collection)
 
-    if collection_name:
-        collection = get_collection_by_name(collection_name)
-
-    if collection:
-        return JsonResponse({'status': 'ok', 'data': collection})
-
-    return JsonResponse({'status': 'error'})
+        raise APIException('Unknown collection.')
 
 
 def get_collection_by_name(collection_name):
@@ -48,4 +42,4 @@ def get_collection_by_name(collection_name):
 
         return data
     except Exception as e:
-        logging.error(traceback.format_exc())
+        logger.error(traceback.format_exc())

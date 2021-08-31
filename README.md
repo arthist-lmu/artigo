@@ -1,25 +1,24 @@
 # ARTigo
 
 
-##Installation
+## Installation
+At a later point there will be a docker container provided here.
 
-At a later point there will be a docker container provided here
-
-##Development Setup
+## Development setup
 
 ### Requirements
 * [docker](https://docs.docker.com/get-docker/)
 * [docker-compose](https://docs.docker.com/compose/install/)
 * [poetry](https://pypi.org/project/poetry/) (When building without docker)
 
-### Setup Process
+### Setup process
 Create the `poetry.lock` file if it does not exist:
 ```sh
 cd api
 poetry install --no-root
 ```
 
-To ensure that the data is retained, these local folders must be created and filled with data for migration
+To ensure that the data is retained, these local folders must be created and filled with data for migration:
 ```sh
 mkdir -p ./web/media
 mkdir -p ./web/dump
@@ -45,7 +44,7 @@ sudo docker-compose exec api python3 manage.py migrate
 ## Import data
 To import data, `.csv` files must be stored in the `./web/dump` and corresponding `.jpg` files in the `./web/media` folder. The following command must be executed while the application is running:
 ```sh
-sudo docker-compose exec api python3 manage.py import_csv ./web/dump
+sudo docker-compose exec api python3 manage.py import_csv /dump
 ```
 
 ## Update `web`

@@ -8,14 +8,13 @@ const collection = {
   },
   actions: {
     get({ commit }, params) {
-      axios.post(`${API_LOCATION}/get_collection`, { params })
-        .then((res) => {
-          if (res.data.status === 'ok') {
-            commit('updateData', res.data.data);
-          }
+      axios.get(`${API_LOCATION}/get_collection`, { params })
+        .then(({ data }) => {
+          commit('updateData', data);
+          console.log('collection', data);
         })
-        .catch((error) => {
-          console.log(error);
+        .catch(({ response }) => {
+          console.log('Error', response.data);
         });
     },
   },

@@ -1,121 +1,99 @@
-import json
 import logging
 import traceback
 
 from django.contrib import auth
 from django.http import JsonResponse
-from django.views import View
-from django.views.decorators.http import require_http_methods
 from django.views.decorators.csrf import ensure_csrf_cookie
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework.exceptions import APIException
+
+logger = logging.getLogger(__name__)
 
 
-class GetUser(View):
-    def post(self, request):
+class UserView(APIView):
+    def post(self, request, format=None):
         if not request.user.is_authenticated:
-            return JsonResponse({'status': 'error'})
+            raise APIException('User is not authentificated.')
 
         try:
             user = request.user
 
-            return JsonResponse({
-                'status': 'ok',
-                'data': {
-                    'username': user.get_username(),
-                    'email': user.email,
-                    'date_joined': user.date_joined,
-                }
+            return Response({
+                'username': user.get_username(),
+                'email': user.email,
+                'date_joined': user.date_joined,
             })
         except Exception as e:
-            logging.error(traceback.format_exc())
-
-            return JsonResponse({'status': 'error'})
+            logger.error(traceback.format_exc())
 
 
 @ensure_csrf_cookie
 def get_csrf_token(request):
-    return JsonResponse({'status': 'ok'})
+    return JsonResponse({})
 
 
-@require_http_methods(['POST'])
-def login(request):
-    try:
-        body = request.body.decode('utf-8')
-    except (UnicodeDecodeError, AttributeError):
-        body = request.body
+class LoginView(APIView):
+    def post(self, request, format=None):
+        username = request.data['params'].get('name')
+        password = request.data['params'].get('password')
 
-    try:
-        data = json.loads(body)
-    except Exception as e:
-        return JsonResponse({'status': 'error'})
+        if not username:
+            raise APIException('Username is not provided.')
 
-    username = data['params'].get('username')
-    password = data['params'].get('password')
+        if not password:
+            raise APIException('Password is not provided.')
 
-    if not username:
-        return JsonResponse({'status': 'error'})
+        user = auth.authenticate(username=username, password=password)
 
-    if not password:
-        return JsonResponse({'status': 'error'})
+        if user is not None:
+            auth.login(request, user)
 
-    user = auth.authenticate(username=username, password=password)
-
-    if user is not None:
-        auth.login(request, user)
-
-        return JsonResponse({
-            'status': 'ok', 
-            'data': {
+            return Response({
                 'username': user.get_username(),
                 'email': user.email,
                 'date_joined': user.date_joined,
-            }
-        })
+            })
 
-    return JsonResponse({'status': 'error'})
-
-
-@require_http_methods(['POST'])
-def logout(request):
-    auth.logout(request)
-
-    return JsonResponse({'status': 'ok'})
+        raise APIException('Unknown user.')
 
 
-@require_http_methods(['POST'])
-def register(request):
-    try:
-        body = request.body.decode('utf-8')
-    except (UnicodeDecodeError, AttributeError):
-        body = request.body
+class LogoutView(APIView):
+    def post(self, request, format=None):
+        auth.logout(request)
 
-    try:
-        data = json.loads(body)
-    except Exception as e:
-        return JsonResponse({'status': 'error'})
+        return Response()
 
-    username = data['params'].get('username')
-    password = data['params'].get('password')
-    email = data['params'].get('email')
 
-    if not username:
-        return JsonResponse({'status': 'error'})
+class RegisterView(APIView):
+    def post(self, request, format=None):
+        username = request.data['params'].get('name')
+        password = request.data['params'].get('password')
+        email = request.data['params'].get('email')
 
-    if not password:
-        return JsonResponse({'status': 'error'})
+        if not username:
+            raise APIException('Username is not provided.')
 
-    if not email:
-        return JsonResponse({'status': 'error'})
+        if not password:
+            raise APIException('Password is not provided.')
 
-    if auth.models.User.objects.filter(username=username).count() > 0:
-        return JsonResponse({'status': 'error'})
+        if not email:
+            raise APIException('Email is not provided.')
 
-    user = auth.models.User.objects.create_user(username, email, password)
-    user.save()
-    user = auth.authenticate(username=username, password=password)
+        if auth.models.User.objects.filter(username=username).count() > 0:
+            raise APIException('Username already taken.')
 
-    if user is not None:
-        auth.login(request, user)
+        user = auth.models.User.objects.create_user(username, email, password)
+        user.save()
+        user = auth.authenticate(username=username, password=password)
 
-        return JsonResponse({'status': 'ok'})
+        if user is not None:
+            auth.login(request, user)
 
-    return JsonResponse({'status': 'error'})
+            return Response({
+                'username': user.get_username(),
+                'email': user.email,
+                'date_joined': user.date_joined,
+            })
+
+        raise APIException('Unknown user.')

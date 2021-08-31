@@ -8,15 +8,13 @@ const resource = {
   },
   actions: {
     get({ commit }, params) {
-      axios.post(`${API_LOCATION}/get_resource`, { params })
-        .then((res) => {
-          if (res.data.status === 'ok') {
-            commit('updateData', res.data.data);
-            console.log('resource', res.data.data);
-          }
+      axios.get(`${API_LOCATION}/get_resource`, { params })
+        .then(({ data }) => {
+          commit('updateData', data);
+          console.log('resource', data);
         })
-        .catch((error) => {
-          console.log(error);
+        .catch(({ response }) => {
+          console.log('Error', response.data);
         });
     },
   },

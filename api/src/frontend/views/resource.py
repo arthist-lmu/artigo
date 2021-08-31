@@ -1,4 +1,3 @@
-import json
 import random
 import logging
 import traceback
@@ -8,39 +7,34 @@ from frontend.utils import media_url_to_image
 from frontend.models import Resource, Title, Tagging
 from datetime import datetime
 from django.db.models import Count
-from django.http import JsonResponse
-from django.forms.models import model_to_dict
-from django.views.decorators.http import require_http_methods
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_page
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework.exceptions import APIException
+
+logger = logging.getLogger(__name__)
 
 
-@require_http_methods(['POST'])
-def get_resource(request):
-    try:
-        body = request.body.decode('utf-8')
-    except (UnicodeDecodeError, AttributeError):
-        body = request.body
+class ResourceView(APIView):
+    @method_decorator(cache_page(60*60*2))
+    def get(self, request, format=None):
+        resource = None
 
-    try:
-        data = json.loads(body)
-    except Exception as e:
-        return JsonResponse({'status': 'error'})
+        resource_id = request.query_params.get('id')
+        lang = request.query_params.get('lang', 'en')
 
-    resource = None
+        if request.query_params.get('random'):
+            seed = datetime.now().strftime('%Y%m%d')
+            resource_id = Resource.objects.random(seed).id
+        
+        if resource_id:
+            resource = get_resource_by_id(resource_id, lang)
 
-    resource_id = data['params'].get('id')
-    lang = data['params'].get('lang', 'en')
+        if resource:
+            return Response(resource)
 
-    if data['params'].get('random'):
-        seed = datetime.now().strftime('%Y%m%d')
-        resource = Resource.objects.random(seed)
-        resource = get_resource_by_id(resource.id, lang)
-    elif resource_id:
-        resource = get_resource_by_id(resource_id, lang)
-
-    if resource:
-        return JsonResponse({'status': 'ok', 'data': resource})
-
-    return JsonResponse({'status': 'error'})
+        raise APIException('Unknown resource.')
 
 
 def get_resource_by_id(resource_id, lang=None):
@@ -64,4 +58,4 @@ def get_resource_by_id(resource_id, lang=None):
 
         return data
     except Exception as e:
-        logging.error(traceback.format_exc())
+        logger.error(traceback.format_exc())

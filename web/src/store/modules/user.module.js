@@ -33,57 +33,49 @@ const user = {
             commit('updateCSRFToken', csrftoken);
           }
         })
-        .catch((error) => {
-          console.log(error);
+        .catch(({ response }) => {
+          console.log('Error', response.data);
         });
     },
     get({ commit }, params) {
       axios.post(`${API_LOCATION}/get_user`, { params })
-        .then((res) => {
-          if (res.data.status === 'ok') {
-            commit('updateData', res.data.data);
-            commit('updateLoggedIn', true);
-          }
+        .then(({ data }) => {
+          commit('updateData', data);
+          commit('updateLoggedIn', true);
         })
-        .catch((error) => {
-          console.log(error);
+        .catch(({ response }) => {
+          console.log('Error', response.data);
         });
     },
     login({ commit }, params) {
       axios.post(`${API_LOCATION}/login`, { params })
-        .then((res) => {
-          if (res.data.status === 'ok') {
-            commit('updateData', res.data.data);
-            commit('updateLoggedIn', true);
-          }
+        .then(({ data }) => {
+          commit('updateData', data);
+          commit('updateLoggedIn', true);
         })
-        .catch((error) => {
-          console.log(error);
+        .catch(({ response }) => {
+          console.log('Error', response.data);
         });
     },
     logout({ commit, state }) {
       const params = state.userData;
       axios.post(`${API_LOCATION}/logout`, { params })
-        .then((res) => {
-          if (res.data.status === 'ok') {
-            commit('updateData', {});
-            commit('updateLoggedIn', false);
-          }
+        .then(() => {
+          commit('updateData', {});
+          commit('updateLoggedIn', false);
         })
-        .catch((error) => {
-          console.log(error);
+        .catch(({ response }) => {
+          console.log('Error', response.data);
         });
     },
     register({ commit }, params) {
       axios.post(`${API_LOCATION}/register`, { params })
-        .then((res) => {
-          if (res.data.status === 'ok') {
-            commit('updateData', res.data.data);
-            commit('updateLoggedIn', true);
-          }
+        .then(({ data }) => {
+          commit('updateData', data);
+          commit('updateLoggedIn', true);
         })
-        .catch((error) => {
-          console.log(error);
+        .catch(({ response }) => {
+          console.log('Error', response.data);
         });
     },
   },
