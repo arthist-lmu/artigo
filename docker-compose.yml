@@ -3,21 +3,20 @@ services:
   redisai:
     image: redislabs/redisai:edge-cpu-bionic
     #build:
-      # Why aren't we using redislabs/redisai:edge-cpu-bionic?
     #  context: https://github.com/RedisAI/RedisAI.git#0d7a952ba95972a225d8c1acbe8097754ccc6cf8 #2c3239e
-    ports:
-      - "127.0.0.1:6379:6379"
+#    ports:
+#      - "127.0.0.1:6379:6379"
 
   db:
     image: postgres:13
     volumes:
-      - ./web/db/:/var/lib/postgresql/data
+      - ./db/:/var/lib/postgresql/data
     environment:
       - POSTGRES_DB=artigo
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
-    ports:
-      - "127.0.0.1:5432:5432"
+#    ports:
+#      - "127.0.0.1:5432:5432"
 
   api:
     image: artigo/api
@@ -27,11 +26,11 @@ services:
     volumes:
       - type: bind
         # TODO: change path
-        source: ./web/media/
+        source: ./media/
         target: /media
       - type: bind
         # TODO: change path
-        source: ./web/dump/
+        source: ./dump/
         target: /dump
       - type: bind
         source: ./api/
@@ -43,6 +42,7 @@ services:
     command: python3 manage.py runserver 0.0.0.0:8000
     depends_on:
       - db
+      - redisai
     ports:
       - "127.0.0.1:8000:8000"
     
@@ -54,11 +54,11 @@ services:
     volumes:
       - type: bind
         # TODO: change path
-        source: ./web/media/
+        source: ./media/
         target: /media
       - type: bind
         # TODO: change path
-        source: ./web/media/
+        source: ./dump/
         target: /dump
       - type: bind
         source: ./api/
@@ -70,6 +70,7 @@ services:
     command: celery -A core worker -l INFO
     depends_on:
       - db
+      - redisai
     
   web:
     image: artigo/web
@@ -80,6 +81,8 @@ services:
         source: ./web/
         target: /web
     working_dir: /web
+    depends_on:
+      - api
 #    network_mode: "host"
     ports:
       - "127.0.0.1:80:80"

@@ -18,10 +18,10 @@ cd api
 poetry install --no-root
 ```
 
-To ensure that the data is retained, these local folders must be created and filled with data for migration:
+To ensure that the data is retained, these local folders must be filled with data for migration:
 ```sh
-mkdir -p ./web/media
-mkdir -p ./web/dump
+* /media
+* /dump
 ```
 
 The container can then be built and started:
@@ -42,7 +42,7 @@ sudo docker-compose exec api python3 manage.py migrate
 ```
 
 ## Import data
-To import data, `.csv` files must be stored in the `./web/dump` and corresponding `.jpg` files in the `./web/media` folder. The following command must be executed while the application is running:
+To import data, `.csv` files must be stored in the `./dump` and corresponding `.jpg` files in the `./media` folder. The following command must be executed while the application is running:
 ```sh
 sudo docker-compose exec api python3 manage.py import_csv /dump
 ```
