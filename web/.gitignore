@@ -114,7 +114,7 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
-media/
+../media/
 package-lock.json
 poetry.lock
 node_modules/

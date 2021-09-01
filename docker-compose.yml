@@ -3,7 +3,6 @@ services:
   redisai:
     image: redislabs/redisai:edge-cpu-bionic
     #build:
-      # Why aren't we using redislabs/redisai:edge-cpu-bionic?
     #  context: https://github.com/RedisAI/RedisAI.git#0d7a952ba95972a225d8c1acbe8097754ccc6cf8 #2c3239e
 #    ports:
 #      - "127.0.0.1:6379:6379"
@@ -27,11 +26,11 @@ services:
     volumes:
       - type: bind
         # TODO: change path
-        source: ./web/media/
+        source: ./media/
         target: /media
       - type: bind
         # TODO: change path
-        source: ./web/dump/
+        source: ./dump/
         target: /dump
       - type: bind
         source: ./api/
@@ -55,11 +54,11 @@ services:
     volumes:
       - type: bind
         # TODO: change path
-        source: ./web/media/
+        source: ./media/
         target: /media
       - type: bind
         # TODO: change path
-        source: ./web/media/
+        source: ./dump/
         target: /dump
       - type: bind
         source: ./api/

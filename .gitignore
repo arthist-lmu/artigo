@@ -1,8 +1,8 @@
 .vscode/
 /venv/
 /db/
-/web/media/*
-/web/dump/*
-!/web/media/.gitkeep
-!/web/dump/.gitkeep
+/media/*
+/dump/*
+!/media/.gitkeep
+!/dump/.gitkeep
 .idea/
