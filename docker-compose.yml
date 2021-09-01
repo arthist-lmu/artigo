@@ -43,6 +43,7 @@ services:
     command: python3 manage.py runserver 0.0.0.0:8000
     depends_on:
       - db
+      - redisai
     ports:
       - "127.0.0.1:8000:8000"
     
@@ -70,6 +71,7 @@ services:
     command: celery -A core worker -l INFO
     depends_on:
       - db
+      - redisai
     
   web:
     image: artigo/web
@@ -80,6 +82,8 @@ services:
         source: ./web/
         target: /web
     working_dir: /web
+    depends_on:
+      - api
 #    network_mode: "host"
     ports:
       - "127.0.0.1:80:80"
