@@ -5,19 +5,19 @@ services:
     #build:
       # Why aren't we using redislabs/redisai:edge-cpu-bionic?
     #  context: https://github.com/RedisAI/RedisAI.git#0d7a952ba95972a225d8c1acbe8097754ccc6cf8 #2c3239e
-    ports:
-      - "127.0.0.1:6379:6379"
+#    ports:
+#      - "127.0.0.1:6379:6379"
 
   db:
     image: postgres:13
     volumes:
-      - ./web/db/:/var/lib/postgresql/data
+      - ./db/:/var/lib/postgresql/data
     environment:
       - POSTGRES_DB=artigo
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
-    ports:
-      - "127.0.0.1:5432:5432"
+#    ports:
+#      - "127.0.0.1:5432:5432"
 
   api:
     image: artigo/api
