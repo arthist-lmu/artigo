@@ -58,6 +58,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "frontend.middleware.QueryPrintMiddleware",
 ]
 
 ROOT_URLCONF = "core.urls"
@@ -116,14 +117,27 @@ AUTH_PASSWORD_VALIDATORS = [
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
+    'formatters': {
+        'simple': {
+            'format': '{levelname} [{asctime}] {message}',
+            'style': '{',
+        },
+    },
     'handlers': {
         'console': {
             'class': 'logging.StreamHandler',
+            'formatter': 'simple',
         },
     },
     'root': {
         'handlers': ['console'],
         'level': 'INFO',
+    },
+    'loggers': {
+        'frontend.middleware': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+        },
     },
 }
 

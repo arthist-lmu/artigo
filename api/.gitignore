@@ -119,3 +119,4 @@ package-lock.json
 node_modules/
 jsconfig.json
 user_settings.py
+poetry.lock
