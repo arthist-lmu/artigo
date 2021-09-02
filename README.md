@@ -47,7 +47,7 @@ To import data, `.csv` files must be stored in the `./dump` and corresponding `.
 sudo docker-compose exec api python3 manage.py import_csv /dump
 ```
 
-## Update `web`
+## Code reloading
 Hot reloading is enabled for `api`. To display changes of `web`, run:
 ```sh
 sudo docker-compose exec web npm run build
@@ -64,3 +64,12 @@ Make migrations:
 sudo docker-compose exec api python3 manage.py makemigrations
 sudo docker-compose exec api python3 manage.py migrate
 ```
+
+## Run tests
+To run tests for `api`, use one of the following commands:
+```sh
+sudo docker-compose exec api python3 manage.py test --verbosity 2
+sudo docker-compose exec api pytest --verbose
+```
+
+Coverage reports are stored in the `./api/src/htmlcov` folder.

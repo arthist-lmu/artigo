@@ -170,3 +170,4 @@ except:
     pass
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+TEST_RUNNER = 'core.runner.PytestTestRunner'
