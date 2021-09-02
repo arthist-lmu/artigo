@@ -14,7 +14,7 @@ logger = logging.getLogger(__name__)
 class UserView(APIView):
     def post(self, request, format=None):
         if not request.user.is_authenticated:
-            raise APIException('User is not authentificated.')
+            raise APIException('User is not authenticated.')
 
         try:
             user = request.user

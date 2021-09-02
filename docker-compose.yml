@@ -2,10 +2,6 @@ version: "3.2"
 services:
   redisai:
     image: redislabs/redisai:edge-cpu-bionic
-    #build:
-    #  context: https://github.com/RedisAI/RedisAI.git#0d7a952ba95972a225d8c1acbe8097754ccc6cf8 #2c3239e
-#    ports:
-#      - "127.0.0.1:6379:6379"
 
   db:
     image: postgres:13
@@ -15,14 +11,11 @@ services:
       - POSTGRES_DB=artigo
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
-#    ports:
-#      - "127.0.0.1:5432:5432"
 
   api:
     image: artigo/api
     build:
       context: ./api
-#    network_mode: "host"
     volumes:
       - type: bind
         # TODO: change path
@@ -50,7 +43,6 @@ services:
     image: artigo/api
     build:
       context: ./api
-#    network_mode: "host"
     volumes:
       - type: bind
         # TODO: change path
@@ -83,6 +75,5 @@ services:
     working_dir: /web
     depends_on:
       - api
-#    network_mode: "host"
     ports:
       - "127.0.0.1:80:80"

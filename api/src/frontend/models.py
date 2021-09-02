@@ -1,5 +1,4 @@
-import random
-
+from .managers import ResourceManager
 from django.db import models
 from django.utils import timezone
 from django.contrib.auth.models import User
@@ -9,25 +8,23 @@ class Source(models.Model):
     name = models.CharField(max_length=256)
     url = models.URLField(max_length=256)
 
+    def __str__(self):
+        return self.name
+
 
 class Creator(models.Model):
     name = models.CharField(max_length=256)
+
+    def __str__(self):
+        return self.name
 
 
 class Title(models.Model):
     name = models.CharField(max_length=512)
     language = models.CharField(max_length=256, blank=True)
 
-
-class ResourceManager(models.Manager):
-    def random(self, seed=None):
-        if seed:
-            random.seed(seed)
-
-        n_rows = self.all().count()
-        row_id = random.randint(0, n_rows - 1)
-
-        return self.all()[row_id]
+    def __str__(self):
+        return self.name
 
 
 class Resource(models.Model):
@@ -50,6 +47,9 @@ class Gametype(models.Model):
     rounds = models.PositiveIntegerField(default=5)
     round_duration = models.PositiveIntegerField(default=60)
     enabled = models.BooleanField(default=True)
+
+    def __str__(self):
+        return self.name
 
 
 class Gamesession(models.Model):
@@ -80,6 +80,9 @@ class Gameround(models.Model):
 class Tag(models.Model):
     name = models.CharField(max_length=256)
     language = models.CharField(max_length=256)
+
+    def __str__(self):
+        return self.name
 
 
 class Tagging(models.Model):
