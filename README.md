@@ -73,3 +73,9 @@ sudo docker-compose exec api pytest --verbose
 ```
 
 Coverage reports are stored in the `./api/src/htmlcov` folder.
+
+
+#Known Issues
+
+Sometimes the `api` container starts before the `db` container is up on 
+some systems. To fix this, restart the api container separately.
