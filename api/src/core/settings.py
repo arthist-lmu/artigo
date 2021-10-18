@@ -184,9 +184,12 @@ except:
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 TEST_RUNNER = 'core.runner.PytestTestRunner'
 
-# celery
+# Celery configuration
 CELERY_BROKER_URL = 'redis://redisai:6379'
 CELERY_RESULT_BACKEND = 'redis://redisai:6379'
 CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TASK_SERIALIZER = 'json'
+
+# Custom user model
+AUTH_USER_MODEL = 'frontend.CustomUser'
