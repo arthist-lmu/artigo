@@ -2,6 +2,31 @@ version: "3.2"
 services:
   redisai:
     image: redislabs/redisai:edge-cpu-bionic
+    ports:
+      - "127.0.0.1:6379:6379"
+
+  opensearch:
+    image: opensearchproject/opensearch:1.1.0
+    environment:
+      - node.name=os01
+      - discovery.seed_hosts=os01
+      - cluster.initial_master_nodes=os01
+      - "OPENSEARCH_JAVA_OPTS=-Xms512m -Xmx512m"
+      - bootstrap.memory_lock=true
+      - network.host=0.0.0.0
+    volumes:
+      - ./opensearch/:/usr/share/opensearch/data
+      - ./search/opensearch.yml:/usr/share/opensearch/config/opensearch.yml
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+      nofile:
+        soft: 65536
+        hard: 65536
+    ports:
+      - "127.0.0.1:9200:9200"
+      - "127.0.0.1:9600:9600"
 
   db:
     image: postgres:13
@@ -11,58 +36,55 @@ services:
       - POSTGRES_DB=artigo
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
+    ports:
+      - "127.0.0.1:5432:5432"
+
+  search:
+    image: artigo/search
+    build:
+      context: ./search
+    volumes:
+      - type: bind
+        source: ./dump/
+        target: /dump
+      - type: bind
+        source: ./search/
+        target: /search
+      - type: bind
+        source: ./search/config.json
+        target: /config.json
+    working_dir: /search/src/artigo_search
+    environment:
+      - POETRY_VIRTUALENVS_CREATE=False
+      - PYTHONPATH=/search/src/
+      # - GRPC_VERBOSITY=debug
+    network_mode: "host"
 
   api:
     image: artigo/api
     build:
-      context: ./api
+      context: .
+      dockerfile: ./api/Dockerfile
     volumes:
       - type: bind
-        # TODO: change path
         source: ./media/
         target: /media
       - type: bind
-        # TODO: change path
         source: ./dump/
         target: /dump
       - type: bind
         source: ./api/
         target: /api
-    working_dir: /api/src
+    working_dir: /api/src/artigo_api
     environment:
       - POETRY_VIRTUALENVS_CREATE=False
       - PYTHONPATH=/api/src/
-    command: python3 manage.py runserver 0.0.0.0:8000
     depends_on:
       - db
+      - search
       - redisai
     ports:
       - "127.0.0.1:8000:8000"
-    
-  celery:
-    image: artigo/api
-    build:
-      context: ./api
-    volumes:
-      - type: bind
-        # TODO: change path
-        source: ./media/
-        target: /media
-      - type: bind
-        # TODO: change path
-        source: ./dump/
-        target: /dump
-      - type: bind
-        source: ./api/
-        target: /api
-    working_dir: /api/src
-    environment:
-      - POETRY_VIRTUALENVS_CREATE=False
-      - PYTHONPATH=/api/src/
-    command: celery -A core worker -l INFO
-    depends_on:
-      - db
-      - redisai
     
   web:
     image: artigo/web

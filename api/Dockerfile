@@ -7,7 +7,19 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get install python3-pip npm libpq-dev -y
 RUN pip install poetry
 RUN pip install pytest pytest-cov django-oauth-toolkit
 
-COPY poetry.lock /pyproject.toml /src /api/
-
+COPY /api/pyproject.toml /api/poetry.lock /api/
 RUN cd /api; poetry export -f requirements.txt --output requirements.txt
 RUN cd /api; pip install -r requirements.txt
+
+COPY /search/pyproject.toml /search/poetry.lock /search/
+RUN cd /search; poetry export -f requirements.txt --output requirements.txt
+RUN cd /search; pip install -r requirements.txt
+
+COPY /api /api/
+COPY /search /search/
+
+RUN pip install /search
+
+COPY /api/docker-entrypoint.sh /docker-entrypoint.sh
+RUN chmod +x /docker-entrypoint.sh
+ENTRYPOINT ["/docker-entrypoint.sh"]

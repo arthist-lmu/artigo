@@ -1,6 +1,7 @@
 .vscode/
 /venv/
 /db/
+/opensearch/
 /media/*
 /dump/*
 !/media/.gitkeep
