@@ -4,6 +4,9 @@ option java_multiple_files = true;
 package artigo.search;
 
 service Index {
+  rpc get(GetRequest)
+    returns (GetReply) {}
+
   rpc status(StatusRequest)
     returns (StatusReply) {}
 
@@ -23,12 +26,13 @@ service Index {
     returns (ListSearchResultReply) {}
 }
 
-message ImageResult {
-  Image image = 1;
+message GetRequest {
+  repeated string ids = 1;
 }
 
-message InsertResult {
-  repeated ImageResult images = 1;
+message GetReply {
+  repeated SearchResultEntry entries = 1;
+  repeated AggregateResult aggregate = 2;
 }
 
 message StatusRequest {
@@ -37,9 +41,6 @@ message StatusRequest {
 
 message StatusReply {
   string status = 1;
-  oneof result {
-    InsertResult insert = 2;
-  }
 }
 
 message DeleteRequest {

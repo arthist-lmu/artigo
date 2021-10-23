@@ -176,7 +176,9 @@ class Backbone:
             try:
                 self.client.indices.delete(index=index, ignore=[400])
             except exceptions.NotFoundError:
-                return None
+                return 'error'
+
+        return 'ok'
 
     def search(self, body, size=100):
         try:

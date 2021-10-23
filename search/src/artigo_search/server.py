@@ -12,6 +12,7 @@ from artigo_search.plugins.cache import Cache
 from artigo_search.database.backbone import Backbone
 from artigo_search.database.aggregator import Aggregator
 from artigo_search.jobs import InsertJob
+from artigo_search.utils import meta_to_proto, tags_to_proto
 from artigo_search.utils import meta_from_proto, tags_from_proto, read_chunk
 
 logger = logging.getLogger(__name__)
@@ -64,12 +65,36 @@ class Commune(index_pb2_grpc.IndexServicer):
 
             result = job_data['future'].result()
 
-            if result is None:
-                return index_pb2.StatusReply(status='error')
-
-            return index_pb2.StatusReply(status='done', insert=result)
+            if result is not None:
+                return index_pb2.StatusReply(status='done')
 
         return index_pb2.StatusReply(status='error')
+
+    def get(self, request, context):
+        logger.info('[Server] Start get')
+
+        json_obj = MessageToDict(request)
+        results = index_pb2.GetReply()
+
+        backbone = Backbone(config=self.config.get('opensearch', {}))
+
+        for x in backbone.get(hash_ids=json_obj['ids']):
+            entry = results.entries.add()
+            entry.id = x['id']
+
+            if x.get('meta'):
+                meta_to_proto(entry.meta, x['meta'])
+
+            if x.get('source'):
+                entry.source.id = x['source']['id']
+                entry.source.name = x['source']['name']
+                entry.source.url = x['source']['url']
+                entry.source.is_public = x['source']['is_public']
+
+            if x.get('tags'):
+                tags_to_proto(entry.tags, x['tags'])
+
+        return results
 
     def insert(self, request, context):
         def translate(cache, request):
@@ -140,17 +165,12 @@ class Commune(index_pb2_grpc.IndexServicer):
     def delete(self, request, context):
         logger.info('[Server] Start delete')
 
+        json_obj = MessageToDict(request)
+
         backbone = Backbone(config=self.config.get('opensearch', {}))
+        status = backbone.delete(indices=json_obj['names'])
 
-        try:
-            backbone.delete(request.names)
-        except Exception as error:
-            logger.error(f'[Server] Delete: {repr(error)}')
-            logger.error(traceback.format_exc())
-
-            return index_pb2.DeleteReply(status='error')
-
-        return index_pb2.DeleteReply(status='ok')
+        return index_pb2.DeleteReply(status=status)
 
     def search(self, request, context):
         logger.info('[Server] Start search')
@@ -241,10 +261,13 @@ class Server:
         try:
             while True:
                 n_jobs = len(self.commune.futures)
-                n_jobs_done = len([x for x in self.commune.futures if x['future'].done()])
+
+                n_jobs_done = len([
+                    x for x in self.commune.futures
+                    if x['future'].done()
+                ])
 
                 logger.info(f'[Server] Jobs: {n_jobs_done}/{n_jobs}')
-                logger.info(f"[Server] {[x['future'] for x in self.commune.futures]}")
 
                 time.sleep(10)
         except KeyboardInterrupt:

@@ -21,17 +21,15 @@ def dict_from_proto(proto):
 
 def meta_to_proto(proto, data):
     for d in data:
-        meta = proto.add()
+        field = proto.add()
+        field.key = d['name']
 
         if d.get('value_int') is not None:
-            meta.int_val = d['value_int']
-            meta.key = d['name']
+            field.int_val = d['value_int']
         elif d.get('value_float') is not None:
-            meta.float_val = d['value_float']
-            meta.key = d['name']
+            field.float_val = d['value_float']
         elif d.get('value_str') is not None:
-            meta.string_val = d['value_str']
-            meta.key = d['name']
+            field.string_val = d['value_str']
 
     return proto
 
@@ -64,7 +62,15 @@ def meta_from_proto(proto):
 
 
 def tags_to_proto(proto, data):
-    pass
+    for d in data:
+        field = proto.add()
+
+        field.id = d['id']
+        field.name = d['name']
+        field.language = d['language']
+        field.count = d['count']
+
+    return proto
 
 
 def tags_from_proto(proto):

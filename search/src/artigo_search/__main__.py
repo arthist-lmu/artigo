@@ -23,10 +23,13 @@ def parse_args():
     parser.add_argument('-v', '--verbose', action='store_true')
 
     parser.add_argument('-m', '--mode', choices=['client', 'server'])
-    parser.add_argument('--task', choices=['search', 'insert', 'delete'])
-    
-    parser.add_argument('--query')
 
+    parser.add_argument('--task', choices=[
+        'get', 'insert', 'delete', 'search'
+    ])
+
+    parser.add_argument('--query')
+    
     return parser.parse_args()
 
 
@@ -66,14 +69,17 @@ def main():
 
         client = Client(config)
 
-        if args.task == 'search':
+        if args.task == 'get':
             query = json.loads(args.query)
-            client.search(query)
+            client.get(query)
         elif args.task == 'insert':
             client.insert()
         elif args.task == 'delete':
             query = json.loads(args.query)
             client.delete(query)
+        elif args.task == 'search':
+            query = json.loads(args.query)
+            client.search(query)
     elif args.mode == 'server':
         server = Server(config)
         server.run()

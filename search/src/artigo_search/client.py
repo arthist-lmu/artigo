@@ -76,6 +76,16 @@ class Client:
 
         return self.stub.status(request)
 
+    def get(self, params):
+        request = index_pb2.GetRequest()
+
+        if isinstance(params['hash_id'], (list, set)):
+            request.ids.extend(map(str, params['hash_id']))
+        else:
+            request.ids.extend([str(params['hash_id'])])
+
+        return self.stub.get(request)
+
     def insert(self):
         def entry_generator(entries, blacklist):
             for entry in entries:
@@ -164,9 +174,9 @@ class Client:
         request = index_pb2.DeleteRequest()
 
         if isinstance(params['name'], (list, set)):
-            request.names.extend(params['name'])
+            request.names.extend(map(str, params['name']))
         else:
-            request.names.extend([params['name']])
+            request.names.extend([str(params['name'])])
 
         return self.stub.delete(request)
 
