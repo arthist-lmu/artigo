@@ -1,6 +1,6 @@
 import logging
 
-from opensearchpy import OpenSearch
+from opensearchpy import OpenSearch, exceptions
 from opensearchpy.helpers import bulk
 
 logger = logging.getLogger(__name__)
@@ -150,7 +150,18 @@ class Backbone:
         return 'ok' if self.client.ping() else 'error'
 
     def get(self, hash_ids):
-        pass
+        body = {'query': {'ids': {'values': hash_ids}}}
+
+        try:
+            results = self.client.search(
+                index=self.index, doc_type=self.type,
+                body=body, size=len(hash_ids),
+            )
+
+            for x in results['hits']['hits']:
+                yield x['_source']
+        except exceptions.NotFoundError:
+            return []
 
     def insert(self, generator):
         def add_fields(generator):
@@ -162,14 +173,17 @@ class Backbone:
 
     def delete(self, indices):
         for index in indices:
-            self.client.indices.delete(index=index, ignore=[400])
+            try:
+                self.client.indices.delete(index=index, ignore=[400])
+            except exceptions.NotFoundError:
+                return None
 
-    def search(self, size=100):
-        if not self.client.indices.exists(index=self.index):
-            return []
-
+    def search(self, body, size=100):
         try:
-            results = self.client.search(index=self.index, body=body, size=size)
+            results = self.client.search(
+                index=self.index, doc_type=self.type,
+                body=body, size=size,
+            )
 
             for x in results['hits']['hits']:
                 yield x['_source']
