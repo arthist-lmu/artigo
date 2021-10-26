@@ -100,9 +100,7 @@ TEMPLATES = [
 ]
 
 AUTHENTICATION_BACKENDS = [
-    # Needed to login by username in Django admin, regardless of allauth
     'django.contrib.auth.backends.ModelBackend',
-    # allauth specific authentication methods, such as login by e-mail
     'allauth.account.auth_backends.AuthenticationBackend',
 ]
 
@@ -207,7 +205,27 @@ CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TASK_SERIALIZER = 'json'
 
 # Custom user model
-AUTH_USER_MODEL = 'frontend.CustomUser'
+AUTH_USER_MODEL = 'frontend.User'
+
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_UNIQUE_EMAIL = True
+ACCOUNT_AUTHENTICATION_METHOD = "email"
+ACCOUNT_USERNAME_REQUIRED = True
+ACCOUNT_USER_MODEL_USERNAME_FIELD = "username"
+
+# Email confirmation
+ACCOUNT_EMAIL_SUBJECT_PREFIX = "[My Website]"
+ACCOUNT_LOGIN_ON_EMAIL_CONFIRMATION = True
+
+# After 10 failed login attempts, restrict logins for 30 minutes
+ACCOUNT_LOGIN_ATTEMPTS_LIMIT = 10
+ACCOUNT_LOGIN_ATTEMPTS_TIMEOUT = 1800
+ACCOUNT_PASSWORD_MIN_LENGTH = 12
+
+# Other settings
+ACCOUNT_DEFAULT_HTTP_PROTOCOL = "https"
+ACCOUNT_LOGIN_ON_PASSWORD_RESET = True
+SOCIALACCOUNT_AUTO_SIGNUP = False
 
 SOCIALACCOUNT_PROVIDERS = {
     'google': {
