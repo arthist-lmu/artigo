@@ -211,6 +211,7 @@ CELERY_BEAT_SCHEDULE = {
         'task': 'core.tasks.export_jsonl',
         'schedule': timedelta(hours=12),
     },
+}
 # Custom user model
 AUTH_USER_MODEL = 'frontend.User'
 
