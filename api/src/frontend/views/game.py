@@ -15,6 +15,7 @@ def add_tagging(request):
 
     try:
         data = json.loads(body)
+        # TODO: Eigentliche Abfrage hier -> add to Tagging table in DB
     except Exception as e:
         return JsonResponse({'status': 'error'})
 

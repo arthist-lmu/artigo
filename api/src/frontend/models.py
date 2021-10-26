@@ -98,3 +98,43 @@ class Tagging(models.Model):
             self.created = timezone.now()
 
         return super().save(*args, **kwargs)
+
+
+class CombinedTagging(models.Model):
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    gameround = models.ForeignKey(Gameround, on_delete=models.CASCADE)
+    resource = models.ForeignKey(Resource, on_delete=models.CASCADE)
+    first_tag = models.ForeignKey(Tag, on_delete=models.CASCADE)
+    second_tag = models.ForeignKey(Tag, on_delete=models.CASCADE)
+    created = models.DateTimeField(editable=False)
+    score = models.PositiveIntegerField(default=0)
+
+    def save(self, *args, **kwargs):
+        if not self.id:
+            self.created = timezone.now()
+
+        return super().save(*args, **kwargs)
+
+
+class Question(models.Model):
+    question = models.CharField(max_length=256)
+    tag = models.CharField(max_length=256)
+    language = models.CharField(max_length=256)
+
+    # objects = QuestionManager()
+
+
+class ChosenOrder(models.Model):
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    gameround = models.ForeignKey(Gameround, on_delete=models.CASCADE)
+    first_resource = models.ForeignKey(Resource, on_delete=models.CASCADE)
+    second_resource = models.ForeignKey(Resource, on_delete=models.CASCADE)
+    third_resource = models.ForeignKey(Resource, on_delete=models.CASCADE)
+    created = models.DateTimeField(editable=False)
+    score = models.PositiveIntegerField(default=0)
+
+    def save(self, *args, **kwargs):
+        if not self.id:
+            self.created = timezone.now()
+
+        return super().save(*args, **kwargs)
