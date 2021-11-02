@@ -1,4 +1,4 @@
-from .managers import ResourceManager
+from .managers import ResourceManager, QuestionManager
 from django.db import models
 from django.utils import timezone
 from django.contrib.auth.models import User
@@ -6,7 +6,8 @@ from django.contrib.auth.models import User
 
 class Source(models.Model):
     name = models.CharField(max_length=256)
-    url = models.URLField(max_length=256)
+    institution_url = models.URLField(max_length=256)
+    resource_url = models.URLField(max_length=256)
 
     def __str__(self):
         return self.name
@@ -121,7 +122,7 @@ class Question(models.Model):
     tag = models.CharField(max_length=256)
     language = models.CharField(max_length=256)
 
-    # objects = QuestionManager()
+    question = QuestionManager()
 
 
 class ChosenOrder(models.Model):
@@ -138,3 +139,11 @@ class ChosenOrder(models.Model):
             self.created = timezone.now()
 
         return super().save(*args, **kwargs)
+
+
+class WebPages(models.Model):
+    creator = models.ForeignKey(Creator, on_delete=models.CASCADE)
+    url = models.URLField(max_length=256)
+
+    def __str__(self):
+        return self.creator
