@@ -119,7 +119,7 @@ class CombinedTagging(models.Model):
 
 class Question(models.Model):
     question = models.CharField(max_length=256)
-    tag = models.CharField(max_length=256)
+    tag = models.ForeignKey(Tag, on_delete=models.CASCADE)
     language = models.CharField(max_length=256)
 
     question = QuestionManager()
@@ -142,7 +142,7 @@ class ChosenOrder(models.Model):
 
 
 class WebPages(models.Model):
-    creator = models.ForeignKey(Creator, on_delete=models.CASCADE)
+    about = models.ForeignKey(Creator, Title, on_delete=models.CASCADE)
     url = models.URLField(max_length=256)
 
     def __str__(self):
