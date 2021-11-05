@@ -7,7 +7,7 @@ from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 
 class User(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(verbose_name='email address', unique=True, db_index=True)
-    user_name = models.CharField(max_length=100, blank=True)
+    username = models.CharField(max_length=256, unique=True, blank=False)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
 
@@ -15,11 +15,11 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     USERNAME_FIELD = 'email'
 
-    def get_user_name(self):
-        return self.user_name
+    def get_username(self):
+        return self.username
 
     def __str__(self):
-        return f'{self.email} ({self.user_name})'
+        return f'{self.email} ({self.username})'
 
 
 class Source(models.Model):

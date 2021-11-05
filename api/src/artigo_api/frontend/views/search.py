@@ -8,8 +8,8 @@ from django.conf import settings
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
-from artigo_search import index_pb2, index_pb2_grpc
-from artigo_search.utils import meta_from_proto
+#from artigo_search import index_pb2, index_pb2_grpc
+#from artigo_search.utils import meta_from_proto
 
 logger = logging.getLogger(__name__)
 

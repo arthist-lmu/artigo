@@ -10,7 +10,7 @@ from rest_framework.exceptions import APIException
 
 logger = logging.getLogger(__name__)
 
-
+"""
 class UserView(APIView):
     def post(self, request, format=None):
         if not request.user.is_authenticated:
@@ -26,13 +26,13 @@ class UserView(APIView):
             })
         except Exception as e:
             logger.error(traceback.format_exc())
-
+"""
 
 @ensure_csrf_cookie
 def get_csrf_token(request):
     return JsonResponse({})
 
-
+"""
 class LoginView(APIView):
     def post(self, request, format=None):
         username = request.data['params'].get('name')
@@ -56,8 +56,8 @@ class LoginView(APIView):
             })
 
         raise APIException('Unknown user.')
-
-
+"""
+"""
 class LogoutView(APIView):
     def post(self, request, format=None):
         auth.logout(request)
@@ -97,3 +97,4 @@ class RegisterView(APIView):
             })
 
         raise APIException('Unknown user.')
+"""
