@@ -26,3 +26,7 @@ by Django REST framework (which is also used by the backend).
 
 ## web
 This container starts an Apache webserver that uses the generated Vue.js files to act as a web client. It uses [Axios](https://axios-http.com/) to communicate with the backend.
+
+
+# Authentification
+To enable SAML Auth with LMU-Services see [here](https://doku.lrz.de/pages/viewpage.action?pageId=56919067)
