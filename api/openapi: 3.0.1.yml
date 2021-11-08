@@ -1,0 +1,89 @@
+openapi: 3.0.1
+info:
+  title: "Artigo"
+  description: "Artigo API definition"
+  version: "0.1"
+  license:
+    name: GPLv3
+servers:
+  - url: https://artigo.org
+  - url: http://localhost:8000
+paths:
+  /core/image:
+    get:
+      tags:
+        - core
+      summary: Download image data
+      description: Download image data from artigo.org with metadata information
+      operationId: download_data
+      parameters:
+        - name: id
+          in: query
+          description: Image id
+          example: 4009
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: successful operation
+#          content:
+#            application/json:
+#              schema:
+#                $ref: '#/components/schemas/ImageData'
+        '400':
+          description: Invalid ID supplied
+          content: {}
+        '404':
+          description: Data not found
+          content: {}
+      x-openapi-router-controller: controllers.data_controller
+  /get_csrf_token:
+    get:
+      tags:
+        - user
+      responses:
+        '200':
+          description: successful operation
+  /get_user:
+    get:
+      tags:
+        - user
+      responses:
+        '200':
+          description: successful operation
+  /login:
+    get:
+      tags:
+        - user
+      responses:
+        '200':
+          description: successful operation
+  /logout:
+    get:
+      tags:
+        - user
+      responses:
+        '200':
+          description: successful operation
+  /register:
+    get:
+      tags:
+        - user
+      responses:
+        '200':
+          description: successful operation
+  /get_resource:
+    get:
+      tags:
+        - ressources
+      responses:
+        '200':
+          description: successful operation
+  /get_collection:
+    get:
+      tags:
+        - ressources
+      responses:
+        '200':
+          description: successful operation

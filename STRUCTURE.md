@@ -19,10 +19,14 @@ The [Postgres](https://www.postgresql.org/) database contains:
 [Celery](https://docs.celeryproject.org/en/stable/index.html) is a task queuing service, to allow for asynchronous task execution. For an example see this [tutorial](https://stackabuse.com/asynchronous-tasks-in-django-with-redis-and-celery/).
 
 ## api
-The backend container starts on an Ubuntu base image and executes a Django server. The server runs a single application called `frontend`, which presents the APIs for ARTigo. It uses additional middleware:
+The backend container starts on an Ubuntu base image and executes a Django server. The server runs a single application called `frontend`, which presents the APIs for ARTigo. Dependency management is done via [poetry](https://python-poetry.org/). It uses additional middleware:
 * to enable [CORS](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS)
 * [OauthToolkit](https://github.com/jazzband/django-oauth-toolkit) as [recommended](https://www.django-rest-framework.org/api-guide/authentication/#third-party-packages) 
 by Django REST framework (which is also used by the backend).
 
 ## web
 This container starts an Apache webserver that uses the generated Vue.js files to act as a web client. It uses [Axios](https://axios-http.com/) to communicate with the backend.
+
+
+# Authentification
+To enable SAML Auth with LMU-Services see [here](https://doku.lrz.de/pages/viewpage.action?pageId=56919067)

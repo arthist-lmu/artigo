@@ -1,0 +1,179 @@
+syntax = "proto3";
+option java_multiple_files = true;
+
+package artigo.search;
+
+service Index {
+  rpc get(GetRequest)
+    returns (GetReply) {}
+
+  rpc status(StatusRequest)
+    returns (StatusReply) {}
+
+  rpc delete(DeleteRequest)
+    returns (DeleteReply) {}
+
+  rpc search(SearchRequest)
+    returns (SearchReply) {}
+
+  rpc aggregate(AggregateRequest)
+    returns (AggregateReply) {}
+
+  rpc insert(stream InsertRequest)
+    returns (stream InsertReply) {}
+
+  rpc list_search_result(ListSearchResultRequest)
+    returns (ListSearchResultReply) {}
+}
+
+message GetRequest {
+  repeated string ids = 1;
+}
+
+message GetReply {
+  repeated SearchResultEntry entries = 1;
+  repeated AggregateResult aggregate = 2;
+}
+
+message StatusRequest {
+  string id = 1;
+}
+
+message StatusReply {
+  string status = 1;
+}
+
+message DeleteRequest {
+  repeated string names = 1;
+}
+
+message DeleteReply {
+  string status = 1;
+}
+
+message TextSearchTerm {
+  string query = 1;
+  string field = 2;
+
+  enum Flag {
+    MUST = 0;
+    SHOULD = 1;
+    NOT = 2;
+  }
+
+  Flag flag = 3;
+}
+
+message NumberSearchTerm {
+  string field = 1;
+
+  oneof query {
+    string string_query = 2;
+    int32 int_query = 3;
+    float float_query = 4;
+  }
+
+  enum Relation {
+    EQ = 0;
+    GREATER = 1;
+    GREATER_EQ = 2;
+    LESS_EQ = 3;
+    LESS = 4;
+  }
+
+  Relation relation = 5;
+
+  enum Flag {
+    MUST = 0;
+    SHOULD = 1;
+    NOT = 2;
+  }
+
+  Flag flag = 6;
+}
+
+message SearchTerm {
+  oneof term {
+    TextSearchTerm text = 1;
+    NumberSearchTerm number = 2;
+  }
+}
+
+message SearchRequest {
+  repeated SearchTerm terms = 1;
+  repeated string sources = 2;
+}
+
+message SearchReply {
+  string id = 1;
+}
+
+message ValueField {
+  string key = 1;
+
+  oneof value {
+    string string_val = 2;
+    int32 int_val = 3;
+    float float_val = 4;
+  }
+}
+
+message Source {
+  string id = 1;
+  string name = 2;
+  string url = 3;
+  bool is_public = 4;
+}
+
+message Tag {
+  string id = 1;
+  string name = 2;
+  string language = 3;
+  int32 count = 4;
+}
+
+message AggregateRequest {
+  repeated string fields = 1;
+  int32 size = 2;
+  bool use_query = 3;
+}
+
+message AggregateReply {
+  repeated ValueField field = 1;
+}
+
+message SearchResultEntry {
+  string id = 1;
+  repeated ValueField meta = 2;
+  Source source = 3;
+}
+
+message AggregateResult {
+  string field = 1;
+  repeated ValueField entries = 2;
+}
+
+message Image {
+  string id = 1;
+  repeated ValueField meta = 2;
+  Source source = 3;
+  repeated Tag tags = 4;
+}
+
+message InsertRequest {
+  Image image = 1;
+}
+
+message InsertReply {
+  string id = 1;
+  string status = 2;
+}
+
+message ListSearchResultRequest {
+  string id = 1;
+}
+
+message ListSearchResultReply {
+  repeated SearchResultEntry entries = 1;
+  repeated AggregateResult aggregate = 2;
+}
