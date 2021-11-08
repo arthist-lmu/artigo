@@ -119,7 +119,6 @@ class CombinedTagging(models.Model):
 
 class Question(models.Model):
     question = models.CharField(max_length=256)
-    tag = models.ForeignKey(Tag, on_delete=models.CASCADE)
     language = models.CharField(max_length=256)
 
     question = QuestionManager()
@@ -146,4 +145,4 @@ class WebPages(models.Model):
     url = models.URLField(max_length=256)
 
     def __str__(self):
-        return self.creator
+        return self.about

@@ -2,6 +2,7 @@ from frontend import views
 from django.urls import path
 from django.contrib import admin
 
+# TODO: Needs to be updated
 urlpatterns = [
     path('get_csrf_token', views.get_csrf_token, name='get_csrf_token'),
     path('get_user', views.UserView.as_view(), name='user'),
