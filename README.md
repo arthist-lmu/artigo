@@ -12,6 +12,10 @@ At a later point there will be a docker container provided here.
 * [docker-compose](https://docs.docker.com/compose/install/)
 * [poetry](https://pypi.org/project/poetry/) (When building without docker)
 
+### Configuration Files
+Copy the content of .env.example files to .env files in the same location and customize the settings
+(For now they should work without customizations).
+
 ### Setup process
 Create the `poetry.lock` file if it does not exist:
 ```sh
