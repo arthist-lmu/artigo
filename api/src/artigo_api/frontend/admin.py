@@ -8,7 +8,7 @@ class CustomModelAdmin(admin.ModelAdmin):
         super().__init__(model, admin_site)
 
 
-@admin.register(Source)
+@admin.register(Institution)
 class SourceAdmin(CustomModelAdmin):
     pass
 

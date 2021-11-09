@@ -26,7 +26,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         return f'{self.email} ({self.username})'
 
 
-class Source(models.Model):
+class Institution(models.Model):
     name = models.CharField(max_length=256)
     institution_url = models.URLField(max_length=256)
     resource_url = models.URLField(max_length=256)
@@ -35,8 +35,46 @@ class Source(models.Model):
         return self.name
 
 
+class Location(models.Model):
+    name = models.CharField(max_length=256)
+    country = models.CharField(max_length=256)
+
+    def __str__(self):
+        return self.name
+
+
+class ArtTechnique(models.Model):
+    name = models.CharField(max_length=256)
+    language = models.CharField(max_length=256)
+
+    def __str__(self):
+        return self.name
+
+
+class ArtMovement(models.Model):
+    name = models.CharField(max_length=256)
+    language = models.CharField(max_length=256)
+
+    def __str__(self):
+        return self.name
+
+
+class ArtStyle(models.Model):
+    name = models.CharField(max_length=256)
+    language = models.CharField(max_length=256)
+
+    def __str__(self):
+        return self.name
+
+
 class Creator(models.Model):
     name = models.CharField(max_length=256)
+    born = models.DateField(null=True)
+    died = models.DateField(null=True)
+    nationality = models.CharField(max_length=256)
+    locations = models.ManyToManyField(Location)
+    techniques = models.ManyToManyField(ArtTechnique)
+
 
     def __str__(self):
         return self.name
@@ -45,6 +83,9 @@ class Creator(models.Model):
 class Title(models.Model):
     name = models.CharField(max_length=512)
     language = models.CharField(max_length=256, blank=True)
+    technique = models.ForeignKey(ArtTechnique, on_delete=models.CASCADE)
+    style = models.ForeignKey(ArtStyle, on_delete=models.CASCADE)
+    movement = models.ForeignKey(ArtMovement, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.name
@@ -54,13 +95,14 @@ class Resource(models.Model):
     hash_id = models.CharField(max_length=256)
     creators = models.ManyToManyField(Creator)
     titles = models.ManyToManyField(Title)
-    source = models.ForeignKey(Source, on_delete=models.CASCADE)
+    institution = models.ForeignKey(Institution, on_delete=models.CASCADE)
     created_start = models.DateField(null=True)
     created_end = models.DateField(null=True)
     location = models.CharField(max_length=512, blank=True)
-    institution = models.CharField(max_length=512, blank=True)
+    # TODO: Determine if URLField or FilePathField?!
     origin = models.URLField(max_length=256, blank=True)
     enabled = models.BooleanField(default=True)
+    media_type = models.CharField(max_length=256)
 
     objects = ResourceManager()
 
@@ -81,10 +123,23 @@ class Gametype(models.Model):
         return self.name
 
 
+class Gamemode:
+    name = models.CharField(max_length=256)
+    media_type = models.CharField(max_length=256)
+    enabled = models.BooleanField(default=True)
+
+    def __str__(self):
+        return self.name
+
+    def save(self, *args, **kwargs):
+        pass
+
+
 class Gamesession(models.Model):
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     gametype = models.ForeignKey(Gametype, on_delete=models.CASCADE)
     created = models.DateTimeField(editable=False)
+    gamemode = models.ForeignKey(Gamemode, on_delete=models.CASCADE)
 
     def save(self, *args, **kwargs):
         if not self.id:
@@ -121,6 +176,8 @@ class Tagging(models.Model):
     tag = models.ForeignKey(Tag, on_delete=models.CASCADE)
     created = models.DateTimeField(editable=False)
     score = models.PositiveIntegerField(default=0)
+    media_type = models.ForeignKey(Gamemode, on_delete=models.CASCADE)
+    origin = models.URLField(max_length=256, blank=True)
 
     def save(self, *args, **kwargs):
         if not self.id:
@@ -171,6 +228,7 @@ class ChosenOrder(models.Model):
 class WebPages(models.Model):
     about = models.ForeignKey(Creator, Title, on_delete=models.CASCADE)
     url = models.URLField(max_length=256)
+    language = models.CharField(max_length=256)
 
     def __str__(self):
         return self.about
