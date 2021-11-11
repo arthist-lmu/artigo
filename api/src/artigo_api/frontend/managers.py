@@ -40,3 +40,7 @@ class ResourceManager(models.Manager):
         row_id = random.randint(0, n_rows - 1)
 
         return self.all()[row_id]
+
+
+class QuestionManager:
+    pass

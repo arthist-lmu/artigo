@@ -95,10 +95,10 @@ class Resource(models.Model):
     hash_id = models.CharField(max_length=256)
     creators = models.ManyToManyField(Creator)
     titles = models.ManyToManyField(Title)
-    institution = models.ForeignKey(Institution, on_delete=models.CASCADE)
     created_start = models.DateField(null=True)
     created_end = models.DateField(null=True)
     location = models.CharField(max_length=512, blank=True)
+    institution = models.ForeignKey(Institution, on_delete=models.CASCADE)
     # TODO: Determine if URLField or FilePathField?!
     origin = models.URLField(max_length=256, blank=True)
     enabled = models.BooleanField(default=True)

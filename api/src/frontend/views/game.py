@@ -2,7 +2,10 @@ import json
 import logging
 import traceback
 
+from .models import Tagging, Tag
+
 from django.http import JsonResponse
+from django.http import HttpResponse
 from django.views.decorators.http import require_http_methods
 
 
@@ -26,7 +29,8 @@ def add_tagging(request):
 # TODO: if tag in tagging already, then add to tag, if tag already in tag, don't add again
 @require_http_methods(['POST'])
 def add_tag(request):
-    pass
+
+    return HttpResponse()
 
 
 # TODO: SELECT (-> QuerySet) first n tags that have been used most for this resource; if more than 5, randomly select?

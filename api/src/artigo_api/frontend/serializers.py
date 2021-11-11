@@ -1,6 +1,7 @@
 from frontend.models import *
 from rest_framework import serializers
 
+# TODO: update fields according to model changes
 
 class SourceSerializer(serializers.ModelSerializer):
   class Meta:
