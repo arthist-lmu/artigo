@@ -1,12 +1,14 @@
-from frontend.models import *
+# from frontend.models import *
 from rest_framework import serializers
 
 # TODO: update fields according to model changes
+from artigo.api.src.artigo_api.frontend.models import *
 
-class SourceSerializer(serializers.ModelSerializer):
+
+class InstitutionSerializer(serializers.ModelSerializer):
   class Meta:
-    model = Source
-    fields = ('id', 'name', 'url')
+    model = Institution
+    fields = ('id', 'name', 'institution_url', 'resource_url')
 
 
 class CreatorSerializer(serializers.ModelSerializer):
@@ -33,12 +35,12 @@ class ResourceSerializer(serializers.ModelSerializer):
       'location', 'institution', 'source',
     )
     read_only_fields = (
-      'titles', 'creators', 'source',
+      'titles', 'creators', 'institution',
     )
 
   def to_representation(self, data):
     data = super().to_representation(data)
-    data['source']['name'] = data['source']['name'].title()
+    data['institution']['name'] = data['institution']['name'].title()
 
     return data
 

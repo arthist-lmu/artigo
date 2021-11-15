@@ -1,7 +1,7 @@
 <<<<<<< HEAD:api/src/frontend/models.py
-from .managers import ResourceManager, QuestionManager
+from artigo.api.src.artigo_api.frontend.managers import ResourceManager, QuestionManager
 =======
-from frontend.managers import UserManager, ResourceManager
+from artigo.api.src.artigo_api.frontend.managers import UserManager, ResourceManager
 >>>>>>> c9908850c5a58191c0edb8f3409148668e6b422b:api/src/artigo_api/frontend/models.py
 from django.db import models
 from django.db.models import Count

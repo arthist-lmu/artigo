@@ -9,12 +9,32 @@ class CustomModelAdmin(admin.ModelAdmin):
 
 
 @admin.register(Institution)
-class SourceAdmin(CustomModelAdmin):
+class InstitutionAdmin(CustomModelAdmin):
     pass
 
 
 @admin.register(Creator)
 class CreatorAdmin(CustomModelAdmin):
+    pass
+
+
+@admin.register(ArtTechnique)
+class ArtTechniqueAdmin(CustomModelAdmin):
+    pass
+
+
+@admin.register(ArtMovement)
+class ArtMovementAdmin(CustomModelAdmin):
+    pass
+
+
+@admin.register(ArtStyle)
+class ArtStyleAdmin(CustomModelAdmin):
+    pass
+
+
+@admin.register(WebPages)
+class WebPagesAdmin(CustomModelAdmin):
     pass
 
 
@@ -56,6 +76,11 @@ class GameroundAdmin(CustomModelAdmin):
     pass
 
 
+@admin.register(Gamemode)
+class GamemodeAdmin(CustomModelAdmin):
+    pass
+
+
 @admin.register(Tag)
 class TagAdmin(CustomModelAdmin):
     pass
@@ -63,4 +88,20 @@ class TagAdmin(CustomModelAdmin):
 
 @admin.register(Tagging)
 class TaggingAdmin(CustomModelAdmin):
+    pass
+
+
+@admin.register(CombinedTagging)
+class CombinedTaggingAdmin(CustomModelAdmin):
+    pass
+
+
+@admin.register(ChosenOrder)
+class ChosenOrderAdmin(CustomModelAdmin):
+    pass
+
+
+# TODO: see how similar it has to be to the Resource admin
+@admin.register(Question)
+class QuestionAdmin(CustomModelAdmin):
     pass

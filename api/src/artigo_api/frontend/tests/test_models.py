@@ -1,10 +1,10 @@
 import pytest
 
-from frontend.models import Source
+from artigo.api.src.artigo_api.frontend.models import Institution
 
 
 @pytest.mark.django_db
 def test_create_source():
-    source = Source.objects.create(name="Source")
+    institution = Institution.objects.create(name="Institution")
 
-    assert source.name == "Source"
+    assert institution.name == "Institution"
