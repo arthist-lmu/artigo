@@ -7,12 +7,18 @@ from django.views.decorators.csrf import ensure_csrf_cookie
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.exceptions import APIException
+from rest_framework.authentication import TokenAuthentication
+from rest_framework.permissions import IsAuthenticated
 
 logger = logging.getLogger(__name__)
 
-"""
+
 class UserView(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
     def post(self, request, format=None):
+
         if not request.user.is_authenticated:
             raise APIException('User is not authenticated.')
 
@@ -26,7 +32,15 @@ class UserView(APIView):
             })
         except Exception as e:
             logger.error(traceback.format_exc())
-"""
+    
+
+    def get(self, request, format=None):
+        content = {
+            'user': str(request.user),  # `django.contrib.auth.User` instance.
+            'auth': str(request.auth),  # None
+        }
+        return Response(content)
+
 
 @ensure_csrf_cookie
 def get_csrf_token(request):

@@ -19,9 +19,10 @@ The [Postgres](https://www.postgresql.org/) database contains:
 [Celery](https://docs.celeryproject.org/en/stable/index.html) is a task queuing service, to allow for asynchronous task execution. For an example see this [tutorial](https://stackabuse.com/asynchronous-tasks-in-django-with-redis-and-celery/).
 
 ## api
-The backend container starts on an Ubuntu base image and executes a Django server. The server runs a single application called `frontend`, which presents the APIs for ARTigo. Dependency management is done via [poetry](https://python-poetry.org/). It uses additional middleware:
-* to enable [CORS](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS)
-* [OauthToolkit](https://github.com/jazzband/django-oauth-toolkit) as [recommended](https://www.django-rest-framework.org/api-guide/authentication/#third-party-packages) 
+The backend container starts on an Ubuntu base image and executes a Django server. The server runs a single application called `frontend`, which presents the APIs for ARTigo. Dependency management is done via [poetry](https://python-poetry.org/). It uses additional third-party packages aside from django-rest-framework:
+* [dj-rest-auth](https://github.com/iMerica/dj-rest-auth) for authentication/account setup via API
+* [allauth](https://github.com/pennersr/django-allauth) for social logins (Google, Facebook)
+* [django-environ](https://github.com/joke2k/django-environ) for configuration using env-variables
 by Django REST framework (which is also used by the backend).
 
 ## web

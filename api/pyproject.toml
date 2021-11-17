@@ -27,6 +27,7 @@ pytest-cov = "^2.12.0"
 pytest-django = "^4.4.0"
 django-allauth = "^0.45.0"
 dj-rest-auth = "^2.1.11"
+django-environ = "^0.8.1"
 
 [tool.poetry.dev-dependencies]
 black = "^20.8b1"

@@ -11,20 +11,28 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 """
 
 import os
-
+import environ
 from datetime import timedelta
+
+# Use django-environ config
+env = environ.Env(
+    DEBUG=(bool, False)
+)
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+# Set .env file. To create copy values from .env.example and customize them
+environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "wrmnr_)ffvihaem(^1vf4*&^n3mthvi-x$74kco07azh0-feb5"
+SECRET_KEY = env('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env('DEBUG')
 
 FORCE_SCRIPT_NAME = "/"
 
@@ -65,11 +73,16 @@ INSTALLED_APPS = [
     "allauth.socialaccount",
     "allauth.socialaccount.providers.github",
     "allauth.socialaccount.providers.google",
+#    "django_extensions", #(to see a list of all available urls install django-extensions and run: manage.py show_urls)
 ]
 
 SITE_ID = 1
 
-REST_FRAMEWORK = {"DEFAULT_AUTHENTICATION_CLASSES": ("rest_framework.authentication.SessionAuthentication",)}
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+    ]
+}
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -113,14 +126,7 @@ WSGI_APPLICATION = "core.wsgi.application"
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
 
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": "artigo",
-        "USER": "postgres",
-        "PASSWORD": "postgres",
-        "HOST": "localhost",
-        "PORT": 5432,
-    }
+    "default": env.db()
 }
 
 
@@ -192,10 +198,6 @@ MEDIA_URL = FORCE_SCRIPT_NAME + "media/"
 GRPC_HOST = "localhost"
 GRPC_PORT = 50051
 
-try:
-    from .user_settings import *
-except:
-    pass
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 TEST_RUNNER = 'core.runner.PytestTestRunner'
@@ -248,3 +250,10 @@ SOCIALACCOUNT_PROVIDERS = {
         }
     }
 }
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = ''
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = ''
+EMAIL_HOST_PASSWORD = ''
