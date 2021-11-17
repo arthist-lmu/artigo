@@ -2,7 +2,7 @@
 from rest_framework import serializers
 
 # TODO: update fields according to model changes
-from artigo.api.src.artigo_api.frontend.models import *
+from frontend.models import *
 
 
 class InstitutionSerializer(serializers.ModelSerializer):

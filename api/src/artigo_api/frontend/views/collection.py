@@ -2,8 +2,8 @@ import logging
 import traceback
 
 from ..serializers import InstitutionSerializer, ResourceSerializer
-from artigo.api.src.artigo_api.frontend.utils import media_url_to_image
-from artigo.api.src.artigo_api.frontend.models import Institution, Resource
+from frontend.utils import media_url_to_image
+from frontend.models import Institution, Resource
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
 from rest_framework.views import APIView

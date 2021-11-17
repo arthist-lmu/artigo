@@ -2,9 +2,9 @@ import random
 import logging
 import traceback
 
-from artigo.api.src.artigo_api.frontend.utils import media_url_to_image
-from artigo.api.src.artigo_api.frontend.models import Resource, Title, Tagging
-from artigo.api.src.artigo_api.frontend.serializers import ResourceSerializer, TagCountSerializer
+from frontend.utils import media_url_to_image
+from frontend.models import Resource, Title, Tagging
+from frontend.serializers import ResourceSerializer, TagCountSerializer
 from datetime import datetime
 from django.db.models import Count
 from django.utils.decorators import method_decorator

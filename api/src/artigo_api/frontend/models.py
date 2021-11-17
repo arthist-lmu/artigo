@@ -1,4 +1,4 @@
-from artigo.api.src.artigo_api.frontend.managers import UserManager, ResourceManager, QuestionManager
+from frontend.managers import UserManager, ResourceManager, QuestionManager
 from django.db import models
 from django.db.models import Count
 from django.utils import timezone
@@ -8,10 +8,12 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from rest_framework.authtoken.models import Token
 
+
 @receiver(post_save, sender=settings.AUTH_USER_MODEL)
 def create_auth_token(sender, instance=None, created=False, **kwargs):
     if created:
         Token.objects.create(user=instance)
+
 
 class User(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(verbose_name='email address', unique=True, db_index=True)
@@ -127,7 +129,7 @@ class Gametype(models.Model):
         return self.name
 
 
-class Gamemode:
+class Gamemode(models.Model):
     name = models.CharField(max_length=256)
     media_type = models.CharField(max_length=256)
     enabled = models.BooleanField(default=True)
@@ -141,9 +143,9 @@ class Gamemode:
 
 class Gamesession(models.Model):
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    gamemode = models.ForeignKey(Gamemode, on_delete=models.CASCADE)
     gametype = models.ForeignKey(Gametype, on_delete=models.CASCADE)
     created = models.DateTimeField(editable=False)
-    gamemode = models.ForeignKey(Gamemode, on_delete=models.CASCADE)
 
     def save(self, *args, **kwargs):
         if not self.id:
@@ -194,8 +196,8 @@ class CombinedTagging(models.Model):
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     gameround = models.ForeignKey(Gameround, on_delete=models.CASCADE)
     resource = models.ForeignKey(Resource, on_delete=models.CASCADE)
-    first_tag = models.ForeignKey(Tag, on_delete=models.CASCADE)
-    second_tag = models.ForeignKey(Tag, on_delete=models.CASCADE)
+    # TODO: POST method for here
+    combination = models.ForeignKey(Tag, on_delete=models.CASCADE)
     created = models.DateTimeField(editable=False)
     score = models.PositiveIntegerField(default=0)
 
@@ -214,25 +216,29 @@ class Question(models.Model):
 
 
 class ChosenOrder(models.Model):
-    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
-    gameround = models.ForeignKey(Gameround, on_delete=models.CASCADE)
-    first_resource = models.ForeignKey(Resource, on_delete=models.CASCADE)
-    second_resource = models.ForeignKey(Resource, on_delete=models.CASCADE)
-    third_resource = models.ForeignKey(Resource, on_delete=models.CASCADE)
-    created = models.DateTimeField(editable=False)
-    score = models.PositiveIntegerField(default=0)
-
-    def save(self, *args, **kwargs):
-        if not self.id:
-            self.created = timezone.now()
-
-        return super().save(*args, **kwargs)
+    pass
+#     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+#     gameround = models.ForeignKey(Gameround, on_delete=models.CASCADE
+#     TODO: change or delete
+#     # resource_order = models.ForeignKey(Resource, on_delete=models.CASCADE)
+#     # second_resource = models.ForeignKey(Resource, on_delete=models.CASCADE)
+#     # third_resource = models.ForeignKey(Resource, on_delete=models.CASCADE)
+#     created = models.DateTimeField(editable=False)
+#     score = models.PositiveIntegerField(default=0)
+#
+#     def save(self, *args, **kwargs):
+#         if not self.id:
+#             self.created = timezone.now()
+#
+#         return super().save(*args, **kwargs)
 
 
 class WebPages(models.Model):
-    about = models.ForeignKey(Creator, Title, on_delete=models.CASCADE)
+    # TODO: find better solution! (see below as well)
+    about_creator = models.ForeignKey(Creator, on_delete=models.CASCADE)
+    about_title = models.ForeignKey(Title, on_delete=models.CASCADE)
     url = models.URLField(max_length=256)
     language = models.CharField(max_length=256)
 
     def __str__(self):
-        return self.about
+        return self.about_creator
