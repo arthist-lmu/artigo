@@ -9,7 +9,6 @@ from rest_framework.parsers import JSONParser
 from rest_framework import status
 
 from django.http import JsonResponse
-from django.http import HttpResponse
 from django.views.decorators.http import require_http_methods
 
 
@@ -26,9 +25,11 @@ def add_tagging(request):
         if request.method == 'POST':
             tagging_data = JSONParser.parse(request)
             tagging_serializer = TaggingSerializer(data=tagging_data)
+
             if tagging_serializer.is_valid():
                 tagging_serializer.save()
                 return JsonResponse(tagging_serializer.data, status=status.HTTP_201_CREATED)
+            
             return JsonResponse(tagging_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     except Exception as e:
         return JsonResponse({'status': 'error'})

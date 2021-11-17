@@ -12,4 +12,6 @@ urlpatterns = [
     path('get_resource', views.ResourceView.as_view(), name='resource'),
     path('get_collection', views.CollectionView.as_view(), name='collection'),
     path('search', views.SearchView.as_view(), name='search'),
+
+    path('get_taggings', views.TaggingsView.as_view(), name='taggings'),
 ]

@@ -2,8 +2,8 @@ import grpc
 import logging
 import traceback
 
-from frontend.utils import media_url_to_image
-from frontend.utils import RetryOnRpcErrorClientInterceptor, ExponentialBackoff
+from artigo.api.src.artigo_api.frontend.utils import media_url_to_image
+from artigo.api.src.artigo_api.frontend.utils import RetryOnRpcErrorClientInterceptor, ExponentialBackoff
 from django.conf import settings
 from rest_framework.views import APIView
 from rest_framework.response import Response
