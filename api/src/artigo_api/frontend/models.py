@@ -20,10 +20,17 @@ class User(AbstractBaseUser, PermissionsMixin):
     username = models.CharField(max_length=256, unique=True, blank=False)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
+    first_name = models.CharField(max_length=256)
+    last_name = models.CharField(max_length=256)
+    date_joined = models.DateTimeField(editable=False)
 
     objects = UserManager()
 
     USERNAME_FIELD = 'email'
+
+    def save(self, *args, **kwargs):
+        if not self.id:
+            self.created = timezone.now()
 
     def get_username(self):
         return self.username
