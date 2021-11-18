@@ -99,13 +99,14 @@ class CreateUser(Create):
 class CreateSource(Create):
     def __init__(self, folder_path):
         self.file_path = os.path.join(folder_path, 'source.csv')
-        self.obj = Source
+        self.obj = Institution
 
     def convert(self, row):
         return self.obj(
             id = toInt(row.get('id')),
             name = row.get('name'),
-            url = toURL(row.get('url')),
+            institution_url = toURL(row.get('url')),
+            # resource_url=toURL(row.get('resource_url')),
         )
 
 
@@ -130,13 +131,15 @@ class CreateResource(Create):
         return self.obj(
             id = toInt(row.get('id')),
             hash_id = row.get('hash_id'),
-            source_id = toInt(row.get('source_id')),
+            # source_id = toInt(row.get('source_id')),
             created_start = row.get('created_start'),
             created_end = row.get('created_end'),
             location = row.get('location'),
+            # source_id = toInt(row.get('source_id')),
             institution = row.get('institution'),
             origin = toURL(row.get('origin')),
             enabled = row.get('enabled'),
+            media_type = 'image',
         )
 
 

@@ -111,7 +111,10 @@ class Resource(models.Model):
     created_start = models.DateField(null=True)
     created_end = models.DateField(null=True)
     location = models.CharField(max_length=512, blank=True)
-    institution = models.ForeignKey(Institution, on_delete=models.CASCADE)
+    # source_id = models.CharField(max_length=256)
+    # TODO: solve issue!!!
+    # institution = models.ForeignKey(Institution, on_delete=models.CASCADE)
+    institution = models.CharField(max_length=512, blank=True)
     # TODO: Determine if URLField or FilePathField?!
     origin = models.URLField(max_length=256, blank=True)
     enabled = models.BooleanField(default=True)

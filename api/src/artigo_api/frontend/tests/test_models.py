@@ -1,6 +1,7 @@
 import pytest
+from django.test import TestCase
 
-from artigo.api.src.artigo_api.frontend.models import Institution
+from frontend.models import Institution
 
 
 @pytest.mark.django_db
