@@ -20,9 +20,9 @@ class User(AbstractBaseUser, PermissionsMixin):
     username = models.CharField(max_length=256, unique=True, blank=False)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
-    first_name = models.CharField(max_length=256)
-    last_name = models.CharField(max_length=256)
-    date_joined = models.DateTimeField(editable=False)
+    first_name = models.CharField(max_length=256, null=True)
+    last_name = models.CharField(max_length=256, null=True)
+    date_joined = models.DateTimeField(editable=False, default=timezone.now)
 
     objects = UserManager()
 
@@ -84,7 +84,7 @@ class Creator(models.Model):
     name = models.CharField(max_length=256)
     born = models.DateField(null=True)
     died = models.DateField(null=True)
-    nationality = models.CharField(max_length=256)
+    nationality = models.CharField(max_length=256, null=True)
     locations = models.ManyToManyField(Location)
     techniques = models.ManyToManyField(ArtTechnique)
 
@@ -96,9 +96,9 @@ class Creator(models.Model):
 class Title(models.Model):
     name = models.CharField(max_length=512)
     language = models.CharField(max_length=256, blank=True)
-    technique = models.ForeignKey(ArtTechnique, on_delete=models.CASCADE)
-    style = models.ForeignKey(ArtStyle, on_delete=models.CASCADE)
-    movement = models.ForeignKey(ArtMovement, on_delete=models.CASCADE)
+    technique = models.ForeignKey(ArtTechnique, on_delete=models.CASCADE, null=True)
+    style = models.ForeignKey(ArtStyle, on_delete=models.CASCADE, null=True)
+    movement = models.ForeignKey(ArtMovement, on_delete=models.CASCADE, null=True)
 
     def __str__(self):
         return self.name
@@ -118,7 +118,7 @@ class Resource(models.Model):
     # TODO: Determine if URLField or FilePathField?!
     origin = models.URLField(max_length=256, blank=True)
     enabled = models.BooleanField(default=True)
-    media_type = models.CharField(max_length=256)
+    media_type = models.CharField(max_length=256, default='picture')
 
     objects = ResourceManager()
 
@@ -139,21 +139,21 @@ class Gametype(models.Model):
         return self.name
 
 
-class Gamemode(models.Model):
-    name = models.CharField(max_length=256)
-    media_type = models.CharField(max_length=256)
-    enabled = models.BooleanField(default=True)
-
-    def __str__(self):
-        return self.name
-
-    def save(self, *args, **kwargs):
-        pass
+# class Gamemode(models.Model):
+#     name = models.CharField(max_length=256, default='text')
+#     media_type = models.CharField(max_length=256)
+#     enabled = models.BooleanField(default=True)
+#
+#     def __str__(self):
+#         return self.name
+#
+#     def save(self, *args, **kwargs):
+#         pass
 
 
 class Gamesession(models.Model):
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
-    gamemode = models.ForeignKey(Gamemode, on_delete=models.CASCADE)
+    # gamemode = models.ForeignKey(Gamemode, on_delete=models.CASCADE)
     gametype = models.ForeignKey(Gametype, on_delete=models.CASCADE)
     created = models.DateTimeField(editable=False)
 
@@ -192,7 +192,7 @@ class Tagging(models.Model):
     tag = models.ForeignKey(Tag, on_delete=models.CASCADE)
     created = models.DateTimeField(editable=False)
     score = models.PositiveIntegerField(default=0)
-    media_type = models.ForeignKey(Gamemode, on_delete=models.CASCADE)
+    # media_type = models.ForeignKey(Gamemode, on_delete=models.CASCADE)
     origin = models.URLField(max_length=256, blank=True)
 
     def save(self, *args, **kwargs):
@@ -243,12 +243,12 @@ class Question(models.Model):
 #         return super().save(*args, **kwargs)
 
 
-class WebPages(models.Model):
-    # TODO: find better solution! (see below as well)
-    about_creator = models.ForeignKey(Creator, on_delete=models.CASCADE)
-    about_title = models.ForeignKey(Title, on_delete=models.CASCADE)
-    url = models.URLField(max_length=256)
-    language = models.CharField(max_length=256)
-
-    def __str__(self):
-        return self.about_creator
+# class WebPages(models.Model):
+#     # TODO: find better solution! (see below as well)
+#     about_creator = models.ForeignKey(Creator, on_delete=models.CASCADE)
+#     about_title = models.ForeignKey(Title, on_delete=models.CASCADE)
+#     url = models.URLField(max_length=256)
+#     language = models.CharField(max_length=256)
+#
+#     def __str__(self):
+#         return self.about_creator

@@ -11,10 +11,10 @@ class InstitutionSerializer(serializers.ModelSerializer):
     fields = ('id', 'name', 'institution_url', 'resource_url')
 
 
-class WebPagesSerializer(serializers.ModelSerializer):
-  class Meta:
-    model = WebPages
-    fields = ('id', 'about', 'url', 'language')
+# class WebPagesSerializer(serializers.ModelSerializer):
+#   class Meta:
+#     model = WebPages
+#     fields = ('id', 'about', 'url', 'language')
 
 
 class LocationSerializer(serializers.ModelSerializer):

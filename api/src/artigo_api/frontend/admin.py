@@ -33,9 +33,9 @@ class ArtStyleAdmin(CustomModelAdmin):
     pass
 
 
-@admin.register(WebPages)
-class WebPagesAdmin(CustomModelAdmin):
-    pass
+# @admin.register(WebPages)
+# class WebPagesAdmin(CustomModelAdmin):
+#     pass
 
 
 @admin.register(Resource)
@@ -76,9 +76,9 @@ class GameroundAdmin(CustomModelAdmin):
     pass
 
 
-@admin.register(Gamemode)
-class GamemodeAdmin(CustomModelAdmin):
-    pass
+# @admin.register(Gamemode)
+# class GamemodeAdmin(CustomModelAdmin):
+#     pass
 
 
 @admin.register(Tag)
