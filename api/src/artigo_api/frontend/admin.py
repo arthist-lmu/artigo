@@ -96,9 +96,9 @@ class CombinedTaggingAdmin(CustomModelAdmin):
     pass
 
 
-@admin.register(ChosenOrder)
-class ChosenOrderAdmin(CustomModelAdmin):
-    pass
+# @admin.register(ChosenOrder)
+# class ChosenOrderAdmin(CustomModelAdmin):
+#     pass
 
 
 # TODO: see how similar it has to be to the Resource admin

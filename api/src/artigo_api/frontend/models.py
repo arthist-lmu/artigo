@@ -225,8 +225,8 @@ class Question(models.Model):
     question = QuestionManager()
 
 
-class ChosenOrder(models.Model):
-    pass
+# class ChosenOrder(models.Model):
+#     pass
 #     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
 #     gameround = models.ForeignKey(Gameround, on_delete=models.CASCADE
 #     TODO: change or delete
