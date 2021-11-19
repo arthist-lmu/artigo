@@ -99,6 +99,8 @@ class Title(models.Model):
     technique = models.ForeignKey(ArtTechnique, on_delete=models.CASCADE, null=True)
     style = models.ForeignKey(ArtStyle, on_delete=models.CASCADE, null=True)
     movement = models.ForeignKey(ArtMovement, on_delete=models.CASCADE, null=True)
+    locations = models.ManyToManyField(Location)
+
 
     def __str__(self):
         return self.name
@@ -223,24 +225,6 @@ class Question(models.Model):
     language = models.CharField(max_length=256)
 
     question = QuestionManager()
-
-
-# class ChosenOrder(models.Model):
-#     pass
-#     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
-#     gameround = models.ForeignKey(Gameround, on_delete=models.CASCADE
-#     TODO: change or delete
-#     # resource_order = models.ForeignKey(Resource, on_delete=models.CASCADE)
-#     # second_resource = models.ForeignKey(Resource, on_delete=models.CASCADE)
-#     # third_resource = models.ForeignKey(Resource, on_delete=models.CASCADE)
-#     created = models.DateTimeField(editable=False)
-#     score = models.PositiveIntegerField(default=0)
-#
-#     def save(self, *args, **kwargs):
-#         if not self.id:
-#             self.created = timezone.now()
-#
-#         return super().save(*args, **kwargs)
 
 
 # class WebPages(models.Model):
