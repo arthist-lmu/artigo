@@ -38,7 +38,7 @@ const user = {
         });
     },
     get({ commit }, params) {
-      axios.post(`${API_LOCATION}/get_user`, { params })
+      axios.get(`${API_LOCATION}/get_user`, { params })
         .then(({ data }) => {
           commit('updateData', data);
           commit('updateLoggedIn', true);
