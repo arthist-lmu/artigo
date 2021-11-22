@@ -42,7 +42,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 class Institution(models.Model):
     name = models.CharField(max_length=256)
     institution_url = models.URLField(max_length=256)
-    resource_url = models.URLField(max_length=256)
+    resource_url = models.URLField(max_length=256, default='')
 
     def __str__(self):
         return self.name
@@ -88,7 +88,6 @@ class Creator(models.Model):
     locations = models.ManyToManyField(Location)
     techniques = models.ManyToManyField(ArtTechnique)
 
-
     def __str__(self):
         return self.name
 
@@ -100,7 +99,6 @@ class Title(models.Model):
     style = models.ForeignKey(ArtStyle, on_delete=models.CASCADE, null=True)
     movement = models.ForeignKey(ArtMovement, on_delete=models.CASCADE, null=True)
     locations = models.ManyToManyField(Location)
-
 
     def __str__(self):
         return self.name
@@ -114,8 +112,8 @@ class Resource(models.Model):
     created_end = models.DateField(null=True)
     location = models.CharField(max_length=512, blank=True)
     # source_id = models.CharField(max_length=256)
-    # TODO: solve issue!!!
-    # institution = models.ForeignKey(Institution, on_delete=models.CASCADE)
+    # TODO: solve issue!; Find better name for institution_source & correct in import.py as well!
+    institution_source = models.ForeignKey(Institution, on_delete=models.CASCADE)
     institution = models.CharField(max_length=512, blank=True)
     # TODO: Determine if URLField or FilePathField?!
     origin = models.URLField(max_length=256, blank=True)
@@ -129,7 +127,7 @@ class Resource(models.Model):
         tags = self.taggings.values('tag').annotate(count=Count('tag'))
 
         return tags.values('tag_id', 'tag__name', 'tag__language', 'count')
-        
+
 
 class Gametype(models.Model):
     name = models.CharField(max_length=256)
@@ -195,7 +193,7 @@ class Tagging(models.Model):
     created = models.DateTimeField(editable=False)
     score = models.PositiveIntegerField(default=0)
     # media_type = models.ForeignKey(Gamemode, on_delete=models.CASCADE)
-    origin = models.URLField(max_length=256, blank=True)
+    origin = models.URLField(max_length=256, blank=True, default='')
 
     def save(self, *args, **kwargs):
         if not self.id:
@@ -220,12 +218,11 @@ class CombinedTagging(models.Model):
         return super().save(*args, **kwargs)
 
 
-class Question(models.Model):
-    question = models.CharField(max_length=256)
-    language = models.CharField(max_length=256)
-
-    question = QuestionManager()
-
+# class Question(models.Model):
+#     question = models.CharField(max_length=256)
+#     language = models.CharField(max_length=256)
+#
+#     question = QuestionManager()
 
 # class WebPages(models.Model):
 #     # TODO: find better solution! (see below as well)

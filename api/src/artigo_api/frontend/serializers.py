@@ -41,10 +41,10 @@ class ArtStyleSerializer(serializers.ModelSerializer):
     fields = ('id', 'name', 'language')
 
 
-class QuestionSerializer(serializers.ModelSerializer):
-  class Meta:
-    model = Question
-    fields = ('id', 'name', 'language')
+# class QuestionSerializer(serializers.ModelSerializer):
+#   class Meta:
+#     model = Question
+#     fields = ('id', 'name', 'language')
 
 
 class CreatorSerializer(serializers.ModelSerializer):

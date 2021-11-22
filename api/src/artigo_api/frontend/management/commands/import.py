@@ -135,7 +135,7 @@ class CreateResource(Create):
             created_start = row.get('created_start'),
             created_end = row.get('created_end'),
             location = row.get('location'),
-            # source_id = toInt(row.get('source_id')),
+            institution_source = toInt(row.get('source_id')),
             institution = row.get('institution'),
             origin = toURL(row.get('origin')),
             enabled = row.get('enabled'),

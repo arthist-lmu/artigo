@@ -102,6 +102,6 @@ class CombinedTaggingAdmin(CustomModelAdmin):
 
 
 # TODO: see how similar it has to be to the Resource admin
-@admin.register(Question)
-class QuestionAdmin(CustomModelAdmin):
-    pass
+# @admin.register(Question)
+# class QuestionAdmin(CustomModelAdmin):
+#     pass
