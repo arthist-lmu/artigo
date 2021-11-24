@@ -58,5 +58,5 @@ class ResourceManager(models.Manager):
         return self.all()[row_id]
 
 
-class QuestionManager:
-    pass
+# class QuestionManager:
+#     pass

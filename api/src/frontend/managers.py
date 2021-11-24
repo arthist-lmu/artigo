@@ -14,7 +14,7 @@ class ResourceManager(models.Manager):
         return self.all()[row_id]
 
 
-class QuestionManager(models.Manager):
-    # TODO: necessary methods here
-    pass
+# class QuestionManager(models.Manager):
+#     # TODO: necessary methods here
+#     pass
 
