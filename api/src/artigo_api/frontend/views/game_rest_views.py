@@ -1,8 +1,12 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework import authentication, permissions
+from rest_framework import authentication, permissions, viewsets
 from django.contrib.auth.models import User
+from django.views.decorators.cache import cache_page
+from django.utils.decorators import method_decorator
+
 from frontend.models import Tagging, Tag
+from frontend.serializers import *
 
 
 # TODO: Alternatively try one APIView per game (1 game: 1 class)? would that work?
@@ -13,6 +17,7 @@ class TaggingsView(APIView):
     View to do everything to do with taggings
     """
 
+    @method_decorator(cache_page(60 * 60 * 2))
     def get_taggings(self, request, format=None):
         """
         Returns all taggings
@@ -58,6 +63,29 @@ class TagView(APIView):
         :param number: number of tags to be retrieved (1 for Tag a Tag, 5-10 for ARTigo Taboo)
         :return:
         """
+
+
+class ARTigoGameView(APIView):
+    queryset = Tagging
+    serializer_class = TaggingSerializer
+
+    def check_tag(self, user_tag, opponent_tag):
+        opponent_tag = Tagging()
+        if Tagging.objects.filter(tag=user_tag, gameround=):
+
+
+    def save_tags(self, user_tag):
+        if Tagging.objects.filter(tag=user_tag).exists():
+            new_tag = Tag()
+            new_tag.name = user_tag
+            new_tag.save()
+        else:
+            new_tag = Tagging()
+            new_tag.tag = user_tag
+            new_tag.save()
+
+    def score(self, request):
+        pass
 
 
 class CombinoView(APIView):
