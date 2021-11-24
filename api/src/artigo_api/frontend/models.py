@@ -1,4 +1,4 @@
-from frontend.managers import UserManager, ResourceManager
+from frontend.managers import CustomUserManager, ResourceManager
 from django.db import models
 from django.db.models import Count
 from django.utils import timezone
@@ -13,22 +13,26 @@ def create_auth_token(sender, instance=None, created=False, **kwargs):
     if created:
         Token.objects.create(user=instance)
 
-class User(AbstractBaseUser, PermissionsMixin):
-    email = models.EmailField(verbose_name='email address', unique=True, db_index=True)
+class CustomUser(AbstractBaseUser, PermissionsMixin):
+    email = models.EmailField(verbose_name='email address', unique=True)
     username = models.CharField(max_length=256, unique=True, blank=False)
+    
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
+    is_superuser = models.BooleanField(default=False)
+    date_joined = models.DateTimeField(default=timezone.now)
+
+    is_uploader = models.BooleanField(default=False)
     first_name = models.CharField(max_length=256)
     last_name = models.CharField(max_length=256)
-    date_joined = models.DateTimeField(editable=False)
 
-    objects = UserManager()
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    REQUIRED_FIELDS = ['username']
+
+    objects = CustomUserManager()
 
     USERNAME_FIELD = 'email'
-
-    def save(self, *args, **kwargs):
-        if not self.id:
-            self.created = timezone.now()
 
     def get_username(self):
         return self.username
@@ -92,7 +96,7 @@ class Gametype(models.Model):
 
 
 class Gamesession(models.Model):
-    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    user = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, null=True)
     gametype = models.ForeignKey(Gametype, on_delete=models.CASCADE)
     created = models.DateTimeField(editable=False)
 
@@ -104,7 +108,7 @@ class Gamesession(models.Model):
 
 
 class Gameround(models.Model):
-    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    user = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, null=True)
     gamesession = models.ForeignKey(Gamesession, on_delete=models.CASCADE)
     created = models.DateTimeField(editable=False)
     score = models.PositiveIntegerField(default=0)
@@ -125,7 +129,7 @@ class Tag(models.Model):
 
 
 class Tagging(models.Model):
-    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    user = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, null=True)
     gameround = models.ForeignKey(Gameround, on_delete=models.CASCADE)
     resource = models.ForeignKey(Resource, on_delete=models.CASCADE, related_name='taggings')
     tag = models.ForeignKey(Tag, on_delete=models.CASCADE)
