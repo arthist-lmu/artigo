@@ -1,5 +1,13 @@
 <template>
   <div id="app">
+
+      <button
+      class="btn btn-primary btn-margin"
+      v-if="!authenticated"
+      @click="login()">
+      Log In
+
+    </button>
     <router-view />
   </div>
 </template>
