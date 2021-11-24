@@ -216,7 +216,7 @@ CELERY_BEAT_SCHEDULE = {
     },
 }
 # Custom user model
-AUTH_USER_MODEL = 'frontend.User'
+AUTH_USER_MODEL = 'frontend.CustomUser'
 
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_UNIQUE_EMAIL = True
@@ -225,7 +225,7 @@ ACCOUNT_USERNAME_REQUIRED = True
 ACCOUNT_USER_MODEL_USERNAME_FIELD = "username"
 
 # Email confirmation
-ACCOUNT_EMAIL_SUBJECT_PREFIX = "[My Website]"
+ACCOUNT_EMAIL_SUBJECT_PREFIX = "[Artigo.org]"
 ACCOUNT_LOGIN_ON_EMAIL_CONFIRMATION = True
 
 # After 10 failed login attempts, restrict logins for 30 minutes
@@ -235,6 +235,9 @@ ACCOUNT_PASSWORD_MIN_LENGTH = 12
 
 # Other settings
 ACCOUNT_DEFAULT_HTTP_PROTOCOL = "https"
+
+# todo: change to mandatory
+ACCOUNT_EMAIL_VERIFICATION = "none"
 ACCOUNT_LOGIN_ON_PASSWORD_RESET = True
 SOCIALACCOUNT_AUTO_SIGNUP = False
 

@@ -4,8 +4,10 @@ import i18n from '@/plugins/i18n';
 import Home from '@/views/Home.vue';
 import Resource from '@/views/Resource.vue';
 import Collection from '@/views/Collection.vue';
+import Login from '@/views/Login.vue'
 import NotFound from '@/views/NotFound.vue';
 import RouterView from '@/views/RouterView.vue';
+//import { component } from 'vue/types/umd';
 
 Vue.use(VueRouter);
 const router = new VueRouter({
@@ -26,7 +28,10 @@ const router = new VueRouter({
         return next();
       },
       children: [
-        { path: '', name: 'Home', component: Home },
+        { path: '',
+          name: 'Home',
+          component: Home 
+        },
         {
           path: 'resource/:id/',
           name: 'Resource',
@@ -36,6 +41,11 @@ const router = new VueRouter({
           path: 'collection/:name/',
           name: 'Collection',
           component: Collection,
+        },
+        {
+          path: 'login',
+          name: 'Login',
+          component: Login,
         },
       ],
     },

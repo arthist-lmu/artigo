@@ -14,8 +14,8 @@ logger = logging.getLogger(__name__)
 
 
 class UserView(APIView):
-    authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated]
+#    authentication_classes = [TokenAuthentication]
+#    permission_classes = [IsAuthenticated]
 
     def post(self, request, format=None):
 
