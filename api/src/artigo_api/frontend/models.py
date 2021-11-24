@@ -1,6 +1,3 @@
-
-from frontend.managers import UserManager, ResourceManager, QuestionManager
-
 from frontend.managers import CustomUserManager, ResourceManager
 
 from django.db import models

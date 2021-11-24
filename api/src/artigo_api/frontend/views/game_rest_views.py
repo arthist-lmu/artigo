@@ -1,7 +1,5 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework import authentication, permissions, viewsets
-from django.contrib.auth.models import User
 from django.views.decorators.cache import cache_page
 from django.utils.decorators import method_decorator
 
