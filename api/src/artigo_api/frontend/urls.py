@@ -13,5 +13,5 @@ urlpatterns = [
     path('get_collection', views.CollectionView.as_view(), name='collection'),
     path('search', views.SearchView.as_view(), name='search'),
 
-    path('get_taggings', views.TaggingsView.as_view(), name='taggings'),
+    # path('get_taggings', views.TaggingsView.as_view(), name='taggings'),
 ]

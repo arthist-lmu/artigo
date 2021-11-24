@@ -16,9 +16,6 @@ def create_auth_token(sender, instance=None, created=False, **kwargs):
         Token.objects.create(user=instance)
 
 
-class User(AbstractBaseUser, PermissionsMixin):
-    email = models.EmailField(verbose_name='email address', unique=True, db_index=True)
-
 class CustomUser(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(verbose_name='email address', unique=True)
     username = models.CharField(max_length=256, unique=True, blank=False)
@@ -121,8 +118,8 @@ class Resource(models.Model):
     created_end = models.DateField(null=True)
     location = models.CharField(max_length=512, blank=True)
     # source_id = models.CharField(max_length=256)
-    # TODO: solve issue!; Find better name for institution_source & correct in import.py as well!
-    institution_source = models.ForeignKey(Institution, on_delete=models.CASCADE)
+    # TODO: solve issue!; Find better solution!
+    institution_source = models.CharField(max_length=512, blank=True)
     institution = models.CharField(max_length=512, blank=True)
     # TODO: Determine if URLField or FilePathField?!
     origin = models.URLField(max_length=256, blank=True)
@@ -161,7 +158,6 @@ class Gametype(models.Model):
 
 
 class Gamesession(models.Model):
-    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     # gamemode = models.ForeignKey(Gamemode, on_delete=models.CASCADE)
     user = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, null=True)
     gametype = models.ForeignKey(Gametype, on_delete=models.CASCADE)
@@ -212,20 +208,20 @@ class Tagging(models.Model):
         return super().save(*args, **kwargs)
 
 
-class CombinedTagging(models.Model):
-    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
-    gameround = models.ForeignKey(Gameround, on_delete=models.CASCADE)
-    resource = models.ForeignKey(Resource, on_delete=models.CASCADE)
-    # TODO: POST method for here
-    combination = models.ForeignKey(Tag, on_delete=models.CASCADE)
-    created = models.DateTimeField(editable=False)
-    score = models.PositiveIntegerField(default=0)
-
-    def save(self, *args, **kwargs):
-        if not self.id:
-            self.created = timezone.now()
-
-        return super().save(*args, **kwargs)
+# class CombinedTagging(models.Model):
+#     user = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, null=True)
+#     gameround = models.ForeignKey(Gameround, on_delete=models.CASCADE)
+#     resource = models.ForeignKey(Resource, on_delete=models.CASCADE)
+#     # TODO: POST method for here
+#     combination = models.ForeignKey(Tag, on_delete=models.CASCADE)
+#     created = models.DateTimeField(editable=False)
+#     score = models.PositiveIntegerField(default=0)
+#
+#     def save(self, *args, **kwargs):
+#         if not self.id:
+#             self.created = timezone.now()
+#
+#         return super().save(*args, **kwargs)
 
 
 # class Question(models.Model):

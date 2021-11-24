@@ -67,9 +67,9 @@ class ARTigoGameView(APIView):
     queryset = Tagging
     serializer_class = TaggingSerializer
 
-    def check_tag(self, user_tag, opponent_tag):
-        opponent_tag = Tagging()
-        if Tagging.objects.filter(tag=user_tag, gameround=):
+    # def check_tag(self, user_tag, opponent_tag):
+    #     opponent_tag = Tagging()
+    #     if Tagging.objects.filter(tag=user_tag, gameround=):
 
 
     def save_tags(self, user_tag):
@@ -86,27 +86,27 @@ class ARTigoGameView(APIView):
         pass
 
 
-class CombinoView(APIView):
-    """
-    View with methods for Combino game
-    """
-    def get_combino_tags(self, request):
-        """
-        Retrieves tags to be combined during a round of Combino
-        :param request:
-        :return:
-        """
-        # tagging_to_combine = [tagging.tag for tagging in Tagging.objects.all()]
-
-        tagging_to_combine = []
-        for tagging in Tagging.objects.raw('SELECT tag FROM artigo_api_Tagging WHERE COUNT(tag) > 5'):
-            tagging_to_combine.append(tagging)
-        return Response(tagging_to_combine)
-
-    def save_combined_tags(self, request):
-        """
-        Saves tags combined tags to the CombinedTagging table/model
-        :param request:
-        :return:
-        """
+# class CombinoView(APIView):
+#     """
+#     View with methods for Combino game
+#     """
+#     def get_combino_tags(self, request):
+#         """
+#         Retrieves tags to be combined during a round of Combino
+#         :param request:
+#         :return:
+#         """
+#         # tagging_to_combine = [tagging.tag for tagging in Tagging.objects.all()]
+#
+#         tagging_to_combine = []
+#         for tagging in Tagging.objects.raw('SELECT tag FROM artigo_api_Tagging WHERE COUNT(tag) > 5'):
+#             tagging_to_combine.append(tagging)
+#         return Response(tagging_to_combine)
+#
+#     def save_combined_tags(self, request):
+#         """
+#         Saves tags combined tags to the CombinedTagging table/model
+#         :param request:
+#         :return:
+#         """
 

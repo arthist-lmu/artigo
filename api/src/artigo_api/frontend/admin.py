@@ -91,9 +91,9 @@ class TaggingAdmin(CustomModelAdmin):
     pass
 
 
-@admin.register(CombinedTagging)
-class CombinedTaggingAdmin(CustomModelAdmin):
-    pass
+# @admin.register(CombinedTagging)
+# class CombinedTaggingAdmin(CustomModelAdmin):
+#     pass
 
 
 # @admin.register(ChosenOrder)

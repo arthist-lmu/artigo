@@ -102,12 +102,12 @@ class TaggingSerializer(serializers.ModelSerializer):
     fields = ('id', 'tag')
 
 
-class CombinedTaggingSerializer(serializers.ModelSerializer):
-  combined_tag = TagSerializer(read_only=True)
-
-  class Meta:
-    model = CombinedTagging
-    fields = ('id', 'first_tag', 'second_tag')
+# class CombinedTaggingSerializer(serializers.ModelSerializer):
+#   combined_tag = TagSerializer(read_only=True)
+#
+#   class Meta:
+#     model = CombinedTagging
+#     fields = ('id', 'first_tag', 'second_tag')
 
 
 class TagCountSerializer(serializers.ModelSerializer):
