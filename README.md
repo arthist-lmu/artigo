@@ -59,6 +59,11 @@ To export data, execute the following command:
 sudo docker-compose exec api python3 manage.py export --format jsonl --output /dump
 ```
 
+To connect directly to the db in the postgres container use the following command:
+```
+sudo docker-compose exec -u postgres db psql -d artigo
+```
+
 ### Code reloading
 Hot reloading is enabled for `api`. To display changes of `web`, run:
 ```sh
