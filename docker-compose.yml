@@ -85,8 +85,9 @@ services:
       - redisai
     ports:
       - "127.0.0.1:8000:8000"
-    env_file:
-      - ./api/src/artigo_api/.env
+# Activate again when shipping container
+#    env_file:
+#      - ./api/src/artigo_api/.env
     
   web:
     image: artigo/web
