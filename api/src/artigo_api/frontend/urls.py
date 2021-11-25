@@ -1,6 +1,5 @@
 from . import views
 from django.urls import include, path
-from rest_framework import routers
 from django.contrib import admin
 
 urlpatterns = [
@@ -13,5 +12,8 @@ urlpatterns = [
     path('get_collection', views.CollectionView.as_view(), name='collection'),
     path('search', views.SearchView.as_view(), name='search'),
 
-    # path('get_taggings', views.TaggingsView.as_view(), name='taggings'),
+    path('get_gametype', views.GametypeViews.as_view(), name='gametype'),
+    path('get_tagging', views.TaggingsView.as_view(), name='tagging'),
+    path('get_tag', views.TagView.as_view(), name='tag'),
+    path('get_resource', views.GameResourceView.as_view(), name='game_resource'),
 ]

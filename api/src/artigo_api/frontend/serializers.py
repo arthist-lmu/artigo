@@ -102,6 +102,12 @@ class TaggingSerializer(serializers.ModelSerializer):
     fields = ('id', 'tag')
 
 
+class GametypeSerializer(serializers.ModelSerializer):
+  class Meta:
+    model = Gametype
+    fields = ('id', 'rounds', 'round_duration')
+
+
 # class CombinedTaggingSerializer(serializers.ModelSerializer):
 #   combined_tag = TagSerializer(read_only=True)
 #
