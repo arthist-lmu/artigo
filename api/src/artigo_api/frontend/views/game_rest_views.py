@@ -11,9 +11,9 @@ from frontend.serializers import *
 
 # TODO: Alternatively try one APIView per game (1 game: 1 class)? would that work?
 
-class GametypeViews(APIView):
+class GametypeView(APIView):
     """
-    View that handles retrieving the correct type of a game &co
+    API View that handles retrieving the correct type of a game
     """
     serializer_class = GametypeSerializer
 
@@ -41,9 +41,9 @@ class GametypeViews(APIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-class TaggingsView(APIView):
+class TaggingView(APIView):
     """
-    View to do everything to do with taggings
+    API View to do everything to do with taggings
     """
     serializer_class = TaggingSerializer
 
@@ -64,7 +64,24 @@ class TaggingsView(APIView):
         serializer = TaggingSerializer(tagging)
         return Response(serializer.data)
 
+    def check_tag_exists(self, request, tagging, format=None):
+        """
+        Checks if another tagging string for the same resource has been added before, which is the same as the entered string
+        :return:
+        """
+        tagging_to_check = self.get_tagging(tagging)
+        serializer = TaggingSerializer(tagging_to_check)
+        if Tagging.objects.filter(tag=tagging_to_check).exists():
+            pass
+
     def put(self, request, pk, format=None):
+        """
+        saves the tagging to the DB
+        :param request:
+        :param pk:
+        :param format:
+        :return:
+        """
         tagging = self.get_tagging(pk)
         serializer = TaggingSerializer(tagging, data=request.data)
         if serializer.is_valid():
@@ -77,18 +94,10 @@ class TaggingsView(APIView):
         tagging.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-    def save_to_tagging(self, request, format=None):
-        """
-        Saves a tagging into the Tagging table
-        :param request:
-        :param format:
-        :return:
-        """
-
 
 class TagView(APIView):
     """
-    APIView class that deals with tags
+    API View that deals with tags
     """
     serializer_class = TagSerializer
 
@@ -141,6 +150,9 @@ class TagView(APIView):
 
 
 class GameResourceView(APIView):
+    """
+    API view to
+    """
     serializer_class = ResourceSerializer
 
     def get_resource(self, request, format=None):
@@ -176,27 +188,4 @@ class ARTigoGameView(APIView):
         pass
 
 
-# class CombinoView(APIView):
-#     """
-#     View with methods for Combino game
-#     """
-#     def get_combino_tags(self, request):
-#         """
-#         Retrieves tags to be combined during a round of Combino
-#         :param request:
-#         :return:
-#         """
-#         # tagging_to_combine = [tagging.tag for tagging in Tagging.objects.all()]
-#
-#         tagging_to_combine = []
-#         for tagging in Tagging.objects.raw('SELECT tag FROM artigo_api_Tagging WHERE COUNT(tag) > 5'):
-#             tagging_to_combine.append(tagging)
-#         return Response(tagging_to_combine)
-#
-#     def save_combined_tags(self, request):
-#         """
-#         Saves tags combined tags to the CombinedTagging table/model
-#         :param request:
-#         :return:
-#         """
 

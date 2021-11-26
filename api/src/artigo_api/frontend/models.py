@@ -118,7 +118,7 @@ class Resource(models.Model):
     created_end = models.DateField(null=True)
     location = models.CharField(max_length=512, blank=True)
     # source_id = models.CharField(max_length=256)
-    # TODO: solve issue!; Find better solution!
+    # TODO: solve issue! Find better solution!
     institution_source = models.CharField(max_length=512, blank=True)
     institution = models.CharField(max_length=512, blank=True)
     # TODO: Determine if URLField or FilePathField?!

@@ -12,8 +12,9 @@ urlpatterns = [
     path('get_collection', views.CollectionView.as_view(), name='collection'),
     path('search', views.SearchView.as_view(), name='search'),
 
-    path('get_gametype', views.GametypeViews.as_view(), name='gametype'),
-    path('get_tagging', views.TaggingsView.as_view(), name='tagging'),
+    path('get_gametype', views.GametypeView.as_view(), name='gametype'),
+    path('get_tagging', views.TaggingView.as_view(), name='tagging'),
     path('get_tag', views.TagView.as_view(), name='tag'),
     path('get_resource', views.GameResourceView.as_view(), name='game_resource'),
+
 ]
