@@ -1,6 +1,9 @@
 <template>
   <div id="app">
-    <v-navigation-drawer app>
+    <v-navigation-drawer
+      app
+      permanent
+    >
       <v-list-item>
         <v-list-item-content>
           <v-list-item-title class="text-h6">
@@ -32,13 +35,31 @@
           </v-list-item-content>
         </v-list-item>
       </v-list>
+
+      <v-divider></v-divider>
+
+      <v-list-item>
+        <v-list-item-content>
+          <v-list-item-title>
+            Imprint
+          </v-list-item-title>
+        </v-list-item-content>
+      </v-list-item>
+
+      <v-list-item>
+          <v-list-item-title>
+            <a href="https://www.lmu.de/de/footer/datenschutz/index.html">Privacy Policy</a>
+          </v-list-item-title>
+      </v-list-item>
+
     </v-navigation-drawer>
 
     <v-app-bar app>
-      <!-- -->
+      <AppBar />
     </v-app-bar>
-
-    <router-view />
+    <v-main>
+      <router-view />
+    </v-main>
   </div>
 </template>
 
@@ -51,13 +72,23 @@
 </style>
 
 <script>
-  export default {
+  import AppBar from '@/components/AppBar.vue';
+  export default { 
+    components: {
+    AppBar,
+    },
     data () {
       return {
         items: [
-          { title: 'Dashboard', icon: 'mdi-view-dashboard' },
-          { title: 'Photos', icon: 'mdi-image' },
-          { title: 'About', icon: 'mdi-help-box' },
+          { title: 'About Artigo', icon: 'mdi-view-dashboard' },
+          { title: 'ARTigo-Game', icon: 'mdi-image' },
+          { title: 'Karido', icon: 'mdi-help-box' },
+          { title: 'ARTigo-Quiz beta', icon: 'mdi-image' },
+          { title: 'ARTigo-Taboo', icon: 'mdi-help-box' },
+          { title: 'Tag A Tag beta', icon: 'mdi-image' },
+          { title: 'Combino beta', icon: 'mdi-help-box' },
+          { title: 'ARTime beta', icon: 'mdi-image' },
+          { title: 'Crossover', icon: 'mdi-help-box' },
         ],
         right: null,
       }
