@@ -7,6 +7,7 @@ import Collection from '@/views/Collection.vue';
 import Login from '@/views/Login.vue'
 import NotFound from '@/views/NotFound.vue';
 import RouterView from '@/views/RouterView.vue';
+import Publications from '@/views/Publications.vue';
 //import { component } from 'vue/types/umd';
 
 Vue.use(VueRouter);
@@ -46,6 +47,11 @@ const router = new VueRouter({
           path: 'login',
           name: 'Login',
           component: Login,
+        },
+        {
+          path: 'publications',
+          name: 'Publications',
+          component: Publications,
         },
       ],
     },
