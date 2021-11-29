@@ -44,5 +44,10 @@
   },
   "field": {
     "required": "Dies ist ein Pflichtfeld."
+  },
+  "navbar": {
+    "about": "Über ARTigo",
+    "privacy": "Datenschutz",
+    "imprint": "Impressum"
   }
 }
