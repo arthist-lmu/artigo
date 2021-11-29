@@ -70,6 +70,12 @@ Hot reloading is enabled for `api`. To display changes of `web`, run:
 sudo docker-compose exec web npm run build
 ```
 
+Alternativly you can run serve, to use a Hot-reload enabled instance on http://localhost:8080/
+
+```sh
+sudo docker-compose exec web npm run serve
+```
+
 ### Django commands
 Create superuser:
 ```sh
