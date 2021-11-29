@@ -3,6 +3,7 @@ const modules = {};
 requireModule.keys().forEach((fileName) => {
   const moduleName = fileName.replace(/(\.\/|\.module\.js)/g, '');
   modules[moduleName] = requireModule(fileName).default || requireModule(
-    fileName);
+    fileName,
+  );
 });
 export default modules;

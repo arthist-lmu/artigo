@@ -60,7 +60,7 @@ sudo docker-compose exec api python3 manage.py export --format jsonl --output /d
 ```
 
 To connect directly to the db in the postgres container use the following command:
-```
+```sh
 sudo docker-compose exec -u postgres db psql -d artigo
 ```
 

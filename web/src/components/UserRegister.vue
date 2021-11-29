@@ -98,7 +98,7 @@ export default {
       if (Object.keys(this.user).length) {
         const total = Object.values(this.user).reduce(
           (t, value) => t + (this.checkLength(value) === true),
-          0
+          0,
         );
         if (total === 3) return false;
       }
