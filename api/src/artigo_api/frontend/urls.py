@@ -6,7 +6,7 @@ urlpatterns = [
     path('get_csrf_token', views.get_csrf_token, name='get_csrf_token'),
     path('get_user', views.UserView.as_view(), name='user'),
 
-    path('get_resource', views.ResourceView.as_view(), name='resource'),
+    # path('get_resource', views.ResourceView.as_view(), name='resource'),
     path('get_collection', views.CollectionView.as_view(), name='collection'),
     path('search', views.SearchView.as_view(), name='search'),
 
