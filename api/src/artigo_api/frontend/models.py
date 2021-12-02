@@ -141,6 +141,8 @@ class Gametype(models.Model):
     round_duration = models.PositiveIntegerField(default=60)
     enabled = models.BooleanField(default=True)
 
+    objects = models.Manager()
+
     def __str__(self):
         return self.name
 
@@ -187,6 +189,8 @@ class Tag(models.Model):
     name = models.CharField(max_length=256)
     language = models.CharField(max_length=256)
 
+    objects = models.Manager()
+
     def __str__(self):
         return self.name
 
@@ -200,6 +204,8 @@ class Tagging(models.Model):
     score = models.PositiveIntegerField(default=0)
     # media_type = models.ForeignKey(Gamemode, on_delete=models.CASCADE)
     origin = models.URLField(max_length=256, blank=True, default='')
+
+    objects = models.Manager()
 
     def save(self, *args, **kwargs):
         if not self.id:

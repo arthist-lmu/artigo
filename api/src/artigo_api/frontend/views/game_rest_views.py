@@ -78,39 +78,24 @@ class TaggingView(APIView):
     #     return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-def check_tag_exists(self, request, tagging, format=None):
-    """
-    Checks if another tagging string for the same resource has been added before, which is the same as the entered string
-    :return:
-    """
-    tagging_to_check = self.get_queryset(tagging)
-    serializer = TaggingSerializer(tagging_to_check)
-    if Tagging.objects.filter(tag=tagging_to_check).exists():
-        pass
-
-
-def calculate_score():
-    pass
-
-
 class TagView(APIView):
     """
     API View that deals with tags
     """
     serializer_class = TagSerializer
 
-    def get_tag(self, request, format=None):
+    def get_queryset(self):
         tags = Tag.objects.all()
-        return tags
+        serializer = TagSerializer(tags, many=True)
+        return Response(serializer.data)
 
-    # @method_decorator(cache_page(60 * 60 * 2))
-    def get(self, request, format=None):
-        tag = self.get_tag()
+    def get(self, request, *args, **kwargs):
+        tag = self.get_queryset()
         serializer = TagSerializer(tag)
         return Response(serializer.data)
 
-    def put(self, request, pk, format=None):
-        tag = self.get_tag(pk)
+    def put(self, request, *args, **kwargs):
+        tag = self.get_queryset()
         serializer = TagSerializer(tag, data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -118,17 +103,9 @@ class TagView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, pk, format=None):
-        tag = self.get_tag(pk)
+        tag = self.get_queryset(pk)
         tag.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
-
-
-def save_to_tag():
-    pass
-
-
-def get_custom_tags():
-    pass
 
 
 class GameResourceView(APIView):
@@ -137,20 +114,13 @@ class GameResourceView(APIView):
     """
     serializer_class = ResourceSerializer
 
-    def get_resource(self):
-        """
-        Returns all tags
-        :param request:
-        :param format:
-        :return:
-        This is the queryset!
-        """
+    def get_queryset(self):
         resources = Resource.objects.all()
         return resources
 
     # @method_decorator(cache_page(60 * 60 * 2))
     def get(self, request, *args, **kwargs):
-        resource = self.get_resource(request)
+        resource = self.get_queryset()
         serializer = ResourceSerializer(resource)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -168,5 +138,26 @@ class ARTigoGameView(APIView):
             new_tag.save()
 
 
+def save_to_tag():
+    pass
+
+
+def get_custom_tags():
+    pass
+
+
+def check_tag_exists(self, request, tagging, format=None):
+    """
+    Checks if another tagging string for the same resource has been added before, which is the same as the entered string
+    :return:
+    """
+    tagging_to_check = self.get_queryset(tagging)
+    serializer = TaggingSerializer(tagging_to_check)
+    if Tagging.objects.filter(tag=tagging_to_check).exists():
+        pass
+
+
+def calculate_score():
+    pass
 
 
