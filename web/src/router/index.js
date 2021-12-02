@@ -56,7 +56,11 @@ const router = new VueRouter({
         },
       ],
     },
-    { path: '*', name: 'NotFound', component: NotFound },
+    {
+      path: '*', 
+      name: 'NotFound', 
+      component: NotFound 
+    },
   ],
 });
 export default router;

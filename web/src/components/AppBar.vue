@@ -1,8 +1,11 @@
 <template>
-  <v-app-bar app flat>
+  <v-app-bar 
+    app 
+    flat
+  >
+
     <v-layout
-      justify-end
-      row
+      right
     >
       <UserMenu />
     </v-layout>
@@ -13,6 +16,7 @@
 import UserMenu from '@/components/UserMenu.vue';
 
 export default {
+  data: () => ({ drawer: null }),
   components: {
     UserMenu,
   },

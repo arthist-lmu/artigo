@@ -1,9 +1,21 @@
 <template>
   <div id="app">
-    <v-navigation-drawer
+    
+
+    <v-main>
+      <v-navigation-drawer
       app
       permanent
+      v-model="drawer"
     >
+      <v-list-item>
+        <v-img
+          id="logo"
+          max-height="281"
+          max-width="500"
+          src="/assets/images/logo.png"
+        ></v-img>
+      </v-list-item>
       <v-list-item>
         <v-list-item-content>
           <v-list-item-title class="text-h6">
@@ -18,9 +30,24 @@
       <v-divider></v-divider>
 
       <v-list
-        dense
         nav
       >
+        <v-list-item>
+          <router-link to="">{{ $t('navbar.about') }}</router-link>
+        </v-list-item>
+        <v-list-item>
+          <v-list-item-content>
+          <v-list-item-title>
+            <router-link :to="'/' + $i18n.locale + '/publications'">
+            {{ $t('navbar.publications') }}
+            </router-link>
+            </v-list-item-title>
+          <v-list-item-subtitle>Research, literature, media</v-list-item-subtitle>
+          </v-list-item-content>
+        </v-list-item>
+        <v-list-item>
+          <router-link to="">{{ $t('navbar.about') }}</router-link>
+        </v-list-item>
         <v-list-item
           v-for="item in items"
           :key="item.title"
@@ -31,7 +58,7 @@
           </v-list-item-icon>
 
           <v-list-item-content>
-            <v-list-item-title>{{ item.title }}</v-list-item-title>
+            <v-list-item-title><router-link to="item.link">{{ $t('navbar.about') }}</router-link></v-list-item-title>
           </v-list-item-content>
         </v-list-item>
       </v-list>
@@ -41,23 +68,20 @@
       <v-list-item>
         <v-list-item-content>
           <v-list-item-title>
-            Imprint
+            {{ $t("navbar.imprint") }}
           </v-list-item-title>
         </v-list-item-content>
       </v-list-item>
 
       <v-list-item>
           <v-list-item-title>
-            <a href="https://www.lmu.de/de/footer/datenschutz/index.html">Privacy Policy</a>
+            <a href="https://www.lmu.de/de/footer/datenschutz/index.html">{{ $t("navbar.privacy") }}</a>
           </v-list-item-title>
       </v-list-item>
 
     </v-navigation-drawer>
 
-    <v-app-bar app>
-      <AppBar />
-    </v-app-bar>
-    <v-main>
+    <AppBar />
       <router-view />
     </v-main>
   </div>
@@ -69,34 +93,38 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+#logo {
+  padding: 5%;
+}
 </style>
 
 <script>
-  import AppBar from '@/components/AppBar.vue';
-  export default { 
-    components: {
+import AppBar from '@/components/AppBar.vue';
+import i18n from '@/plugins/i18n.js'
+
+export default {
+  components: {
     AppBar,
-    },
-    data () {
-      return {
-        items: [
-          { title: 'About Artigo', icon: 'mdi-view-dashboard' },
-          { title: 'ARTigo-Game', icon: 'mdi-image' },
-          { title: 'Karido', icon: 'mdi-help-box' },
-          { title: 'ARTigo-Quiz beta', icon: 'mdi-image' },
-          { title: 'ARTigo-Taboo', icon: 'mdi-help-box' },
-          { title: 'Tag A Tag beta', icon: 'mdi-image' },
-          { title: 'Combino beta', icon: 'mdi-help-box' },
-          { title: 'ARTime beta', icon: 'mdi-image' },
-          { title: 'Crossover', icon: 'mdi-help-box' },
-        ],
-        right: null,
-      }
-    },
-  }
+  },
+  data() {
+    return {
+      items: [
+        { title: i18n.t('navbar.about'), link: "", icon: 'mdi-view-dashboard' },
+        { title: i18n.t('navbar.publications'), link: "/en/publications", icon: 'mdi-view-dashboard' },
+        { title: 'ARTigo-Game', icon: 'mdi-image' },
+        { title: 'Karido', icon: 'mdi-help-box' },
+        { title: 'ARTigo-Quiz beta', icon: 'mdi-image' },
+        { title: 'ARTigo-Taboo', icon: 'mdi-help-box' },
+        { title: 'Tag A Tag beta', icon: 'mdi-image' },
+        { title: 'Combino beta', icon: 'mdi-help-box' },
+        { title: 'ARTime beta', icon: 'mdi-image' },
+        { title: 'Crossover', icon: 'mdi-help-box' },
+      ],
+      right: null,
+    };
+  },
+};
 </script>
-
-
 
 <!-- <button
       class="btn btn-primary btn-margin"
