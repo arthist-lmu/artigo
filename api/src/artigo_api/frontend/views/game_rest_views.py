@@ -20,17 +20,25 @@ class GametypeView(APIView):
     """
     serializer_class = GametypeSerializer
 
-    # @api_view(['GET'])
     def get_queryset(self):
+        print("Weir sind hereiee")
         gametypes = Gametype.objects.all()
-        serializer = GametypeSerializer(gametypes, many=True)
-        return Response(serializer.data)
+        # print(gametypes)
+        # serializer = GametypeSerializer(gametypes, many=True)
+        return gametypes
 
-    # @method_decorator(cache_page(60 * 60 * 2))
     def get(self, request, *args, **kwargs):
+        print("Halloooooooooo echooooo")
         gametype = self.get_queryset()
-        serializer = GametypeSerializer(gametype)
+        print(gametype)
+        serializer = GametypeSerializer(gametype, many=True)
         return Response(serializer.data)
+        # content = {
+        #     'id': str(5),  # `django.contrib.auth.User` instance.
+        #     'rounds': str(4), # None
+        #     'round_duration': str(60),
+        # }
+        # return Response(content)
 
     # def put(self, request, pk, format=None):
     #     gametype = self.get_queryset(pk)
@@ -61,7 +69,7 @@ class TaggingView(APIView):
     # @method_decorator(cache_page(60 * 60 * 2))
     def get(self, request, *args, **kwargs):
         tagging = self.get_queryset()
-        serializer = TaggingSerializer(tagging)
+        serializer = TaggingSerializer(tagging, many=True)
         return Response(serializer.data)
 
     # def put(self, request, pk, format=None):
@@ -121,8 +129,8 @@ class GameResourceView(APIView):
     # @method_decorator(cache_page(60 * 60 * 2))
     def get(self, request, *args, **kwargs):
         resource = self.get_queryset()
-        serializer = ResourceSerializer(resource)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        serializer = ResourceSerializer(resource, many=True)
+        return Response(serializer.data)
 
 
 class ARTigoGameView(APIView):

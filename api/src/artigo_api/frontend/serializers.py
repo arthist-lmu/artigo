@@ -66,14 +66,14 @@ class ResourceSerializer(serializers.ModelSerializer):
 
   class Meta:
     model = Resource
-    fields = (
+    fields = [
       'id', 'hash_id', 'titles', 'creators',
       'location', 'institution', 'origin',
       'enabled', 'media_type'
-    )
-    read_only_fields = (
+    ]
+    read_only_fields = [
       'titles', 'creators', 'institution',
-    )
+    ]
 
   def to_representation(self, data):
     data = super().to_representation(data)
@@ -106,7 +106,13 @@ class GametypeSerializer(serializers.ModelSerializer):
 
   class Meta:
     model = Gametype
-    fields = ('id', 'rounds', 'round_duration')
+    fields = ['id', 'name', 'rounds', 'round_duration']
+
+  def to_representation(self, data):
+    data = super().to_representation(data)
+    # data['id'] = data['id'].lower()
+
+    return data
 
 
 # class CombinedTaggingSerializer(serializers.ModelSerializer):
