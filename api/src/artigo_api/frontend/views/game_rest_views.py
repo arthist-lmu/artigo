@@ -1,9 +1,12 @@
 from django.http import Http404
+from django.shortcuts import render
 from rest_framework import status
+from rest_framework.decorators import api_view
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.views.decorators.cache import cache_page
 from django.utils.decorators import method_decorator
+from rest_framework.parsers import JSONParser
 
 from frontend.models import *
 from frontend.serializers import *
@@ -17,28 +20,30 @@ class GametypeView(APIView):
     """
     serializer_class = GametypeSerializer
 
-    def get_gametype(self):
+    # @api_view(['GET'])
+    def get_queryset(self):
         gametypes = Gametype.objects.all()
-        return gametypes
+        serializer = GametypeSerializer(gametypes, many=True)
+        return Response(serializer.data)
 
-    @method_decorator(cache_page(60 * 60 * 2))
-    def get(self, request, format=None):
-        gametype = self.get_gametype()
+    # @method_decorator(cache_page(60 * 60 * 2))
+    def get(self, request, *args, **kwargs):
+        gametype = self.get_queryset()
         serializer = GametypeSerializer(gametype)
         return Response(serializer.data)
 
-    def put(self, request, pk, format=None):
-        gametype = self.get_gametype(pk)
-        serializer = GametypeSerializer(gametype, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    def delete(self, request, pk, format=None):
-        gametype = self.get_gametype(pk)
-        gametype.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+    # def put(self, request, pk, format=None):
+    #     gametype = self.get_queryset(pk)
+    #     serializer = GametypeSerializer(gametype, data=request.data)
+    #     if serializer.is_valid():
+    #         serializer.save()
+    #         return Response(serializer.data)
+    #     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    #
+    # def delete(self, request, pk, format=None):
+    #     gametype = self.get_queryset(pk)
+    #     gametype.delete()
+    #     return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class TaggingView(APIView):
@@ -47,52 +52,45 @@ class TaggingView(APIView):
     """
     serializer_class = TaggingSerializer
 
-    @method_decorator(cache_page(60 * 60 * 2))
-    def get_tagging(self):
-        """
-        Returns all taggings
-        :param request:
-        :param format:
-        :return:
-        """
+    # @method_decorator(cache_page(60 * 60 * 2))
+    def get_queryset(self):
         taggings = Tagging.objects.all()
-        return taggings
+        serializer = TaggingSerializer(taggings, many=True)
+        return Response(serializer.data)
 
-    @method_decorator(cache_page(60 * 60 * 2))
-    def get(self, request, format=None):
-        tagging = self.get_tagging()
+    # @method_decorator(cache_page(60 * 60 * 2))
+    def get(self, request, *args, **kwargs):
+        tagging = self.get_queryset()
         serializer = TaggingSerializer(tagging)
         return Response(serializer.data)
 
-    def check_tag_exists(self, request, tagging, format=None):
-        """
-        Checks if another tagging string for the same resource has been added before, which is the same as the entered string
-        :return:
-        """
-        tagging_to_check = self.get_tagging(tagging)
-        serializer = TaggingSerializer(tagging_to_check)
-        if Tagging.objects.filter(tag=tagging_to_check).exists():
-            pass
+    # def put(self, request, pk, format=None):
+    #     tagging = self.get_queryset(pk)
+    #     serializer = TaggingSerializer(tagging, data=request.data)
+    #     if serializer.is_valid():
+    #         serializer.save()
+    #         return Response(serializer.data)
+    #     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    #
+    # def delete(self, request, pk, format=None):
+    #     tagging = self.get_queryset(pk)
+    #     tagging.delete()
+    #     return Response(status=status.HTTP_204_NO_CONTENT)
 
-    def put(self, request, pk, format=None):
-        """
-        saves the tagging to the DB
-        :param request:
-        :param pk:
-        :param format:
-        :return:
-        """
-        tagging = self.get_tagging(pk)
-        serializer = TaggingSerializer(tagging, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    def delete(self, request, pk, format=None):
-        tagging = self.get_tagging(pk)
-        tagging.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+def check_tag_exists(self, request, tagging, format=None):
+    """
+    Checks if another tagging string for the same resource has been added before, which is the same as the entered string
+    :return:
+    """
+    tagging_to_check = self.get_queryset(tagging)
+    serializer = TaggingSerializer(tagging_to_check)
+    if Tagging.objects.filter(tag=tagging_to_check).exists():
+        pass
+
+
+def calculate_score():
+    pass
 
 
 class TagView(APIView):
@@ -102,16 +100,10 @@ class TagView(APIView):
     serializer_class = TagSerializer
 
     def get_tag(self, request, format=None):
-        """
-        Returns all tags
-        :param request:
-        :param format:
-        :return:
-        """
         tags = Tag.objects.all()
         return tags
 
-    @method_decorator(cache_page(60 * 60 * 2))
+    # @method_decorator(cache_page(60 * 60 * 2))
     def get(self, request, format=None):
         tag = self.get_tag()
         serializer = TagSerializer(tag)
@@ -130,23 +122,13 @@ class TagView(APIView):
         tag.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-    def save_to_tag(self, request, format=None):
-        """
-        Saves a tag to the Tag table
-        :param request:
-        :param format:
-        :return:
-        """
-        pass
 
-    def get_custom_tags(self, request, number):
-        """
-        Retrieves a custom number of tags - for ARTigo taboo or Tag a Tag
-        :param request:
-        :param number: number of tags to be retrieved (1 for Tag a Tag, 5-10 for ARTigo Taboo)
-        :return:
-        """
-        pass
+def save_to_tag():
+    pass
+
+
+def get_custom_tags():
+    pass
 
 
 class GameResourceView(APIView):
@@ -155,21 +137,22 @@ class GameResourceView(APIView):
     """
     serializer_class = ResourceSerializer
 
-    def get_resource(self, request, format=None):
+    def get_resource(self):
         """
         Returns all tags
         :param request:
         :param format:
         :return:
+        This is the queryset!
         """
         resources = Resource.objects.all()
         return resources
 
-    @method_decorator(cache_page(60 * 60 * 2))
-    def get(self, request, format=None):
-        resource = self.get_resource()
+    # @method_decorator(cache_page(60 * 60 * 2))
+    def get(self, request, *args, **kwargs):
+        resource = self.get_resource(request)
         serializer = ResourceSerializer(resource)
-        return Response(serializer.data)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class ARTigoGameView(APIView):
@@ -184,8 +167,6 @@ class ARTigoGameView(APIView):
             new_tag.tag = user_tag
             new_tag.save()
 
-    def score(self, request):
-        pass
 
 
 

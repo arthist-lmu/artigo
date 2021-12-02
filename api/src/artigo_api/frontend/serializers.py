@@ -103,6 +103,7 @@ class TaggingSerializer(serializers.ModelSerializer):
 
 
 class GametypeSerializer(serializers.ModelSerializer):
+
   class Meta:
     model = Gametype
     fields = ('id', 'rounds', 'round_duration')

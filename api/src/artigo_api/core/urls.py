@@ -22,7 +22,7 @@ from django.conf.urls.static import static
 from rest_framework.authtoken import views
 
 urlpatterns = [
-    path('', include('frontend.urls')), 
+    path('artigo_api/', include('frontend.urls')),
     path('admin/', admin.site.urls),
     path('accounts/', include('allauth.urls')),
     path('rest-auth/', include('dj_rest_auth.urls')),
