@@ -8,13 +8,14 @@
       permanent
       v-model="drawer"
     >
-      <v-list-item>
-        <v-img
+    <v-img
           id="logo"
           max-height="281"
           max-width="500"
-          src="/assets/images/logo.png"
+          src="/assets/images/logo.svg"
         ></v-img>
+      <v-list-item>
+        
       </v-list-item>
       <v-list-item>
         <v-list-item-content>
@@ -94,7 +95,6 @@
   -moz-osx-font-smoothing: grayscale;
 }
 #logo {
-  padding: 5%;
 }
 </style>
 
