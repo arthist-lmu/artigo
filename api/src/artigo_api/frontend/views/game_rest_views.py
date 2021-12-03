@@ -1,7 +1,6 @@
 from django.http import Http404
 from django.shortcuts import render
 from rest_framework import status
-from rest_framework.decorators import api_view
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.views.decorators.cache import cache_page
@@ -12,8 +11,6 @@ from frontend.models import *
 from frontend.serializers import *
 
 
-# TODO: Alternatively try one APIView per game (1 game: 1 class)? would that work?
-
 class GametypeView(APIView):
     """
     API View that handles retrieving the correct type of a game
@@ -21,37 +18,13 @@ class GametypeView(APIView):
     serializer_class = GametypeSerializer
 
     def get_queryset(self):
-        print("Weir sind hereiee")
         gametypes = Gametype.objects.all()
-        # print(gametypes)
-        # serializer = GametypeSerializer(gametypes, many=True)
         return gametypes
 
     def get(self, request, *args, **kwargs):
-        print("Halloooooooooo echooooo")
         gametype = self.get_queryset()
-        print(gametype)
         serializer = GametypeSerializer(gametype, many=True)
         return Response(serializer.data)
-        # content = {
-        #     'id': str(5),  # `django.contrib.auth.User` instance.
-        #     'rounds': str(4), # None
-        #     'round_duration': str(60),
-        # }
-        # return Response(content)
-
-    # def put(self, request, pk, format=None):
-    #     gametype = self.get_queryset(pk)
-    #     serializer = GametypeSerializer(gametype, data=request.data)
-    #     if serializer.is_valid():
-    #         serializer.save()
-    #         return Response(serializer.data)
-    #     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    #
-    # def delete(self, request, pk, format=None):
-    #     gametype = self.get_queryset(pk)
-    #     gametype.delete()
-    #     return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class TaggingView(APIView):
@@ -60,17 +33,17 @@ class TaggingView(APIView):
     """
     serializer_class = TaggingSerializer
 
-    # @method_decorator(cache_page(60 * 60 * 2))
     def get_queryset(self):
-        taggings = Tagging.objects.all()
-        serializer = TaggingSerializer(taggings, many=True)
-        return Response(serializer.data)
+        taggings = Tagging.objects.all().filter(resource=8225)
+        return taggings
 
-    # @method_decorator(cache_page(60 * 60 * 2))
     def get(self, request, *args, **kwargs):
         tagging = self.get_queryset()
         serializer = TaggingSerializer(tagging, many=True)
         return Response(serializer.data)
+
+    def post(self, request, *args, **kwargs):
+        pass
 
     # def put(self, request, pk, format=None):
     #     tagging = self.get_queryset(pk)
@@ -93,14 +66,17 @@ class TagView(APIView):
     serializer_class = TagSerializer
 
     def get_queryset(self):
-        tags = Tag.objects.all()
-        serializer = TagSerializer(tags, many=True)
-        return Response(serializer.data)
+        tags = Tag.objects.all().filter(language="fr")
+        # serializer = TagSerializer(tags, many=True)
+        return tags
 
     def get(self, request, *args, **kwargs):
         tag = self.get_queryset()
-        serializer = TagSerializer(tag)
+        serializer = TagSerializer(tag, many=True)
         return Response(serializer.data)
+
+    def post(self, request, *args, **kwargs):
+        pass
 
     # def put(self, request, *args, **kwargs):
     #     tag = self.get_queryset()
@@ -123,7 +99,7 @@ class GameResourceView(APIView):
     serializer_class = ResourceSerializer
 
     def get_queryset(self):
-        resources = Resource.objects.all()
+        resources = Resource.objects.all().filter(hash_id="6822d12bdd1b30b686528bea8abffcaf")
         return resources
 
     # @method_decorator(cache_page(60 * 60 * 2))

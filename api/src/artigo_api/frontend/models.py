@@ -50,6 +50,8 @@ class Institution(models.Model):
     institution_url = models.URLField(max_length=256)
     resource_url = models.URLField(max_length=256, default='')
 
+    objects = models.Manager()
+
     def __str__(self):
         return self.name
 
@@ -57,6 +59,8 @@ class Institution(models.Model):
 class Location(models.Model):
     name = models.CharField(max_length=256)
     country = models.CharField(max_length=256)
+
+    objects = models.Manager()
 
     def __str__(self):
         return self.name
@@ -94,6 +98,8 @@ class Creator(models.Model):
     locations = models.ManyToManyField(Location)
     techniques = models.ManyToManyField(ArtTechnique)
 
+    objects = models.Manager()
+
     def __str__(self):
         return self.name
 
@@ -105,6 +111,8 @@ class Title(models.Model):
     style = models.ForeignKey(ArtStyle, on_delete=models.CASCADE, null=True)
     movement = models.ForeignKey(ArtMovement, on_delete=models.CASCADE, null=True)
     locations = models.ManyToManyField(Location)
+
+    objects = models.Manager()
 
     def __str__(self):
         return self.name
@@ -129,11 +137,11 @@ class Resource(models.Model):
     objects = models.Manager()
     # objects = ResourceManager()
 
-    @property
-    def tags(self):
-        tags = self.taggings.values('tag').annotate(count=Count('tag'))
-
-        return tags.values('tag_id', 'tag__name', 'tag__language', 'count')
+    # @property
+    # def tags(self):
+    #     tags = self.taggings.values('tag').annotate(count=Count('tag'))
+    #
+    #     return tags.values('tag_id', 'tag__name', 'tag__language', 'count')
 
 
 class Gametype(models.Model):

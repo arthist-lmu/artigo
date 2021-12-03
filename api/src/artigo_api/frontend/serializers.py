@@ -8,7 +8,7 @@ from frontend.models import *
 class InstitutionSerializer(serializers.ModelSerializer):
   class Meta:
     model = Institution
-    fields = ('id', 'name', 'institution_url', 'resource_url')
+    fields = ['id', 'name', 'institution_url', 'resource_url']
 
 
 # class WebPagesSerializer(serializers.ModelSerializer):
@@ -20,25 +20,25 @@ class InstitutionSerializer(serializers.ModelSerializer):
 class LocationSerializer(serializers.ModelSerializer):
   class Meta:
     model = Location
-    fields = ('id', 'name', 'country')
+    fields = ['id', 'name', 'country']
 
 
 class ArtTechniqueSerializer(serializers.ModelSerializer):
   class Meta:
     model = ArtTechnique
-    fields = ('id', 'name', 'language')
+    fields = ['id', 'name', 'language']
 
 
 class ArtMovementSerializer(serializers.ModelSerializer):
   class Meta:
     model = ArtMovement
-    fields = ('id', 'name', 'language')
+    fields = ['id', 'name', 'language']
 
 
 class ArtStyleSerializer(serializers.ModelSerializer):
   class Meta:
     model = ArtStyle
-    fields = ('id', 'name', 'language')
+    fields = ['id', 'name', 'language']
 
 
 # class QuestionSerializer(serializers.ModelSerializer):
@@ -50,13 +50,13 @@ class ArtStyleSerializer(serializers.ModelSerializer):
 class CreatorSerializer(serializers.ModelSerializer):
   class Meta:
     model = Creator
-    fields = ('id', 'name', 'born', 'died', 'nationality', 'locations', 'techniques')
+    fields = ['id', 'name', 'born', 'died', 'nationality', 'locations', 'techniques']
 
 
 class TitleSerializer(serializers.ModelSerializer):
   class Meta:
     model = Title
-    fields = ('id', 'name', 'language', 'technique', 'style', 'movement')
+    fields = ['id', 'name', 'language', 'technique', 'style', 'movement']
 
 
 class ResourceSerializer(serializers.ModelSerializer):
@@ -85,7 +85,7 @@ class ResourceSerializer(serializers.ModelSerializer):
 class TagSerializer(serializers.ModelSerializer):
   class Meta:
     model = Tag
-    fields = ('id', 'name', 'language')
+    fields = ['id', 'name', 'language']
 
   def to_representation(self, data):
     data = super().to_representation(data)
@@ -99,7 +99,13 @@ class TaggingSerializer(serializers.ModelSerializer):
 
   class Meta:
     model = Tagging
-    fields = ('id', 'tag')
+    fields = ['id', 'tag', 'gameround', 'resource']
+
+  def to_representation(self, data):
+    data = super().to_representation(data)
+    # data['tag'] = data['tag'].lower()
+
+    return data
 
 
 class GametypeSerializer(serializers.ModelSerializer):
@@ -131,7 +137,7 @@ class TagCountSerializer(serializers.ModelSerializer):
 
   class Meta:
     model = Tagging
-    fields = ('id', 'name', 'language', 'count')
+    fields = ['id', 'name', 'language', 'count']
 
   def to_representation(self, data):
     data = super().to_representation(data)
@@ -144,7 +150,7 @@ class ResourceWithTaggingsSerializer(ResourceSerializer):
   tags = serializers.ReadOnlyField()
 
   class Meta(ResourceSerializer.Meta):
-    fields = ResourceSerializer.Meta.fields + ('tags',)
+    fields = ResourceSerializer.Meta.fields + ['tags']
 
   def to_representation(self, data):
     data = super().to_representation(data)
