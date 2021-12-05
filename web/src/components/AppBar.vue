@@ -3,12 +3,8 @@
     app 
     flat
   >
-
-    <v-layout
-      right
-    >
-      <UserMenu />
-    </v-layout>
+  <v-spacer></v-spacer>
+    <UserMenu />
   </v-app-bar>
 </template>
 

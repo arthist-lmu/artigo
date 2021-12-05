@@ -10,8 +10,6 @@
     >
     <v-img
           id="logo"
-          max-height="281"
-          max-width="500"
           src="/assets/images/logo.svg"
         ></v-img>
       <v-list-item>
