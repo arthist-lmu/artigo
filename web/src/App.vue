@@ -4,15 +4,13 @@
       <v-navigation-drawer
       app
       permanent
-      v-model="drawer"
     >
     <v-img
           id="logo"
           src="/assets/images/logo.svg"
-        ></v-img>
-      <v-list-item>
-        
-      </v-list-item>
+        >
+        </v-img>
+    <h4 id="subtitle">Social Image Tagging</h4>
       <v-list-item>
         <v-list-item-content>
           <v-list-item-title class="text-h6">
@@ -52,21 +50,21 @@
       <v-list-item>
         <v-list-item-content>
           <v-list-item-title>
-            {{ $t("navbar.imprint") }}
+            <a href="https://www.kunstgeschichte.uni-muenchen.de/funktionen/impressum/index.html">{{ $t("navbar.imprint") }}</a>
           </v-list-item-title>
         </v-list-item-content>
       </v-list-item>
 
       <v-list-item>
           <v-list-item-title>
-            <a href="https://www.lmu.de/de/footer/datenschutz/index.html">{{ $t("navbar.privacy") }}</a>
+            <a href="https://www.kunstgeschichte.uni-muenchen.de/funktionen/datenschutz/index.html">{{ $t("navbar.privacy") }}</a>
           </v-list-item-title>
       </v-list-item>
 
     </v-navigation-drawer>
 
     <AppBar />
-      <router-view />
+    <router-view />
     </v-main>
   </div>
 </template>
@@ -76,8 +74,13 @@
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  margin: 10px;
 }
 #logo {
+  margin: 10px;
+}
+#subtitle {
+  margin: 10px;
 }
 </style>
 

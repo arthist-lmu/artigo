@@ -3,6 +3,7 @@
     app 
     flat
   >
+  <h1>{{$router.currentRoute.name}}</h1>
   <v-spacer></v-spacer>
     <v-menu
       top
@@ -40,12 +41,6 @@ import i18n from '@/plugins/i18n';
 
 export default {
   data: () => ({ 
-    items: [
-      { title: 'Click Me' },
-      { title: 'Click Me' },
-      { title: 'Click Me' },
-      { title: 'Click Me 2' },
-    ],
     closeOnClick: true,
     offset: true,
     locale: i18n.locale,
