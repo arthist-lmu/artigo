@@ -1,7 +1,5 @@
 <template>
   <div id="app">
-    
-
     <v-main>
       <v-navigation-drawer
       app
@@ -31,33 +29,20 @@
       <v-list
         nav
       >
-        <v-list-item>
-          <router-link to="">{{ $t('navbar.about') }}</router-link>
-        </v-list-item>
-        <v-list-item>
-          <v-list-item-content>
-          <v-list-item-title>
-            <router-link :to="'/' + $i18n.locale + '/publications'">
-            {{ $t('navbar.publications') }}
-            </router-link>
-            </v-list-item-title>
-          <v-list-item-subtitle>Research, literature, media</v-list-item-subtitle>
-          </v-list-item-content>
-        </v-list-item>
-        <v-list-item>
-          <router-link to="">{{ $t('navbar.about') }}</router-link>
-        </v-list-item>
         <v-list-item
-          v-for="item in items"
-          :key="item.title"
+          v-for="nav_entry in nav_list"
+          :key="nav_entry.title"
           link
         >
-          <v-list-item-icon>
-            <v-icon>{{ item.icon }}</v-icon>
-          </v-list-item-icon>
-
           <v-list-item-content>
-            <v-list-item-title><router-link to="item.link">{{ $t('navbar.about') }}</router-link></v-list-item-title>
+            <v-list-item-title>
+              <router-link :to="'/' + $i18n.locale + '/' + nav_entry.link">
+              {{ nav_entry.title }}
+              </router-link>
+            </v-list-item-title>
+            <v-list-item-subtitle>
+              {{ nav_entry.subtitle }}
+            </v-list-item-subtitle>
           </v-list-item-content>
         </v-list-item>
       </v-list>
@@ -101,24 +86,25 @@ import AppBar from '@/components/AppBar.vue';
 import i18n from '@/plugins/i18n.js'
 
 export default {
+  created(){
+        document.title = "ARTigo - Social Image Tagging"},
   components: {
     AppBar,
   },
   data() {
     return {
-      items: [
-        { title: i18n.t('navbar.about'), link: "", icon: 'mdi-view-dashboard' },
-        { title: i18n.t('navbar.publications'), link: "/en/publications", icon: 'mdi-view-dashboard' },
-        { title: 'ARTigo-Game', icon: 'mdi-image' },
-        { title: 'Karido', icon: 'mdi-help-box' },
-        { title: 'ARTigo-Quiz beta', icon: 'mdi-image' },
-        { title: 'ARTigo-Taboo', icon: 'mdi-help-box' },
-        { title: 'Tag A Tag beta', icon: 'mdi-image' },
-        { title: 'Combino beta', icon: 'mdi-help-box' },
-        { title: 'ARTime beta', icon: 'mdi-image' },
-        { title: 'Crossover', icon: 'mdi-help-box' },
+      nav_list: [
+        { link: "about", title: i18n.t('navbar.about'), subtitle: "Idea, Goals, Project details" },
+        { link: "publications", title: i18n.t('navbar.publications'), subtitle: "Research, literature, media" },
+        { link: "artigo-game", title: "Artigo-Game", subtitle: "Not implemented" },
+        { link: "artigo-game", title: "Karido", subtitle: "Not implemented" },
+        { link: "artigo-game", title: "ARTigo-Quiz", subtitle: "Not implemented" },
+        { link: "artigo-game", title: "ARTigo-Taboo", subtitle: "Not implemented" },
+        { link: "artigo-game", title: "Tag A Tag", subtitle: "Not implemented" },
+        { link: "artigo-game", title: "Combino", subtitle: "Not implemented" },
+        { link: "artigo-game", title: "ARTime", subtitle: "Not implemented" },
+        { link: "artigo-game", title: "Crossover", subtitle: "Not implemented" },
       ],
-      right: null,
     };
   },
 };

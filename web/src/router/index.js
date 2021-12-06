@@ -5,6 +5,7 @@ import Home from '@/views/Home.vue';
 import Resource from '@/views/Resource.vue';
 import Collection from '@/views/Collection.vue';
 import Login from '@/views/Login.vue';
+import About from '@/views/About.vue';
 import NotFound from '@/views/NotFound.vue';
 import RouterView from '@/views/RouterView.vue';
 import Publications from '@/views/Publications.vue';
@@ -43,6 +44,11 @@ const router = new VueRouter({
           path: 'collection/:name/',
           name: 'Collection',
           component: Collection,
+        },
+        {
+          path: 'about',
+          name: 'About',
+          component: About,
         },
         {
           path: 'login',
