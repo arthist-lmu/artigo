@@ -50,5 +50,18 @@
     "privacy": "Datenschutz",
     "imprint": "Impressum",
     "publications": "Publikationen"
+  },
+  "about": {
+    "goals": "Ziele von ARTigo",
+    "p_1": "Die Kunstgeschichte arbeitet mit den originalen Kunstwerken, häufig aber auch mit Reproduktionen davon. Diese Reproduktionen werden heute in umfangreichen elektronischen Repositorien vorgehalten und können leicht in die Millionen gehen. Was machen wir, um diese Reproduktionen wiederzufinden, und zwar möglichst nach den unterschiedlichsten Kritereien geordnet? Manchmal wollen wir Bilder finden, die einen spezifischen Inhalt oder eine spezifische Form haben. Da die Möglichkeiten, über den Computer direkt auf die Reproduktion zuzugreifen, noch sehr beschränkt sind, vergeben wir Schlagworte, sogenannte Metadaten. Das ist ein sehr zeitraubendes Geschäft und kann am besten von einer großen Anzahl von Mitarbeiter/innen übernommen werden. Um diesen Beitrag bitten wir Sie mit diesem Spiel.",
+    "p_2": "Aber wir wollen nicht nur etwas von Ihnen, sondern bieten Ihnen auch etwas: Unterhaltung einerseits, aber auch Belehrung, denn Sie werden eine Menge über die Werke der Künstler lernen, die wir Ihnen hier vorführen. Und Sie werden dann mit den von Ihnen gelieferten Beschreibungen auch selbst arbeiten können.",
+    "sources": "Bilderbestand",
+    "p_3": "Der zugrundeliegende Bilderbestand entstammt der Diathek des Instituts für Kunstgeschichte der LMU München. Hier können Sie übrigens exklusiv mit dem Bestand der Kunsthalle Karlsruhe spielen, deren Mitarbeiter uns besonders gute Reproduktionen aus dem herausragenden Bestand ihres Museums zur Verfügung gestellt haben.",
+    "project_funding": "Projektförderung",
+    "p_4": "Das Projekt wird gefördert durch die Deutsche Forschungsgemeinschaft (DFG). Sie können uns auch per E-Mail unter artigo@artigo.org erreichen.",
+    "people": "Mitwirkende",
+    "p_5": "",
+    "version_history": "Versionsgeschichte",
+    "p_6": "Diese Version von ARTigo basiert auf einem führend von Dr. Gerhard Schön von der IT-Gruppe Geisteswissenschaften entwickelten Spiel. Die Idee für dieses Projekt stammt von Prof. Dr. Hubertus Kohle nach einem Gespräch mit Prof. Dr. François Bry über „Games with a Purpose“. Weiterhin danken wir Luis von Ahn, der uns mit seinem ESP Game auf die Idee zu diesem Spiel gebracht hat. Über das Spielprinzip erfahren Sie Faszinierendes in seinem Vortrag über Human Computation, gehalten bei Google als „TechTalk“ am 26. Juli 2006."
   }
 }

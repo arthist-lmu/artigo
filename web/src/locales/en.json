@@ -50,5 +50,18 @@
     "privacy": "Privacy Policy",
     "imprint": "Imprint",
     "publications": "Publications"
+  },
+  "about": {
+    "goals": "Goals of ARTigo",
+    "p_1": "Art history studies mainly original artworks, but often their reproductions, too. Today, these reproductions exist in substantial electronic repositories sometimes amounting to several million items. What can we do to retrieve these reproductions preferably on the basis of various criteria? As the possibilities of a computerized search of these reproductions are still very limited we allocate keywords, known as metadata. This is a most time-consuming operation and one would need a great number of staff members to do this job.",
+    "p_2": "We would appreciate your contribution to this game. However, we don't only want something from you but we offer you as well entertainment and at the same time training as you get to know quite a lot about the paintings shown here. In addition to that, you will be able to work with the descriptions you gave us..",
+    "sources": "Image portfolio",
+    "p_3": "The underlying image portfolio originates from the Diathek of the Institute for Art History at the University of Munich.",
+    "project_funding": "Project funding",
+    "p_4": "The project is funded by the German Research Foundation (DFG). You can also reach us per email at artigo@artigo.org",
+    "people": "Contributors",
+    "p_5": "",
+    "version_history": "Version history",
+    "p_6": "This version of ARTigo is based on a game foremost developed by Dr. Gerhard Schön from the IT-Group Humanities. Prof. Dr. Hubertus Kohle had the idea for this project. He was inspired by Prof. Dr. François Bry during a conversation about \"Games with a Purpose\". Furthermore, we would like to thank Luis von Ahn who lead us to this game idea with his ESP Game. You can learn more about the principles of the game in his talk about Human Computation given at Google as \"TechTalk\" on 26th of July 2006."
   }
 }
