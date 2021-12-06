@@ -1,6 +1,6 @@
 <template>
-  <v-app-bar 
-    app 
+  <v-app-bar
+    app
     flat
   >
   <h1>{{$router.currentRoute.name}}</h1>
@@ -40,11 +40,11 @@ import UserMenu from '@/components/UserMenu.vue';
 import i18n from '@/plugins/i18n';
 
 export default {
-  data: () => ({ 
+  data: () => ({
     closeOnClick: true,
     offset: true,
     locale: i18n.locale,
-    lang_list: ["en", "de"],
+    lang_list: ['en', 'de'],
     reactive: true,
   }),
   components: {
@@ -52,8 +52,8 @@ export default {
   },
   methods: {
     onButtonClick(lang) {
-      i18n.locale = lang
-    }
-  }
+      i18n.locale = lang;
+    },
+  },
 };
 </script>

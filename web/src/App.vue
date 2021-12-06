@@ -11,16 +11,6 @@
         >
         </v-img>
     <h4 id="subtitle">Social Image Tagging</h4>
-      <v-list-item>
-        <v-list-item-content>
-          <v-list-item-title class="text-h6">
-            ARTigo
-          </v-list-item-title>
-          <v-list-item-subtitle>
-            Social Image Tagging
-          </v-list-item-subtitle>
-        </v-list-item-content>
-      </v-list-item>
 
       <v-divider></v-divider>
 
@@ -86,27 +76,28 @@
 
 <script>
 import AppBar from '@/components/AppBar.vue';
-import i18n from '@/plugins/i18n.js'
+import i18n from '@/plugins/i18n.js';
 
 export default {
-  created(){
-        document.title = "ARTigo - Social Image Tagging"},
+  created() {
+    document.title = 'ARTigo - Social Image Tagging';
+  },
   components: {
     AppBar,
   },
   data() {
     return {
       nav_list: [
-        { link: "about", title: i18n.t('navbar.about'), subtitle: "Idea, Goals, Project details" },
-        { link: "publications", title: i18n.t('navbar.publications'), subtitle: "Research, literature, media" },
-        { link: "artigo-game", title: "Artigo-Game", subtitle: "Not implemented" },
-        { link: "artigo-game", title: "Karido", subtitle: "Not implemented" },
-        { link: "artigo-game", title: "ARTigo-Quiz", subtitle: "Not implemented" },
-        { link: "artigo-game", title: "ARTigo-Taboo", subtitle: "Not implemented" },
-        { link: "artigo-game", title: "Tag A Tag", subtitle: "Not implemented" },
-        { link: "artigo-game", title: "Combino", subtitle: "Not implemented" },
-        { link: "artigo-game", title: "ARTime", subtitle: "Not implemented" },
-        { link: "artigo-game", title: "Crossover", subtitle: "Not implemented" },
+        { link: 'about', title: i18n.t('navbar.about'), subtitle: 'Idea, Goals, Project details' },
+        { link: 'publications', title: i18n.t('navbar.publications'), subtitle: 'Research, literature, media' },
+        { link: 'artigo-game', title: 'Artigo-Game', subtitle: 'Not implemented' },
+        { link: 'artigo-game', title: 'Karido', subtitle: 'Not implemented' },
+        { link: 'artigo-game', title: 'ARTigo-Quiz', subtitle: 'Not implemented' },
+        { link: 'artigo-game', title: 'ARTigo-Taboo', subtitle: 'Not implemented' },
+        { link: 'artigo-game', title: 'Tag A Tag', subtitle: 'Not implemented' },
+        { link: 'artigo-game', title: 'Combino', subtitle: 'Not implemented' },
+        { link: 'artigo-game', title: 'ARTime', subtitle: 'Not implemented' },
+        { link: 'artigo-game', title: 'Crossover', subtitle: 'Not implemented' },
       ],
     };
   },
