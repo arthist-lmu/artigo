@@ -5,12 +5,12 @@
       app
       permanent
     >
-    <v-img
-          id="logo"
-          src="/assets/images/logo.svg"
-        >
-        </v-img>
-    <h4 id="subtitle">Social Image Tagging</h4>
+      <v-img
+            id="logo"
+            src="/assets/images/logo.svg"
+          >
+          </v-img>
+      <h4 id="subtitle">Social Image Tagging</h4>
 
       <v-divider></v-divider>
 
@@ -76,7 +76,7 @@
 
 <script>
 import AppBar from '@/components/AppBar.vue';
-import i18n from '@/plugins/i18n.js';
+import i18n from '@/plugins/i18n';
 
 export default {
   created() {
@@ -111,10 +111,4 @@ export default {
       Log In
 
     </button>
-    <p>
-      <!-- use router-link component for navigation. -->
-      <!-- specify the link by passing the `to` prop. -->
-      <!-- `<router-link>` will be rendered as an `<a>` tag by default -->
-<!--      <router-link to="/foo">Go to Foo</router-link>
-      <router-link to="/bar">Go to Bar</router-link>
-    </p> -->
+-->

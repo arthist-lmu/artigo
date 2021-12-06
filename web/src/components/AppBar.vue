@@ -38,6 +38,7 @@
 <script>
 import UserMenu from '@/components/UserMenu.vue';
 import i18n from '@/plugins/i18n';
+import router from '@/router/index';
 
 export default {
   data: () => ({
@@ -53,6 +54,8 @@ export default {
   methods: {
     onButtonClick(lang) {
       i18n.locale = lang;
+      console.log(i18n)
+      router.push({ params: { lang } });
     },
   },
 };
