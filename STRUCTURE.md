@@ -26,7 +26,7 @@ The backend container starts on an Ubuntu base image and executes a Django serve
 by Django REST framework (which is also used by the backend).
 
 ## web
-This container starts an Apache web server that uses the generated [Vue.js](https://vuejs.org/) files to act as a web client. For visual appeal it has the [vuetify](https://vuejs.org/) UI-framework installed, in addition to [vue-router](https://router.vuejs.org/) for routing. It uses [Axios](https://axios-http.com/) to communicate with the backend.
+This container starts an Apache web server that uses the generated [Vue.js](https://vuejs.org/) files to act as a web client. For visual appeal it has the [vuetify](https://vuejs.org/) UI-framework installed, in addition to [vue-router](https://router.vuejs.org/) for routing. It uses [Axios](https://axios-http.com/) to communicate with the backend. For performance reasons [webpack](https://webpack.js.org/) is used to bundle modules.
 
 
 # Authentification

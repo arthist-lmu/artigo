@@ -76,6 +76,12 @@ Alternativly you can run serve, to use a Hot-reload enabled instance on http://l
 sudo docker-compose exec web npm run serve
 ```
 
+### Formatting
+Optionally the vue lint command can be used to help with standardized formatting
+```sh
+sudo docker-compose exec web npm run lint --fix
+```
+
 ### Django commands
 Create superuser:
 ```sh
