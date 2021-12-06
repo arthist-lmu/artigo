@@ -55,7 +55,8 @@ export default {
       return this.$tc('user.menu.joined', this.nDays);
     },
     initials() {
-      return this.data.username.slice(0, 2);
+      return "test"
+      // return this.data.username.slice(0, 2);
     },
   },
 };

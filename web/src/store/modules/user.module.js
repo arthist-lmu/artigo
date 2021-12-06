@@ -38,7 +38,7 @@ const user = {
         });
     },
     get({ commit }, params) {
-      axios.get(`${API_LOCATION}/get_user`, { params })
+      axios.get(`${API_LOCATION}/rest-auth/user/`, { params })
         .then(({ data }) => {
           commit('updateData', data);
           commit('updateLoggedIn', true);
@@ -48,7 +48,7 @@ const user = {
         });
     },
     login({ commit }, params) {
-      axios.post(`${API_LOCATION}/login`, { params })
+      axios.post(`${API_LOCATION}/rest-auth/login`, { params })
         .then(({ data }) => {
           commit('updateData', data);
           commit('updateLoggedIn', true);
@@ -59,7 +59,7 @@ const user = {
     },
     logout({ commit, state }) {
       const params = state.userData;
-      axios.post(`${API_LOCATION}/logout`, { params })
+      axios.post(`${API_LOCATION}/rest-auth/logout`, { params })
         .then(() => {
           commit('updateData', {});
           commit('updateLoggedIn', false);
@@ -69,7 +69,7 @@ const user = {
         });
     },
     register({ commit }, params) {
-      axios.post(`${API_LOCATION}/register`, { params })
+      axios.post(`${API_LOCATION}/rest-auth/registration`, { params })
         .then(({ data }) => {
           commit('updateData', data);
           commit('updateLoggedIn', true);
