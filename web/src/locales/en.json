@@ -16,7 +16,7 @@
     }
   },
   "user": {
-    "name": "Name",
+    "username": "Name",
     "email": "E-Mail",
     "password": "Password",
     "menu": {

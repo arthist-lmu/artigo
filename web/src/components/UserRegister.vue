@@ -18,7 +18,7 @@
       <v-card-text>
         <v-text-field
           v-model="user.name"
-          :placeholder="$t('user.name')"
+          :placeholder="$t('user.username')"
           :rules="[checkLength]"
           prepend-icon="mdi-account"
           counter="50"
@@ -35,7 +35,22 @@
         ></v-text-field>
 
         <v-text-field
-          v-model="user.password"
+          v-model="user.password1"
+          @click:append="showPassword = !showPassword"
+          :type="showPassword ? 'text' : 'password'"
+          :placeholder="$t('user.password')"
+          :rules="[checkLength]"
+          :append-icon="
+            showPassword ? 'mdi-eye-outline' :
+            'mdi-eye-off-outline'
+          "
+          prepend-icon="mdi-lock"
+          counter="50"
+          clearable
+        ></v-text-field>
+
+        <v-text-field
+          v-model="user.password2"
           @click:append="showPassword = !showPassword"
           :type="showPassword ? 'text' : 'password'"
           :placeholder="$t('user.password')"
