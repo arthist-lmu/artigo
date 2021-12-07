@@ -36,24 +36,6 @@ DEBUG = env('DEBUG')
 
 FORCE_SCRIPT_NAME = "/"
 
-ALLOWED_HOSTS = [
-    "127.0.0.1",
-    "localhost",
-]
-
-CORS_ALLOW_ALL_ORIGINS = True
-CORS_ALLOW_CREDENTIALS = True
-
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:80",
-    "http://127.0.0.1:80",
-    "http://web",
-]
-
-CSRF_TRUSTED_ORIGINS = [
-    "web",
-    "api",
-]
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -86,15 +68,42 @@ REST_FRAMEWORK = {
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    "corsheaders.middleware.CorsMiddleware",
     "frontend.middleware.QueryPrintMiddleware",
 ]
+
+ALLOWED_HOSTS = [
+    "127.0.0.1",
+    "localhost",
+]
+
+CORS_ALLOW_CREDENTIALS = True
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:80",
+    "http://localhost:8080",
+    "http://127.0.0.1:80",
+    "http://web",
+]
+
+#CSRF_USE_SESSIONS = False
+#CSRF_COOKIE_HTTPONLY = False
+#CSRF_COOKIE_SECURE = False
+
+# Should be true in production
+#SESSION_COOKIE_SECURE = False
+CSRF_TRUSTED_ORIGINS = [
+    "http://localhost:8080/",
+    "http://127.0.0.1:8080/",
+    "http://localhost:80/",
+]
+
 
 ROOT_URLCONF = "core.urls"
 
