@@ -119,8 +119,9 @@ class Title(models.Model):
 
 
 class Resource(models.Model):
+    # TODO: Find better solution for when new Resources are added!
     id = models.PositiveIntegerField(null=False, primary_key=True)
-    hash_code = models.CharField(max_length=256)
+    hash_id = models.CharField(max_length=256)
     creators = models.ManyToManyField(Creator)
     titles = models.ManyToManyField(Title)
     created_start = models.DateField(null=True)
@@ -138,7 +139,7 @@ class Resource(models.Model):
     # objects = ResourceManager()
 
     def __str__(self):
-        return self.hash_code
+        return self.hash_id
 
     @property
     def tags(self):

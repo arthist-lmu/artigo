@@ -10,6 +10,12 @@ class InstitutionSerializer(serializers.ModelSerializer):
     model = Institution
     fields = ['id', 'name', 'institution_url', 'resource_url']
 
+  def to_representation(self, data):
+    data = super().to_representation(data)
+    data['name'] = data['name'].lower()
+
+    return data
+
 
 # class WebPagesSerializer(serializers.ModelSerializer):
 #   class Meta:
@@ -77,7 +83,6 @@ class ResourceSerializer(serializers.ModelSerializer):
 
   def to_representation(self, data):
     data = super().to_representation(data)
-    data['institution']['name'] = data['institution']['name'].title()
 
     return data
 
