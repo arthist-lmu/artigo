@@ -47,21 +47,21 @@ class GamesessionView(APIView):
     """
     API View that handles gamesessions
     """
-    serializer_class = GamesessionSerializer
+    serializer_class = GamesessionSerializer2
 
     def get_queryset(self):
-        gamesessions = Gamesession.objects.all()
+        gamesessions = Gamesession.objects.all().filter(created="March 27, 2017, 7:57 p.m.")
         return gamesessions
 
     def get(self, request, *args, **kwargs):
         gamesession = self.get_queryset()
-        serializer = GamesessionSerializer(gamesession, many=True)
+        serializer = GamesessionSerializer2(gamesession, many=True)
         return Response(serializer.data)
 
     def post(self, request, *args, **kwargs):
         gamesession = request.data.get_queryset()
 
-        serializer = GamesessionSerializer(data=gamesession)
+        serializer = GamesessionSerializer2(data=gamesession)
         if serializer.is_valid(raise_exception=True):
             saved_gamesession = serializer.save()
         return Response(saved_gamesession)

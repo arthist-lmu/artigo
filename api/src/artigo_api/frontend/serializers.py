@@ -152,6 +152,20 @@ class GamesessionSerializer(serializers.ModelSerializer):
     return data
 
 
+class GamesessionSerializer2(serializers.ModelSerializer):
+  gametype = GametypeSerializer(read_only=True)
+
+  class Meta:
+    model = Gamesession
+    fields = ['gametype', 'created']
+
+  def to_representation(self, data):
+    data = super().to_representation(data)
+    # data['id'] = data['id'].lower()
+
+    return data
+
+
 class GameroundSerializer(serializers.ModelSerializer):
   gamesession = GamesessionSerializer(read_only=True)
 

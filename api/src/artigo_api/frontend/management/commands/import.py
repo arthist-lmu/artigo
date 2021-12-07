@@ -129,7 +129,7 @@ class CreateResource(Create):
     def convert(self, row):
         return self.obj(
             id = toInt(row.get('id')),
-            hash_id = row.get('hash_id'),
+            hash_code = row.get('hash_id'),
             # source_id = toInt(row.get('source_id')),
             created_start = row.get('created_start'),
             created_end = row.get('created_end'),

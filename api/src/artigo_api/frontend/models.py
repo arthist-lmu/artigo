@@ -119,14 +119,14 @@ class Title(models.Model):
 
 
 class Resource(models.Model):
-    hash_id = models.CharField(max_length=256)
+    id = models.PositiveIntegerField(null=False, primary_key=True)
+    hash_code = models.CharField(max_length=256)
     creators = models.ManyToManyField(Creator)
     titles = models.ManyToManyField(Title)
     created_start = models.DateField(null=True)
     created_end = models.DateField(null=True)
     location = models.CharField(max_length=512, null=True)
     # source_id = models.CharField(max_length=256)
-    # TODO: solve issue! Find better solution!
     institution_source = models.CharField(max_length=512, blank=True)
     institution = models.CharField(max_length=512, blank=True)
     # TODO: Determine if URLField or FilePathField?!
@@ -138,7 +138,7 @@ class Resource(models.Model):
     # objects = ResourceManager()
 
     def __str__(self):
-        return self.hash_id
+        return self.hash_code
 
     @property
     def tags(self):
