@@ -11,6 +11,22 @@ from frontend.models import *
 from frontend.serializers import *
 
 
+class ARTigoGametypeView(APIView):
+    """
+    API View that handles retrieving the ARTigo game view
+    """
+    serializer_class = GametypeSerializer
+
+    def get_queryset(self):
+        gametypes = Gametype.objects.all().filter(name="imageLabeler")
+        return gametypes
+
+    def get(self, request, *args, **kwargs):
+        gametype = self.get_queryset()
+        serializer = GametypeSerializer(gametype, many=True)
+        return Response(serializer.data)
+
+
 class GametypeView(APIView):
     """
     API View that handles retrieving the correct type of a game
@@ -25,6 +41,54 @@ class GametypeView(APIView):
         gametype = self.get_queryset()
         serializer = GametypeSerializer(gametype, many=True)
         return Response(serializer.data)
+
+
+class GamesessionView(APIView):
+    """
+    API View that handles gamesessions
+    """
+    serializer_class = GamesessionSerializer
+
+    def get_queryset(self):
+        gamesessions = Gamesession.objects.all()
+        return gamesessions
+
+    def get(self, request, *args, **kwargs):
+        gamesession = self.get_queryset()
+        serializer = GamesessionSerializer(gamesession, many=True)
+        return Response(serializer.data)
+
+    def post(self, request, *args, **kwargs):
+        gamesession = request.data.get_queryset()
+
+        serializer = GamesessionSerializer(data=gamesession)
+        if serializer.is_valid(raise_exception=True):
+            saved_gamesession = serializer.save()
+        return Response(saved_gamesession)
+
+
+class GameroundView(APIView):
+    """
+    API View that handles gamerounds
+    """
+    serializer_class = GameroundSerializer
+
+    def get_queryset(self):
+        gamerounds = Gameround.objects.all()
+        return gamerounds
+
+    def get(self, request, *args, **kwargs):
+        gameround = self.get_queryset()
+        serializer = GameroundSerializer(gameround, many=True)
+        return Response(serializer.data)
+
+    def post(self, request, *args, **kwargs):
+        gameround = request.data.get_queryset()
+
+        serializer = GameroundSerializer(data=gameround)
+        if serializer.is_valid(raise_exception=True):
+            saved_gameround = serializer.save()
+        return Response(saved_gameround)
 
 
 class TaggingView(APIView):
@@ -43,20 +107,12 @@ class TaggingView(APIView):
         return Response(serializer.data)
 
     def post(self, request, *args, **kwargs):
-        pass
+        tagging = request.data.get_queryset()
 
-    # def put(self, request, pk, format=None):
-    #     tagging = self.get_queryset(pk)
-    #     serializer = TaggingSerializer(tagging, data=request.data)
-    #     if serializer.is_valid():
-    #         serializer.save()
-    #         return Response(serializer.data)
-    #     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    #
-    # def delete(self, request, pk, format=None):
-    #     tagging = self.get_queryset(pk)
-    #     tagging.delete()
-    #     return Response(status=status.HTTP_204_NO_CONTENT)
+        serializer = TaggingSerializer(data=tagging)
+        if serializer.is_valid(raise_exception=True):
+            saved_tagging = serializer.save()
+        return Response(saved_tagging)
 
 
 class TagView(APIView):
@@ -76,20 +132,22 @@ class TagView(APIView):
         return Response(serializer.data)
 
     def post(self, request, *args, **kwargs):
-        pass
 
-    # def put(self, request, *args, **kwargs):
-    #     tag = self.get_queryset()
-    #     serializer = TagSerializer(tag, data=request.data)
-    #     if serializer.is_valid():
-    #         serializer.save()
-    #         return Response(serializer.data)
-    #     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    #
-    # def delete(self, request, pk, format=None):
-    #     tag = self.get_queryset(pk)
-    #     tag.delete()
-    #     return Response(status=status.HTTP_204_NO_CONTENT)
+        tag = request.data.get_queryset()
+
+        if Tagging.objects.filter(tag=tag).exists():
+            new_tag = Tag()
+            new_tag.name = tag
+            new_tag.save()
+            serializer = TagSerializer(data=tag)
+            if serializer.is_valid(raise_exception=True):
+                saved_tag = serializer.save()
+        else:
+            new_tag = Tagging()
+            new_tag.tag = user_tag
+            new_tag.save()
+
+        return Response(saved_tag)
 
 
 class GameResourceView(APIView):
@@ -106,6 +164,22 @@ class GameResourceView(APIView):
     def get(self, request, *args, **kwargs):
         resource = self.get_queryset()
         serializer = ResourceSerializer(resource, many=True)
+        return Response(serializer.data)
+
+
+class TabooTagsView(APIView):
+    """
+    API View that handles display of Taboo Tags during ARTigo Taboo
+    """
+    serializer_class = TabooTagSerializer
+
+    def get_queryset(self):
+        tags = Tagging.objects.all().filter(language="fr", tag="café")
+        return tags
+
+    def get(self, request, *args, **kwargs):
+        tag = self.get_queryset()
+        serializer = TabooTagSerializer(tag, many=True)
         return Response(serializer.data)
 
 
@@ -130,12 +204,12 @@ def get_custom_tags():
     pass
 
 
-def check_tag_exists(self, request, tagging, format=None):
+def check_tag_exists():
     """
     Checks if another tagging string for the same resource has been added before, which is the same as the entered string
     :return:
     """
-    tagging_to_check = self.get_queryset(tagging)
+    tagging_to_check.get_queryset(tagging)
     serializer = TaggingSerializer(tagging_to_check)
     if Tagging.objects.filter(tag=tagging_to_check).exists():
         pass

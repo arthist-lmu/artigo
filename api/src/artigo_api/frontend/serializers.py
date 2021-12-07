@@ -94,6 +94,23 @@ class TagSerializer(serializers.ModelSerializer):
     return data
 
 
+class TabooTagSerializer(serializers.ModelSerializer):
+  id = serializers.ReadOnlyField(source='tag_id')
+  name = serializers.ReadOnlyField(source='tag__name')
+  language = serializers.ReadOnlyField(source='tag__language')
+  count = serializers.IntegerField()
+
+  class Meta:
+    model = Tagging
+    fields = ['id', 'name', 'language', 'count']
+
+  def to_representation(self, data):
+    data = super().to_representation(data)
+    # data['name'] = data['name'].lower()
+
+    return data
+
+
 class TaggingSerializer(serializers.ModelSerializer):
   tag = TagSerializer(read_only=True)
 
@@ -113,6 +130,34 @@ class GametypeSerializer(serializers.ModelSerializer):
   class Meta:
     model = Gametype
     fields = ['id', 'name', 'rounds', 'round_duration']
+
+  def to_representation(self, data):
+    data = super().to_representation(data)
+    # data['id'] = data['id'].lower()
+
+    return data
+
+
+class GamesessionSerializer(serializers.ModelSerializer):
+  gametype = GametypeSerializer(read_only=True)
+
+  class Meta:
+    model = Gamesession
+    fields = ['id', 'user', 'gametype', 'created']
+
+  def to_representation(self, data):
+    data = super().to_representation(data)
+    # data['id'] = data['id'].lower()
+
+    return data
+
+
+class GameroundSerializer(serializers.ModelSerializer):
+  gamesession = GamesessionSerializer(read_only=True)
+
+  class Meta:
+    model = Gameround
+    fields = ['id', 'user', 'gamesession', 'created', 'score']
 
   def to_representation(self, data):
     data = super().to_representation(data)

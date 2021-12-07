@@ -137,11 +137,14 @@ class Resource(models.Model):
     objects = models.Manager()
     # objects = ResourceManager()
 
-    # @property
-    # def tags(self):
-    #     tags = self.taggings.values('tag').annotate(count=Count('tag'))
-    #
-    #     return tags.values('tag_id', 'tag__name', 'tag__language', 'count')
+    def __str__(self):
+        return self.hash_id
+
+    @property
+    def tags(self):
+        tags = self.taggings.values('tag').annotate(count=Count('tag'))
+
+        return tags.values('tag_id', 'tag__name', 'tag__language', 'count')
 
 
 class Gametype(models.Model):
@@ -215,6 +218,9 @@ class Tagging(models.Model):
     origin = models.URLField(max_length=256, blank=True, default='')
 
     objects = models.Manager()
+
+    def __str__(self):
+        return self.user
 
     def save(self, *args, **kwargs):
         if not self.id:
