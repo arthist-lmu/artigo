@@ -23,7 +23,7 @@
 
       <v-list>
         <v-list-item
-          v-for="(lang, index) in lang_list"
+          v-for="(lang, index) in langs"
           :key="index"
           @click="onButtonClick(lang)"
         >
@@ -41,20 +41,19 @@ import i18n from '@/plugins/i18n';
 import router from '@/router/index';
 
 export default {
-  data: () => ({
-    closeOnClick: true,
+  data () {
+    return { closeOnClick: true,
     offset: true,
     locale: i18n.locale,
-    lang_list: ['en', 'de'],
-    reactive: true,
-  }),
+    langs: ['en', 'de'],
+  }},
   components: {
     UserMenu,
   },
   methods: {
     onButtonClick(lang) {
       i18n.locale = lang;
-      console.log(i18n)
+      this.locale = lang;
       router.push({ params: { lang } });
     },
   },
