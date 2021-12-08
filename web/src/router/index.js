@@ -9,6 +9,7 @@ import About from '@/views/About.vue';
 import NotFound from '@/views/NotFound.vue';
 import RouterView from '@/views/RouterView.vue';
 import Publications from '@/views/Publications.vue';
+import ArtigoGame from '@/views/ArtigoGame.vue';
 // import { component } from 'vue/types/umd';
 
 Vue.use(VueRouter);
@@ -59,6 +60,11 @@ const router = new VueRouter({
           path: 'publications',
           name: 'Publications',
           component: Publications,
+        },
+        {
+          path: 'artigo-game',
+          name: 'ArtigoGame',
+          component: ArtigoGame,
         },
       ],
     },
