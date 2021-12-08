@@ -128,8 +128,6 @@
 </template>
 
 <script>
-import AppBar from '@/components/AppBar.vue';
-
 export default {
   data() {
     return {
@@ -202,9 +200,6 @@ export default {
   },
   created() {
     this.getData(this.$route.params.id);
-  },
-  components: {
-    AppBar,
   },
 };
 </script>

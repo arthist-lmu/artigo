@@ -32,7 +32,7 @@ const user = {
 
           if (state.csrfToken !== csrftoken) {
             commit('updateCSRFToken', csrftoken);
-            console.log("set token: " + csrftoken);
+            console.log(`set token: ${csrftoken}`);
           }
         })
         .catch(({ response }) => {
@@ -50,7 +50,7 @@ const user = {
         });
     },
     login({ commit }, params) {
-      axios.post(`${API_LOCATION}/rest-auth/login/`,  params)
+      axios.post(`${API_LOCATION}/rest-auth/login/`, params)
         .then(({ data }) => {
           commit('updateData', data);
           commit('updateLoggedIn', true);

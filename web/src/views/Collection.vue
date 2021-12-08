@@ -7,8 +7,6 @@
 </template>
 
 <script>
-import AppBar from '@/components/AppBar.vue';
-
 export default {
   methods: {
     getData(name) {
@@ -33,9 +31,6 @@ export default {
   },
   created() {
     this.getData(this.$route.params.name);
-  },
-  components: {
-    AppBar,
   },
 };
 </script>

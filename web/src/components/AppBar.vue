@@ -41,12 +41,14 @@ import i18n from '@/plugins/i18n';
 import router from '@/router/index';
 
 export default {
-  data () {
-    return { closeOnClick: true,
-    offset: true,
-    locale: i18n.locale,
-    langs: ['en', 'de'],
-  }},
+  data() {
+    return {
+      closeOnClick: true,
+      offset: true,
+      locale: i18n.locale,
+      langs: ['en', 'de'],
+    };
+  },
   components: {
     UserMenu,
   },
