@@ -17,9 +17,8 @@
 
       <v-card-text>
         <v-text-field
-          v-model="user.name"
-          :placeholder="$t('user.name')"
-          :rules="[checkLength]"
+          v-model="user.email"
+          :placeholder="$t('user.email')"
           prepend-icon="mdi-account"
           counter="50"
           clearable
@@ -30,7 +29,6 @@
           @click:append="showPassword = !showPassword"
           :type="showPassword ? 'text' : 'password'"
           :placeholder="$t('user.password')"
-          :rules="[checkLength]"
           :append-icon="
             showPassword ? 'mdi-eye-outline' :
             'mdi-eye-off-outline'
@@ -79,7 +77,7 @@ export default {
     },
     checkLength(value) {
       if (value) {
-        if (value.length < 5) {
+        if (value.length < 1) {
           return this.$t('user.login.rules.min');
         }
         if (value.length > 50) {

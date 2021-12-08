@@ -29,6 +29,7 @@ const user = {
       })
         .then(() => {
           const csrftoken = getCookie('csrftoken');
+
           if (state.csrfToken !== csrftoken) {
             commit('updateCSRFToken', csrftoken);
             console.log("set token: " + csrftoken);
@@ -49,7 +50,7 @@ const user = {
         });
     },
     login({ commit }, params) {
-      axios.post(`${API_LOCATION}/rest-auth/login/`, { params })
+      axios.post(`${API_LOCATION}/rest-auth/login/`,  params)
         .then(({ data }) => {
           commit('updateData', data);
           commit('updateLoggedIn', true);
@@ -70,7 +71,7 @@ const user = {
         });
     },
     register({ commit }, params) {
-      axios.post(`${API_LOCATION}/rest-auth/registration/`, { params })
+      axios.post(`${API_LOCATION}/rest-auth/registration/`, params)
         .then(({ data }) => {
           commit('updateData', data);
           commit('updateLoggedIn', true);

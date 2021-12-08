@@ -17,7 +17,7 @@
 
       <v-card-text>
         <v-text-field
-          v-model="user.name"
+          v-model="user.username"
           :placeholder="$t('user.username')"
           :rules="[checkLength]"
           prepend-icon="mdi-account"
@@ -115,7 +115,7 @@ export default {
           (t, value) => t + (this.checkLength(value) === true),
           0,
         );
-        if (total === 3) return false;
+        if (total === 4) return false;
       }
       return true;
     },
