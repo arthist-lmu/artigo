@@ -68,7 +68,7 @@ class TitleSerializer(serializers.ModelSerializer):
 class ResourceSerializer(serializers.ModelSerializer):
   creators = CreatorSerializer(many=True)
   titles = TitleSerializer(many=True)
-  institution = InstitutionSerializer()
+  # institution = InstitutionSerializer()
 
   class Meta:
     model = Resource
@@ -111,7 +111,7 @@ class TabooTagSerializer(serializers.ModelSerializer):
 
   def to_representation(self, data):
     data = super().to_representation(data)
-    # data['name'] = data['name'].lower()
+    data['name'] = data['name'].lower()
 
     return data
 

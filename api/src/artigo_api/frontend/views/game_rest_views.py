@@ -1,3 +1,5 @@
+import random
+
 from django.http import Http404
 from django.shortcuts import render
 from rest_framework import status
@@ -34,7 +36,7 @@ class GametypeView(APIView):
     serializer_class = GametypeSerializer
 
     def get_queryset(self):
-        gametypes = Gametype.objects.all()
+        gametypes = Gametype.objects.all().order_by("name")
         return gametypes
 
     def get(self, request, *args, **kwargs):
@@ -152,15 +154,16 @@ class TagView(APIView):
 
 class GameResourceView(APIView):
     """
-    API view to
+    API view to handle resources
     """
     serializer_class = ResourceSerializer
 
     def get_queryset(self):
-        resources = Resource.objects.all().filter(hash_id="6822d12bdd1b30b686528bea8abffcaf")
+        random_idx = random.randint(0, Resource.objects.count() - 1)
+        resources = Resource.objects.all().filter(id=random_idx)
+        # resources = Resource.objects.all().filter(hash_id="6822d12bdd1b30b686528bea8abffcaf")
         return resources
 
-    # @method_decorator(cache_page(60 * 60 * 2))
     def get(self, request, *args, **kwargs):
         resource = self.get_queryset()
         serializer = ResourceSerializer(resource, many=True)
