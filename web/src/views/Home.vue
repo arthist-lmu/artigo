@@ -1,7 +1,7 @@
 <template>
-  <v-app id="home">
+  <div>
     <h1>Welcome to ARTigo</h1>
-  </v-app>
+  </div>
 </template>
 
 <script>

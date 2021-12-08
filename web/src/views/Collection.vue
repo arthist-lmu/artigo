@@ -1,13 +1,9 @@
 <template>
-  <v-app id="collection">
-    <AppBar />
-
-    <v-main>
-      <v-container>
-        {{ data }}
-      </v-container>
-    </v-main>
-  </v-app>
+  <v-main>
+    <v-container>
+      {{ data }}
+    </v-container>
+  </v-main>
 </template>
 
 <script>

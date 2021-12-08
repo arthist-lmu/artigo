@@ -1,15 +1,14 @@
 <template>
-  <div id="app">
-    <v-main>
-      <v-navigation-drawer
+  <v-app id="app">
+    <v-navigation-drawer
       app
       permanent
     >
       <v-img
-            id="logo"
-            src="/assets/images/logo.svg"
-          >
-          </v-img>
+        id="logo"
+        src="/assets/images/logo.svg"
+      >
+      </v-img>
       <h4 id="subtitle">Social Image Tagging</h4>
 
       <v-divider></v-divider>
@@ -21,12 +20,13 @@
           v-for="nav_entry in nav_list"
           :key="nav_entry.title"
           link
+          :to="'/' + $i18n.locale + '/' + nav_entry.link"
         >
           <v-list-item-content>
             <v-list-item-title>
-              <router-link :to="'/' + $i18n.locale + '/' + nav_entry.link">
+              <!-- <router-link :to="'/' + $i18n.locale + '/' + nav_entry.link"> -->
               {{ nav_entry.title }}
-              </router-link>
+              <!-- </router-link> -->
             </v-list-item-title>
             <v-list-item-subtitle>
               {{ nav_entry.subtitle }}
@@ -54,9 +54,11 @@
     </v-navigation-drawer>
 
     <AppBar />
+    
+    <v-main>
     <router-view />
     </v-main>
-  </div>
+  </v-app>
 </template>
 
 <style>

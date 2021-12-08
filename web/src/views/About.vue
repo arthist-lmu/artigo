@@ -1,5 +1,5 @@
 <template>
-  <v-app id="about">
+  <div>
     <h1>{{ $t("about.goals") }}</h1>
         <p>{{ $t("about.p_1") }}</p>
         <p>{{ $t("about.p_2") }}</p>
@@ -12,7 +12,7 @@
         <p>Import Members list</p>
     <h2>{{ $t("about.version_history") }}</h2>
         <p>{{ $t("about.p_6") }}</p>
-  </v-app>
+  </div>
 </template>
 
 <script>

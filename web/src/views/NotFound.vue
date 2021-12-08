@@ -1,14 +1,12 @@
 <template>
-  <v-app id="not-found">
-    <div
-      class="logo"
-      @click="reset"
-      style="cursor: pointer;"
-    >
-      <h1> 404 Not found </h1>
-      <img src="/assets/images/logo.png" />
-    </div>
-  </v-app>
+  <div
+    class="logo"
+    @click="reset"
+    style="cursor: pointer;"
+  >
+    <h1> 404 Not found </h1>
+    <img src="/assets/images/logo.png" />
+  </div>
 </template>
 
 <script>

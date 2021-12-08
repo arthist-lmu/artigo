@@ -1,134 +1,130 @@
 <template>
-  <v-app id="resource">
-    <AppBar />
+  <v-main>
+    <v-container>
+      <v-row>
+        <v-col>
+          <v-card v-if="Object.keys(data).length">
+            <v-img
+              :src="data.path"
+              class="grey lighten-1"
+              max-height="500px"
+              contain
+            >
+              <template v-slot:placeholder>
+                <v-row
+                  class="fill-height ma-0"
+                  justify="center"
+                  align="center"
+                >
+                  <v-progress-circular indeterminate></v-progress-circular>
+                </v-row>
+              </template>
+            </v-img>
 
-    <v-main>
-      <v-container>
-        <v-row>
-          <v-col>
-            <v-card v-if="Object.keys(data).length">
-              <v-img
-                :src="data.path"
-                class="grey lighten-1"
-                max-height="500px"
-                contain
+            <v-card-title class="mb-2">
+              <div class="text-h5 max-w mb-1">
+                {{ title.name }}
+              </div>
+
+              <div class="text-h6 max-w grey--text">
+                {{ creator.name }}
+              </div>
+            </v-card-title>
+
+            <v-card-text>
+              <div
+                v-if="tags.length"
+                class="mb-2"
               >
-                <template v-slot:placeholder>
-                  <v-row
-                    class="fill-height ma-0"
-                    justify="center"
-                    align="center"
-                  >
-                    <v-progress-circular indeterminate></v-progress-circular>
-                  </v-row>
-                </template>
-              </v-img>
+                <v-chip
+                  v-for="tag in tags"
+                  :key="tag.id"
+                  class="mr-1 mb-2"
+                  outlined
+                >
+                  <span :title="tag.name">
+                    {{ tag.name }}
+                  </span>
+                </v-chip>
 
-              <v-card-title class="mb-2">
-                <div class="text-h5 max-w mb-1">
-                  {{ title.name }}
-                </div>
-
-                <div class="text-h6 max-w grey--text">
-                  {{ creator.name }}
-                </div>
-              </v-card-title>
-
-              <v-card-text>
-                <div
-                  v-if="tags.length"
+                <v-btn
+                  v-if="moreTags"
+                  @click="moreTags=false"
                   class="mb-2"
+                  color="grey lighten-2"
+                  depressed
+                  small
+                  icon
                 >
-                  <v-chip
-                    v-for="tag in tags"
-                    :key="tag.id"
-                    class="mr-1 mb-2"
-                    outlined
-                  >
-                    <span :title="tag.name">
-                      {{ tag.name }}
+                  <v-icon>mdi-tag-plus</v-icon>
+                </v-btn>
+                <v-btn
+                  v-else
+                  @click="moreTags=true"
+                  class="mb-2"
+                  color="grey lighten-2"
+                  depressed
+                  small
+                  icon
+                >
+                  <v-icon>mdi-tag-minus</v-icon>
+                </v-btn>
+              </div>
+
+              <v-expansion-panels
+                v-model="panels"
+                accordion
+                multiple
+                flat
+              >
+                <v-expansion-panel v-if="Object.keys(metadata).length">
+                  <v-expansion-panel-header class="pa-0">
+                    <v-icon
+                      class="mr-3"
+                      size="18"
+                    >
+                      mdi-information-outline
+                    </v-icon>
+
+                    <span class="text-subtitle-1">
+                      {{ $t('resource.metadata.title') }}
                     </span>
-                  </v-chip>
+                  </v-expansion-panel-header>
 
-                  <v-btn
-                    v-if="moreTags"
-                    @click="moreTags=false"
-                    class="mb-2"
-                    color="grey lighten-2"
-                    depressed
-                    small
-                    icon
-                  >
-                    <v-icon>mdi-tag-plus</v-icon>
-                  </v-btn>
-                  <v-btn
-                    v-else
-                    @click="moreTags=true"
-                    class="mb-2"
-                    color="grey lighten-2"
-                    depressed
-                    small
-                    icon
-                  >
-                    <v-icon>mdi-tag-minus</v-icon>
-                  </v-btn>
-                </div>
+                  <v-expansion-panel-content>
+                    <v-row
+                      v-for="(values, field) in metadata"
+                      :key="values"
+                      justify="space-around"
+                      no-gutters
+                    >
+                      <v-col cols="3">
+                        <span class="capitalize">
+                          {{ $t('resource.metadata.fields')[field] }}
+                        </span>
+                      </v-col>
 
-                <v-expansion-panels
-                  v-model="panels"
-                  accordion
-                  multiple
-                  flat
-                >
-                  <v-expansion-panel v-if="Object.keys(metadata).length">
-                    <v-expansion-panel-header class="pa-0">
-                      <v-icon
-                        class="mr-3"
-                        size="18"
-                      >
-                        mdi-information-outline
-                      </v-icon>
-
-                      <span class="text-subtitle-1">
-                        {{ $t('resource.metadata.title') }}
-                      </span>
-                    </v-expansion-panel-header>
-
-                    <v-expansion-panel-content>
-                      <v-row
-                        v-for="(values, field) in metadata"
-                        :key="values"
-                        justify="space-around"
-                        no-gutters
-                      >
-                        <v-col cols="3">
-                          <span class="capitalize">
-                            {{ $t('resource.metadata.fields')[field] }}
-                          </span>
-                        </v-col>
-
-                        <v-col cols="9">
-                          <v-chip
-                            v-for="value in values"
-                            :key="value"
-                            :title="value.name"
-                            class="mr-1 mb-2"
-                            outlined
-                          >
-                            {{ value.name }}
-                          </v-chip>
-                        </v-col>
-                      </v-row>
-                    </v-expansion-panel-content>
-                  </v-expansion-panel>
-                </v-expansion-panels>
-              </v-card-text>
-            </v-card>
-          </v-col>
-        </v-row>
-      </v-container>
-    </v-main>
-  </v-app>
+                      <v-col cols="9">
+                        <v-chip
+                          v-for="value in values"
+                          :key="value"
+                          :title="value.name"
+                          class="mr-1 mb-2"
+                          outlined
+                        >
+                          {{ value.name }}
+                        </v-chip>
+                      </v-col>
+                    </v-row>
+                  </v-expansion-panel-content>
+                </v-expansion-panel>
+              </v-expansion-panels>
+            </v-card-text>
+          </v-card>
+        </v-col>
+      </v-row>
+    </v-container>
+  </v-main>
 </template>
 
 <script>
