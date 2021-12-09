@@ -4,6 +4,26 @@
         :value="progress"
     ></v-progress-linear>
     <h2> Only {{ secondsLeft }} seconds left! </h2>
+    <v-img
+    lazy-src="https://picsum.photos/id/11/10/6"
+    src="https://picsum.photos/id/11/500/300"
+    ></v-img>
+    <v-container>
+    <v-row>
+      <v-text-field
+        v-model="tagging"
+        solo
+        label="Discribe what you see"
+        clearable
+      ></v-text-field>
+      <v-btn
+        color="primary"
+        heigth="50"
+      >
+      Primary
+      </v-btn>
+    </v-row>
+    </v-container>
   </div>
 </template>
 
@@ -11,6 +31,7 @@
 export default {
   data() {
     return {
+      tagging: "",
       secondsLeft: 40,
       timeLimit: 40,
       progress: 0,
@@ -24,7 +45,6 @@ export default {
           setTimeout(() => {
             this.secondsLeft -= 1;
             this.progress = 100 - ((100 / this.timeLimit) * this.secondsLeft);
-            console.log(this.progress)
           }, 1000);
         }
       },
