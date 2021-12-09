@@ -5,7 +5,7 @@
     style="cursor: pointer;"
   >
     <h1> 404 Not found </h1>
-    <img src="/assets/images/logo.png" />
+    <img src="/assets/images/logo.svg" />
   </div>
 </template>
 

@@ -15,8 +15,53 @@ function loadLocaleMessages() {
   });
   return messages;
 }
+
+function getBrowserLocale(options = {}) {
+  const defaultOptions = { countryCodeOnly: false }
+  const opt = { ...defaultOptions, ...options }
+  const navigatorLocale =
+    navigator.languages !== undefined
+      ? navigator.languages[0]
+      : navigator.language
+  if (!navigatorLocale) {
+    return undefined
+  }
+  const trimmedLocale = opt.countryCodeOnly
+    ? navigatorLocale.trim().split(/-|_/)[0]
+    : navigatorLocale.trim()
+    console.log(trimmedLocale);
+  return trimmedLocale
+}
+
+function supportedLocalesInclude(locale) {
+  const locales = require.context('../locales', true,
+  /[A-Za-z0-9-_,\s]+\.json$/i);
+  console.log("available locales")
+  console.log(locales.keys());
+  let locale_list = locales.keys();
+  for (let i = 0; i < locale_list.length; i++) {
+    let lang = locale_list[i].split("/")[1].split(".")[0];
+    if (lang === locale) {
+      return true;
+    }
+    return false;
+  }
+  return locale.match(/([A-Za-z0-9-_]+)\./i);
+}
+
+function getStartingLocale() {
+  const browserLocale = getBrowserLocale({ countryCodeOnly: true })
+
+
+  if (supportedLocalesInclude(browserLocale)) {
+    return browserLocale
+  } else {
+    return process.env.VUE_APP_I18N_LOCALE || "en"
+  }
+}
+
 export default new VueI18n({
-  locale: process.env.VUE_APP_I18N_LOCALE || 'en',
+  locale: getStartingLocale(),
   fallbackLocale: process.env.VUE_APP_I18N_FALLBACK_LOCALE || 'en',
   messages: loadLocaleMessages(),
 });
