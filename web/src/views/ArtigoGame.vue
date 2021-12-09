@@ -1,24 +1,30 @@
 <template>
+  <div>
     <v-progress-linear
-        value="data.timerCount"
+        :value="progress"
     ></v-progress-linear>
+    <h2> Only {{ secondsLeft }} seconds left! </h2>
+  </div>
 </template>
 
 <script>
 export default {
   data() {
     return {
-      timerCount: 30,
+      secondsLeft: 40,
+      timeLimit: 40,
+      progress: 0,
     };
   },
 
   watch: {
-    timerCount: {
+    secondsLeft: {
       handler(value) {
         if (value > 0) {
           setTimeout(() => {
-            this.timerCount -= 1;
-            console.log(this.timerCount);
+            this.secondsLeft -= 1;
+            this.progress = 100 - ((100 / this.timeLimit) * this.secondsLeft);
+            console.log(this.progress)
           }, 1000);
         }
       },
