@@ -87,10 +87,27 @@ class ResourceSerializer(serializers.ModelSerializer):
     return data
 
 
+class GameroundWithResourceSerializer(ResourceSerializer):
+  # tags = serializers.ReadOnlyField()
+  gameround = serializers.ReadOnlyField()
+
+  class Meta(ResourceSerializer.Meta):
+    fields = ResourceSerializer.Meta.fields + ['gameround'] # + ['tags']
+
+  def to_representation(self, data):
+    data = super().to_representation(data)
+    data['gameround'] = GameroundSerializer(data['gameround']).data
+
+    return data
+
+
 class TagSerializer(serializers.ModelSerializer):
+  name = serializers.CharField(max_length=256)
+  language = serializers.CharField(max_length=256)
+
   class Meta:
     model = Tag
-    fields = ['id', 'name', 'language']
+    fields = ('__all__')
 
   def to_representation(self, data):
     data = super().to_representation(data)
@@ -103,6 +120,7 @@ class TabooTagSerializer(serializers.ModelSerializer):
   id = serializers.ReadOnlyField(source='tag_id')
   name = serializers.ReadOnlyField(source='tag__name')
   language = serializers.ReadOnlyField(source='tag__language')
+  # TODO: Implement count
   count = serializers.IntegerField()
 
   class Meta:
@@ -157,6 +175,22 @@ class GamesessionSerializer(serializers.ModelSerializer):
     return data
 
 
+class GametypeWithGamesessionSerializer(serializers.ModelSerializer):
+  gametypes = serializers.SerializerMethodField()
+
+  class Meta:
+    model = Gamesession
+    fields = ['id', 'user', 'gametype', 'created']
+
+  def get_gametype(self, obj):
+    data = GametypeSerializer(obj.gametype.all(), many=True).data
+    return data
+
+  def to_representation(self, data):
+    data = super().to_representation(data)
+    return data
+
+
 class GamesessionSerializer2(serializers.ModelSerializer):
   gametype = GametypeSerializer(read_only=True)
 
@@ -167,6 +201,20 @@ class GamesessionSerializer2(serializers.ModelSerializer):
   def to_representation(self, data):
     data = super().to_representation(data)
     # data['id'] = data['id'].lower()
+
+    return data
+
+
+class GamesessionWithGameroundSerializer(serializers.ModelSerializer):
+  gametype = GametypeSerializer(read_only=True)
+  gameround = serializers.ReadOnlyField(source='gameround')
+
+  class Meta:
+    model = Gamesession
+    fields = ['id', 'user', 'gametype', 'created']
+
+  def to_representation(self, data):
+    data = super().to_representation(data)
 
     return data
 
@@ -197,6 +245,7 @@ class TagCountSerializer(serializers.ModelSerializer):
   id = serializers.ReadOnlyField(source='tag_id')
   name = serializers.ReadOnlyField(source='tag__name')
   language = serializers.ReadOnlyField(source='tag__language')
+  # TODO: Implement the count!!
   count = serializers.IntegerField()
 
   class Meta:

@@ -49,21 +49,43 @@ class GamesessionView(APIView):
     """
     API View that handles gamesessions
     """
-    serializer_class = GamesessionSerializer2
+    serializer_class = GamesessionSerializer
 
     def get_queryset(self):
-        gamesessions = Gamesession.objects.all().filter(created="March 27, 2017, 7:57 p.m.")
+        gamesessions = Gamesession.objects.all().filter(id=2015703320)
         return gamesessions
 
     def get(self, request, *args, **kwargs):
         gamesession = self.get_queryset()
-        serializer = GamesessionSerializer2(gamesession, many=True)
+        serializer = GamesessionSerializer(gamesession, many=True)
         return Response(serializer.data)
 
     def post(self, request, *args, **kwargs):
         gamesession = request.data.get_queryset()
+        serializer = GamesessionSerializer(data=gamesession)
+        if serializer.is_valid(raise_exception=True):
+            saved_gamesession = serializer.save()
+        return Response(saved_gamesession)
 
-        serializer = GamesessionSerializer2(data=gamesession)
+
+class GametypeWithGamesessionView(APIView):
+    """
+    API View that handles gametypes with gamesessions
+    """
+    serializer_class = GametypeWithGamesessionSerializer
+
+    def get_queryset(self):
+        gametype = Gametype.objects.all().filter(name="imageLabeler")
+        return gametype
+
+    def get(self, request, *args, **kwargs):
+        gametype = self.get_queryset()
+        serializer = GametypeWithGamesessionSerializer(gametype, many=True)
+        return Response(serializer.data)
+
+    def post(self, request, *args, **kwargs):
+        gamesession = request.data.get_queryset()
+        serializer = GametypeWithGamesessionSerializer(data=gamesession)
         if serializer.is_valid(raise_exception=True):
             saved_gamesession = serializer.save()
         return Response(saved_gamesession)
@@ -109,12 +131,16 @@ class TaggingView(APIView):
         return Response(serializer.data)
 
     def post(self, request, *args, **kwargs):
-        tagging = request.data.get_queryset()
+        # tagging = request.data.get_queryset()
 
-        serializer = TaggingSerializer(data=tagging)
-        if serializer.is_valid(raise_exception=True):
-            saved_tagging = serializer.save()
-        return Response(saved_tagging)
+        serializer = TaggingSerializer(data=request.data)
+        if serializer.is_valid():
+            # saved_tagging = serializer.save()
+            serializer.save()
+            return Response({"status": "success", "data": serializer.data}, status=status.HTTP_200_OK)
+        else:
+            return Response({"status": "error", "data": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+        # return Response(saved_tagging)
 
 
 class TagView(APIView):
@@ -134,7 +160,6 @@ class TagView(APIView):
         return Response(serializer.data)
 
     def post(self, request, *args, **kwargs):
-
         tag = request.data.get_queryset()
 
         if Tagging.objects.filter(tag=tag).exists():
@@ -159,15 +184,44 @@ class GameResourceView(APIView):
     serializer_class = ResourceSerializer
 
     def get_queryset(self):
-        random_idx = random.randint(0, Resource.objects.count() - 1)
-        resources = Resource.objects.all().filter(id=random_idx)
-        # resources = Resource.objects.all().filter(hash_id="6822d12bdd1b30b686528bea8abffcaf")
+        resources = None
+        while resources is None:
+            random_idx = random.randint(0, Resource.objects.count() - 1)
+            resources = Resource.objects.all().filter(id=random_idx)
+        # TODO: See that a resource is always returned! check that resource not null
         return resources
 
     def get(self, request, *args, **kwargs):
         resource = self.get_queryset()
         serializer = ResourceSerializer(resource, many=True)
         return Response(serializer.data)
+
+
+class GameroundWithResourceView(APIView):
+    """
+    API view to handle gamerounds and resources/gameround
+    """
+    serializer_class = GameroundWithResourceSerializer
+
+    def get_queryset(self):
+        resources = None
+        while resources is None:
+            random_idx = random.randint(0, Resource.objects.count() - 1)
+            resources = Resource.objects.all().filter(id=random_idx)
+        # TODO: See that a resource is always returned! check that resource not null
+        return resources
+
+    def get(self, request, *args, **kwargs):
+        resource = self.get_queryset()
+        serializer = GameroundWithResourceSerializer(resource, many=True)
+        return Response(serializer.data)
+
+    def post(self, request, *args, **kwargs):
+        gameround = request.data.get_queryset()
+        serializer = GameroundSerializer(data=gameround)
+        if serializer.is_valid(raise_exception=True):
+            saved_gameround = serializer.save()
+        return Response(saved_gameround)
 
 
 class TabooTagsView(APIView):

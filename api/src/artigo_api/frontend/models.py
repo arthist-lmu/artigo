@@ -136,7 +136,6 @@ class Resource(models.Model):
     media_type = models.CharField(max_length=256, default='picture')
 
     objects = models.Manager()
-    # objects = ResourceManager()
 
     def __str__(self):
         return self.hash_id
@@ -178,6 +177,8 @@ class Gamesession(models.Model):
     gametype = models.ForeignKey(Gametype, on_delete=models.CASCADE)
     created = models.DateTimeField(editable=False)
 
+    objects = models.Manager()
+
     def save(self, *args, **kwargs):
         if not self.id:
             self.created = timezone.now()
@@ -190,6 +191,8 @@ class Gameround(models.Model):
     gamesession = models.ForeignKey(Gamesession, on_delete=models.CASCADE)
     created = models.DateTimeField(editable=False)
     score = models.PositiveIntegerField(default=0)
+
+    objects = models.Manager()
 
     def save(self, *args, **kwargs):
         if not self.id:
