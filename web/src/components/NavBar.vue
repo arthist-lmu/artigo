@@ -19,19 +19,32 @@
             v-for="nav_entry in nav_list"
             :key="nav_entry.title"
             link
-            :to="'/' + $i18n.locale + '/' + nav_entry.link"
+            :to="'/' + $i18n.locale + '/' + nav_entry.about"
         >
             <v-list-item-content>
             <v-list-item-title>
-                <!-- <router-link :to="'/' + $i18n.locale + '/' + nav_entry.link"> -->
                 {{ nav_entry.title }}
-                <!-- </router-link> -->
             </v-list-item-title>
             <v-list-item-subtitle>
-                {{ nav_entry.subtitle }}
+                'Idea, Goals, Project details'
             </v-list-item-subtitle>
             </v-list-item-content>
         </v-list-item>
+
+        <v-list-item
+            link
+            :to="'/' + $i18n.locale + '/' + 'about'"
+        >
+            <v-list-item-content>
+            <v-list-item-title>
+                {{ $t("navbar.about") }}
+            </v-list-item-title>
+            <v-list-item-subtitle>
+                'Idea, Goals, Project details'
+            </v-list-item-subtitle>
+            </v-list-item-content>
+        </v-list-item>
+
         </v-list>
 
         <v-divider></v-divider>

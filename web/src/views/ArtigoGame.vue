@@ -5,8 +5,7 @@
     ></v-progress-linear>
     <h2> Only {{ secondsLeft }} seconds left! </h2>
     <v-img
-    lazy-src="https://picsum.photos/id/11/10/6"
-    src="https://picsum.photos/id/11/500/300"
+    src="http://localhost:8000/media/36/21/36216392e7f137c39c006c698f8f2546.jpg"
     ></v-img>
     <v-container>
     <v-row>
