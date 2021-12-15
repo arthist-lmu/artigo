@@ -21,6 +21,15 @@
       >
       Primary
       </v-btn>
+      <v-btn
+          @click="get_res"
+          color="accent"
+          depressed
+          rounded
+          block
+        >
+          {{ data }} 
+        </v-btn>
     </v-row>
     </v-container>
   </div>
@@ -35,6 +44,13 @@ export default {
       timeLimit: 40,
       progress: 0,
     };
+  },
+
+  methods: {
+    get_res() {
+      this.$store.dispatch('resource/get', { random: true });
+      this.dialog = false;
+    },
   },
 
   watch: {
