@@ -94,6 +94,11 @@ sudo docker-compose exec api python3 manage.py makemigrations
 sudo docker-compose exec api python3 manage.py migrate
 ```
 
+Import fixtures (inital data)
+```sh
+sudo docker-compose exec api python3 manage.py loaddata Sites.json
+```
+
 ### Run tests
 To run tests for `api`, use one of the following commands:
 ```sh
