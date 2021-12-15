@@ -15,21 +15,6 @@
         <v-list
         nav
         >
-        <v-list-item
-            v-for="nav_entry in nav_list"
-            :key="nav_entry.title"
-            link
-            :to="'/' + $i18n.locale + '/' + nav_entry.about"
-        >
-            <v-list-item-content>
-            <v-list-item-title>
-                {{ nav_entry.title }}
-            </v-list-item-title>
-            <v-list-item-subtitle>
-                'Idea, Goals, Project details'
-            </v-list-item-subtitle>
-            </v-list-item-content>
-        </v-list-item>
 
         <v-list-item
             link
@@ -40,7 +25,35 @@
                 {{ $t("navbar.about") }}
             </v-list-item-title>
             <v-list-item-subtitle>
-                'Idea, Goals, Project details'
+                Idea, Goals, Project details
+            </v-list-item-subtitle>
+            </v-list-item-content>
+        </v-list-item>
+
+        <v-list-item
+            link
+            :to="'/' + $i18n.locale + '/' + 'publications'"
+        >
+            <v-list-item-content>
+            <v-list-item-title>
+                {{ $t("navbar.publications") }}
+            </v-list-item-title>
+            <v-list-item-subtitle>
+                Research, literature, media
+            </v-list-item-subtitle>
+            </v-list-item-content>
+        </v-list-item>
+
+        <v-list-item
+            link
+            :to="'/' + $i18n.locale + '/' + 'artigo-game'"
+        >
+            <v-list-item-content>
+            <v-list-item-title>
+                {{ $t("navbar.artigo-game") }}
+            </v-list-item-title>
+            <v-list-item-subtitle>
+                Not implemented
             </v-list-item-subtitle>
             </v-list-item-content>
         </v-list-item>
@@ -76,18 +89,6 @@ import i18n from '@/plugins/i18n';
 export default {
   data() {
     return {
-      nav_list: [
-        { link: 'about', title: i18n.t('navbar.about'), subtitle: 'Idea, Goals, Project details' },
-        { link: 'publications', title: i18n.t('navbar.publications'), subtitle: 'Research, literature, media' },
-        { link: 'artigo-game', title: 'Artigo-Game', subtitle: 'Not implemented' },
-        { link: 'artigo-game', title: 'Karido', subtitle: 'Not implemented' },
-        { link: 'artigo-game', title: 'ARTigo-Quiz', subtitle: 'Not implemented' },
-        { link: 'artigo-game', title: 'ARTigo-Taboo', subtitle: 'Not implemented' },
-        { link: 'artigo-game', title: 'Tag A Tag', subtitle: 'Not implemented' },
-        { link: 'artigo-game', title: 'Combino', subtitle: 'Not implemented' },
-        { link: 'artigo-game', title: 'ARTime', subtitle: 'Not implemented' },
-        { link: 'artigo-game', title: 'Crossover', subtitle: 'Not implemented' },
-      ],
     };
   },
 };
