@@ -67,8 +67,8 @@ REST_FRAMEWORK = {
 }
 
 MIDDLEWARE = [
-    "django.middleware.security.SecurityMiddleware",
     "corsheaders.middleware.CorsMiddleware",
+    "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -86,10 +86,9 @@ ALLOWED_HOSTS = [
 CORS_ALLOW_CREDENTIALS = True
 
 CORS_ALLOWED_ORIGINS = [
+    "http://localhost",
     "http://localhost:80",
     "http://localhost:8080",
-    "http://127.0.0.1:80",
-    "http://web",
 ]
 
 #CSRF_USE_SESSIONS = False
@@ -99,9 +98,10 @@ CORS_ALLOWED_ORIGINS = [
 # Should be true in production
 #SESSION_COOKIE_SECURE = False
 CSRF_TRUSTED_ORIGINS = [
-    "http://localhost:8080/",
-    "http://127.0.0.1:8080/",
+    "http://localhost",
     "http://localhost:80/",
+    "http://localhost:8080/",
+
 ]
 
 
@@ -263,9 +263,12 @@ SOCIALACCOUNT_PROVIDERS = {
     }
 }
 
+# Email Configuration
+
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = ''
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-EMAIL_HOST_USER = ''
-EMAIL_HOST_PASSWORD = ''
+EMAIL_HOST = env('EMAIL_HOST')
+EMAIL_PORT = env('EMAIL_PORT')
+EMAIL_USE_TLS = env('EMAIL_USE_TLS')
+EMAIL_HOST_USER = env('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
+DEFAULT_FROM_EMAIL = env('DEFAULT_FROM_EMAIL')
