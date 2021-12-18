@@ -25,6 +25,8 @@ The backend container starts on an Ubuntu base image and executes a Django serve
 * [django-environ](https://github.com/joke2k/django-environ) for configuration using env-variables
 by Django REST framework (which is also used by the backend).
 
+The data-only part of the API follows REST principles, while the GWAP part mostly does not.
+
 ## web
 This container starts an Apache web server that uses the generated [Vue.js](https://vuejs.org/) files to act as a web client. For visual appeal it has the [vuetify](https://vuetifyjs.com/) UI-framework installed, in addition to [vue-router](https://router.vuejs.org/) for routing. It uses [Axios](https://axios-http.com/) to communicate with the backend. For performance reasons [webpack](https://webpack.js.org/) is used to bundle modules.
 
