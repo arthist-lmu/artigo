@@ -6,7 +6,7 @@ services:
       - "127.0.0.1:6379:6379"
 
   opensearch:
-    image: opensearchproject/opensearch:1.1.0
+    image: opensearchproject/opensearch:latest
     environment:
       - node.name=os01
       - discovery.seed_hosts=os01
