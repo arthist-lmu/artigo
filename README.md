@@ -45,6 +45,11 @@ sudo docker-compose exec api python3 manage.py migrate auth
 sudo docker-compose exec api python3 manage.py migrate
 ```
 
+Import fixtures (inital data)
+```sh
+sudo docker-compose exec api python3 manage.py loaddata Sites.json
+```
+
 
 ## Miscellaneous
 
@@ -92,11 +97,6 @@ Make migrations:
 ```sh
 sudo docker-compose exec api python3 manage.py makemigrations
 sudo docker-compose exec api python3 manage.py migrate
-```
-
-Import fixtures (inital data)
-```sh
-sudo docker-compose exec api python3 manage.py loaddata Sites.json
 ```
 
 ### Run tests
