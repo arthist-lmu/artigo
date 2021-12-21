@@ -27,7 +27,7 @@ class ResourceView(APIView):
         if request.query_params.get('random'):
             seed = datetime.now().strftime('%Y%m%d')
             resource_id = Resource.objects.random(seed).id
-        
+
         if resource_id:
             resource = get_resource_by_id(resource_id, lang)
 
@@ -59,3 +59,5 @@ def get_resource_by_id(resource_id, lang=None):
         return data
     except Exception as e:
         logger.error(traceback.format_exc())
+
+        # post here to res return based on game param

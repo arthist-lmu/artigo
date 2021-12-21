@@ -8,15 +8,17 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from rest_framework.authtoken.models import Token
 
+
 @receiver(post_save, sender=settings.AUTH_USER_MODEL)
 def create_auth_token(sender, instance=None, created=False, **kwargs):
     if created:
         Token.objects.create(user=instance)
 
+
 class CustomUser(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(verbose_name='email address', unique=True)
     username = models.CharField(max_length=256, unique=True, blank=False)
-    
+
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
@@ -27,7 +29,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     last_name = models.CharField(max_length=256)
 
     updated_at = models.DateTimeField(auto_now=True)
-    
+
     REQUIRED_FIELDS = ['username']
 
     objects = CustomUserManager()
@@ -83,7 +85,7 @@ class Resource(models.Model):
         tags = self.taggings.values('tag').annotate(count=Count('tag'))
 
         return tags.values('tag_id', 'tag__name', 'tag__language', 'count')
-        
+
 
 class Gametype(models.Model):
     name = models.CharField(max_length=256)
@@ -131,7 +133,8 @@ class Tag(models.Model):
 class Tagging(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, null=True)
     gameround = models.ForeignKey(Gameround, on_delete=models.CASCADE)
-    resource = models.ForeignKey(Resource, on_delete=models.CASCADE, related_name='taggings')
+    resource = models.ForeignKey(
+        Resource, on_delete=models.CASCADE, related_name='taggings')
     tag = models.ForeignKey(Tag, on_delete=models.CASCADE)
     created = models.DateTimeField(editable=False)
     score = models.PositiveIntegerField(default=0)

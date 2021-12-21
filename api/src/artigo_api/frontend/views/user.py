@@ -14,8 +14,8 @@ logger = logging.getLogger(__name__)
 
 
 class UserView(APIView):
-#    authentication_classes = [TokenAuthentication]
-#    permission_classes = [IsAuthenticated]
+    #    authentication_classes = [TokenAuthentication]
+    #    permission_classes = [IsAuthenticated]
 
     def post(self, request, format=None):
 
@@ -32,7 +32,6 @@ class UserView(APIView):
             })
         except Exception as e:
             logger.error(traceback.format_exc())
-    
 
     def get(self, request, format=None):
         content = {
@@ -45,6 +44,7 @@ class UserView(APIView):
 @ensure_csrf_cookie
 def get_csrf_token(request):
     return JsonResponse({})
+
 
 """
 class LoginView(APIView):

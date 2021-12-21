@@ -22,7 +22,8 @@ class ExponentialBackoff(SleepingPolicy):
         self.multiplier = multiplier
 
     def sleep(self, try_i: int):
-        sleep_range = min(self.init_backoff * self.multiplier ** try_i, self.max_backoff)
+        sleep_range = min(self.init_backoff *
+                          self.multiplier ** try_i, self.max_backoff)
         sleep_ms = randint(0, sleep_range)
 
         logger.debug(f'Sleeping for {sleep_ms}')

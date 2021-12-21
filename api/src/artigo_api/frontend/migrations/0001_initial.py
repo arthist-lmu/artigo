@@ -18,21 +18,28 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='CustomUser',
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('password', models.CharField(max_length=128, verbose_name='password')),
-                ('last_login', models.DateTimeField(blank=True, null=True, verbose_name='last login')),
-                ('email', models.EmailField(max_length=254, unique=True, verbose_name='email address')),
+                ('id', models.BigAutoField(auto_created=True,
+                 primary_key=True, serialize=False, verbose_name='ID')),
+                ('password', models.CharField(
+                    max_length=128, verbose_name='password')),
+                ('last_login', models.DateTimeField(
+                    blank=True, null=True, verbose_name='last login')),
+                ('email', models.EmailField(max_length=254,
+                 unique=True, verbose_name='email address')),
                 ('username', models.CharField(max_length=256, unique=True)),
                 ('is_active', models.BooleanField(default=True)),
                 ('is_staff', models.BooleanField(default=False)),
                 ('is_superuser', models.BooleanField(default=False)),
-                ('date_joined', models.DateTimeField(default=django.utils.timezone.now)),
+                ('date_joined', models.DateTimeField(
+                    default=django.utils.timezone.now)),
                 ('is_uploader', models.BooleanField(default=False)),
                 ('first_name', models.CharField(max_length=256)),
                 ('last_name', models.CharField(max_length=256)),
                 ('updated_at', models.DateTimeField(auto_now=True)),
-                ('groups', models.ManyToManyField(blank=True, help_text='The groups this user belongs to. A user will get all permissions granted to each of their groups.', related_name='user_set', related_query_name='user', to='auth.Group', verbose_name='groups')),
-                ('user_permissions', models.ManyToManyField(blank=True, help_text='Specific permissions for this user.', related_name='user_set', related_query_name='user', to='auth.Permission', verbose_name='user permissions')),
+                ('groups', models.ManyToManyField(blank=True, help_text='The groups this user belongs to. A user will get all permissions granted to each of their groups.',
+                 related_name='user_set', related_query_name='user', to='auth.Group', verbose_name='groups')),
+                ('user_permissions', models.ManyToManyField(blank=True, help_text='Specific permissions for this user.',
+                 related_name='user_set', related_query_name='user', to='auth.Permission', verbose_name='user permissions')),
             ],
             options={
                 'abstract': False,
@@ -41,14 +48,16 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Creator',
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.BigAutoField(auto_created=True,
+                 primary_key=True, serialize=False, verbose_name='ID')),
                 ('name', models.CharField(max_length=256)),
             ],
         ),
         migrations.CreateModel(
             name='Gameround',
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.BigAutoField(auto_created=True,
+                 primary_key=True, serialize=False, verbose_name='ID')),
                 ('created', models.DateTimeField(editable=False)),
                 ('score', models.PositiveIntegerField(default=0)),
             ],
@@ -56,7 +65,8 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Gametype',
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.BigAutoField(auto_created=True,
+                 primary_key=True, serialize=False, verbose_name='ID')),
                 ('name', models.CharField(max_length=256)),
                 ('rounds', models.PositiveIntegerField(default=5)),
                 ('round_duration', models.PositiveIntegerField(default=60)),
@@ -66,7 +76,8 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Resource',
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.BigAutoField(auto_created=True,
+                 primary_key=True, serialize=False, verbose_name='ID')),
                 ('hash_id', models.CharField(max_length=256)),
                 ('created_start', models.DateField(null=True)),
                 ('created_end', models.DateField(null=True)),
@@ -80,7 +91,8 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Source',
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.BigAutoField(auto_created=True,
+                 primary_key=True, serialize=False, verbose_name='ID')),
                 ('name', models.CharField(max_length=256)),
                 ('url', models.URLField(max_length=256)),
             ],
@@ -88,7 +100,8 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Tag',
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.BigAutoField(auto_created=True,
+                 primary_key=True, serialize=False, verbose_name='ID')),
                 ('name', models.CharField(max_length=256)),
                 ('language', models.CharField(max_length=256)),
             ],
@@ -96,7 +109,8 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Title',
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.BigAutoField(auto_created=True,
+                 primary_key=True, serialize=False, verbose_name='ID')),
                 ('name', models.CharField(max_length=512)),
                 ('language', models.CharField(blank=True, max_length=256)),
             ],
@@ -104,19 +118,25 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Tagging',
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.BigAutoField(auto_created=True,
+                 primary_key=True, serialize=False, verbose_name='ID')),
                 ('created', models.DateTimeField(editable=False)),
                 ('score', models.PositiveIntegerField(default=0)),
-                ('gameround', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='frontend.gameround')),
-                ('resource', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='taggings', to='frontend.resource')),
-                ('tag', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='frontend.tag')),
-                ('user', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, to=settings.AUTH_USER_MODEL)),
+                ('gameround', models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE, to='frontend.gameround')),
+                ('resource', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE,
+                 related_name='taggings', to='frontend.resource')),
+                ('tag', models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE, to='frontend.tag')),
+                ('user', models.ForeignKey(
+                    null=True, on_delete=django.db.models.deletion.SET_NULL, to=settings.AUTH_USER_MODEL)),
             ],
         ),
         migrations.AddField(
             model_name='resource',
             name='source',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='frontend.source'),
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE, to='frontend.source'),
         ),
         migrations.AddField(
             model_name='resource',
@@ -126,20 +146,25 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Gamesession',
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.BigAutoField(auto_created=True,
+                 primary_key=True, serialize=False, verbose_name='ID')),
                 ('created', models.DateTimeField(editable=False)),
-                ('gametype', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='frontend.gametype')),
-                ('user', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, to=settings.AUTH_USER_MODEL)),
+                ('gametype', models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE, to='frontend.gametype')),
+                ('user', models.ForeignKey(
+                    null=True, on_delete=django.db.models.deletion.SET_NULL, to=settings.AUTH_USER_MODEL)),
             ],
         ),
         migrations.AddField(
             model_name='gameround',
             name='gamesession',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='frontend.gamesession'),
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE, to='frontend.gamesession'),
         ),
         migrations.AddField(
             model_name='gameround',
             name='user',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, to=settings.AUTH_USER_MODEL),
+            field=models.ForeignKey(
+                null=True, on_delete=django.db.models.deletion.SET_NULL, to=settings.AUTH_USER_MODEL),
         ),
     ]

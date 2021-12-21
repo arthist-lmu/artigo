@@ -3,6 +3,7 @@ import logging
 import traceback
 from rest_framework.views import APIView
 
+
 class ArtigoGame(APIView):
     def get(self, request, format=None):
         resource = None
@@ -22,7 +23,7 @@ class ArtigoGame(APIView):
         if request.query_params.get('random'):
             seed = datetime.now().strftime('%Y%m%d')
             resource_id = Resource.objects.random(seed).id
-        
+
         if resource_id:
             resource = get_resource_by_id(resource_id, lang)
 
@@ -30,3 +31,5 @@ class ArtigoGame(APIView):
             return Response(resource)
 
         raise NotFound(detail='Unknown resource', code=404)
+
+       # return user stats
