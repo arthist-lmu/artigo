@@ -17,7 +17,8 @@ logger = logging.getLogger(__name__)
 
 
 class ResourceView(APIView):
-    @method_decorator(cache_page(60*60*2))
+    # Add extra uncached view for random requests
+    # @method_decorator(cache_page(60*60*2))
     def get(self, request, format=None):
         resource = None
 
@@ -25,8 +26,7 @@ class ResourceView(APIView):
         lang = request.query_params.get('lang', 'en')
 
         if request.query_params.get('random'):
-            seed = datetime.now().strftime('%Y%m%d')
-            resource_id = Resource.objects.random(seed).id
+            resource_id = Resource.objects.random().id
 
         if resource_id:
             resource = get_resource_by_id(resource_id, lang)
