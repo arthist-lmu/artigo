@@ -9,7 +9,7 @@
 export default {
   methods: {
     reset() {
-      this.$router.push("/");
+      this.$router.push('/');
     },
   },
 };

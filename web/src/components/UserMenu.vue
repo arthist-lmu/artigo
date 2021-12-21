@@ -31,9 +31,9 @@
 </template>
 
 <script>
-import UserLogin from "@/components/UserLogin.vue";
-import UserAccount from "@/components/UserAccount.vue";
-import UserRegister from "@/components/UserRegister.vue";
+import UserLogin from '@/components/UserLogin.vue';
+import UserAccount from '@/components/UserAccount.vue';
+import UserRegister from '@/components/UserRegister.vue';
 
 export default {
   data() {

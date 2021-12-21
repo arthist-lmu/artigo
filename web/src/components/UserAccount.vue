@@ -37,7 +37,7 @@
 export default {
   methods: {
     logout() {
-      this.$store.dispatch("user/logout");
+      this.$store.dispatch('user/logout');
     },
   },
   computed: {
@@ -49,10 +49,10 @@ export default {
       return Math.round(diff / (1000 * 60 * 60 * 24));
     },
     joined() {
-      return this.$tc("user.menu.joined", this.nDays);
+      return this.$tc('user.menu.joined', this.nDays);
     },
     initials() {
-      return "test";
+      return 'test';
       // return this.data.username.slice(0, 2);
     },
   },

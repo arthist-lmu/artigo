@@ -24,9 +24,9 @@
 </template>
 
 <script>
-import UserMenu from "@/components/UserMenu.vue";
-import i18n from "@/plugins/i18n";
-import router from "@/router/index";
+import UserMenu from '@/components/UserMenu.vue';
+import i18n from '@/plugins/i18n';
+import router from '@/router/index';
 
 export default {
   data() {
@@ -34,7 +34,7 @@ export default {
       closeOnClick: true,
       offset: true,
       locale: i18n.locale,
-      langs: ["en", "de"],
+      langs: ['en', 'de'],
     };
   },
   components: {

@@ -59,7 +59,7 @@
 </template>
 
 <script>
-import UserRegister from "@/components/UserRegister.vue";
+import UserRegister from '@/components/UserRegister.vue';
 
 export default {
   data() {
@@ -71,20 +71,20 @@ export default {
   },
   methods: {
     login() {
-      this.$store.dispatch("user/login", this.user);
+      this.$store.dispatch('user/login', this.user);
       this.dialog = false;
     },
     checkLength(value) {
       if (value) {
         if (value.length < 1) {
-          return this.$t("user.login.rules.min");
+          return this.$t('user.login.rules.min');
         }
         if (value.length > 50) {
-          return this.$t("user.login.rules.max");
+          return this.$t('user.login.rules.max');
         }
         return true;
       }
-      return this.$t("field.required");
+      return this.$t('field.required');
     },
   },
   computed: {
@@ -92,7 +92,7 @@ export default {
       if (Object.keys(this.user).length) {
         const total = Object.values(this.user).reduce(
           (t, value) => t + (this.checkLength(value) === true),
-          0
+          0,
         );
         if (total === 2) return false;
       }
@@ -102,7 +102,7 @@ export default {
   watch: {
     dialog(value) {
       if (value) {
-        this.$emit("close");
+        this.$emit('close');
       }
     },
   },

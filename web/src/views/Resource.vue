@@ -123,7 +123,7 @@ export default {
   methods: {
     getData(id) {
       const lang = this.$i18n.locale;
-      this.$store.dispatch("resource/get", { id, lang });
+      this.$store.dispatch('resource/get', { id, lang });
     },
   },
   computed: {
@@ -133,17 +133,17 @@ export default {
     metadata() {
       const metadata = {};
       const fields = [
-        "titles",
-        "creators",
-        "location",
-        "institution",
-        "source",
+        'titles',
+        'creators',
+        'location',
+        'institution',
+        'source',
       ];
       Object.keys(this.data).forEach((key) => {
         if (fields.includes(key)) {
           let values = this.data[key];
-          if (values && typeof values !== "boolean") {
-            if (typeof values === "string") {
+          if (values && typeof values !== 'boolean') {
+            if (typeof values === 'string') {
               values = [{ name: values }];
             } else if (!this.isArray(values)) {
               values = [values];
@@ -157,19 +157,19 @@ export default {
       return metadata;
     },
     title() {
-      if (this.keyInObj("titles", this.metadata)) {
+      if (this.keyInObj('titles', this.metadata)) {
         return this.metadata.titles[0];
       }
-      return { id: -1, name: this.$t("resource.default.title") };
+      return { id: -1, name: this.$t('resource.default.title') };
     },
     creator() {
-      if (this.keyInObj("creators", this.metadata)) {
+      if (this.keyInObj('creators', this.metadata)) {
         return this.metadata.creators[0];
       }
-      return { id: -1, name: this.$t("resource.default.creator") };
+      return { id: -1, name: this.$t('resource.default.creator') };
     },
     tags() {
-      if (this.keyInObj("tags", this.data)) {
+      if (this.keyInObj('tags', this.data)) {
         if (this.moreTags && this.data.tags.length > 20) {
           return this.data.tags.slice(0, 20);
         }
@@ -179,7 +179,7 @@ export default {
     },
   },
   watch: {
-    "$route.params.id": function (id) {
+    '$route.params.id': function (id) {
       this.getData(id);
     },
     data() {
