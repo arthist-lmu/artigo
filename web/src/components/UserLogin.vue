@@ -2,13 +2,13 @@
   <v-dialog v-model="dialog" max-width="350px">
     <template v-slot:activator="{ on }">
       <v-btn v-on="on" class="login" text block large>
-        {{ $t('user.login.title') }}
+        {{ $t("user.login.title") }}
       </v-btn>
     </template>
 
     <v-card class="login">
       <v-card-title>
-        {{ $t('user.login.title') }}
+        {{ $t("user.login.title") }}
 
         <v-btn icon @click="dialog = false" absolute right>
           <v-icon>mdi-close</v-icon>
@@ -30,8 +30,7 @@
           :type="showPassword ? 'text' : 'password'"
           :placeholder="$t('user.password')"
           :append-icon="
-            showPassword ? 'mdi-eye-outline' :
-            'mdi-eye-off-outline'
+            showPassword ? 'mdi-eye-outline' : 'mdi-eye-off-outline'
           "
           prepend-icon="mdi-lock"
           counter="50"
@@ -48,19 +47,19 @@
           rounded
           block
         >
-          {{ $t('user.login.title') }}
+          {{ $t("user.login.title") }}
         </v-btn>
       </v-card-actions>
 
       <div class="grey--text px-6 pb-6" style="text-align: center">
-        {{ $t('user.login.text') }} <UserRegister @close="dialog = false" />.
+        {{ $t("user.login.text") }} <UserRegister @close="dialog = false" />.
       </div>
     </v-card>
   </v-dialog>
 </template>
 
 <script>
-import UserRegister from '@/components/UserRegister.vue';
+import UserRegister from "@/components/UserRegister.vue";
 
 export default {
   data() {
@@ -72,20 +71,20 @@ export default {
   },
   methods: {
     login() {
-      this.$store.dispatch('user/login', this.user);
+      this.$store.dispatch("user/login", this.user);
       this.dialog = false;
     },
     checkLength(value) {
       if (value) {
         if (value.length < 1) {
-          return this.$t('user.login.rules.min');
+          return this.$t("user.login.rules.min");
         }
         if (value.length > 50) {
-          return this.$t('user.login.rules.max');
+          return this.$t("user.login.rules.max");
         }
         return true;
       }
-      return this.$t('field.required');
+      return this.$t("field.required");
     },
   },
   computed: {
@@ -93,7 +92,7 @@ export default {
       if (Object.keys(this.user).length) {
         const total = Object.values(this.user).reduce(
           (t, value) => t + (this.checkLength(value) === true),
-          0,
+          0
         );
         if (total === 2) return false;
       }
@@ -103,7 +102,7 @@ export default {
   watch: {
     dialog(value) {
       if (value) {
-        this.$emit('close');
+        this.$emit("close");
       }
     },
   },

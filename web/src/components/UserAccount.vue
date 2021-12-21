@@ -9,10 +9,7 @@
 
           <h3 class="mt-5">{{ data.username }}</h3>
 
-          <p
-            class="text-caption clip mt-2 mb-0"
-            style="max-width: 170px;"
-          >
+          <p class="text-caption clip mt-2 mb-0" style="max-width: 170px">
             {{ data.email }}
           </p>
 
@@ -40,7 +37,7 @@
 export default {
   methods: {
     logout() {
-      this.$store.dispatch('user/logout');
+      this.$store.dispatch("user/logout");
     },
   },
   computed: {
@@ -52,10 +49,10 @@ export default {
       return Math.round(diff / (1000 * 60 * 60 * 24));
     },
     joined() {
-      return this.$tc('user.menu.joined', this.nDays);
+      return this.$tc("user.menu.joined", this.nDays);
     },
     initials() {
-      return 'test';
+      return "test";
       // return this.data.username.slice(0, 2);
     },
   },
@@ -64,7 +61,7 @@ export default {
 
 <style>
 .account .v-list-item__content {
-  letter-spacing: .0892857143em;
+  letter-spacing: 0.0892857143em;
 }
 
 .account .v-btn:not(.accent) {

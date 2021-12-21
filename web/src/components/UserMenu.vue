@@ -1,12 +1,5 @@
 <template>
-  <v-menu
-    v-model="menu"
-    min-width="175"
-    open-on-hover
-    offset-y
-    bottom
-    left
-  >
+  <v-menu v-model="menu" min-width="175" open-on-hover offset-y bottom left>
     <template v-slot:activator="{ attrs, on: menu }">
       <v-btn
         v-bind="attrs"
@@ -15,19 +8,10 @@
         class="ml-n2"
         icon
       >
-        <v-badge
-          v-if="loggedIn"
-          color="accent"
-          dot
-        >
+        <v-badge v-if="loggedIn" color="accent" dot>
           <v-icon color="primary">mdi-account-circle</v-icon>
         </v-badge>
-        <v-icon
-          v-else
-          color="primary"
-        >
-          mdi-account-circle
-        </v-icon>
+        <v-icon v-else color="primary"> mdi-account-circle </v-icon>
       </v-btn>
     </template>
 
@@ -47,9 +31,9 @@
 </template>
 
 <script>
-import UserLogin from '@/components/UserLogin.vue';
-import UserAccount from '@/components/UserAccount.vue';
-import UserRegister from '@/components/UserRegister.vue';
+import UserLogin from "@/components/UserLogin.vue";
+import UserAccount from "@/components/UserAccount.vue";
+import UserRegister from "@/components/UserRegister.vue";
 
 export default {
   data() {

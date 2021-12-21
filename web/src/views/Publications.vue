@@ -1,22 +1,17 @@
 <template>
   <v-simple-table id="publications">
-      <template v-slot:default>
+    <template v-slot:default>
       <thead>
-          <tr>
-          <th class="text-left">
-              Name
-          </th>
-          </tr>
+        <tr>
+          <th class="text-left">Name</th>
+        </tr>
       </thead>
       <tbody>
-          <tr
-          v-for="item in publications"
-          :key="item.name"
-          >
+        <tr v-for="item in publications" :key="item.name">
           <td>{{ item.name }}</td>
-          </tr>
+        </tr>
       </tbody>
-      </template>
+    </template>
   </v-simple-table>
 </template>
 
@@ -35,39 +30,39 @@ export default {
           calories: 159,
         },
         {
-          name: 'Ice cream sandwich',
+          name: "Ice cream sandwich",
           calories: 237,
         },
         {
-          name: 'Eclair',
+          name: "Eclair",
           calories: 262,
         },
         {
-          name: 'Cupcake',
+          name: "Cupcake",
           calories: 305,
         },
         {
-          name: 'Gingerbread',
+          name: "Gingerbread",
           calories: 356,
         },
         {
-          name: 'Jelly bean',
+          name: "Jelly bean",
           calories: 375,
         },
         {
-          name: 'Lollipop',
+          name: "Lollipop",
           calories: 392,
         },
         {
-          name: 'Honeycomb',
+          name: "Honeycomb",
           calories: 408,
         },
         {
-          name: 'Donut',
+          name: "Donut",
           calories: 452,
         },
         {
-          name: 'KitKat',
+          name: "KitKat",
           calories: 518,
         },
       ],

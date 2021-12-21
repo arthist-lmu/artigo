@@ -2,13 +2,13 @@
   <v-dialog v-model="dialog" max-width="350px">
     <template v-slot:activator="{ on }">
       <v-btn v-on="on" class="register" text block large>
-        {{ $t('user.register.title') }}
+        {{ $t("user.register.title") }}
       </v-btn>
     </template>
 
     <v-card class="register">
       <v-card-title>
-        {{ $t('user.register.title') }}
+        {{ $t("user.register.title") }}
 
         <v-btn icon @click="dialog = false" absolute right>
           <v-icon>mdi-close</v-icon>
@@ -41,8 +41,7 @@
           :placeholder="$t('user.password')"
           :rules="[checkLength]"
           :append-icon="
-            showPassword ? 'mdi-eye-outline' :
-            'mdi-eye-off-outline'
+            showPassword ? 'mdi-eye-outline' : 'mdi-eye-off-outline'
           "
           prepend-icon="mdi-lock"
           counter="50"
@@ -56,8 +55,7 @@
           :placeholder="$t('user.password')"
           :rules="[checkLength]"
           :append-icon="
-            showPassword ? 'mdi-eye-outline' :
-            'mdi-eye-off-outline'
+            showPassword ? 'mdi-eye-outline' : 'mdi-eye-off-outline'
           "
           prepend-icon="mdi-lock"
           counter="50"
@@ -74,7 +72,7 @@
           rounded
           block
         >
-          {{ $t('user.register.title') }}
+          {{ $t("user.register.title") }}
         </v-btn>
       </v-card-actions>
     </v-card>
@@ -92,20 +90,20 @@ export default {
   },
   methods: {
     register() {
-      this.$store.dispatch('user/register', this.user);
+      this.$store.dispatch("user/register", this.user);
       this.dialog = false;
     },
     checkLength(value) {
       if (value) {
         if (value.length < 5) {
-          return this.$t('user.register.rules.min');
+          return this.$t("user.register.rules.min");
         }
         if (value.length > 50) {
-          return this.$t('user.register.rules.max');
+          return this.$t("user.register.rules.max");
         }
         return true;
       }
-      return this.$t('field.required');
+      return this.$t("field.required");
     },
   },
   computed: {
@@ -113,7 +111,7 @@ export default {
       if (Object.keys(this.user).length) {
         const total = Object.values(this.user).reduce(
           (t, value) => t + (this.checkLength(value) === true),
-          0,
+          0
         );
         if (total === 4) return false;
       }
@@ -123,7 +121,7 @@ export default {
   watch: {
     dialog(value) {
       if (value) {
-        this.$emit('close');
+        this.$emit("close");
       }
     },
   },

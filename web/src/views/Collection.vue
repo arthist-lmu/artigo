@@ -10,7 +10,7 @@
 export default {
   methods: {
     getData(name) {
-      this.$store.dispatch('collection/get', { name });
+      this.$store.dispatch("collection/get", { name });
     },
   },
   computed: {
@@ -22,7 +22,7 @@ export default {
     },
   },
   watch: {
-    '$route.params.name': function (name) {
+    "$route.params.name": function (name) {
       this.getData(name);
     },
     data() {

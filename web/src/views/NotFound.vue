@@ -1,10 +1,6 @@
 <template>
-  <div
-    class="logo"
-    @click="reset"
-    style="cursor: pointer;"
-  >
-    <h1> 404 Not found </h1>
+  <div class="logo" @click="reset" style="cursor: pointer">
+    <h1>404 Not found</h1>
     <img src="/assets/images/logo.svg" />
   </div>
 </template>
@@ -13,7 +9,7 @@
 export default {
   methods: {
     reset() {
-      this.$router.push('/');
+      this.$router.push("/");
     },
   },
 };
@@ -31,7 +27,7 @@ export default {
   margin: auto;
 }
 
-#not-found .logo>img {
+#not-found .logo > img {
   max-height: 56px;
 }
 </style>
