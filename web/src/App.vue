@@ -17,12 +17,12 @@
 </style>
 
 <script>
-import AppBar from "@/components/AppBar.vue";
-import NavBar from "@/components/NavBar.vue";
+import AppBar from '@/components/AppBar.vue';
+import NavBar from '@/components/NavBar.vue';
 
 export default {
   created() {
-    document.title = "ARTigo - Social Image Tagging";
+    document.title = 'ARTigo - Social Image Tagging';
   },
   components: {
     NavBar,
