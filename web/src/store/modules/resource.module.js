@@ -11,7 +11,15 @@ const resource = {
       axios.get(`${API_LOCATION}/get_resource`, { params })
         .then(({ data }) => {
           commit('updateData', data);
-          console.log('resource', data);
+        })
+        .catch(({ response }) => {
+          console.log('Error', response.data);
+        });
+    },
+    post({ commit }, params) {
+      axios.post(`${API_LOCATION}/get_resource`, params )
+        .then(({ data }) => {
+          commit('updateData', data);
         })
         .catch(({ response }) => {
           console.log('Error', response.data);

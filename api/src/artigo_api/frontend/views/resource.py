@@ -29,35 +29,47 @@ class ResourceView(APIView):
             resource_id = Resource.objects.random().id
 
         if resource_id:
-            resource = get_resource_by_id(resource_id, lang)
+            resource = self.get_resource_by_id(resource_id, lang)
 
         if resource:
             return Response(resource)
 
         raise NotFound(detail='Unknown resource', code=404)
 
+    def get_resource_by_id(self, resource_id, lang=None):
+        try:
+            resource = Resource.objects.get(id=resource_id)
+            taggings = Tagging.objects.filter(resource_id=resource.id)
 
-def get_resource_by_id(resource_id, lang=None):
-    try:
-        resource = Resource.objects.get(id=resource_id)
-        taggings = Tagging.objects.filter(resource_id=resource.id)
+            if lang:
+                taggings = taggings.filter(tag__language=lang)
 
-        if lang:
-            taggings = taggings.filter(tag__language=lang)
+            data = ResourceSerializer(resource).data
 
-        data = ResourceSerializer(resource).data
+            if data.get('hash_id'):
+                data['path'] = media_url_to_image(data['hash_id'])
 
-        if data.get('hash_id'):
-            data['path'] = media_url_to_image(data['hash_id'])
+            if taggings.exists():
+                tags = taggings.values('tag').annotate(count=Count('tag'))
+                tags = tags.values('tag_id', 'tag__name',
+                                   'tag__language', 'count')
 
-        if taggings.exists():
-            tags = taggings.values('tag').annotate(count=Count('tag'))
-            tags = tags.values('tag_id', 'tag__name', 'tag__language', 'count')
+                data['tags'] = TagCountSerializer(tags, many=True).data
 
-            data['tags'] = TagCountSerializer(tags, many=True).data
+            return data
+        except Exception as e:
+            logger.error(traceback.format_exc())
 
-        return data
-    except Exception as e:
-        logger.error(traceback.format_exc())
+    def post(self, request, format=None):
+        logger.debug("Process post")
+        imgID = request.POST.get("imgID")
+        tag = request.POST.get("tag")
 
-        # post here to res return based on game param
+        already_tagged = True
+        if already_tagged:
+            performance = {
+                "points": 5
+            }
+            return Response(performance)
+
+        raise NotFound(detail='Unknown resource', code=404)

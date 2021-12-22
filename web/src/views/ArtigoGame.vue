@@ -2,7 +2,7 @@
   <div id="artigo-game">
     <v-progress-linear :value="progress"></v-progress-linear>
     <h2>Only {{ secondsLeft }} seconds left!</h2>
-    <v-img id="main-image" contain max-height="65vh" :src="data.path"></v-img>
+    <v-img id="main-image" contain height="75vh" :src="data.path"></v-img>
     <v-container>
       <v-row>
         <v-text-field
@@ -10,7 +10,7 @@
           label="Discribe what you see"
           clearable
         ></v-text-field>
-        <v-btn @click="displayImgUrl" color="primary" depressed rounded>
+        <v-btn @click="postTag" color="primary" depressed rounded>
           Enter
         </v-btn>
         <v-btn @click="getRes" color="accent" depressed rounded> Skip </v-btn>
@@ -21,7 +21,7 @@
 
 <style>
 #main-image {
-  margin: 5%;
+  margin: 1%;
 }
 </style>
 
@@ -30,15 +30,28 @@ export default {
   data() {
     return {
       tagging: "",
-      secondsLeft: 5,
-      timeLimit: 5,
+      timeLimit: 30,
+      secondsLeft: this.timeLimit,
+
       progress: 0,
     };
   },
 
   methods: {
     getRes() {
+      console.log("Download new image");
+      //this.progress = 0;
+      this.secondsLeft = this.timeLimit;
+      //this.value = this.timeLimit;
       this.$store.dispatch("resource/get", { random: true });
+    },
+    postTag() {
+      console.log("Post tag");
+      this.secondsLeft = this.timeLimit;
+      this.$store.dispatch("resource/post", {
+        imgID: this.data.path,
+        tag: "beautiful",
+      });
     },
     displayImgUrl() {
       console.log(this.data.path);
@@ -101,6 +114,7 @@ export default {
   watch: {
     secondsLeft: {
       handler(value) {
+        console.log(value);
         if (value > 0) {
           setTimeout(() => {
             this.secondsLeft -= 1;
