@@ -9,6 +9,7 @@
           v-model="tagging"
           label="Discribe what you see"
           clearable
+          ref="taggingBox"
         ></v-text-field>
         <v-btn @click="postTag" color="primary" depressed rounded>
           Enter
@@ -130,6 +131,9 @@ export default {
     "$route.params.id": function (id) {
       this.getData(id);
     },
+  },
+  mounted() {
+    this.$refs.taggingBox.focus();
   },
 
   created() {
