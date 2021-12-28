@@ -255,6 +255,7 @@ class Tagging(models.Model):
 #
 #     question = QuestionManager()
 
+
 # class WebPages(models.Model):
 #     # TODO: find better solution! (see below as well)
 #     about_creator = models.ForeignKey(Creator, on_delete=models.CASCADE)

@@ -11,6 +11,111 @@ from rest_framework.parsers import JSONParser
 
 from frontend.models import *
 from frontend.serializers import *
+from frontend.custom_renderers import *
+
+
+class ARTigoGameView(APIView):
+    """
+    API View that retrieves the ARTigo game, allows users to post tags and so on
+    """
+    serializer_class = GametypeSerializer
+    serializer_class = GamesessionSerializer
+    serializer_class = GameroundSerializer
+
+    def get_serializer_class(self):
+        if self.request.method == 'POST':
+            return YOUR_SERIALIZER_1
+        elif self.request.method == 'GET':
+            return YOUR_SERIALIZER_2
+        else:
+            return YOUR_DEFAULT_SERIALIZER
+
+    def get_queryset(self):
+        pass
+
+    def get(self, request, *args, **kwargs):
+        pass
+
+    def post(self, request, *args, **kwargs):
+        pass
+
+
+class ARTigoTabooGameView(APIView):
+    """
+    API View that retrieves the ARTigo Taboo game, allows users to post tags and so on
+    """
+    serializer_class = GametypeSerializer
+    serializer_class = GamesessionSerializer
+    serializer_class = GameroundSerializer
+
+    def get_serializer_class(self):
+        if self.request.method == 'POST':
+            return YOUR_SERIALIZER_1
+        elif self.request.method == 'GET':
+            return YOUR_SERIALIZER_2
+        else:
+            return YOUR_DEFAULT_SERIALIZER
+
+    def get_queryset(self):
+        pass
+
+    def get(self, request, *args, **kwargs):
+        pass
+
+    def post(self, request, *args, **kwargs):
+        pass
+
+
+class TagATagGameView(APIView):
+    """
+    API View that retrieves the ARTigo game, allows users to post tags and so on
+    """
+    serializer_class = GametypeSerializer
+    serializer_class = GamesessionSerializer
+    serializer_class = GameroundSerializer
+
+    def get_serializer_class(self):
+        if self.request.method == 'POST':
+            return YOUR_SERIALIZER_1
+        elif self.request.method == 'GET':
+            return YOUR_SERIALIZER_2
+        else:
+            return YOUR_DEFAULT_SERIALIZER
+
+    def get_queryset(self):
+        pass
+
+    def get(self, request, *args, **kwargs):
+        pass
+
+    def post(self, request, *args, **kwargs):
+        pass
+
+
+class CombinoGameView(APIView):
+    """
+    API View that retrieves the ARTigo game, allows users to post tags and so on
+    """
+    serializer_class = GametypeSerializer
+    serializer_class = GamesessionSerializer
+    serializer_class = GameroundSerializer
+
+    def get_serializer_class(self):
+        if self.request.method == 'POST':
+            return YOUR_SERIALIZER_1
+        elif self.request.method == 'GET':
+            return YOUR_SERIALIZER_2
+        else:
+            return YOUR_DEFAULT_SERIALIZER
+
+    def get_queryset(self):
+        pass
+
+    def get(self, request, *args, **kwargs):
+        pass
+
+    def post(self, request, *args, **kwargs):
+        pass
 
 
 class ARTigoGametypeView(APIView):
@@ -93,7 +198,7 @@ class GametypeWithGamesessionView(APIView):
 
 class GameroundView(APIView):
     """
-    API View that handles gamerounds
+    API endpoint that allows gamerounds to be viewed or edited
     """
     serializer_class = GameroundSerializer
 
@@ -117,7 +222,7 @@ class GameroundView(APIView):
 
 class TaggingView(APIView):
     """
-    API View to do everything to do with taggings
+    API endpoint that allows taggings to be viewed or edited
     """
     serializer_class = TaggingSerializer
 
@@ -132,6 +237,11 @@ class TaggingView(APIView):
 
     def post(self, request, *args, **kwargs):
         # tagging = request.data.get_queryset()
+        Tagging.objects.create(id=request.data["id"],
+                               tag=request.data["tag"],
+                               gameround=request.data["gameround"],
+                               resource=request.data["resource"]
+                               )
 
         serializer = TaggingSerializer(data=request.data)
         if serializer.is_valid():
@@ -145,7 +255,7 @@ class TaggingView(APIView):
 
 class TagView(APIView):
     """
-    API View that deals with tags
+    API endpoint that allows tags to be viewed or edited
     """
     serializer_class = TagSerializer
 
@@ -161,8 +271,14 @@ class TagView(APIView):
 
     def post(self, request, *args, **kwargs):
         tag = request.data.get_queryset()
+        serializer = TagSerializer(data=request.data)
+        Tag.objects.create(id=request.data["id"],
+                           name=request.data["name"],
+                           language=request.data["language"]
+                           )
 
         if Tagging.objects.filter(tag=tag).exists():
+            # tag_obj = Tag(name=request)
             new_tag = Tag()
             new_tag.name = tag
             new_tag.save()
@@ -174,7 +290,13 @@ class TagView(APIView):
             new_tag.tag = user_tag
             new_tag.save()
 
-        return Response(saved_tag)
+        if serializer.is_valid():
+            # saved_tagging = serializer.save()
+            serializer.save()
+            return Response({"status": "success", "data": serializer.data}, status=status.HTTP_200_OK)
+        else:
+            return Response({"status": "error", "data": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+        # return Response(saved_tag)
 
 
 class GameResourceView(APIView):
@@ -189,6 +311,26 @@ class GameResourceView(APIView):
             random_idx = random.randint(0, Resource.objects.count() - 1)
             resources = Resource.objects.all().filter(id=random_idx)
         # TODO: See that a resource is always returned! check that resource not null
+        return resources
+
+    def get(self, request, *args, **kwargs):
+        resource = self.get_queryset()
+        serializer = ResourceSerializer(resource, many=True)
+        return Response(serializer.data)
+
+
+class GameResourceViewPicture(APIView):
+    """
+    API view to handle resources
+    """
+    serializer_class = ResourceSerializer
+    renderer_classes = [JPEGRenderer, PNGRenderer]
+
+    def get_queryset(self):
+        resources = None
+        while resources is None:
+            random_idx = random.randint(0, Resource.objects.count() - 1)
+            resources = Resource.objects.all().filter(id=random_idx)
         return resources
 
     def get(self, request, *args, **kwargs):
@@ -238,19 +380,6 @@ class TabooTagsView(APIView):
         tag = self.get_queryset()
         serializer = TabooTagSerializer(tag, many=True)
         return Response(serializer.data)
-
-
-class ARTigoGameView(APIView):
-
-    def save_tags(self, user_tag):
-        if Tagging.objects.filter(tag=user_tag).exists():
-            new_tag = Tag()
-            new_tag.name = user_tag
-            new_tag.save()
-        else:
-            new_tag = Tagging()
-            new_tag.tag = user_tag
-            new_tag.save()
 
 
 def save_to_tag():

@@ -1,24 +1,15 @@
 import pytest
-<<<<<<< HEAD
-from django.test import TestCase
-=======
+
 from django.contrib.auth import get_user_model
 from django.test import TestCase
-
->>>>>>> origin/master
-
-from frontend.models import Institution
+from frontend.models import *
 
 
 @pytest.mark.django_db
 def test_create_source():
     institution = Institution.objects.create(name="Institution")
-
-<<<<<<< HEAD
     assert institution.name == "Institution"
-=======
     assert source.name == "Source"
-
 
 
 class UsersManagersTests(TestCase):
@@ -51,4 +42,68 @@ class UsersManagersTests(TestCase):
         with self.assertRaises(ValueError):
             User.objects.create_superuser(
                 email='super@user.com', password='foo', username='')
->>>>>>> origin/master
+
+
+class TaggingTests(TestCase):
+    def test_create_tagging(self):
+        pass
+
+
+class TagTests(TestCase):
+    def test_create_tag(self):
+        pass
+
+
+class GamesessionTests(TestCase):
+    def test_create_session(self):
+        pass
+
+
+class GameroundTests(TestCase):
+    def test_create_round(self):
+        pass
+
+
+class GametypeTests(TestCase):
+    def test_create_type(self):
+        pass
+
+
+class ResourceTests(TestCase):
+    def test_create_resource(self):
+        pass
+
+
+class TitleTests(TestCase):
+    def test_create_title(self):
+        pass
+
+
+class CreatorTests(TestCase):
+    def test_create_creator(self):
+        pass
+
+
+class ArtStyleTests(TestCase):
+    def test_create_style(self):
+        pass
+
+
+class ArtMovementTests(TestCase):
+    def test_create_movement(self):
+        pass
+
+
+class ArtTechniqueTests(TestCase):
+    def test_create_technique(self):
+        pass
+
+
+class LocationTests(TestCase):
+    def test_create_location(self):
+        pass
+
+
+class InstitutionTests(TestCase):
+    def test_create_institution(self):
+        pass
