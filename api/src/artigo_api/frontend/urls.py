@@ -24,6 +24,8 @@ urlpatterns = [
 
     path('get_artigo_gameround/resource', views.GameroundWithResourceView.as_view(), name='ARTigo_gameround'),
 
+    path('artigo_game/', views.ARTigoGameView.as_view(), name='ARTigo_game'),
+
     path('taboo_tags', views.TabooTagsView.as_view(), name='taboo_tags'),
 
 ]
