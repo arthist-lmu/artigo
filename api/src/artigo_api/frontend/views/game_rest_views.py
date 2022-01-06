@@ -1,17 +1,57 @@
 import random
 
-from django.http import Http404
-from django.shortcuts import render
+import time
+
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from django.views.decorators.cache import cache_page
-from django.utils.decorators import method_decorator
-from rest_framework.parsers import JSONParser
-
+from rest_framework.renderers import (
+                                        HTMLFormRenderer,
+                                        JSONRenderer,
+                                        BrowsableAPIRenderer,
+                                    )
 from frontend.models import *
 from frontend.serializers import *
 from frontend.custom_renderers import *
+
+
+class GameViewController:
+    """
+    Class containing methods that control the order in which Game View methods get called
+    also methods to check tags and calculate score
+    """
+
+    def start_game(self):
+        pass
+
+    def get_custom_tags(self):
+        pass
+
+    def check_tag_exists(self):
+        """
+        Checks if another tagging string for the same resource has been added before, which is the same as the entered string
+        :return:
+        """
+        tagging_to_check = None
+        tagging = None
+        tagging_to_check.get_queryset(tagging)
+        serializer = TaggingSerializer(tagging_to_check)
+        if Tagging.objects.filter(tag=tagging_to_check).exists():
+            pass
+
+    def calculate_score(self):
+        pass
+
+    def timer(self, start):
+        """Start a new timer"""
+        start_time = start
+        elapsed_time = None
+        if start_time is not None:
+            start_time = time.perf_counter()
+        """Stop the timer, and return the elapsed time"""
+        if start_time is None:
+            elapsed_time = time.perf_counter() - start_time
+        return elapsed_time
 
 
 class ARTigoGameView(APIView):
@@ -21,6 +61,8 @@ class ARTigoGameView(APIView):
     retrieves a random resource per round
     allows users to post tags that are verified and saved accordingly to either the Tag or Tagging table
     """
+    renderer_classes = (BrowsableAPIRenderer, JSONRenderer, HTMLFormRenderer)
+    controller = GameViewController()
 
     def get_serializer_class(self):
         YOUR_DEFAULT_SERIALIZER = GametypeSerializer
@@ -38,6 +80,10 @@ class ARTigoGameView(APIView):
             return YOUR_DEFAULT_SERIALIZER
 
     def get_queryset(self):
+        """
+
+        :return:
+        """
         obj = None
         resources = None
         artigo_gametype = None
@@ -80,14 +126,13 @@ class ARTigoGameView(APIView):
         """
         model = request.GET.get("model")
         serializer = None
+        # TODO: find way to assign what model is?
+        model = "Gametype"  # For testing purposes only!
         while serializer is None:
 
             if model == "Gametype":
-                # gametype = self.get_queryset()
-                gametype = Gametype.objects.all().filter(name="imageLabeler")
+                gametype = self.get_queryset()
                 serializer = GametypeSerializer(gametype, many=True)
-
-            elif model == "Resource":
                 resource = self.get_queryset()
                 serializer = ResourceSerializer(resource, many=True)
 
@@ -122,14 +167,17 @@ class ARTigoGameView(APIView):
         saved_obj = None
 
         model = request.GET.get("model")
+        model = "Tagging"
 
         if model == "Gameround":
-            gameround = request.data.get_queryset()
+            # gameround = request.data.get_queryset()
+            gameround = GameroundSerializer(data=request.data)
             while saved_gameround is None:
                 serializer = GameroundSerializer(data=gameround)
                 if serializer.is_valid(raise_exception=True):
                     saved_gameround = serializer.save()
                     saved_obj = saved_gameround
+                    return Response(saved_obj, status=status.HTTP_201_CREATED)
 
         elif model == "Gamesession":
             # TODO: only save if 5 rounds have been played?! or always?
@@ -139,15 +187,19 @@ class ARTigoGameView(APIView):
                 if serializer.is_valid(raise_exception=True):
                     saved_gamesession = serializer.save()
                     saved_obj = saved_gamesession
+                    return Response(saved_obj, status=status.HTTP_201_CREATED)
 
+        # TODO: Resource id has to be sent with tag/tagging!
         elif model == "Tagging":
             # TODO: test & modify if necessary
-            tagging = request.data.get_queryset()
+            # tagging = request.data.get_queryset()
+            tagging = serializer.TaggingSerializer(data=request.data)
             while saved_tagging is None:
                 serializer = TaggingSerializer(data=tagging)
                 if serializer.is_valid(raise_exception=True):
                     saved_tagging = serializer.save()
                     saved_obj = saved_tagging
+                    return Response(saved_obj, status=status.HTTP_201_CREATED)
 
         elif model == "Tag":
             # TODO: add condition to only save to tag if condition met
@@ -157,8 +209,9 @@ class ARTigoGameView(APIView):
                 if serializer.is_valid(raise_exception=True):
                     saved_tag = serializer.save()
                     saved_obj = saved_tag
+                    return Response(saved_obj, status=status.HTTP_201_CREATED)
 
-        return Response(saved_obj)
+        return Response(saved_obj, status=status.HTTP_400_BAD_REQUEST)
 
 
 class ARTigoGametypeView(APIView):
@@ -427,27 +480,5 @@ class TabooTagsView(APIView):
         serializer = TabooTagSerializer(tag, many=True)
         return Response(serializer.data)
 
-
-def save_to_tag():
-    pass
-
-
-def get_custom_tags():
-    pass
-
-
-def check_tag_exists():
-    """
-    Checks if another tagging string for the same resource has been added before, which is the same as the entered string
-    :return:
-    """
-    tagging_to_check.get_queryset(tagging)
-    serializer = TaggingSerializer(tagging_to_check)
-    if Tagging.objects.filter(tag=tagging_to_check).exists():
-        pass
-
-
-def calculate_score():
-    pass
 
 

@@ -260,6 +260,19 @@ class TagCountSerializer(serializers.ModelSerializer):
 
 
 class ResourceWithTaggingsSerializer(ResourceSerializer):
+  taggings = serializers.ReadOnlyField()
+
+  class Meta(ResourceSerializer.Meta):
+    fields = ResourceSerializer.Meta.fields + ['taggings']
+
+  def to_representation(self, data):
+    data = super().to_representation(data)
+    data['taggings'] = TagCountSerializer(data['taggings'], many=True).data
+    
+    return data
+
+
+class ResourceWithTagsSerializer(ResourceSerializer):
   tags = serializers.ReadOnlyField()
 
   class Meta(ResourceSerializer.Meta):
@@ -268,5 +281,5 @@ class ResourceWithTaggingsSerializer(ResourceSerializer):
   def to_representation(self, data):
     data = super().to_representation(data)
     data['tags'] = TagCountSerializer(data['tags'], many=True).data
-    
+
     return data
