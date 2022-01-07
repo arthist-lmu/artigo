@@ -194,9 +194,6 @@ class Gameround(models.Model):
 
     objects = models.Manager()
 
-    def __str__(self):
-        return self.user or ''
-
     def save(self, *args, **kwargs):
         if not self.id:
             self.created = timezone.now()

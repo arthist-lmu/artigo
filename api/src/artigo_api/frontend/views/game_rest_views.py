@@ -34,6 +34,7 @@ class GameViewController:
         """
         tagging_to_check = None
         tagging = None
+
         tagging_to_check.get_queryset(tagging)
         serializer = TaggingSerializer(tagging_to_check)
         if Tagging.objects.filter(tag=tagging_to_check).exists():

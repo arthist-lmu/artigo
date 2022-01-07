@@ -254,7 +254,7 @@ class TagCountSerializer(serializers.ModelSerializer):
 
   def get_tag_count(self, obj):
     # return obj.tag.all().count()
-    tag_count = Tagging.objects.filter(tag=obj).count()
+    tag_count = Tagging.objects.filter(tag=obj.tag).count()
     return tag_count
 
   def to_representation(self, data):
