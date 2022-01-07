@@ -31,7 +31,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     last_name = models.CharField(max_length=256)
 
     updated_at = models.DateTimeField(auto_now=True)
-    
+
     REQUIRED_FIELDS = ['username']
 
     objects = CustomUserManager()
@@ -42,7 +42,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         return self.username
 
     def __str__(self):
-        return f'{self.email} ({self.username})'
+        return f'{self.email} ({self.username})' or ''
 
 
 class Institution(models.Model):
@@ -138,7 +138,7 @@ class Resource(models.Model):
     objects = models.Manager()
 
     def __str__(self):
-        return self.hash_id
+        return self.hash_id or ''
 
     @property
     def tags(self):
@@ -194,6 +194,9 @@ class Gameround(models.Model):
 
     objects = models.Manager()
 
+    def __str__(self):
+        return self.user or ''
+
     def save(self, *args, **kwargs):
         if not self.id:
             self.created = timezone.now()
@@ -202,13 +205,14 @@ class Gameround(models.Model):
 
 
 class Tag(models.Model):
+    # TODO: see if name should be oneToManyField instead of charfield
     name = models.CharField(max_length=256)
     language = models.CharField(max_length=256)
 
     objects = models.Manager()
 
     def __str__(self):
-        return self.name
+        return self.name or ''
 
 
 class Tagging(models.Model):
@@ -224,14 +228,13 @@ class Tagging(models.Model):
     objects = models.Manager()
 
     def __str__(self):
-        return self.user
+        return str(self.tag) or ''
 
     def save(self, *args, **kwargs):
         if not self.id:
             self.created = timezone.now()
 
         return super().save(*args, **kwargs)
-
 
 # class CombinedTagging(models.Model):
 #     user = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, null=True)

@@ -193,9 +193,9 @@ class ARTigoGameView(APIView):
         elif model == "Tagging":
             # TODO: test & modify if necessary
             # tagging = request.data.get_queryset()
-            tagging = serializer.TaggingSerializer(data=request.data)
+            tagging = serializer.ResourceWithTaggingsSerializer(data=request.data)
             while saved_tagging is None:
-                serializer = TaggingSerializer(data=tagging)
+                serializer = ResourceWithTaggingsSerializer(data=tagging)
                 if serializer.is_valid(raise_exception=True):
                     saved_tagging = serializer.save()
                     saved_obj = saved_tagging
@@ -203,9 +203,10 @@ class ARTigoGameView(APIView):
 
         elif model == "Tag":
             # TODO: add condition to only save to tag if condition met
-            tag = request.data.get_queryset()
+            # tag = request.data.get_queryset()
+            tag = serializer.ResourceWithTagsSerializer(data=request.data)
             while saved_tag is None:
-                serializer = TagSerializer(data=tag)
+                serializer = ResourceWithTagsSerializer(data=tag)
                 if serializer.is_valid(raise_exception=True):
                     saved_tag = serializer.save()
                     saved_obj = saved_tag
@@ -323,15 +324,16 @@ class TaggingView(APIView):
     """
     API endpoint that allows taggings to be viewed or edited
     """
-    serializer_class = TaggingSerializer
+    serializer_class = TagCountSerializer
 
     def get_queryset(self):
         taggings = Tagging.objects.all().filter(resource=8225)
+        # taggings = Tagging.objects.all().order_by("-created")
         return taggings
 
     def get(self, request, *args, **kwargs):
         tagging = self.get_queryset()
-        serializer = TaggingSerializer(tagging, many=True)
+        serializer = TagCountSerializer(tagging, many=True)
         return Response(serializer.data)
 
     def post(self, request, *args, **kwargs):

@@ -242,37 +242,43 @@ class GameroundSerializer(serializers.ModelSerializer):
 
 
 class TagCountSerializer(serializers.ModelSerializer):
-  id = serializers.ReadOnlyField(source='tag_id')
-  name = serializers.ReadOnlyField(source='tag__name')
-  language = serializers.ReadOnlyField(source='tag__language')
-  # TODO: Implement the count!!
-  count = serializers.IntegerField()
+  """Serializer with a count of a specific tag (over all resources)
+  e.g. tag: baum; count: x
+  """
+  tag = TagSerializer(read_only=True)
+  tag_count = serializers.SerializerMethodField('get_tag_count')
 
   class Meta:
     model = Tagging
-    fields = ['id', 'name', 'language', 'count']
+    fields = ('id', 'tag', 'gameround', 'resource', 'tag_count')
+
+  def get_tag_count(self, obj):
+    # return obj.tag.all().count()
+    tag_count = Tagging.objects.filter(tag=obj).count()
+    return tag_count
 
   def to_representation(self, data):
     data = super().to_representation(data)
-    data['name'] = data['name'].lower()
+    # data['tag'] = data['tag'].lower()
     
     return data
 
 
 class ResourceWithTaggingsSerializer(ResourceSerializer):
-  taggings = serializers.ReadOnlyField()
+  """Serializer used to send taggings to DB with Resource that got tagged with them"""
+  taggings = TaggingSerializer(read_only=True)
 
   class Meta(ResourceSerializer.Meta):
     fields = ResourceSerializer.Meta.fields + ['taggings']
 
   def to_representation(self, data):
     data = super().to_representation(data)
-    data['taggings'] = TagCountSerializer(data['taggings'], many=True).data
     
     return data
 
 
 class ResourceWithTagsSerializer(ResourceSerializer):
+  """Serializer used to send tags to DB with Resource that got tagged with them"""
   tags = serializers.ReadOnlyField()
 
   class Meta(ResourceSerializer.Meta):
