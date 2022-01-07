@@ -18,13 +18,10 @@ from frontend.custom_renderers import *
 class GameViewController:
     """
     Class containing methods that control the order in which Game View methods get called
-    also methods to check tags and calculate score
+    also methods to check tags and calculate score & coordinate users
     """
-
-    def start_game(self):
-        pass
-
     def get_custom_tags(self):
+        tag_count = None
         pass
 
     def check_tag_exists(self):
@@ -53,6 +50,12 @@ class GameViewController:
         if start_time is None:
             elapsed_time = time.perf_counter() - start_time
         return elapsed_time
+
+    def start_game(self):
+        pass
+
+    def coordinate_players(self):
+        pass
 
 
 class ARTigoGameView(APIView):
@@ -328,8 +331,7 @@ class TaggingView(APIView):
     serializer_class = TagCountSerializer
 
     def get_queryset(self):
-        taggings = Tagging.objects.all().filter(resource=8225)
-        # taggings = Tagging.objects.all().order_by("-created")
+        taggings = Tagging.objects.all().filter(resource=9463)
         return taggings
 
     def get(self, request, *args, **kwargs):

@@ -253,13 +253,11 @@ class TagCountSerializer(serializers.ModelSerializer):
     fields = ('id', 'tag', 'gameround', 'resource', 'tag_count')
 
   def get_tag_count(self, obj):
-    # return obj.tag.all().count()
     tag_count = Tagging.objects.filter(tag=obj.tag).count()
     return tag_count
 
   def to_representation(self, data):
     data = super().to_representation(data)
-    # data['tag'] = data['tag'].lower()
     
     return data
 
