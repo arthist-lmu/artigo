@@ -19,12 +19,12 @@ urlpatterns = [
     path('game_resource', views.GameResourceView.as_view(), name='game_resource'),
     path('game_resource_picture', views.GameResourceViewPicture.as_view(), name='game_resource_picture'),
 
-    path('artigo_gametype', views.ARTigoGametypeView.as_view(), name='ARTigo_game'),
     path('gametype/gamesession', views.GametypeWithGamesessionView.as_view(), name='gametype_with_gamesession'),
 
     path('get_artigo_gameround/resource', views.GameroundWithResourceView.as_view(), name='ARTigo_gameround'),
 
     path('artigo_game/', views.ARTigoGameView.as_view(), name='ARTigo_game'),
+    path('tagatag_game/', views.TagATagGameView.as_view(), name='ARTigo_game'),
 
     path('taboo_tags', views.TabooTagsView.as_view(), name='taboo_tags'),
 

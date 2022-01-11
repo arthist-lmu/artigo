@@ -116,24 +116,6 @@ class TagSerializer(serializers.ModelSerializer):
     return data
 
 
-class TabooTagSerializer(serializers.ModelSerializer):
-  id = serializers.ReadOnlyField(source='tag_id')
-  name = serializers.ReadOnlyField(source='tag__name')
-  language = serializers.ReadOnlyField(source='tag__language')
-  # TODO: Implement count
-  count = serializers.IntegerField()
-
-  class Meta:
-    model = Tagging
-    fields = ['id', 'name', 'language', 'count']
-
-  def to_representation(self, data):
-    data = super().to_representation(data)
-    data['name'] = data['name'].lower()
-
-    return data
-
-
 class TaggingSerializer(serializers.ModelSerializer):
   tag = TagSerializer(read_only=True)
 
@@ -262,6 +244,33 @@ class TagCountSerializer(serializers.ModelSerializer):
     return data
 
 
+class TabooTagSerializer(serializers.ModelSerializer):
+  tag = TagSerializer(read_only=True)
+  taboo_tags = serializers.SerializerMethodField('get_taboo_tags')
+
+  class Meta:
+    model = Tagging
+    fields = ('id', 'tag', 'gameround', 'resource', 'taboo_tags')
+
+  def get_taboo_tags(self, obj):
+    taboo_tags = []
+    tag_count = Tagging.objects.filter(tag=obj.tag).count()
+    tag = ['tag']
+    while len(taboo_tags) < 6:
+      # check if tag_count greater than a certain number, say 50
+      if tag_count > 50:
+        # add to taboo_tags since it appears too often
+        taboo_tags += tag
+        # if len(taboo_tags) == 5:
+    return taboo_tags
+
+  def to_representation(self, data):
+    data = super().to_representation(data)
+    return data
+
+# TODO: SuggestionsSerializer similar to TabooTagSerializer once this is finished
+
+
 class ResourceWithTaggingsSerializer(ResourceSerializer):
   """Serializer used to send taggings to DB with Resource that got tagged with them"""
   taggings = TaggingSerializer(read_only=True)
@@ -275,8 +284,8 @@ class ResourceWithTaggingsSerializer(ResourceSerializer):
     return data
 
 
-class ResourceWithTagsSerializer(ResourceSerializer):
-  """Serializer used to send tags to DB with Resource that got tagged with them"""
+class ResourceWithTabooTaggingsSerializer(ResourceSerializer):
+  """Serializer used to send a resource with its taboo taggings to the user"""
   tags = serializers.ReadOnlyField()
 
   class Meta(ResourceSerializer.Meta):
