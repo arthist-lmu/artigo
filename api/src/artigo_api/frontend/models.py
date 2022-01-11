@@ -233,28 +233,6 @@ class Tagging(models.Model):
 
         return super().save(*args, **kwargs)
 
-# class CombinedTagging(models.Model):
-#     user = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, null=True)
-#     gameround = models.ForeignKey(Gameround, on_delete=models.CASCADE)
-#     resource = models.ForeignKey(Resource, on_delete=models.CASCADE)
-#     # TODO: POST method for here
-#     combination = models.ForeignKey(Tag, on_delete=models.CASCADE)
-#     created = models.DateTimeField(editable=False)
-#     score = models.PositiveIntegerField(default=0)
-#
-#     def save(self, *args, **kwargs):
-#         if not self.id:
-#             self.created = timezone.now()
-#
-#         return super().save(*args, **kwargs)
-
-
-# class Question(models.Model):
-#     question = models.CharField(max_length=256)
-#     language = models.CharField(max_length=256)
-#
-#     question = QuestionManager()
-
 
 # class WebPages(models.Model):
 #     # TODO: find better solution! (see below as well)

@@ -516,7 +516,7 @@ class TaggingView(APIView):
     """
     API endpoint that allows taggings to be viewed or edited
     """
-    serializer_class = TabooTagSerializer
+    serializer_class = TaggingSerializer
 
     def get_queryset(self):
         taggings = Tagging.objects.all().filter(resource=9463)
@@ -534,7 +534,7 @@ class TaggingView(APIView):
                 return Response(serializer.data)
         else:
             tagging = self.get_queryset()
-            serializer = TabooTagSerializer(tagging, many=True)
+            serializer = TaggingSerializer(tagging, many=True)
             return Response(serializer.data)
 
     def post(self, request, *args, **kwargs):
@@ -605,7 +605,7 @@ class GameResourceView(APIView):
     """
     API view to handle resources
     """
-    serializer_class = ResourceSerializer
+    serializer_class = TabooTagSerializer
 
     def get_queryset(self):
         resources = None
@@ -617,7 +617,7 @@ class GameResourceView(APIView):
 
     def get(self, request, *args, **kwargs):
         resource = self.get_queryset()
-        serializer = ResourceSerializer(resource, many=True)
+        serializer = TabooTagSerializer(resource, many=True)
         return Response(serializer.data)
 
 

@@ -17,12 +17,6 @@ class InstitutionSerializer(serializers.ModelSerializer):
     return data
 
 
-# class WebPagesSerializer(serializers.ModelSerializer):
-#   class Meta:
-#     model = WebPages
-#     fields = ('id', 'about', 'url', 'language')
-
-
 class LocationSerializer(serializers.ModelSerializer):
   class Meta:
     model = Location
@@ -45,13 +39,7 @@ class ArtStyleSerializer(serializers.ModelSerializer):
   class Meta:
     model = ArtStyle
     fields = ['id', 'name', 'language']
-
-
-# class QuestionSerializer(serializers.ModelSerializer):
-#   class Meta:
-#     model = Question
-#     fields = ('id', 'name', 'language')
-
+      
 
 class CreatorSerializer(serializers.ModelSerializer):
   class Meta:
@@ -68,7 +56,6 @@ class TitleSerializer(serializers.ModelSerializer):
 class ResourceSerializer(serializers.ModelSerializer):
   creators = CreatorSerializer(many=True)
   titles = TitleSerializer(many=True)
-  # institution = InstitutionSerializer()
 
   class Meta:
     model = Resource
@@ -88,7 +75,6 @@ class ResourceSerializer(serializers.ModelSerializer):
 
 
 class GameroundWithResourceSerializer(ResourceSerializer):
-  # tags = serializers.ReadOnlyField()
   gameround = serializers.ReadOnlyField()
 
   class Meta(ResourceSerializer.Meta):
@@ -187,20 +173,6 @@ class GamesessionSerializer2(serializers.ModelSerializer):
     return data
 
 
-class GamesessionWithGameroundSerializer(serializers.ModelSerializer):
-  gametype = GametypeSerializer(read_only=True)
-  gameround = serializers.ReadOnlyField(source='gameround')
-
-  class Meta:
-    model = Gamesession
-    fields = ['id', 'user', 'gametype', 'created']
-
-  def to_representation(self, data):
-    data = super().to_representation(data)
-
-    return data
-
-
 class GameroundSerializer(serializers.ModelSerializer):
   gamesession = GamesessionSerializer(read_only=True)
 
@@ -213,14 +185,6 @@ class GameroundSerializer(serializers.ModelSerializer):
     # data['id'] = data['id'].lower()
 
     return data
-
-
-# class CombinedTaggingSerializer(serializers.ModelSerializer):
-#   combined_tag = TagSerializer(read_only=True)
-#
-#   class Meta:
-#     model = CombinedTagging
-#     fields = ('id', 'first_tag', 'second_tag')
 
 
 class TagCountSerializer(serializers.ModelSerializer):
@@ -245,23 +209,23 @@ class TagCountSerializer(serializers.ModelSerializer):
 
 
 class TabooTagSerializer(serializers.ModelSerializer):
-  tag = TagSerializer(read_only=True)
+  creators = CreatorSerializer(many=True)
+  titles = TitleSerializer(many=True)
   taboo_tags = serializers.SerializerMethodField('get_taboo_tags')
+  # taboo_tags = TaggingSerializer(read_only=True, many=True).data
 
   class Meta:
-    model = Tagging
-    fields = ('id', 'tag', 'gameround', 'resource', 'taboo_tags')
+    model = Resource
+    fields = ['id', 'hash_id', 'titles', 'creators', 'taboo_tags']
+    read_only_fields = ['titles', 'creators', 'institution']
 
-  def get_taboo_tags(self, obj):
-    taboo_tags = []
-    tag_count = Tagging.objects.filter(tag=obj.tag).count()
-    tag = ['tag']
-    while len(taboo_tags) < 6:
-      # check if tag_count greater than a certain number, say 50
-      if tag_count > 50:
-        # add to taboo_tags since it appears too often
-        taboo_tags += tag
-        # if len(taboo_tags) == 5:
+  def get_taboo_tags(self, res):
+    """
+
+    :param res:
+    :return: A list of the ids of the validated Tags (not Taggings) per Resource
+    """
+    taboo_tags = res.tags.values_list('tag', flat=True)
     return taboo_tags
 
   def to_representation(self, data):
@@ -269,6 +233,27 @@ class TabooTagSerializer(serializers.ModelSerializer):
     return data
 
 # TODO: SuggestionsSerializer similar to TabooTagSerializer once this is finished
+
+class CombinoTagsSerializer(serializers.ModelSerializer):
+  tag = TagSerializer(read_only=True)
+  tags_to_combine = serializers.SerializerMethodField('get_tags_to_combine')
+
+  class Meta:
+    model = Tagging
+    fields = ('id', 'tag', 'gameround', 'resource', 'tags_to_combine')
+
+  def get_tags_to_combine(self, obj):
+    # TODO: figure it out once TabooTagSerializer working!
+    tags_to_combine = []
+    tag_count = Tagging.objects.filter(tag=obj.tag).count()
+    tag = ['tag']
+    while len(tags_to_combine) < 10:
+      tags_to_combine.append()
+    return tags_to_combine
+
+  def to_representation(self, data):
+    data = super().to_representation(data)
+    return data
 
 
 class ResourceWithTaggingsSerializer(ResourceSerializer):
