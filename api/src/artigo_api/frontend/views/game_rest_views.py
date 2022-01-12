@@ -280,7 +280,7 @@ class ARTigoTabooGameView(APIView):
         """
         obj = None
         resources = None
-        artigo_gametype = None
+        artigo_taboo_gametype = None
         gameround = None
         gamesession = None
 
@@ -291,10 +291,10 @@ class ARTigoTabooGameView(APIView):
                     resources = Resource.objects.all().filter(id=random_idx)
                     obj = resources
 
-            elif obj == artigo_gametype:
-                while artigo_gametype is None:
-                    artigo_gametype = Gametype.objects.all().filter(name="imageLabeler_Taboo")
-                    obj = artigo_gametype
+            elif obj == artigo_taboo_gametype:
+                while artigo_taboo_gametype is None:
+                    artigo_taboo_gametype = Gametype.objects.all().filter(name="imageLabeler_Taboo")
+                    obj = artigo_taboo_gametype
 
             elif obj == gamesession:
                 while gamesession is None:
@@ -328,7 +328,7 @@ class ARTigoTabooGameView(APIView):
                 gametype = self.get_queryset()
                 serializer = GametypeSerializer(gametype, many=True)
                 resource = self.get_queryset()
-                serializer = ResourceSerializer(resource, many=True)
+                serializer = TabooTagSerializer(resource, many=True)
 
             elif model == "Gameround":
                 # TODO: find a good way to send an empty gameround/session object
@@ -605,7 +605,7 @@ class GameResourceView(APIView):
     """
     API view to handle resources
     """
-    serializer_class = TabooTagSerializer
+    serializer_class = CombinoTagsSerializer
 
     def get_queryset(self):
         resources = None
@@ -617,7 +617,7 @@ class GameResourceView(APIView):
 
     def get(self, request, *args, **kwargs):
         resource = self.get_queryset()
-        serializer = TabooTagSerializer(resource, many=True)
+        serializer = CombinoTagsSerializer(resource, many=True)
         return Response(serializer.data)
 
 

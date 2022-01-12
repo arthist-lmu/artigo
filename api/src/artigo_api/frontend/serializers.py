@@ -212,7 +212,6 @@ class TabooTagSerializer(serializers.ModelSerializer):
   creators = CreatorSerializer(many=True)
   titles = TitleSerializer(many=True)
   taboo_tags = serializers.SerializerMethodField('get_taboo_tags')
-  # taboo_tags = TaggingSerializer(read_only=True, many=True).data
 
   class Meta:
     model = Resource
@@ -225,6 +224,7 @@ class TabooTagSerializer(serializers.ModelSerializer):
     :param res:
     :return: A list of the ids of the validated Tags (not Taggings) per Resource
     """
+    # TODO: Filter out most used tags
     taboo_tags = res.tags.values_list('tag', flat=True)
     return taboo_tags
 
@@ -235,20 +235,17 @@ class TabooTagSerializer(serializers.ModelSerializer):
 # TODO: SuggestionsSerializer similar to TabooTagSerializer once this is finished
 
 class CombinoTagsSerializer(serializers.ModelSerializer):
-  tag = TagSerializer(read_only=True)
+  """ Serializer that returns tags to be combined with a Resource for Combino """
   tags_to_combine = serializers.SerializerMethodField('get_tags_to_combine')
 
   class Meta:
-    model = Tagging
-    fields = ('id', 'tag', 'gameround', 'resource', 'tags_to_combine')
+    model = Resource
+    fields = ('id', 'hash_id', 'titles', 'creators', 'tags_to_combine')
+    read_only_fields = ('titles', 'creators', 'institution')
 
-  def get_tags_to_combine(self, obj):
-    # TODO: figure it out once TabooTagSerializer working!
-    tags_to_combine = []
-    tag_count = Tagging.objects.filter(tag=obj.tag).count()
-    tag = ['tag']
-    while len(tags_to_combine) < 10:
-      tags_to_combine.append()
+  def get_tags_to_combine(self, res):
+    # so far all tags for that specific resource are shown
+    tags_to_combine = res.tags.values_list('tag', flat=True)
     return tags_to_combine
 
   def to_representation(self, data):
