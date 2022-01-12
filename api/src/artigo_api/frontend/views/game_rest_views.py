@@ -292,21 +292,6 @@ class ARTigoTabooGameView(APIView):
     renderer_classes = (BrowsableAPIRenderer, JSONRenderer, HTMLFormRenderer)
     controller = GameViewController()
 
-    def get_serializer_class(self):
-        YOUR_DEFAULT_SERIALIZER = GametypeSerializer
-        YOUR_SERIALIZER_1 = GamesessionSerializer
-        YOUR_SERIALIZER_2 = GameroundSerializer
-        YOUR_SERIALIZER_3 = ResourceSerializer
-        YOUR_SERIALIZER_4 = TagSerializer
-        YOUR_SERIALIZER_5 = TaggingSerializer
-
-        if self.request.method == 'POST':
-            return YOUR_SERIALIZER_4 and YOUR_SERIALIZER_5 and YOUR_SERIALIZER_1
-        elif self.request.method == 'GET':
-            return YOUR_SERIALIZER_2 and YOUR_SERIALIZER_3
-        else:
-            return YOUR_DEFAULT_SERIALIZER
-
     def get_queryset(self):
         """
 
@@ -377,7 +362,7 @@ class ARTigoTabooGameView(APIView):
                 gamesession = Gamesession.objects.none()
                 gamesession_serializer = GamesessionSerializer(gamesession, many=True)
 
-        return Response({'resource': resource_serializer.data,
+        return Response({'resource and taboo input': resource_serializer.data,
                          'gameround': gameround_serializer.data,
                          'gamesession': gamesession_serializer.data
                          })
@@ -505,10 +490,12 @@ class TagATagGameView(APIView):
         tag_serializer = None
         suggestions_serializer = None
         resource_suggestions = None
-        gamesession_suggestions = None
+        gamesession_serializer = None
         gameround_serializer = None
+
         while tag_serializer is None:
             while tag is None:
+                # random tag to be labeled in combination with the question and picture
                 random_idx = random.randint(0, Tag.objects.count() - 1)
                 tag = Tag.objects.all().filter(id=random_idx)
                 tag_serializer = TagSerializer(tag, many=True)
@@ -516,44 +503,40 @@ class TagATagGameView(APIView):
             while resource_suggestions is None:
                 resource_suggestions = self.get_queryset()
                 suggestions_serializer = SuggestionsSerializer(resource_suggestions, many=True)
+        while gameround_serializer is None:
+                # TODO: find a good way to send an empty gameround/session object
+                #  to be filled while game is being played
+                gameround = Gameround.objects.none()
+                gameround_serializer = GameroundSerializer(gameround, many=True)
+        while gamesession_serializer is None:
+                # TODO: find a good way to send an empty gameround/session object
+                #  to be filled while game is being played
+                gamesession = Gamesession.objects.none()
+                gamesession_serializer = GamesessionSerializer(gamesession, many=True)
 
         return Response({
             'tag': tag_serializer.data,
-            'suggestions': suggestions_serializer.data
+            'resource and suggestions': suggestions_serializer.data,
+            'gameround': gameround_serializer.data,
+            'gamesession': gamesession_serializer.data
         })
+
+    def post(self, request, *args, **kwargs):
+        pass
 
 
 class CombinoGameView(APIView):
     """
-    API endpoint that retrieves the Combino
+    API endpoint that retrieves the Combino game view
     """
 
-    def get_serializer_class(self):
-        YOUR_DEFAULT_SERIALIZER = GametypeSerializer
-        YOUR_SERIALIZER_1 = GamesessionSerializer
-        YOUR_SERIALIZER_2 = GameroundSerializer
-        YOUR_SERIALIZER_3 = CombinoTagsSerializer # returns a Resource with the Tags to be combined
-        YOUR_SERIALIZER_4 = TagSerializer
-        YOUR_SERIALIZER_5 = TaggingSerializer
-
-        if self.request.method == 'POST':
-            return YOUR_SERIALIZER_4 and YOUR_SERIALIZER_5 and YOUR_SERIALIZER_1
-        elif self.request.method == 'GET':
-            return YOUR_SERIALIZER_2 and YOUR_SERIALIZER_3
-        else:
-            return YOUR_DEFAULT_SERIALIZER
-
     def get_queryset(self):
-        taggings = None
         obj = None
         resources = None
         gameround = None
         gamesession = None
 
         while obj is None:
-            if obj == taggings:
-                taggings = Tagging.objects.all().filter(resource=9463)
-                obj = taggings
 
             if obj == resources:
                 while resources is None:
@@ -579,22 +562,27 @@ class CombinoGameView(APIView):
         """Potential condition for Tag a Tag Tag to be tagged to be returned"""
         gametype = Gametype.objects.all().filter(name="Combino")
         # TODO: See that it does not return an empty object!
-        tag = None
-        tag_serializer = None
         combination_serializer = None
         resource_and_tags = None
-        while tag is None:
-            random_idx = random.randint(0, Tagging.objects.count() - 1)
-            tag = Tagging.objects.all().filter(id=random_idx)
-            tag_serializer = TaggingSerializer(tag, many=True)
+        gameround_serializer = None
+        gamesession_serializer = None
+
         while combination_serializer is None:
+            # random resource with tags to be combined
             while resource_and_tags is None:
                 resource_and_tags = self.get_queryset()
                 combination_serializer = CombinoTagsSerializer(resource_and_tags, many=True)
+        while gameround_serializer is None:
+                gameround = Gameround.objects.none()
+                gameround_serializer = GameroundSerializer(gameround, many=True)
+        while gamesession_serializer is None:
+                gamesession = Gamesession.objects.none()
+                gamesession_serializer = GamesessionSerializer(gamesession, many=True)
 
         return Response({
-            'tag': tag_serializer.data,
-            'resource and tags to combine': combination_serializer.data
+            'resource and tags to combine': combination_serializer.data,
+            'gameround': gameround_serializer.data,
+            'gamesession': gamesession_serializer.data
         })
 
     def post(self, request, *args, **kwargs):

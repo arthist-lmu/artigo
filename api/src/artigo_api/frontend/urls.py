@@ -22,8 +22,8 @@ urlpatterns = [
 
     path('artigo_game/', views.ARTigoGameView.as_view(), name='ARTigo_game'),
     path('tagatag_game/', views.TagATagGameView.as_view(), name='Tag a Tag game'),
-    path('artigo_taboo_game/', views.ARTigoTabooGameView.as_view(), name='Tag a Tag game'),
-    path('combino_game/', views.TagATagGameView.as_view(), name='Tag a Tag game'),
+    path('artigo_taboo_game/', views.ARTigoTabooGameView.as_view(), name='ARTigo Taboo game'),
+    path('combino_game/', views.CombinoGameView.as_view(), name='Combino game'),
 
     path('taboo_tags', views.TabooTagsView.as_view(), name='taboo_tags'),
 

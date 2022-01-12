@@ -253,11 +253,11 @@ class SuggestionsSerializer(serializers.ModelSerializer):
     suggestions = res.tags.values_list('tag', flat=True) # returns the validated tags per resource
     # cleans up sugestions list
     # TODO: Review this
-    for suggestion in suggestions:
-      if suggestions[suggestion] != 'landscape':
-        suggestions.remove(suggestions[suggestion])
-      elif suggestions[suggestion] != 'shown':
-        suggestions.remove(suggestions[suggestion])
+    # for suggestion in suggestions:
+    #   if suggestions[suggestion] != 'landscape':
+    #     suggestions.remove(suggestions[suggestion])
+    #   elif suggestions[suggestion] != 'shown':
+    #     suggestions.remove(suggestions[suggestion])
 
     return suggestions
 
@@ -268,6 +268,8 @@ class SuggestionsSerializer(serializers.ModelSerializer):
 
 class CombinoTagsSerializer(serializers.ModelSerializer):
   """ Serializer that returns ids of tags to be combined with a Resource for Combino """
+  creators = CreatorSerializer(many=True)
+  titles = TitleSerializer(many=True)
   tags_to_combine = serializers.SerializerMethodField('get_tags_to_combine')
 
   class Meta:
