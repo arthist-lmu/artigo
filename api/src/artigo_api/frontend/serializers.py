@@ -232,10 +232,42 @@ class TabooTagSerializer(serializers.ModelSerializer):
     data = super().to_representation(data)
     return data
 
-# TODO: SuggestionsSerializer similar to TabooTagSerializer once this is finished
+
+class SuggestionsSerializer(serializers.ModelSerializer):
+  creators = CreatorSerializer(many=True)
+  titles = TitleSerializer(many=True)
+  suggestions = serializers.SerializerMethodField('get_suggestions')
+
+  class Meta:
+    model = Resource
+    fields = ['id', 'hash_id', 'titles', 'creators', 'suggestions']
+    read_only_fields = ['titles', 'creators', 'institution']
+
+  def get_suggestions(self, res):
+    """
+
+    :param res:
+    :return: A list of the ids of the validated Tags (not Taggings) per Resource
+    """
+    # TODO: Find out where suggestions come from and improve method
+    suggestions = res.tags.values_list('tag', flat=True) # returns the validated tags per resource
+    # cleans up sugestions list
+    # TODO: Review this
+    for suggestion in suggestions:
+      if suggestions[suggestion] != 'landscape':
+        suggestions.remove(suggestions[suggestion])
+      elif suggestions[suggestion] != 'shown':
+        suggestions.remove(suggestions[suggestion])
+
+    return suggestions
+
+  def to_representation(self, data):
+    data = super().to_representation(data)
+    return data
+
 
 class CombinoTagsSerializer(serializers.ModelSerializer):
-  """ Serializer that returns tags to be combined with a Resource for Combino """
+  """ Serializer that returns ids of tags to be combined with a Resource for Combino """
   tags_to_combine = serializers.SerializerMethodField('get_tags_to_combine')
 
   class Meta:

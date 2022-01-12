@@ -87,6 +87,42 @@ class MasterClass(APIView):
         return self.response
 
 
+class GametypeView(APIView):
+    """
+    API View that handles retrieving the correct type of a game
+    """
+    serializer_class = GametypeSerializer
+
+    def get_queryset(self):
+        gametypes = Gametype.objects.all()
+        return gametypes
+
+    def get(self, request, *args, **kwargs):
+        """ Iterates through all gametype objects and chooses the correct one"""
+        name = request.GET.get("name")
+        serializer = None
+        gametype = self.get_queryset()
+        if gametype is None:
+            while serializer is None:
+                if name == "imageLabeler":
+                    while gametype is None:
+                        gametype = self.get_queryset().filter(name="imageLabeler")
+                if name == "imageLabeler_Taboo":
+                    while gametype is None:
+                        gametype = self.get_queryset().filter(name="imageLabeler_Taboo")
+                if name == "imageLabeler_Taboo":
+                    while gametype is None:
+                        gametype = self.get_queryset().filter(name="imageLabeler_Taboo")
+                if name == "imageAndTagLabeler":
+                    while gametype is None:
+                        gametype = self.get_queryset().filter(name="imageAndTagLabeler")
+                if name == "Combino":
+                    while gametype is None:
+                        gametype = self.get_queryset().filter(name="Combino")
+        serializer = GametypeSerializer(gametype, many=True)
+        return Response(serializer.data)
+
+
 class ARTigoGameView(APIView):
     """
     API View that retrieves the ARTigo game,
@@ -119,7 +155,7 @@ class ARTigoGameView(APIView):
         """
         obj = None
         resources = None
-        artigo_gametype = None
+        # artigo_gametype = None
         gameround = None
         gamesession = None
 
@@ -130,10 +166,10 @@ class ARTigoGameView(APIView):
                     resources = Resource.objects.all().filter(id=random_idx)
                     obj = resources
 
-            elif obj == artigo_gametype:
-                while artigo_gametype is None:
-                    artigo_gametype = Gametype.objects.all().filter(name="imageLabeler")
-                    obj = artigo_gametype
+            # elif obj == artigo_gametype:
+            #     while artigo_gametype is None:
+            #         artigo_gametype = Gametype.objects.all().filter(name="imageLabeler")
+            #         obj = artigo_gametype
 
             elif obj == gamesession:
                 while gamesession is None:
@@ -157,29 +193,29 @@ class ARTigoGameView(APIView):
         :param kwargs:
         :return:
         """
+        artigo_gametype = "imageLabeler"
+        gametype = GametypeView()
+        gametype.get_queryset()
+
         model = request.GET.get("model")
         serializer = None
         # TODO: find way to assign what model is?
-        model = "Gametype"  # For testing purposes only!
+        model = "Resource"  # For testing purposes only!
         while serializer is None:
 
-            if model == "Gametype":
-                gametype = self.get_queryset()
-                serializer = GametypeSerializer(gametype, many=True)
+            if model == "Resource":
                 resource = self.get_queryset()
                 serializer = ResourceSerializer(resource, many=True)
 
             elif model == "Gameround":
-                # TODO: find a good way to send an empty gameround/session object
+                # TODO: find a good way to send an empty gameround object
                 #  to be filled while game is being played
-                # gameround = self.get_queryset()
                 gameround = Gameround.objects.none()
                 serializer = GameroundSerializer(gameround, many=True)
 
             elif model == "Gamesession":
-                # TODO: find a good way to send an empty gameround/session object
+                # TODO: find a good way to send an empty gamesession object
                 #  to be filled while game is being played
-                # gamesession = self.get_queryset()
                 gamesession = Gamesession.objects.none()
                 serializer = GamesessionSerializer(gamesession, many=True)
 
@@ -411,14 +447,15 @@ class ARTigoTabooGameView(APIView):
 
 class TagATagGameView(APIView):
     """
-    API endpoint that allows taggings to be viewed or edited
+    API endpoint that retrieves the Tag a Tag game
     """
 
     def get_serializer_class(self):
         YOUR_DEFAULT_SERIALIZER = GametypeSerializer
         YOUR_SERIALIZER_1 = GamesessionSerializer
         YOUR_SERIALIZER_2 = GameroundSerializer
-        YOUR_SERIALIZER_3 = ResourceSerializer
+        # returns a Resource and the suggested tags to describe the relationship between random tag and resource
+        YOUR_SERIALIZER_3 = SuggestionsSerializer
         YOUR_SERIALIZER_4 = TagSerializer
         YOUR_SERIALIZER_5 = TaggingSerializer
 
@@ -446,20 +483,40 @@ class TagATagGameView(APIView):
         # TODO: List of Tags to choose from as well!
 
 
-class GametypeView(APIView):
+class CombinoGameView(APIView):
     """
-    API View that handles retrieving the correct type of a game
+    API endpoint that retrieves the Combino
     """
-    serializer_class = GametypeSerializer
+
+    def get_serializer_class(self):
+        YOUR_DEFAULT_SERIALIZER = GametypeSerializer
+        YOUR_SERIALIZER_1 = GamesessionSerializer
+        YOUR_SERIALIZER_2 = GameroundSerializer
+        YOUR_SERIALIZER_3 = CombinoTagsSerializer # returns a Resource with the Tags to be combined
+        YOUR_SERIALIZER_4 = TagSerializer
+        YOUR_SERIALIZER_5 = TaggingSerializer
+
+        if self.request.method == 'POST':
+            return YOUR_SERIALIZER_4 and YOUR_SERIALIZER_5 and YOUR_SERIALIZER_1
+        elif self.request.method == 'GET':
+            return YOUR_SERIALIZER_2 and YOUR_SERIALIZER_3
+        else:
+            return YOUR_DEFAULT_SERIALIZER
 
     def get_queryset(self):
-        gametypes = Gametype.objects.all().order_by("name")
-        return gametypes
+        taggings = Tagging.objects.all().filter(resource=9463)
+        return taggings
 
     def get(self, request, *args, **kwargs):
-        gametype = self.get_queryset()
-        serializer = GametypeSerializer(gametype, many=True)
-        return Response(serializer.data)
+        """Potential condition for Tag a Tag Tag to be tagged to be returned"""
+        gametype = Gametype.objects.all().filter(name="Combino")
+        # TODO: See that it does not return an empty object!
+        tag = None
+        while tag is None:
+            random_idx = random.randint(0, Tagging.objects.count() - 1)
+            tag = Tagging.objects.all().filter(id=random_idx)
+            serializer = TaggingSerializer(tag, many=True)
+            return Response(serializer.data)
 
 
 class GamesessionView(APIView):

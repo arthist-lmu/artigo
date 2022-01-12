@@ -6,7 +6,6 @@ urlpatterns = [
     path('get_csrf_token', views.get_csrf_token, name='get_csrf_token'),
     path('get_user', views.UserView.as_view(), name='user'),
 
-    # path('get_resource', views.ResourceView.as_view(), name='resource'),
     path('get_collection', views.CollectionView.as_view(), name='collection'),
     path('search', views.SearchView.as_view(), name='search'),
 
@@ -22,7 +21,9 @@ urlpatterns = [
     path('get_artigo_gameround/resource', views.GameroundWithResourceView.as_view(), name='ARTigo_gameround'),
 
     path('artigo_game/', views.ARTigoGameView.as_view(), name='ARTigo_game'),
-    path('tagatag_game/', views.TagATagGameView.as_view(), name='ARTigo_game'),
+    path('tagatag_game/', views.TagATagGameView.as_view(), name='Tag a Tag game'),
+    path('artigo_taboo_game/', views.ARTigoTabooGameView.as_view(), name='Tag a Tag game'),
+    path('combino_game/', views.TagATagGameView.as_view(), name='Tag a Tag game'),
 
     path('taboo_tags', views.TabooTagsView.as_view(), name='taboo_tags'),
 

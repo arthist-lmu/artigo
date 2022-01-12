@@ -3,5 +3,5 @@ from .resource import ResourceView
 from .search import SearchView
 from .game_rest_views import TaggingView, GametypeView, TagView, GameResourceView, GamesessionView, \
     GameroundView, TabooTagsView, GameroundWithResourceView, \
-    GameResourceViewPicture, ARTigoGameView, TagATagGameView
+    GameResourceViewPicture, ARTigoGameView, TagATagGameView, ARTigoTabooGameView
 from .user import get_csrf_token, UserView#, LoginView, LogoutView, RegisterView
