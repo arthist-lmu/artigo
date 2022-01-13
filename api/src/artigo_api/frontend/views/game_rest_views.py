@@ -38,6 +38,8 @@ class GameViewController:
             pass
 
     def calculate_score(self):
+        # returns JSON Object // HTTP Status code
+        # 'Matching' here: match played round with a previously played round (25 p) and with entire DB->Tagging(5p)
         pass
 
     def timer(self, start):
@@ -107,9 +109,6 @@ class GametypeView(APIView):
                 if name == "imageLabeler":
                     while gametype is None:
                         gametype = self.get_queryset().filter(name="imageLabeler")
-                if name == "imageLabeler_Taboo":
-                    while gametype is None:
-                        gametype = self.get_queryset().filter(name="imageLabeler_Taboo")
                 if name == "imageLabeler_Taboo":
                     while gametype is None:
                         gametype = self.get_queryset().filter(name="imageLabeler_Taboo")
@@ -234,30 +233,29 @@ class ARTigoGameView(APIView):
         saved_obj = None
 
         model = request.GET.get("model")
-        model = "Tagging"
+        model = "Tagging" # for testing only!
 
-        if model == "Gameround":
-            # gameround = request.data.get_queryset()
-            gameround = GameroundSerializer(data=request.data)
-            while saved_gameround is None:
-                serializer = GameroundSerializer(data=gameround)
-                if serializer.is_valid(raise_exception=True):
-                    saved_gameround = serializer.save()
-                    saved_obj = saved_gameround
-                    return Response(saved_obj, status=status.HTTP_201_CREATED)
-
-        elif model == "Gamesession":
-            # TODO: only save if 5 rounds have been played?! or always?
-            gamesession = request.data.get_queryset()
-            while saved_gamesession is None:
-                serializer = GamesessionSerializer(data=gamesession)
-                if serializer.is_valid(raise_exception=True):
-                    saved_gamesession = serializer.save()
-                    saved_obj = saved_gamesession
-                    return Response(saved_obj, status=status.HTTP_201_CREATED)
+        # if model == "Gameround":
+        #     gameround = GameroundSerializer(data=request.data)
+        #     while saved_gameround is None:
+        #         serializer = GameroundSerializer(data=gameround)
+        #         if serializer.is_valid(raise_exception=True):
+        #             saved_gameround = serializer.save()
+        #             saved_obj = saved_gameround
+        #             return Response(saved_obj, status=status.HTTP_201_CREATED)
+        #
+        # elif model == "Gamesession":
+        #     # TODO: only save if 5 rounds have been played! Tags/Taggings can be saved - find a way!
+        #     gamesession = request.data.get_queryset()
+        #     while saved_gamesession is None:
+        #         serializer = GamesessionSerializer(data=gamesession)
+        #         if serializer.is_valid(raise_exception=True):
+        #             saved_gamesession = serializer.save()
+        #             saved_obj = saved_gamesession
+        #             return Response(saved_obj, status=status.HTTP_201_CREATED)
 
         # TODO: Resource id has to be sent with tag/tagging!
-        elif model == "Tagging":
+        if model == "Tagging":
             # TODO: test & modify if necessary
             # tagging = request.data.get_queryset()
             tagging = serializer.ResourceWithTaggingsSerializer(data=request.data)
