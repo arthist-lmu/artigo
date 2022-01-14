@@ -88,31 +88,28 @@ class GameroundWithResourceSerializer(ResourceSerializer):
 
 
 class TagSerializer(serializers.ModelSerializer):
-  name = serializers.CharField(max_length=256)
-  language = serializers.CharField(max_length=256)
+  # name = serializers.CharField(max_length=256)
+  # language = serializers.CharField(max_length=256)
 
   class Meta:
     model = Tag
-    fields = ('__all__')
+    fields = ('id', 'name', 'language')
 
   def to_representation(self, data):
     data = super().to_representation(data)
-    data['name'] = data['name'].lower()
-    
     return data
 
 
 class TaggingSerializer(serializers.ModelSerializer):
   tag = TagSerializer(read_only=True)
+  resource = ResourceSerializer(read_only=True)
 
   class Meta:
     model = Tagging
-    fields = ['id', 'tag', 'gameround', 'resource']
+    fields = ('id', 'tag', 'gameround', 'created', 'score', 'resource')
 
   def to_representation(self, data):
     data = super().to_representation(data)
-    # data['tag'] = data['tag'].lower()
-
     return data
 
 
@@ -124,8 +121,6 @@ class GametypeSerializer(serializers.ModelSerializer):
 
   def to_representation(self, data):
     data = super().to_representation(data)
-    # data['id'] = data['id'].lower()
-
     return data
 
 
@@ -138,8 +133,6 @@ class GamesessionSerializer(serializers.ModelSerializer):
 
   def to_representation(self, data):
     data = super().to_representation(data)
-    # data['id'] = data['id'].lower()
-
     return data
 
 
@@ -168,8 +161,6 @@ class GamesessionSerializer2(serializers.ModelSerializer):
 
   def to_representation(self, data):
     data = super().to_representation(data)
-    # data['id'] = data['id'].lower()
-
     return data
 
 
@@ -245,7 +236,6 @@ class SuggestionsSerializer(serializers.ModelSerializer):
 
   def get_suggestions(self, res):
     """
-
     :param res:
     :return: A list of the ids of the validated Tags (not Taggings) per Resource
     """
@@ -254,10 +244,6 @@ class SuggestionsSerializer(serializers.ModelSerializer):
     # cleans up sugestions list
     # TODO: Review this
     # for suggestion in suggestions:
-    #   if suggestions[suggestion] != 'landscape':
-    #     suggestions.remove(suggestions[suggestion])
-    #   elif suggestions[suggestion] != 'shown':
-    #     suggestions.remove(suggestions[suggestion])
 
     return suggestions
 
