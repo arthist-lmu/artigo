@@ -235,16 +235,16 @@ class ARTigoGameView(APIView):
                          })
 
     def post(self, request, *args, **kwargs):
-        saved_obj = None
+        saved_tagging = None
         serializer = TaggingSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response({'tagging': serializer.data}, status=status.HTTP_201_CREATED)
-        if saved_obj is None:
+        if saved_tagging is None:
             return Response({'tagging': serializer.data}, status=status.HTTP_201_CREATED)
             # return Response(saved_obj, status=status.HTTP_201_CREATED)
 
-        return Response(saved_obj, status=status.HTTP_400_BAD_REQUEST)
+        return Response(saved_tagging, status=status.HTTP_400_BAD_REQUEST)
         # controller = GameViewController()
         # saved_tagging = None
         # saved_tag = None
@@ -428,22 +428,6 @@ class TagATagGameView(APIView):
     API endpoint that retrieves the Tag a Tag game
     """
 
-    def get_serializer_class(self):
-        YOUR_DEFAULT_SERIALIZER = GametypeSerializer
-        YOUR_SERIALIZER_1 = GamesessionSerializer
-        YOUR_SERIALIZER_2 = GameroundSerializer
-        # returns a Resource and the suggested tags to describe the relationship between random tag and resource
-        YOUR_SERIALIZER_3 = SuggestionsSerializer
-        YOUR_SERIALIZER_4 = TagSerializer
-        YOUR_SERIALIZER_5 = TaggingSerializer
-
-        if self.request.method == 'POST':
-            return YOUR_SERIALIZER_4 and YOUR_SERIALIZER_5 and YOUR_SERIALIZER_1
-        elif self.request.method == 'GET':
-            return YOUR_SERIALIZER_2 and YOUR_SERIALIZER_3
-        else:
-            return YOUR_DEFAULT_SERIALIZER
-
     def get(self, request, *args, **kwargs):
         """Potential condition for Tag a Tag Tag to be tagged to be returned"""
         gametype = Gametype.objects.all().filter(name="imageAndTagLabeler")
@@ -474,7 +458,20 @@ class TagATagGameView(APIView):
 
 
 def post(self, request, *args, **kwargs):
-    pass
+    saved_tagging = None
+
+    serializer = TaggingSerializer(data=request.data)
+
+    if serializer.is_valid() and saved_tagging is not None:
+
+        serializer.save()
+        return Response({'tagging': serializer.data}, status=status.HTTP_201_CREATED)
+
+    elif saved_tagging is None:
+        return Response({'tagging': serializer.data}, status=status.HTTP_204_NO_CONTENT)
+
+    else:
+        return Response({'tagging': serializer.data}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class CombinoGameView(APIView):
