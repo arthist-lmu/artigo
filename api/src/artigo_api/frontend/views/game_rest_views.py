@@ -2,7 +2,7 @@ import random
 
 import time
 
-from rest_framework import status
+from rest_framework import status, renderers
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.renderers import (
@@ -25,6 +25,9 @@ class GameViewController:
         pass
 
     def get_gameround(self):
+        pass
+
+    def get_gamesession(self):
         pass
 
     def get_time_created(self):
@@ -149,22 +152,9 @@ class ARTigoGameView(APIView):
     retrieves a random resource per round
     allows users to post tags that are verified and saved accordingly to either the Tag or Tagging table
     """
-    renderer_classes = (BrowsableAPIRenderer, JSONRenderer, HTMLFormRenderer)
-
-    def get_serializer_class(self):
-        YOUR_DEFAULT_SERIALIZER = GametypeSerializer
-        YOUR_SERIALIZER_1 = GamesessionSerializer
-        YOUR_SERIALIZER_2 = GameroundSerializer
-        YOUR_SERIALIZER_3 = ResourceSerializer
-        YOUR_SERIALIZER_4 = TagSerializer
-        YOUR_SERIALIZER_5 = TaggingSerializer
-
-        if self.request.method == 'POST':
-            return YOUR_SERIALIZER_4 and YOUR_SERIALIZER_5 and YOUR_SERIALIZER_1
-        elif self.request.method == 'GET':
-            return YOUR_SERIALIZER_2 and YOUR_SERIALIZER_3
-        else:
-            return YOUR_DEFAULT_SERIALIZER
+    # renderer_classes = (BrowsableAPIRenderer, JSONRenderer, HTMLFormRenderer)
+    # TODO: USE LATER!!!!
+    # renderer_classes = [renderers.JSONRenderer]
 
     def get_queryset(self):
         """
@@ -243,46 +233,52 @@ class ARTigoGameView(APIView):
                          })
 
     def post(self, request, *args, **kwargs):
-        """
-
-        :param request:
-        :param args:
-        :param kwargs:
-        :return:
-        """
-        controller = GameViewController()
-        saved_tagging = None
-        saved_tag = None
         saved_obj = None
-
-        model = request.GET.get("model") # coordinate using GameController
-        # condition checks if the tag in the request exists and then sends it to proper POST
-        if controller.check_tag_exists(request.GET.get("name")) == Tag():
-            model = "Tag"
-        else:
-            model = "Tagging"
-
-        # TODO: Resource id has to be sent with tag/tagging!
-        if model == "Tagging":
-            # TODO: test & modify if necessary
-            tagging = ResourceWithTaggingsSerializer(data=request.data)
-            while saved_tagging is None:
-                serializer = ResourceWithTaggingsSerializer(data=tagging)
-                if serializer.is_valid(raise_exception=True):
-                    saved_tagging = serializer.save()
-                    saved_obj = saved_tagging
-                    return Response(saved_obj, status=status.HTTP_201_CREATED)
-
-        elif model == "Tag":
-            tag = ResourceWithTagsSerializer(data=request.data)
-            while saved_tag is None:
-                serializer = ResourceWithTagsSerializer(data=tag)
-                if serializer.is_valid(raise_exception=True):
-                    saved_tag = serializer.save()
-                    saved_obj = saved_tag
-                    return Response(saved_obj, status=status.HTTP_201_CREATED)
+        serializer = TaggingSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'tagging': serializer.data}, status=status.HTTP_201_CREATED)
+        if saved_obj is None:
+            return Response({'tagging': serializer.data}, status=status.HTTP_201_CREATED)
+            #return Response(saved_obj, status=status.HTTP_201_CREATED)
 
         return Response(saved_obj, status=status.HTTP_400_BAD_REQUEST)
+        # controller = GameViewController()
+        # saved_tagging = None
+        # saved_tag = None
+        # saved_obj = None
+        #
+        # # user object - remains the same over the session
+        # user_object = request.user
+        #
+        # model = request.GET.get("model") # coordinate using GameController
+        # # condition checks if the tag in the request exists and then sends it to proper POST
+        # # if controller.check_tag_exists(request.GET.get("name")) == Tag():
+        # #     model = "Tag"
+        # # else:
+        # #     model = "Tagging"
+        #
+        # # TODO: Resource id has to be sent with tag/tagging!
+        # if model == "Tagging":
+        #     # TODO: test & modify if necessary
+        #     tagging = ResourceWithTaggingsSerializer(data=request.data)
+        #     while saved_tagging is None:
+        #         serializer = ResourceWithTaggingsSerializer(data=tagging)
+        #         if serializer.is_valid(raise_exception=True):
+        #             saved_tagging = serializer.save()
+        #             saved_obj = saved_tagging
+        #             return Response(saved_obj, status=status.HTTP_201_CREATED)
+        #
+        # elif model == "Tag":
+        #     tag = ResourceWithTagsSerializer(data=request.data)
+        #     while saved_tag is None:
+        #         serializer = ResourceWithTagsSerializer(data=tag)
+        #         if serializer.is_valid(raise_exception=True):
+        #             saved_tag = serializer.save()
+        #             saved_obj = saved_tag
+        #             return Response(saved_obj, status=status.HTTP_201_CREATED)
+        #
+        # return Response(saved_obj, status=status.HTTP_400_BAD_REQUEST)
 
 
 class ARTigoTabooGameView(APIView):
@@ -302,6 +298,7 @@ class ARTigoTabooGameView(APIView):
         """
         obj = None
         resource = None
+        resources = Resource.objects.all()
         artigo_taboo_gametype = None
         gameround = None
         gamesession = None
@@ -311,13 +308,15 @@ class ARTigoTabooGameView(APIView):
             if obj == resource:
                 while resource is None:
                     while random_resource_idx is None:
-                        random_number = random.randint(0, Resource.objects.count() - 1)
-                        if not Resource.objects.all().filter(id=random_number).exists():
-                            random_number_alternative = random.randint(0, Resource.objects.count() - 1)
-                            random_resource_idx = random_number_alternative
-                        else:
-                            random_resource_idx = random_number
-                        resource = Resource.objects.all().filter(id=random_resource_idx)
+                        while not resources.filter(id=random_resource_idx).exists():
+                            random_number = random.randint(0, resources.count() - 1)
+                            if not resources.filter(id=random_number).exists():
+                                random_number_alternative = random.randint(0, resources.count() - 1)
+                                if resources.filter(id=random_number_alternative).exists():
+                                    random_resource_idx = random_number_alternative
+                                else:
+                                    random_resource_idx = random_number
+                        resource = resources.filter(id=random_resource_idx)
                     obj = resource
 
             elif obj == artigo_taboo_gametype:
@@ -327,13 +326,11 @@ class ARTigoTabooGameView(APIView):
 
             elif obj == gamesession:
                 while gamesession is None:
-                    # TODO: figure out how to send empty gamesession
                     gamesession = Gamesession.objects.none()
                     obj = gamesession
 
             elif obj == gameround:
                 while gameround is None:
-                    # TODO: figure out how to send empty gameround
                     gameround = Gameround.objects.none()
                     obj = gameround
 
@@ -385,6 +382,7 @@ class ARTigoTabooGameView(APIView):
         :param kwargs:
         :return:
         """
+        controller = GameViewController()
         saved_gameround = None
         saved_gamesession = None
         saved_tagging = None
@@ -393,6 +391,11 @@ class ARTigoTabooGameView(APIView):
 
         model = request.GET.get("model")
         model = "Tagging"
+
+        # if controller.check_tag_exists(request.GET.get("name")) == Tag():
+        #     model = "Tag"
+        # else:
+        #     model = "Tagging"
 
         # TODO: Resource id has to be sent with tag/tagging!
         if model == "Tagging":
@@ -446,39 +449,53 @@ class TagATagGameView(APIView):
         """
         obj = None
         resource = None
-        random_tag = None
+        resources = Resource.objects.all()
+        tag = None
+        tags = Tagging.objects.all()
         gameround = None
         gamesession = None
         random_resource_idx = None
         random_tag_idx = None
 
         while obj is None:
-            if obj == resource:
+
+            if obj == resource or obj == tag:
+
                 while resource is None:
                     while random_resource_idx is None:
-                        random_number = random.randint(0, Resource.objects.count() - 1)
-                        if not Resource.objects.all().filter(id=random_number).exists():
-                            random_number_alternative = random.randint(0, Resource.objects.count() - 1)
-                            random_resource_idx = random_number_alternative
-                        else:
-                            random_resource_idx = random_number
-                        resource = Resource.objects.all().filter(id=random_resource_idx)
+                        while not resources.filter(id=random_resource_idx).exists():
+                            random_number = random.randint(0, resources.count() - 1)
+                            if not resources.filter(id=random_number).exists():
+                                random_number_alternative = random.randint(0, resources.count() - 1)
+                                if resources.filter(id=random_number_alternative).exists():
+                                    random_resource_idx = random_number_alternative
+                                else:
+                                    random_resource_idx = random_number
+                        resource = resources.filter(id=random_resource_idx)
                     obj = resource
 
-            elif obj == random_tag:
-                tags = Tagging.objects.filter(resource=resource)
-                for tag in tags:
-                    while tag is None:
+                    tags = tags.filter(resource=resource)
+
+                while tag is None:
+                    # TODO: FIX THIS!
+                    for random_tag in tags:
                         while random_tag_idx is None:
-                            random_number = random.randint(0, tags.objects.count() - 1)
-                            if not tags.objects.all().filter(id=random_number).exists():
-                                random_number_alternative = random.randint(0, tags.objects.count() - 1)
-                                random_tag_idx = random_number_alternative
-                            else:
-                                random_tag_idx = random_number
-                            tag = tags.objects.all().filter(id=random_tag_idx)
-                            random_tag = tag
-                    obj = random_tag
+                            while not tags.get(id=random_resource_idx).exists():
+                                random_number = random.randint(0, tags.count() - 1)
+                                if not tags.get(id=random_number).exists():
+                                    random_number_alternative = random.randint(0, tags.count() - 1)
+                                    if tags.get(id=random_number_alternative).exists():
+                                        random_resource_idx = random_number_alternative
+                                    else:
+                                        random_resource_idx = random_number
+                                        # random_tag = tags.filter(id=random_resource_idx)
+                                        random_tag = tags.get(id=random_resource_idx)
+                                        print(random_tag)
+                        # random_tag might be a queryset and not an object
+                        tag = random_tag
+                    obj = tag
+
+            # elif obj == resource:
 
             elif obj == gamesession:
                 while gamesession is None:
@@ -502,24 +519,23 @@ class TagATagGameView(APIView):
         resource_suggestions = None
         gamesession_serializer = None
         gameround_serializer = None
-        random_idx = None
 
-        while tagging_serializer is None:
-            while tag is None:
+        if tagging_serializer is None:
+            if tag is None:
                 # random tag to be labeled in combination with the question and picture
                 tag = self.get_queryset()
                 tagging_serializer = TaggingSerializer(tag, many=True)
 
-        while suggestions_serializer is None:
-            while resource_suggestions is None:
+        if suggestions_serializer is None:
+            if resource_suggestions is None:
                 resource_suggestions = self.get_queryset()
                 suggestions_serializer = SuggestionsSerializer(resource_suggestions, many=True)
 
-        while gameround_serializer is None:
+        if gameround_serializer is None:
                 gameround = Gameround.objects.none()
                 gameround_serializer = GameroundSerializer(gameround, many=True)
 
-        while gamesession_serializer is None:
+        if gamesession_serializer is None:
                 gamesession = Gamesession.objects.none()
                 gamesession_serializer = GamesessionSerializer(gamesession, many=True)
 
@@ -541,27 +557,34 @@ class CombinoGameView(APIView):
 
     def get_queryset(self):
         obj = None
-        resources = None
+        resource = None
         gameround = None
         gamesession = None
+        random_resource_idx = None
 
         while obj is None:
 
-            if obj == resources:
-                while resources is None:
-                    random_idx = random.randint(0, Resource.objects.count() - 1)
-                    resources = Resource.objects.all().filter(id=random_idx)
-                    obj = resources
+            if obj == resource:
+                while resource is None:
+                    while random_resource_idx is None:
+                        while not Resource.objects.all().filter(id=random_resource_idx).exists():
+                            random_number = random.randint(0, Resource.objects.count() - 1)
+                            if not Resource.objects.all().filter(id=random_number).exists():
+                                random_number_alternative = random.randint(0, Resource.objects.count() - 1)
+                                if Resource.objects.all().filter(id=random_number_alternative).exists():
+                                    random_resource_idx = random_number_alternative
+                                else:
+                                    random_resource_idx = random_number
+                        resource = Resource.objects.all().filter(id=random_resource_idx)
+                    obj = resource
 
             elif obj == gamesession:
                 while gamesession is None:
-                    # TODO: figure out how to send empty gamesession
                     gamesession = Gamesession.objects.none()
                     obj = gamesession
 
             elif obj == gameround:
                 while gameround is None:
-                    # TODO: figure out how to send empty gameround
                     gameround = Gameround.objects.none()
                     obj = gameround
 
@@ -749,20 +772,31 @@ class GameResourceView(APIView):
     """
     API view to handle resources
     """
-    serializer_class = CombinoTagsSerializer
+    serializer_class = TabooTagSerializer
 
     def get_queryset(self):
-        resources = None
-        while resources is None:
-            random_idx = random.randint(0, Resource.objects.count() - 1)
-            resources = Resource.objects.all().filter(id=random_idx)
-        # TODO: See that a resource is always returned! check that resource not null
-        return resources
+        resource = None
+        random_resource_idx = None
+        while resource is None:
+            while resource is None:
+                while random_resource_idx is None:
+                    while not Resource.objects.all().filter(id=random_resource_idx).exists():
+                        random_number = random.randint(0, Resource.objects.count() - 1)
+                        if not Resource.objects.all().filter(id=random_number).exists():
+                            random_number_alternative = random.randint(0, Resource.objects.count() - 1)
+                            if Resource.objects.all().filter(id=random_number_alternative).exists():
+                                random_resource_idx = random_number_alternative
+                            else:
+                                random_resource_idx = random_number
+                    resource = Resource.objects.all().filter(id=random_resource_idx)
+        return resource
 
     def get(self, request, *args, **kwargs):
         resource = self.get_queryset()
-        serializer = CombinoTagsSerializer(resource, many=True)
-        return Response(serializer.data)
+        serializer = TabooTagSerializer(resource, many=True)
+        return Response({
+            'resource and tags to combine': serializer.data
+        })
 
 
 class GameResourceViewPicture(APIView):

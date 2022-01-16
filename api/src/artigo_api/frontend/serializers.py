@@ -211,12 +211,11 @@ class TabooTagSerializer(serializers.ModelSerializer):
 
   def get_taboo_tags(self, res):
     """
-
     :param res:
     :return: A list of the ids of the validated Tags (not Taggings) per Resource
     """
-    # TODO: Filter out most used tags
-    taboo_tags = res.tags.values_list('tag', flat=True)
+    taboo_tags = res.tags
+
     return taboo_tags
 
   def to_representation(self, data):
@@ -265,7 +264,8 @@ class CombinoTagsSerializer(serializers.ModelSerializer):
 
   def get_tags_to_combine(self, res):
     # so far all tags for that specific resource are shown
-    tags_to_combine = res.tags.values_list('tag', flat=True)
+    # tags_to_combine = res.tags.values_list('tag', flat=True)
+    tags_to_combine = res.tags
     return tags_to_combine
 
   def to_representation(self, data):
