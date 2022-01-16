@@ -299,87 +299,24 @@ class ARTigoTabooGameView(APIView):
     allows users to post tags that are verified and saved accordingly to either the Tag or Tagging table
     """
     renderer_classes = (BrowsableAPIRenderer, JSONRenderer, HTMLFormRenderer)
-    controller = GameViewController()
-
-    def get_queryset(self):
-        """
-
-        :return:
-        """
-        obj = None
-        resource = None
-        resources = Resource.objects.all()
-        artigo_taboo_gametype = None
-        gameround = None
-        gamesession = None
-        random_resource_idx = None
-
-        while obj is None:
-            if obj == resource:
-                while resource is None:
-                    while random_resource_idx is None:
-                        while not resources.filter(id=random_resource_idx).exists():
-                            random_number = random.randint(0, resources.count() - 1)
-                            if not resources.filter(id=random_number).exists():
-                                random_number_alternative = random.randint(0, resources.count() - 1)
-                                if resources.filter(id=random_number_alternative).exists():
-                                    random_resource_idx = random_number_alternative
-                                else:
-                                    random_resource_idx = random_number
-                        resource = resources.filter(id=random_resource_idx)
-                    obj = resource
-
-            elif obj == artigo_taboo_gametype:
-                while artigo_taboo_gametype is None:
-                    artigo_taboo_gametype = Gametype.objects.all().filter(name="imageLabeler_Taboo")
-                    obj = artigo_taboo_gametype
-
-            elif obj == gamesession:
-                while gamesession is None:
-                    gamesession = Gamesession.objects.none()
-                    obj = gamesession
-
-            elif obj == gameround:
-                while gameround is None:
-                    gameround = Gameround.objects.none()
-                    obj = gameround
-
-        return obj
 
     def get(self, request, *args, **kwargs):
-        """
+        controller = GameViewController()
+        gametype = Gametype.objects.all().filter(name="imageLabeler_Taboo")
+        gametype_serializer = GametypeSerializer(gametype, many=True)
 
-        :param request:
-        :param args:
-        :param kwargs:
-        :return:
-        """
-        model = request.GET.get("model")
-        resource_serializer = None
-        gameround_serializer = None
-        gamesession_serializer = None
-        # TODO: find way to assign what model is?
-        model = "Resource"  # For testing purposes only!
-        while resource_serializer is None:
-            # if model == "Resource":
-            # gametype = self.get_queryset()
-            # serializer = GametypeSerializer(gametype, many=True)
-            resource = self.get_queryset()
-            resource_serializer = TabooTagSerializer(resource, many=True)
-        while gameround_serializer is None:
-            # elif model == "Gameround":
-            # TODO: find a good way to send an empty gameround/session object
-            #  to be filled while game is being played
-            gameround = Gameround.objects.none()
-            gameround_serializer = GameroundSerializer(gameround, many=True)
-        while gamesession_serializer is None:
-            # elif model == "Gamesession":
-            # TODO: find a good way to send an empty gameround/session object
-            #  to be filled while game is being played
-            gamesession = Gamesession.objects.none()
-            gamesession_serializer = GamesessionSerializer(gamesession, many=True)
+        resource_suggestions = Resource.objects.all().filter(id=controller.pick_random_object(Resource))
+        resource_serializer = TabooTagSerializer(resource_suggestions, many=True)
 
-        return Response({'resource and taboo input': resource_serializer.data,
+        # TODO: ask again if empty object neccessary
+        gameround = Gameround.objects.none()
+        gameround_serializer = GameroundSerializer(gameround, many=True)
+
+        gamesession = Gamesession.objects.none()
+        gamesession_serializer = GamesessionSerializer(gamesession, many=True)
+
+        return Response({'gametype': gametype_serializer.data,
+                         'resource and taboo input': resource_serializer.data,
                          'gameround': gameround_serializer.data,
                          'gamesession': gamesession_serializer.data
                          })
