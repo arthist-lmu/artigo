@@ -118,7 +118,6 @@ class GameViewController:
             random_object = random.randrange(1, MyModel.objects.all().count() + 1)
             while not MyModel.objects.all().filter(id=random_object).exists():
                 random_object = random.randrange(1, MyModel.objects.all().count() + 1)
-
             return random_object
 
 
@@ -444,13 +443,11 @@ class TagATagGameView(APIView):
         gametype_serializer = GametypeSerializer(gametype, many=True)
 
         resource_suggestions = Resource.objects.all().filter(id=controller.pick_random_object(Resource))
-        # resource_suggestions = Resource.objects.all().filter(id=3678)
         suggestions_serializer = SuggestionsSerializer(resource_suggestions, many=True)
 
-        # tag = Tagging.objects.all().filter(resource=resource_suggestions).get(id=controller.pick_random_object(Tagging))
-        # tag = Tagging.objects.order_by('?').first()
-        # tag = Tagging.objects.get(resource=resource_suggestions).first()
-        # tagging_serializer = TaggingSerializer(tag, many=True)
+        # TODO: Try implementing special serializer to get the most used tag per resource
+        tag = Tagging.objects.none()
+        tagging_serializer = TaggingSerializer(tag, many=True)
 
         # TODO: ask again if empty object neccessary
         gameround = Gameround.objects.none()
@@ -461,7 +458,7 @@ class TagATagGameView(APIView):
 
         return Response({
             'gametype': gametype_serializer.data,
-            # 'tag': tagging_serializer.data,
+            'tag': tagging_serializer.data,
             'resource and suggestions': suggestions_serializer.data,
             'gameround': gameround_serializer.data,
             'gamesession': gamesession_serializer.data
