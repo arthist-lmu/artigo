@@ -18,8 +18,6 @@ urlpatterns = [
     path('game_resource', views.GameResourceView.as_view(), name='game_resource'),
     path('game_resource_picture', views.GameResourceViewPicture.as_view(), name='game_resource_picture'),
 
-    path('get_artigo_gameround/resource', views.GameroundWithResourceView.as_view(), name='ARTigo_gameround'),
-
     path('artigo_game/', views.ARTigoGameView.as_view(), name='ARTigo_game'),
     path('tagatag_game/', views.TagATagGameView.as_view(), name='Tag a Tag game'),
     path('artigo_taboo_game/', views.ARTigoTabooGameView.as_view(), name='ARTigo Taboo game'),
