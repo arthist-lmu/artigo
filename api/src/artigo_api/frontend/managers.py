@@ -1,7 +1,7 @@
-import random
+from random import random
 
 from django.db import models
-from django.db.models import Count
+from django.db.models.aggregates import Count
 from django.contrib.auth.models import BaseUserManager
 
 
@@ -56,7 +56,3 @@ class ResourceManager(models.Manager):
         row_id = random.randint(0, n_rows - 1)
 
         return self.all()[row_id]
-
-
-# class QuestionManager:
-#     pass

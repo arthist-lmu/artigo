@@ -239,11 +239,10 @@ class SuggestionsSerializer(serializers.ModelSerializer):
     :return: A list of the ids of the validated Tags (not Taggings) per Resource
     """
     # TODO: Find out where suggestions come from and improve method
-    suggestions = res.tags.values_list('tag', flat=True) # returns the validated tags per resource
+    suggestions = res.tags # returns the validated tags per resource
     # cleans up sugestions list
     # TODO: Review this
     # for suggestion in suggestions:
-
     return suggestions
 
   def to_representation(self, data):

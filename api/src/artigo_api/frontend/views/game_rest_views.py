@@ -112,6 +112,15 @@ class GameViewController:
 
         self.coordinate_players(gameround)
 
+    def pick_random_object(self, MyModel):
+        random_object = None
+        if random_object is None:
+            random_object = random.randrange(1, MyModel.objects.all().count() + 1)
+            while not MyModel.objects.all().filter(id=random_object).exists():
+                random_object = random.randrange(1, MyModel.objects.all().count() + 1)
+
+            return random_object
+
 
 class GametypeView(APIView):
     """
@@ -430,17 +439,18 @@ class TagATagGameView(APIView):
 
     def get(self, request, *args, **kwargs):
         """Potential condition for Tag a Tag Tag to be tagged to be returned"""
+        controller = GameViewController()
         gametype = Gametype.objects.all().filter(name="imageAndTagLabeler")
-        # TODO: See that logic is here and not in get_queryset()
+        gametype_serializer = GametypeSerializer(gametype, many=True)
 
-        # random tag to be labeled in combination with the question and picture
-        # tag = self.get_queryset()
-        resource_suggestions = Resource.objects.order_by('?').first()
+        resource_suggestions = Resource.objects.all().filter(id=controller.pick_random_object(Resource))
+        # resource_suggestions = Resource.objects.all().filter(id=3678)
         suggestions_serializer = SuggestionsSerializer(resource_suggestions, many=True)
 
-        # tag = Tagging.objects.all().filter(resource=resource_suggestions)
-        tag = Tagging.objects.order_by('?').first()
-        tagging_serializer = TaggingSerializer(tag, many=True)
+        # tag = Tagging.objects.all().filter(resource=resource_suggestions).get(id=controller.pick_random_object(Tagging))
+        # tag = Tagging.objects.order_by('?').first()
+        # tag = Tagging.objects.get(resource=resource_suggestions).first()
+        # tagging_serializer = TaggingSerializer(tag, many=True)
 
         # TODO: ask again if empty object neccessary
         gameround = Gameround.objects.none()
@@ -450,7 +460,8 @@ class TagATagGameView(APIView):
         gamesession_serializer = GamesessionSerializer(gamesession, many=True)
 
         return Response({
-            'tag': tagging_serializer.data,
+            'gametype': gametype_serializer.data,
+            # 'tag': tagging_serializer.data,
             'resource and suggestions': suggestions_serializer.data,
             'gameround': gameround_serializer.data,
             'gamesession': gamesession_serializer.data
