@@ -1,6 +1,7 @@
 import random
 
 import time
+from datetime import datetime
 
 from rest_framework import status, renderers
 from rest_framework.views import APIView
@@ -177,6 +178,7 @@ class ARTigoGameView(APIView):
         gametype_serializer = GametypeSerializer(gametype, many=True)
 
         # TODO: Build timer in!!!
+        # controller.timer()
 
         random_resource = Resource.objects.all().filter(id=controller.pick_random_object(Resource))
         resource_serializer = ResourceSerializer(random_resource, many=True)
@@ -198,10 +200,17 @@ class ARTigoGameView(APIView):
         controller = GameViewController()
 
         saved_tagging = None
+
         serializer = TaggingSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save()
-            return Response({'tagging': serializer.data}, status=status.HTTP_201_CREATED)
+            saved_tagging = Tagging.objects.create(id=request.data["id"],
+                                                   tag=request.data["tag"],
+                                                   gameround=request.data["gameround"],
+                                                   resource=request.data["resource"]
+                                                   )
+            serializer.save(saved_tagging)
+            return Response({'status': 'success', 'tagging': serializer.data}, status=status.HTTP_200_OK)
+
         if saved_tagging is None:
             return Response({'tagging': serializer.data}, status=status.HTTP_201_CREATED)
             # return Response(saved_obj, status=status.HTTP_201_CREATED)
@@ -555,26 +564,10 @@ class GameResourceView(APIView):
     """
     serializer_class = TabooTagSerializer
 
-    def get_queryset(self):
-        resource = None
-        random_resource_idx = None
-        while resource is None:
-            while resource is None:
-                while random_resource_idx is None:
-                    while not Resource.objects.all().filter(id=random_resource_idx).exists():
-                        random_number = random.randint(0, Resource.objects.count() - 1)
-                        if not Resource.objects.all().filter(id=random_number).exists():
-                            random_number_alternative = random.randint(0, Resource.objects.count() - 1)
-                            if Resource.objects.all().filter(id=random_number_alternative).exists():
-                                random_resource_idx = random_number_alternative
-                            else:
-                                random_resource_idx = random_number
-                    resource = Resource.objects.all().filter(id=random_resource_idx)
-        return resource
-
     def get(self, request, *args, **kwargs):
-        resource = self.get_queryset()
-        serializer = TabooTagSerializer(resource, many=True)
+        controller = GameViewController()
+        resource = Resource.objects.all().filter(id=controller.pick_random_object(Resource))
+        serializer = ResourceSerializer(resource, many=True)
         return Response({
             'resource and tags to combine': serializer.data
         })
@@ -587,17 +580,13 @@ class GameResourceViewPicture(APIView):
     serializer_class = ResourceSerializer
     renderer_classes = [JPEGRenderer, PNGRenderer]
 
-    def get_queryset(self):
-        resources = None
-        while resources is None:
-            random_idx = random.randint(0, Resource.objects.count() - 1)
-            resources = Resource.objects.all().filter(id=random_idx)
-        return resources
-
     def get(self, request, *args, **kwargs):
-        resource = self.get_queryset()
+        controller = GameViewController()
+        resource = Resource.objects.all().filter(id=controller.pick_random_object(Resource))
         serializer = ResourceSerializer(resource, many=True)
-        return Response(serializer.data)
+        return Response({
+            'resource and tags to combine': serializer.data
+        })
 
 
 class GameroundWithResourceView(APIView):
