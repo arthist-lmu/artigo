@@ -53,7 +53,7 @@ class GameViewController:
         """
         saved_tagging = None
         saved_tag = None
-        # TODO: figure out if serializers neccessary here
+
         tagging_serializer = TaggingSerializer(tagging_to_check)
         tag_serializer = TagSerializer()
         random_id = None
@@ -64,6 +64,7 @@ class GameViewController:
             # TODO: check if condition is ok
             if Tagging.objects.filter(tag=tagging_to_check).exists():
                 saved_tag = Tag()
+
                 while random_id is None:
                     random_number = random.randint(0, Tag.objects.count() - 1)
                     if Tag.objects.filter(id=random_number).exists():
@@ -71,6 +72,7 @@ class GameViewController:
                         random_id = random_number_alternative
                     else:
                         random_id = random_number
+
                 saved_tag.id = random_id
                 saved_tag.name = tagging_to_check
                 saved_tag.language = tagging_to_check.language
@@ -106,6 +108,7 @@ class GameViewController:
         return elapsed_time
 
     def coordinate_players(self, current_gameround):
+        """Check DB """
         pass
 
     def start_game(self, gametype, gameround):
@@ -113,6 +116,7 @@ class GameViewController:
         self.coordinate_players(gameround)
 
     def pick_random_object(self, MyModel):
+        """ Picks a random id for an object, checks if object with that id exists and returns the random number"""
         random_object = None
         if random_object is None:
             random_object = random.randrange(1, MyModel.objects.all().count() + 1)
@@ -166,83 +170,33 @@ class ARTigoGameView(APIView):
     # TODO: USE LATER!!!!
     # renderer_classes = [renderers.JSONRenderer]
 
-    def get_queryset(self):
-        """
-
-        :return:
-        """
-        obj = None
-        resource = None
-        gameround = None
-        gamesession = None
-        random_resource_idx = None
-
-        while obj is None:
-            if obj == resource:
-                while resource is None:
-                    while random_resource_idx is None:
-                        while not Resource.objects.all().filter(id=random_resource_idx).exists():
-                            random_number = random.randint(0, Resource.objects.count() - 1)
-                            if not Resource.objects.all().filter(id=random_number).exists():
-                                random_number_alternative = random.randint(0, Resource.objects.count() - 1)
-                                if Resource.objects.all().filter(id=random_number_alternative).exists():
-                                    random_resource_idx = random_number_alternative
-                                else:
-                                    random_resource_idx = random_number
-                        resource = Resource.objects.all().filter(id=random_resource_idx)
-                    obj = resource
-
-            elif obj == gamesession:
-                while gamesession is None:
-                    gamesession = Gamesession.objects.none()
-                    obj = gamesession
-
-            elif obj == gameround:
-                while gameround is None:
-                    gameround = Gameround.objects.none()
-                    obj = gameround
-
-        return obj
-
     def get(self, request, *args, **kwargs):
-        """
 
-        :param request:
-        :param args:
-        :param kwargs:
-        :return:
-        """
-        artigo_gametype = "imageLabeler"
-        gametype = GametypeView()
-        gametype.get_queryset()
+        controller = GameViewController()
+        gametype = Gametype.objects.all().filter(name="imageLabeler")
+        gametype_serializer = GametypeSerializer(gametype, many=True)
+
         # TODO: Build timer in!!!
-        model = request.GET.get("model")
-        resource_serializer = None
-        gameround_serializer = None
-        gamesession_serializer = None
-        # TODO: find way to assign what model is?
-        model = "Resource"  # For testing purposes only!
 
-        while resource_serializer is None:
-            # if model == "Resource":
-            resource = self.get_queryset()
-            resource_serializer = ResourceSerializer(resource, many=True)
-        while gameround_serializer is None:
-            # elif model == "Gameround":
-            gameround = Gameround.objects.none()
-            gameround_serializer = GameroundSerializer(gameround, many=True)
-        while gamesession_serializer is None:
-            # elif model == "Gamesession":
-            gamesession = Gamesession.objects.none()
-            gamesession_serializer = GamesessionSerializer(gamesession, many=True)
+        random_resource = Resource.objects.all().filter(id=controller.pick_random_object(Resource))
+        resource_serializer = ResourceSerializer(random_resource, many=True)
+
+        gameround = Gameround.objects.none()
+        gameround_serializer = GameroundSerializer(gameround, many=True)
+
+        gamesession = Gamesession.objects.none()
+        gamesession_serializer = GamesessionSerializer(gamesession, many=True)
 
         # TODO: only save if 5 rounds have been played! Tags/Taggings can be saved - find a way!
-        return Response({'resource': resource_serializer.data,
+        return Response({'gametype': gametype_serializer.data,
+                         'resource': resource_serializer.data,
                          'gameround': gameround_serializer.data,
                          'gamesession': gamesession_serializer.data
                          })
 
     def post(self, request, *args, **kwargs):
+        controller = GameViewController()
+
         saved_tagging = None
         serializer = TaggingSerializer(data=request.data)
         if serializer.is_valid():
@@ -253,11 +207,7 @@ class ARTigoGameView(APIView):
             # return Response(saved_obj, status=status.HTTP_201_CREATED)
 
         return Response(saved_tagging, status=status.HTTP_400_BAD_REQUEST)
-        # controller = GameViewController()
-        # saved_tagging = None
-        # saved_tag = None
-        # saved_obj = None
-        #
+
         # # user object - remains the same over the session
         # user_object = request.user
         #
@@ -424,63 +374,25 @@ class CombinoGameView(APIView):
     API endpoint that retrieves the Combino game view
     """
 
-    def get_queryset(self):
-        obj = None
-        resource = None
-        gameround = None
-        gamesession = None
-        random_resource_idx = None
-
-        while obj is None:
-
-            if obj == resource:
-                while resource is None:
-                    while random_resource_idx is None:
-                        while not Resource.objects.all().filter(id=random_resource_idx).exists():
-                            random_number = random.randint(0, Resource.objects.count() - 1)
-                            if not Resource.objects.all().filter(id=random_number).exists():
-                                random_number_alternative = random.randint(0, Resource.objects.count() - 1)
-                                if Resource.objects.all().filter(id=random_number_alternative).exists():
-                                    random_resource_idx = random_number_alternative
-                                else:
-                                    random_resource_idx = random_number
-                        resource = Resource.objects.all().filter(id=random_resource_idx)
-                    obj = resource
-
-            elif obj == gamesession:
-                while gamesession is None:
-                    gamesession = Gamesession.objects.none()
-                    obj = gamesession
-
-            elif obj == gameround:
-                while gameround is None:
-                    gameround = Gameround.objects.none()
-                    obj = gameround
-
-        return obj
-
     def get(self, request, *args, **kwargs):
         """Potential condition for Tag a Tag Tag to be tagged to be returned"""
-        gametype = Gametype.objects.all().filter(name="Combino")
-        # TODO: See that it does not return an empty object!
-        combination_serializer = None
-        resource_and_tags = None
-        gameround_serializer = None
-        gamesession_serializer = None
 
-        while combination_serializer is None:
-            # random resource with tags to be combined
-            while resource_and_tags is None:
-                resource_and_tags = self.get_queryset()
-                combination_serializer = CombinoTagsSerializer(resource_and_tags, many=True)
-        while gameround_serializer is None:
-            gameround = Gameround.objects.none()
-            gameround_serializer = GameroundSerializer(gameround, many=True)
-        while gamesession_serializer is None:
-            gamesession = Gamesession.objects.none()
-            gamesession_serializer = GamesessionSerializer(gamesession, many=True)
+        controller = GameViewController()
+        gametype = Gametype.objects.all().filter(name="Combino")
+        gametype_serializer = GametypeSerializer(gametype, many=True)
+
+        resource_and_tags = Resource.objects.all().filter(id=controller.pick_random_object(Resource))
+        combination_serializer = CombinoTagsSerializer(resource_and_tags, many=True)
+
+        # TODO: ask again if empty object neccessary
+        gameround = Gameround.objects.none()
+        gameround_serializer = GameroundSerializer(gameround, many=True)
+
+        gamesession = Gamesession.objects.none()
+        gamesession_serializer = GamesessionSerializer(gamesession, many=True)
 
         return Response({
+            'gametype': gametype_serializer.data,
             'resource and tags to combine': combination_serializer.data,
             'gameround': gameround_serializer.data,
             'gamesession': gamesession_serializer.data
