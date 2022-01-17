@@ -56,7 +56,7 @@ class GameViewController:
         saved_tag = None
 
         tagging_serializer = TaggingSerializer(tagging_to_check)
-        tag_serializer = TagSerializer()
+        tag_serializer = TagSerializer(tagging_to_check)
         random_id = None
 
         tagging_to_check.get_queryset()
@@ -207,27 +207,32 @@ class ARTigoGameView(APIView):
 
         controller = GameViewController()
         saved_tagging = None
-        current_user = CustomUserSerializer(request.user) # user instance
+        saved_tag = None
+        current_user = CustomUserSerializer(data=request.user) # user instance
         serializer = TaggingSerializer(data=request.data)
 
         if serializer.is_valid(raise_exception=True):
-            saved_tagging = Tagging.objects.create(id=controller.generate_random_id(Tagging),
-                                                   user=current_user,
-                                                   gameround=current_user.data["gameround"],
-                                                   resource=request.data["resource"],
-                                                   tag=request.data["tag"],
-                                                   created=request.data["created"],
-                                                   score=request.data["score"],
-                                                   origin=request.data["origin"]
-                                                   )
-            serializer.save(saved_tagging)
+            # saved_tagging = Tagging.objects.create(id=controller.generate_random_id(Tagging),
+            #                                        user=current_user,
+            #                                        gameround=current_user.data["gameround"],
+            #                                        resource=request.data["resource"],
+            #                                        tag=request.data["tag"],
+            #                                        created=request.data["created"],
+            #                                        score=request.data["score"],
+            #                                        origin=request.data["origin"]
+            #                                        )
+            # saved_tagging.save()
+            serializer = TaggingSerializer(saved_tagging)
             return Response({'status': 'success', 'tagging': serializer.data}, status=status.HTTP_200_OK)
 
         if saved_tagging is None:
-            return Response({'tagging': serializer.data}, status=status.HTTP_201_CREATED)
+            return Response({'tagging': serializer.data}, status=status.HTTP_204_NO_CONTENT)
         else:
             return Response(saved_tagging, status=status.HTTP_400_BAD_REQUEST)
-        # TODO: Resource id has to be sent with tag/tagging!
+        # TODO: Resource id has to be sent with tag/tagging! ?
+
+        # if saved_tagging.exists():
+            # saved_tag =
 
 
 class ARTigoTabooGameView(APIView):
@@ -261,50 +266,25 @@ class ARTigoTabooGameView(APIView):
                          })
 
     def post(self, request, *args, **kwargs):
-        """
-
-        :param request:
-        :param args:
-        :param kwargs:
-        :return:
-        """
         controller = GameViewController()
-        saved_gameround = None
-        saved_gamesession = None
-        saved_tagging = None
         saved_tag = None
-        saved_obj = None
+        current_user = CustomUserSerializer(data=request.user) # user instance
+        serializer = TagSerializer(data=request.data)
 
-        model = request.GET.get("model")
-        model = "Tagging"
+        if serializer.is_valid(raise_exception=True):
+            saved_tag = Tag.objects.create(id=controller.generate_random_id(Tag),
+                                           tag=request.data["name"],
+                                           language=request.data["language"]
+                                           )
+            saved_tag.save()
+            serializer = TagSerializer(saved_tag)
+            return Response({'status': 'success', 'tag': serializer.data}, status=status.HTTP_200_OK)
 
-        # if controller.check_tag_exists(request.GET.get("name")) == Tag():
-        #     model = "Tag"
-        # else:
-        #     model = "Tagging"
+        if saved_tag is None:
+            return Response({'tagging': serializer.data}, status=status.HTTP_204_NO_CONTENT)
 
-        # TODO: Resource id has to be sent with tag/tagging!
-        if model == "Tagging":
-            # TODO: test & modify if necessary
-            tagging = ResourceWithTaggingsSerializer(data=request.data)
-            while saved_tagging is None:
-                serializer = ResourceWithTaggingsSerializer(data=tagging)
-                if serializer.is_valid(raise_exception=True):
-                    saved_tagging = serializer.save()
-                    saved_obj = saved_tagging
-                    return Response(saved_obj, status=status.HTTP_201_CREATED)
-
-        elif model == "Tag":
-            # TODO: add condition to only save to tag if condition met
-            tag = ResourceWithTagsSerializer(data=request.data)
-            while saved_tag is None:
-                serializer = ResourceWithTagsSerializer(data=tag)
-                if serializer.is_valid(raise_exception=True):
-                    saved_tag = serializer.save()
-                    saved_obj = saved_tag
-                    return Response(saved_obj, status=status.HTTP_201_CREATED)
-
-        return Response(saved_obj, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response(saved_tag, status=status.HTTP_400_BAD_REQUEST)
 
 
 class TagATagGameView(APIView):
