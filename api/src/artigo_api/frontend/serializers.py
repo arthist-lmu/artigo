@@ -5,6 +5,16 @@ from rest_framework import serializers
 from frontend.models import *
 
 
+class CustomUserSerializer(serializers.ModelSerializer):
+  class Meta:
+    model = CustomUser
+    fields = ['id', 'username', 'is_superuser']
+
+  def to_representation(self, data):
+    data = super().to_representation(data)
+    return data
+
+
 class InstitutionSerializer(serializers.ModelSerializer):
   class Meta:
     model = Institution
@@ -100,19 +110,6 @@ class TagSerializer(serializers.ModelSerializer):
     return data
 
 
-class TaggingSerializer(serializers.ModelSerializer):
-  tag = TagSerializer(read_only=True)
-  resource = ResourceSerializer(read_only=True)
-
-  class Meta:
-    model = Tagging
-    fields = ('id', 'tag', 'gameround', 'created', 'score', 'resource')
-
-  def to_representation(self, data):
-    data = super().to_representation(data)
-    return data
-
-
 class GametypeSerializer(serializers.ModelSerializer):
 
   class Meta:
@@ -126,6 +123,7 @@ class GametypeSerializer(serializers.ModelSerializer):
 
 class GamesessionSerializer(serializers.ModelSerializer):
   gametype = GametypeSerializer(read_only=True)
+  user = CustomUserSerializer(read_only=True)
 
   class Meta:
     model = Gamesession
@@ -166,6 +164,7 @@ class GamesessionSerializer2(serializers.ModelSerializer):
 
 class GameroundSerializer(serializers.ModelSerializer):
   gamesession = GamesessionSerializer(read_only=True)
+  user = CustomUserSerializer(read_only=True)
 
   class Meta:
     model = Gameround
@@ -173,8 +172,20 @@ class GameroundSerializer(serializers.ModelSerializer):
 
   def to_representation(self, data):
     data = super().to_representation(data)
-    # data['id'] = data['id'].lower()
+    return data
 
+
+class TaggingSerializer(serializers.ModelSerializer):
+  tag = TagSerializer(read_only=True)
+  resource = ResourceSerializer(read_only=True)
+  gameround = GameroundSerializer(read_only=True)
+
+  class Meta:
+    model = Tagging
+    fields = ('id', 'tag', 'gameround', 'created', 'score', 'resource')
+
+  def to_representation(self, data):
+    data = super().to_representation(data)
     return data
 
 
@@ -262,8 +273,6 @@ class CombinoTagsSerializer(serializers.ModelSerializer):
     read_only_fields = ('titles', 'creators', 'institution')
 
   def get_tags_to_combine(self, res):
-    # so far all tags for that specific resource are shown
-    # tags_to_combine = res.tags.values_list('tag', flat=True)
     tags_to_combine = res.tags
     return tags_to_combine
 

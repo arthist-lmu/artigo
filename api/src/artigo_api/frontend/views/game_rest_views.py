@@ -116,6 +116,15 @@ class GameViewController:
 
         self.coordinate_players(gameround)
 
+    def generate_random_id(self, MyModel):
+        """ Picks a random id for an object"""
+        random_object = None
+        if random_object is None:
+            random_object = random.randrange(1, MyModel.objects.all().count() + 1)
+            while MyModel.objects.all().filter(id=random_object).exists():
+                random_object = random.randrange(1, MyModel.objects.all().count() + 1)
+            return random_object
+
     def pick_random_object(self, MyModel):
         """ Picks a random id for an object, checks if object with that id exists and returns the random number"""
         random_object = None
@@ -195,37 +204,30 @@ class ARTigoGameView(APIView):
                          })
 
     def post(self, request, *args, **kwargs):
+
         controller = GameViewController()
-
         saved_tagging = None
-
+        current_user = CustomUserSerializer(request.user) # user instance
         serializer = TaggingSerializer(data=request.data)
+
         if serializer.is_valid(raise_exception=True):
-            saved_tagging = Tagging.objects.create(id=request.data["id"],
+            saved_tagging = Tagging.objects.create(id=controller.generate_random_id(Tagging),
+                                                   user=current_user,
+                                                   gameround=current_user.data["gameround"],
+                                                   resource=request.data["resource"],
                                                    tag=request.data["tag"],
-                                                   gameround=request.data["gameround"],
-                                                   resource=request.data["resource"]
+                                                   created=request.data["created"],
+                                                   score=request.data["score"],
+                                                   origin=request.data["origin"]
                                                    )
             serializer.save(saved_tagging)
             return Response({'status': 'success', 'tagging': serializer.data}, status=status.HTTP_200_OK)
 
         if saved_tagging is None:
             return Response({'tagging': serializer.data}, status=status.HTTP_201_CREATED)
-            # return Response(saved_obj, status=status.HTTP_201_CREATED)
-
-        return Response(saved_tagging, status=status.HTTP_400_BAD_REQUEST)
-
-        # # user object - remains the same over the session
-        # user_object = request.user
-        #
-        # model = request.GET.get("model") # coordinate using GameController
-        # # condition checks if the tag in the request exists and then sends it to proper POST
-        # # if controller.check_tag_exists(request.GET.get("name")) == Tag():
-        # #     model = "Tag"
-        # # else:
-        # #     model = "Tagging"
-        #
-        # # TODO: Resource id has to be sent with tag/tagging!
+        else:
+            return Response(saved_tagging, status=status.HTTP_400_BAD_REQUEST)
+        # TODO: Resource id has to be sent with tag/tagging!
 
 
 class ARTigoTabooGameView(APIView):
@@ -321,6 +323,7 @@ class TagATagGameView(APIView):
 
         # TODO: Try implementing special serializer to get the most used tag per resource
         tag = Tagging.objects.none()
+        # tag = Tagging.objects.all().filter(id=controller.pick_random_object(Tagging))
         tagging_serializer = TaggingSerializer(tag, many=True)
 
         # TODO: ask again if empty object neccessary
