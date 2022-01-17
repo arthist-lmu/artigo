@@ -8,7 +8,7 @@ RUN pip install poetry
 RUN pip install pytest pytest-cov
 
 COPY /api/pyproject.toml /api/poetry.lock /api/
-RUN cd /api; poetry export -f requirements.txt --output requirements.txt
+RUN cd /api; poetry export -f requirements.txt --output requirements.txt --without-hashes
 RUN cd /api; pip install -r requirements.txt
 
 COPY /search/pyproject.toml /search/poetry.lock /search/
