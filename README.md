@@ -4,20 +4,32 @@
 ## Installation
 At a later point there will be a docker container provided here.
 
+## Hosting Requirements
+
+### Disk size
+Postgres 1.6 GB after inital upload including all media files
+
+### Memory
+* 900 MB Opensearch Idle
+* 500 MB Django Idle
+* 250 Postgres
+* 400 other
+
+----> 4 GB min for production use
 
 ## Development setup
 
 ### Requirements
 * [docker](https://docs.docker.com/get-docker/)
 * [docker-compose](https://docs.docker.com/compose/install/)
-* [poetry](https://pypi.org/project/poetry/) (When building without docker)
+* [poetry](https://pypi.org/project/poetry/) (When building without docker and to create the poetry.lock file)
 
 ### Configuration Files
-Copy the content of .env.example files to .env files in the same location and customize the settings
+Copy the content of .env.example files to .env files in the same location (api/src/artigo_api) and customize the settings
 (For now they should work without customizations).
 
 ### Setup process
-Create the `poetry.lock` file if it does not exist:
+Create the `poetry.lock` file if it does not exist (preferably do this in a python venv):
 ```sh
 cd api
 poetry install --no-root
