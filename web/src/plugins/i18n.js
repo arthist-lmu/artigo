@@ -28,17 +28,14 @@ function getBrowserLocale(options = {}) {
   const trimmedLocale = opt.countryCodeOnly
     ? navigatorLocale.trim().split(/-|_/)[0]
     : navigatorLocale.trim();
-  console.log(trimmedLocale);
   return trimmedLocale;
 }
 
 function supportedLocalesInclude(locale) {
   const locales = require.context('../locales', true,
     /[A-Za-z0-9-_,\s]+\.json$/i);
-  console.log('available locales');
-  console.log(locales.keys());
   const locale_list = locales.keys();
-  for (let i = 0; i < locale_list.length; i++) {
+  for (let i = 0; i < locale_list.length; i += 1) {
     const lang = locale_list[i].split('/')[1].split('.')[0];
     if (lang === locale) {
       return true;
@@ -50,7 +47,6 @@ function supportedLocalesInclude(locale) {
 
 function getStartingLocale() {
   const browserLocale = getBrowserLocale({ countryCodeOnly: true });
-
   if (supportedLocalesInclude(browserLocale)) {
     return browserLocale;
   }

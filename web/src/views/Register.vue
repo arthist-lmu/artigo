@@ -1,27 +1,27 @@
 <template>
   <PageTabs :items="items">
-    <LoginCard />
+    <RegisterCard />
   </PageTabs>
 </template>
 
 <script>
 import PageTabs from '@/components/PageTabs.vue';
-import LoginCard from '@/components/LoginCard.vue';
+import RegisterCard from '@/components/RegisterCard.vue';
 
 export default {
   computed: {
     items() {
       return [
         {
-          title: this.$t('login.title'),
-          texts: this.$t('login.texts'),
+          title: this.$t('register.title'),
+          texts: this.$t('register.texts'),
         },
       ];
     },
   },
   components: {
     PageTabs,
-    LoginCard,
+    RegisterCard,
   },
 };
 </script>

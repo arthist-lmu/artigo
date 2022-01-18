@@ -1,16 +1,23 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
 import i18n from '@/plugins/i18n';
+import RouterView from '@/views/RouterView.vue';
+
 import Home from '@/views/Home.vue';
 import Resource from '@/views/Resource.vue';
 import Collection from '@/views/Collection.vue';
+
+import Imprint from '@/views/Imprint.vue';
+import PrivacyPolicy from '@/views/PrivacyPolicy.vue';
+import Register from '@/views/Register.vue';
 import Login from '@/views/Login.vue';
+
 import About from '@/views/About.vue';
+import Highscore from '@/views/Highscore.vue';
+import Search from '@/views/Search.vue';
+import Game from '@/views/Game.vue';
+
 import NotFound from '@/views/NotFound.vue';
-import RouterView from '@/views/RouterView.vue';
-import Publications from '@/views/Publications.vue';
-import ArtigoGame from '@/views/ArtigoGame.vue';
-// import { component } from 'vue/types/umd';
 
 Vue.use(VueRouter);
 const router = new VueRouter({
@@ -33,46 +40,85 @@ const router = new VueRouter({
       children: [
         {
           path: '',
-          name: 'Home',
+          name: 'home',
           component: Home,
         },
         {
           path: 'resource/:id/',
-          name: 'Resource',
+          name: 'resource',
           component: Resource,
         },
         {
           path: 'collection/:name/',
-          name: 'Collection',
+          name: 'collection',
           component: Collection,
         },
         {
-          path: 'about',
-          name: 'About',
-          component: About,
+          path: 'imprint',
+          name: 'imprint',
+          component: Imprint,
+          meta: { title: 'imprint.title' },
+        },
+        {
+          path: 'privacy-policy',
+          name: 'privacy-policy',
+          component: PrivacyPolicy,
+          meta: { title: 'privacy-policy.title' },
+        },
+        {
+          path: 'register',
+          name: 'register',
+          component: Register,
+          meta: { title: 'register.title' },
         },
         {
           path: 'login',
-          name: 'Login',
+          name: 'login',
           component: Login,
+          meta: { title: 'login.title' },
         },
         {
-          path: 'publications',
-          name: 'Publications',
-          component: Publications,
+          path: 'about',
+          name: 'about',
+          component: About,
+          meta: { title: 'about.title' },
         },
         {
-          path: 'artigo-game',
-          name: 'ArtigoGame',
-          component: ArtigoGame,
+          path: 'highscore',
+          name: 'highscore',
+          component: Highscore,
+          meta: { title: 'highscore.title' },
+        },
+        {
+          path: 'search',
+          name: 'search',
+          component: Search,
+          meta: { title: 'search.title' },
+        },
+        {
+          path: 'game',
+          name: 'game',
+          component: Game,
+          meta: { title: 'game.title' },
         },
       ],
     },
     {
       path: '*',
-      name: 'NotFound',
+      name: 'not-found',
       component: NotFound,
+      meta: { title: 'Not Found' },
     },
   ],
+});
+
+router.afterEach((to) => {
+  Vue.nextTick(() => {
+    let title = 'ARTigo – Social Image Tagging';
+    if (to.meta) {
+      title = `${i18n.t(to.meta.title)} | ${title}`;
+    }
+    document.title = title;
+  });
 });
 export default router;

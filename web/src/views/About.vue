@@ -1,22 +1,60 @@
 <template>
-  <div>
-    <h1>{{ $t("about.goals") }}</h1>
-    <p>{{ $t("about.p_1") }}</p>
-    <p>{{ $t("about.p_2") }}</p>
-    <h2>{{ $t("about.sources") }}</h2>
-    <p>{{ $t("about.p_3") }}</p>
-    <h2>{{ $t("about.project_funding") }}</h2>
-    <p>{{ $t("about.p_4") }}</p>
-    <h2>{{ $t("about.people") }}</h2>
-    <p>{{ $t("about.p_5") }}</p>
-    <p>Import Members list</p>
-    <h2>{{ $t("about.version_history") }}</h2>
-    <p>{{ $t("about.p_6") }}</p>
-  </div>
+  <PageTabs v-model="tab" :items="items">
+    <template v-slot:default="slotProps">
+      <div
+        v-if="slotProps.title == $t('about.title')"
+        class="mb-8"
+      >
+        <Contributors />
+      </div>
+    </template>
+  </PageTabs>
 </template>
 
 <script>
-</script>
+import PageTabs from '@/components/PageTabs.vue';
+import Contributors from '@/components/Contributors.vue';
 
-<style>
-</style>
+export default {
+  data() {
+    return {
+      tab: null,
+    };
+  },
+  computed: {
+    items() {
+      return [
+        {
+          title: this.$t('about.title'),
+          texts: this.$t('about.texts'),
+        },
+        {
+          title: this.$t('game.fields.default.title'),
+          texts: this.$t('game.fields.default.texts'),
+        },
+      ];
+    },
+  },
+  beforeRouteEnter(to, from, next) {
+    next((vm) => {
+      if (to.query.tab === 'game') {
+        vm.tab = 1;
+      } else {
+        vm.tab = 0;
+      }
+    });
+  },
+  beforeRouteUpdate(to, from, next) {
+    if (to.query.tab === 'game') {
+      this.tab = 1;
+    } else {
+      this.tab = 0;
+    }
+    next();
+  },
+  components: {
+    PageTabs,
+    Contributors,
+  },
+};
+</script>

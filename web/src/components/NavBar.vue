@@ -1,80 +1,202 @@
 <template>
-  <v-navigation-drawer app permanent>
-    <v-img id="logo" src="/assets/images/logo.svg"> </v-img>
-    <h4 id="subtitle">Social Image Tagging</h4>
+  <v-navigation-drawer
+    class="pl-2"
+    color="transparent"
+    width="400"
+    clipped
+    app
+  >
+    <v-img
+      @click="goTo('home')"
+      src="/assets/images/logo.svg"
+      class="mx-8 mb-4"
+      style="cursor: pointer;"
+      max-width="250"
+    />
 
-    <v-divider></v-divider>
-
-    <v-list nav>
-      <v-list-item link :to="'/' + $i18n.locale + '/' + 'about'">
+    <v-list
+      dense
+      flat
+    >
+      <v-list-item
+        v-for="page in pages"
+        :key="page"
+        dense
+      >
         <v-list-item-content>
           <v-list-item-title>
-            {{ $t("navbar.about") }}
+            <v-btn
+              @click="goTo(page)"
+              text
+            >
+              {{ $t(page)["title"] }}
+            </v-btn>
           </v-list-item-title>
-          <v-list-item-subtitle>
-            Idea, Goals, Project details
-          </v-list-item-subtitle>
-        </v-list-item-content>
-      </v-list-item>
-
-      <v-list-item link :to="'/' + $i18n.locale + '/' + 'publications'">
-        <v-list-item-content>
-          <v-list-item-title>
-            {{ $t("navbar.publications") }}
-          </v-list-item-title>
-          <v-list-item-subtitle>
-            Research, literature, media
-          </v-list-item-subtitle>
-        </v-list-item-content>
-      </v-list-item>
-
-      <v-list-item link :to="'/' + $i18n.locale + '/' + 'artigo-game'">
-        <v-list-item-content>
-          <v-list-item-title>
-            {{ $t("navbar.artigo-game") }}
-          </v-list-item-title>
-          <v-list-item-subtitle> Not implemented </v-list-item-subtitle>
         </v-list-item-content>
       </v-list-item>
     </v-list>
 
-    <v-divider></v-divider>
+    <h3 class="mx-8 mt-4">
+      {{ $t("search.title") }}
+    </h3>
 
-    <v-list-item>
-      <v-list-item-content>
-        <v-list-item-title>
-          <a
-            href="https://www.kunstgeschichte.uni-muenchen.de/funktionen/impressum/index.html"
-            >{{ $t("navbar.imprint") }}</a
-          >
-        </v-list-item-title>
-      </v-list-item-content>
-    </v-list-item>
+    <v-list
+      dense
+      flat
+    >
+      <v-list-item dense>
+        <v-list-item-content>
+          <v-list-item-title>
+            <v-btn
+              @click="focus('search')"
+              text
+            >
+              <v-icon
+                color="primary"
+                left
+              >
+                mdi-arrow-right-box
+              </v-icon>
 
-    <v-list-item>
-      <v-list-item-title>
-        <a
-          href="https://www.kunstgeschichte.uni-muenchen.de/funktionen/datenschutz/index.html"
-          >{{ $t("navbar.privacy") }}</a
-        >
-      </v-list-item-title>
-    </v-list-item>
+              {{ $t("search.fields.default") }}
+            </v-btn>
+          </v-list-item-title>
+        </v-list-item-content>
+      </v-list-item>
+
+      <v-list-item dense>
+        <v-list-item-content>
+          <v-list-item-title>
+            <v-dialog
+              v-model="dialog.search"
+              max-width="400"
+            >
+              <template v-slot:activator="{ on }">
+                <v-btn
+                  v-on="on"
+                  text
+                >
+                  <v-icon
+                    color="primary"
+                    left
+                  >
+                    mdi-arrow-right-box
+                  </v-icon>
+
+                  {{ $t("search.fields.advanced") }}
+                </v-btn>
+              </template>
+
+              <SearchCard
+                v-model="dialog.search"
+                :isDialog="true"
+              />
+            </v-dialog>
+          </v-list-item-title>
+        </v-list-item-content>
+      </v-list-item>
+    </v-list>
+
+    <h3 class="mx-8 mt-4">
+      {{ $t("game.title") }}
+    </h3>
+
+    <v-list
+      dense
+      flat
+    >
+      <v-list-item
+        v-for="game in games"
+        :key="game"
+        dense
+      >
+        <v-list-item-content>
+          <v-list-item-title>
+            <v-btn
+              @click="goTo('game', { type: game })"
+              text
+            >
+              <v-icon
+                color="primary"
+                left
+              >
+                mdi-arrow-right-box
+              </v-icon>
+
+              {{ $t("game.fields")[game]["title"] }}
+
+              <v-btn
+                v-if="['default', 'taboo'].includes(game)"
+                @click.stop="goTo('about', { tab: 'game' })"
+                class="ml-2 mr-n2"
+                color="primary"
+                small
+                icon
+              >
+                <v-icon small>
+                  mdi-help-circle
+                </v-icon>
+              </v-btn>
+            </v-btn>
+          </v-list-item-title>
+        </v-list-item-content>
+      </v-list-item>
+    </v-list>
   </v-navigation-drawer>
 </template>
 
-<style>
-#logo {
-  margin: 10px;
-}
-#subtitle {
-  margin: 10px;
-}
-</style>
-
 <script>
+import router from '@/router/index';
+
+import SearchCard from '@/components/SearchCard.vue';
+
 export default {
   data() {
-    return {};
+    return {
+      pages: [
+        'about',
+        'highscore',
+      ],
+      dialog: {
+        search: false,
+      },
+      games: [
+        'default',
+        'taboo',
+        'tag-a-tag',
+      ],
+    };
+  },
+  methods: {
+    goTo(page, query) {
+      router.push({ name: page, query });
+    },
+    focus(field) {
+      document.getElementById(field).focus();
+    },
+  },
+  components: {
+    SearchCard,
   },
 };
 </script>
+
+<style>
+.v-navigation-drawer__border {
+  display: none;
+}
+</style>
+
+<style scoped>
+.v-navigation-drawer {
+  background-color: transparent;
+}
+
+.v-list-item__content {
+  padding: 0 !important;
+}
+
+h3 {
+  text-transform: uppercase;
+}
+</style>

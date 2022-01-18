@@ -1,30 +1,23 @@
 <template>
-  <PageTabs :items="items">
-    <LoginCard />
-  </PageTabs>
+  <PageTabs :items="items" />
 </template>
 
 <script>
 import PageTabs from '@/components/PageTabs.vue';
-import LoginCard from '@/components/LoginCard.vue';
 
 export default {
   computed: {
     items() {
       return [
         {
-          title: this.$t('login.title'),
-          texts: this.$t('login.texts'),
+          title: this.$t('imprint.title'),
+          texts: this.$t('imprint.texts'),
         },
       ];
     },
   },
   components: {
     PageTabs,
-    LoginCard,
   },
 };
 </script>
-
-<style scoped>
-</style>

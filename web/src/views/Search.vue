@@ -1,30 +1,27 @@
 <template>
   <PageTabs :items="items">
-    <LoginCard />
+    <SearchCard />
   </PageTabs>
 </template>
 
 <script>
 import PageTabs from '@/components/PageTabs.vue';
-import LoginCard from '@/components/LoginCard.vue';
+import SearchCard from '@/components/SearchCard.vue';
 
 export default {
   computed: {
     items() {
       return [
         {
-          title: this.$t('login.title'),
-          texts: this.$t('login.texts'),
+          title: this.$t('search.title'),
+          texts: this.$t('search.texts'),
         },
       ];
     },
   },
   components: {
     PageTabs,
-    LoginCard,
+    SearchCard,
   },
 };
 </script>
-
-<style scoped>
-</style>

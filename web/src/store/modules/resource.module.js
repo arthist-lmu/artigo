@@ -17,7 +17,7 @@ const resource = {
         });
     },
     post({ commit }, params) {
-      axios.post(`${API_LOCATION}/get_resource`, params )
+      axios.post(`${API_LOCATION}/get_resource`, params)
         .then(({ data }) => {
           commit('updateData', data);
         })
