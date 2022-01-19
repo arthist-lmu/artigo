@@ -18,11 +18,10 @@ urlpatterns = [
     path('game_resource', views.GameResourceView.as_view(), name='game_resource'),
     path('game_resource_picture', views.GameResourceViewPicture.as_view(), name='game_resource_picture'),
 
-    path('artigo_game/', views.ARTigoGameView.as_view(), name='ARTigo_game'),
+    # TODO: fix error
+    path('artigo_game/', views.ARTigoGameView.as_view(), name='ARTigo game'),
     path('tagatag_game/', views.TagATagGameView.as_view(), name='Tag a Tag game'),
     path('artigo_taboo_game/', views.ARTigoTabooGameView.as_view(), name='ARTigo Taboo game'),
     path('combino_game/', views.CombinoGameView.as_view(), name='Combino game'),
-
-    path('taboo_tags', views.TabooTagsView.as_view(), name='taboo_tags'),
 
 ]

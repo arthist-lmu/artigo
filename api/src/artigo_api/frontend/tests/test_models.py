@@ -6,10 +6,10 @@ from frontend.models import *
 
 
 @pytest.mark.django_db
-def test_create_source():
+def test_create_institution():
     institution = Institution.objects.create(name="Institution")
     assert institution.name == "Institution"
-    assert source.name == "Source"
+    # assert source.name == "Source"
 
 
 class UsersManagersTests(TestCase):
@@ -46,12 +46,37 @@ class UsersManagersTests(TestCase):
 
 class TaggingTests(TestCase):
     def test_create_tagging(self):
-        pass
+        # set up object
+        tagging = Tagging.objects.create(tag="Tagging")
+        assert tagging.user
+        assert tagging.gameround
+        assert tagging.resource
+        assert tagging.tag == "Tagging"
+        assert tagging.created
+        assert tagging.score
+        assert tagging.origin is None
+
+    def test_tag_label(self):
+        tagging = Tagging.objects.get(id=1)
+        field_label = tagging._meta.get_field('tag').verbose_name()
+        self.assertEqual(field_label, 'tag')
 
 
 class TagTests(TestCase):
     def test_create_tag(self):
-        pass
+        tag = Tag.objects.create(name="Tag")
+        assert tag.name == "Tag"
+        assert tag.language == tag.language
+
+    def test_name_label(self):
+        tag = Tag.objects.get(id=1)
+        field_label = tag._meta.get_field('name').verbose_name()
+        self.assertEqual(field_label, 'name')
+
+    def test_tag_size(self):
+        tag = Tag.objects.get(id=1)
+        max_length = tag._meta.get_field('name').max_length
+        self.assertEqual(max_length, 256)
 
 
 class GamesessionTests(TestCase):

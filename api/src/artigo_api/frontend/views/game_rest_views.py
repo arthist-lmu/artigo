@@ -21,11 +21,6 @@ class GameViewController:
     Class containing methods that control the order in which Game View methods get called
     also methods to check tags and calculate score & coordinate users
     """
-
-    def get_custom_tags(self):
-        tag_count = None
-        pass
-
     def get_gameround(self):
         pass
 
@@ -148,8 +143,10 @@ class GametypeView(APIView):
     def get(self, request, *args, **kwargs):
         """ Iterates through all gametype objects and chooses the correct one"""
         name = request.GET.get("name")
+
         serializer = None
         gametype = self.get_queryset()
+
         if gametype is None:
             while serializer is None:
                 if name == "imageLabeler":
@@ -269,19 +266,19 @@ class ARTigoTabooGameView(APIView):
         controller = GameViewController()
         saved_tag = None
         current_user = CustomUserSerializer(data=request.user) # user instance
-        serializer = TagSerializer(data=request.data)
+        tag_serializer = TagSerializer(data=request.data)
 
-        if serializer.is_valid(raise_exception=True):
+        if tag_serializer.is_valid(raise_exception=True):
             saved_tag = Tag.objects.create(id=controller.generate_random_id(Tag),
                                            tag=request.data["name"],
                                            language=request.data["language"]
                                            )
             saved_tag.save()
-            serializer = TagSerializer(saved_tag)
-            return Response({'status': 'success', 'tag': serializer.data}, status=status.HTTP_200_OK)
+            tag_serializer = TagSerializer(saved_tag)
+            return Response({'status': 'success', 'tag': tag_serializer.data}, status=status.HTTP_200_OK)
 
         if saved_tag is None:
-            return Response({'tagging': serializer.data}, status=status.HTTP_204_NO_CONTENT)
+            return Response({'tagging': tag_serializer.data}, status=status.HTTP_204_NO_CONTENT)
 
         else:
             return Response(saved_tag, status=status.HTTP_400_BAD_REQUEST)
@@ -302,9 +299,11 @@ class TagATagGameView(APIView):
         suggestions_serializer = SuggestionsSerializer(resource_suggestions, many=True)
 
         # TODO: Try implementing special serializer to get the most used tag per resource
-        tag = Tagging.objects.none()
+        # tag = Tagging.objects.none()
         # tag = Tagging.objects.all().filter(id=controller.pick_random_object(Tagging))
-        tagging_serializer = TaggingSerializer(tag, many=True)
+        # tagging_serializer = TaggingSerializer(tag, many=True)
+        tag = Tagging.objects.all().get(resource=resource_suggestions)
+        tagging_serializer = HighestTagCountSerializer(tag)
 
         # TODO: ask again if empty object neccessary
         gameround = Gameround.objects.none()
@@ -452,7 +451,7 @@ class TaggingView(APIView):
                 return Response(serializer.data)
         else:
             tagging = self.get_queryset().filter(resource=9463)
-            serializer = TaggingSerializer(tagging, many=True)
+            serializer = HighestTagCountSerializer(tagging, many=True)
             return Response(serializer.data)
 
     def post(self, request, *args, **kwargs):

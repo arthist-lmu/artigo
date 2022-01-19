@@ -1,7 +1,7 @@
 from frontend.managers import CustomUserManager, ResourceManager
 
 from django.db import models
-from django.db.models import Count
+from django.db.models import Count, Max
 from django.utils import timezone
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from django.conf import settings
@@ -145,6 +145,12 @@ class Resource(models.Model):
         tags = self.taggings.values('tag').annotate(count=Count('tag'))
 
         return tags.values('tag_id', 'tag__name', 'tag__language', 'count')
+
+    # @property
+    # def max_tag_count(self):
+    #     tags = self.taggings.values('tag').annotate(max_count=Max('tag'))
+    #
+    #     return tags.values('tag_id', 'tag__name', 'tag__language', 'count')
 
 
 class Gametype(models.Model):

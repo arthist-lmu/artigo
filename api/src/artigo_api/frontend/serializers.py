@@ -98,8 +98,6 @@ class GameroundWithResourceSerializer(ResourceSerializer):
 
 
 class TagSerializer(serializers.ModelSerializer):
-  # name = serializers.CharField(max_length=256)
-  # language = serializers.CharField(max_length=256)
 
   class Meta:
     model = Tag
@@ -212,7 +210,27 @@ class TagCountSerializer(serializers.ModelSerializer):
 
   def to_representation(self, data):
     data = super().to_representation(data)
-    
+    return data
+
+
+class HighestTagCountSerializer(serializers.ModelSerializer):
+  """Serializer with the highest count of a specific tag (over all resources)
+  """
+  tag = TagSerializer(read_only=True)
+  max_tag_count = serializers.SerializerMethodField('get_max_tag_count')
+
+  class Meta:
+    model = Tagging
+    fields = ('id', 'tag', 'gameround', 'resource', 'max_tag_count')
+
+  def get_max_tag_count(self, obj):
+    tag_count = Tagging.objects.filter(tag=obj.tag).count() # calculates the count of a tagging for a specific resource
+    max_tag_count = obj.max_tag_count
+
+    return tag_count
+
+  def to_representation(self, data):
+    data = super().to_representation(data)
     return data
 
 
@@ -232,7 +250,6 @@ class TabooTagSerializer(serializers.ModelSerializer):
     :return: A list of the ids of the validated Tags (not Taggings) per Resource
     """
     taboo_tags = res.tags
-
     return taboo_tags
 
   def to_representation(self, data):
