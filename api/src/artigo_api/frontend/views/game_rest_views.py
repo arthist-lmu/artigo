@@ -143,6 +143,29 @@ class GameViewController:
                 random_object = random.randrange(1, MyModel.objects.all().count() + 1)
             return random_object
 
+    def get_random_object(self, MyModel):
+        random_object = None
+        object_count = MyModel.objects.all().count() + 1
+        while not MyModel.objects.all().filter(id=random_object).exists():
+            for obj in range(object_count):
+                n = random.randint(1, object_count)
+                if MyModel.objects.all().filter(id=n).exists():
+                    random_object = n
+                    return random_object
+
+    def get_random_id(self, MyModel):
+        """Method for large querysets"""
+        random_object = None
+        object_count = MyModel.objects.all().count() + 1
+        for obj in range(object_count):
+            n = random.randint(1, object_count)
+            while not MyModel.objects.all().filter(id=n).exists():
+                alt = random.randint(1, object_count)
+                if MyModel.objects.all().filter(id=alt).exists():
+                    random_object = n
+
+        return random_object
+
 
 class GametypeView(APIView):
     """
@@ -208,7 +231,7 @@ class ARTigoGameView(APIView):
         # round = gameround
 
         # while duration is not None:
-        random_resource = Resource.objects.all().filter(id=controller.pick_random_object(Resource))
+        random_resource = Resource.objects.all().filter(id=controller.get_random_object(Resource))
         resource_serializer = ResourceSerializer(random_resource, many=True)
 
         gamesession = Gamesession.objects.none()
@@ -267,7 +290,7 @@ class ARTigoTabooGameView(APIView):
         gametype = Gametype.objects.all().filter(name="imageLabeler_Taboo")
         gametype_serializer = GametypeSerializer(gametype, many=True)
 
-        resource_suggestions = Resource.objects.all().filter(id=controller.pick_random_object(Resource))
+        resource_suggestions = Resource.objects.all().filter(id=controller.get_random_object(Resource))
         resource_serializer = TabooTagSerializer(resource_suggestions, many=True)
 
         # TODO: ask again if empty object neccessary
@@ -316,15 +339,11 @@ class TagATagGameView(APIView):
         gametype = Gametype.objects.all().filter(name="imageAndTagLabeler")
         gametype_serializer = GametypeSerializer(gametype, many=True)
 
-        resource_suggestions = Resource.objects.all().filter(id=controller.pick_random_object(Resource))
+        resource_suggestions = Resource.objects.all().filter(id=controller.get_random_object(Resource))
         suggestions_serializer = SuggestionsSerializer(resource_suggestions, many=True)
 
-        # TODO: Try implementing special serializer to get the most used tag per resource
-        # tag = Tagging.objects.none()
-        # tag = Tagging.objects.all().filter(id=controller.pick_random_object(Tagging))
-        # tagging_serializer = TaggingSerializer(tag, many=True)
-        tag = Tagging.objects.all().get(resource=resource_suggestions)
-        tagging_serializer = HighestTagCountSerializer(tag)
+        tag = Tagging.objects.filter(resource__in=resource_suggestions).order_by('?').first()
+        tagging_serializer = TaggingSerializer(tag)
 
         # TODO: ask again if empty object neccessary
         gameround = Gameround.objects.none()
@@ -341,22 +360,21 @@ class TagATagGameView(APIView):
             'gamesession': gamesession_serializer.data
         })
 
+    def post(self, request, *args, **kwargs):
+        saved_tagging = None
 
-def post(self, request, *args, **kwargs):
-    saved_tagging = None
+        serializer = TaggingSerializer(data=request.data)
 
-    serializer = TaggingSerializer(data=request.data)
+        if serializer.is_valid() and saved_tagging is not None:
 
-    if serializer.is_valid() and saved_tagging is not None:
+            serializer.save()
+            return Response({'tagging': serializer.data}, status=status.HTTP_201_CREATED)
 
-        serializer.save()
-        return Response({'tagging': serializer.data}, status=status.HTTP_201_CREATED)
+        elif saved_tagging is None:
+            return Response({'tagging': serializer.data}, status=status.HTTP_204_NO_CONTENT)
 
-    elif saved_tagging is None:
-        return Response({'tagging': serializer.data}, status=status.HTTP_204_NO_CONTENT)
-
-    else:
-        return Response({'tagging': serializer.data}, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response({'tagging': serializer.data}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class CombinoGameView(APIView):
@@ -404,14 +422,10 @@ class GamesessionView(APIView):
     """
     API View that handles gamesessions
     """
-    serializer_class = GamesessionSerializer
-
-    def get_queryset(self):
-        gamesessions = Gamesession.objects.all()
-        return gamesessions
 
     def get(self, request, *args, **kwargs):
-        gamesession = self.get_queryset().filter(id=2015703320)
+        controller = GameViewController()
+        gamesession = Gamesession.objects.all().filter(id=controller.get_random_id(Gamesession))
         serializer = GamesessionSerializer(gamesession, many=True)
         return Response(serializer.data)
 
@@ -432,7 +446,8 @@ class GameroundView(APIView):
 
     def get(self, request, *args, **kwargs):
         controller = GameViewController()
-        gameround = Gameround.objects.all().filter(id=2015691768)
+        gameround = Gameround.objects.all().get(id=controller.get_random_id(Gameround))
+        # gameround = Gameround.objects.all().order_by("?").first()
         serializer = GameroundSerializer(gameround, many=True)
         return Response(serializer.data)
 
