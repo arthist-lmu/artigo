@@ -206,6 +206,15 @@ class Gameround(models.Model):
 
         return super().save(*args, **kwargs)
 
+    def create(self):
+        pass
+
+    @property
+    def tags(self):
+        tags = self.taggings.values('tag')
+
+        return tags.values('tag_id', 'tag__name', 'tag__language')
+
 
 class Tag(models.Model):
     # TODO: see if name should be oneToManyField instead of charfield
@@ -220,7 +229,7 @@ class Tag(models.Model):
 
 class Tagging(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, null=True)
-    gameround = models.ForeignKey(Gameround, on_delete=models.CASCADE)
+    gameround = models.ForeignKey(Gameround, on_delete=models.CASCADE, related_name='taggings')
     resource = models.ForeignKey(Resource, on_delete=models.CASCADE, related_name='taggings')
     tag = models.ForeignKey(Tag, on_delete=models.CASCADE)
     created = models.DateTimeField(editable=False)
@@ -229,6 +238,10 @@ class Tagging(models.Model):
     origin = models.URLField(max_length=256, blank=True, default='')
 
     objects = models.Manager()
+
+    # TODO: finish the create method in order to do the POST
+    def create(self, tag):
+        tagging = self.create(tag=tag)
 
     def __str__(self):
         return str(self.tag) or ''

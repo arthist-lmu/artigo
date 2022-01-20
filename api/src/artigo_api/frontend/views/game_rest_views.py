@@ -21,26 +21,21 @@ class GameViewController:
     Class containing methods that control the order in which Game View methods get called
     also methods to check tags and calculate score & coordinate users
     """
+
     def get_gameround(self):
-        pass
+        current_gameround = None
+        return current_gameround
 
     def get_gamesession(self):
-        pass
+        current_gamesession = None
+        return current_gamesession
 
     def get_time_created(self):
         pass
 
     def get_resource(self):
-        pass
-
-    def calculate_score(self, tagging_to_check, gameround):
-        # returns JSON Object // HTTP Status code
-        score_to_save = None
-        # 'Matching' here: match played round with a previously played round (25 p) and with entire DB->Tagging(5p)
-
-        self.coordinate_players(gameround)
-
-        return Response(saved_tagging, status=status.HTTP_201_CREATED)
+        current_resource = Resource.objects.all() # should return the current resource of the round
+        return current_resource
 
     def check_tag_exists(self, tagging_to_check):
         """
@@ -90,7 +85,21 @@ class GameViewController:
                 saved_tagging.created = self.get_time_created()
                 saved_tagging.resource = self.get_resource()
                 saved_tagging = tagging_serializer.save()
-                return Response(saved_tagging, status=status.HTTP_201_CREATED)
+                return Response(saved_tagging, status=status.HTTP_200_OK)
+
+    def tag_exists(self):
+        if self.check_tag_exists(tagging) == status.HTTP_200_OK:
+            return True
+        else:
+            return False
+
+    def calculate_score(self, tagging_to_check, gameround):
+        # returns JSON Object // HTTP Status code
+        score_to_save = None
+        saved_tagging = None
+        # 'Matching' here: match played round with a previously played round (25 p) and with entire DB->Tagging(5p)
+
+        return Response(saved_tagging, status=status.HTTP_201_CREATED)
 
     def timer(self, start):
         """Start a new timer"""
@@ -103,9 +112,14 @@ class GameViewController:
             elapsed_time = time.perf_counter() - start_time
         return elapsed_time
 
+    # TODO: finish this before post!
     def coordinate_players(self, current_gameround):
-        """Check DB """
-        pass
+        """Check DB for previously played gameround"""
+        gamerounds = Gameround.objects.all()
+        gamesessions = Gamesession.objects.all()
+
+        if gamerounds.filter().exists():
+            pass
 
     def start_game(self, gametype, gameround):
 
@@ -172,23 +186,30 @@ class ARTigoGameView(APIView):
     retrieves a random resource per round
     allows users to post tags that are verified and saved accordingly to either the Tag or Tagging table
     """
+
     # TODO: USE LATER!!!!
     # renderer_classes = [renderers.JSONRenderer]
 
     def get(self, request, *args, **kwargs):
-
         controller = GameViewController()
         gametype = Gametype.objects.all().filter(name="imageLabeler")
         gametype_serializer = GametypeSerializer(gametype, many=True)
 
         # TODO: Build timer in!!!
         # controller.timer()
+        # rounds = gametype.rounds
 
-        random_resource = Resource.objects.all().filter(id=controller.pick_random_object(Resource))
-        resource_serializer = ResourceSerializer(random_resource, many=True)
-
+        # for round in rounds:
+        # for every round in the game session, load a randomly chosen resource and an empty gameround
         gameround = Gameround.objects.none()
         gameround_serializer = GameroundSerializer(gameround, many=True)
+
+        # duration = gametype.round_duration
+        # round = gameround
+
+        # while duration is not None:
+        random_resource = Resource.objects.all().filter(id=controller.pick_random_object(Resource))
+        resource_serializer = ResourceSerializer(random_resource, many=True)
 
         gamesession = Gamesession.objects.none()
         gamesession_serializer = GamesessionSerializer(gamesession, many=True)
@@ -200,36 +221,36 @@ class ARTigoGameView(APIView):
                          'gamesession': gamesession_serializer.data
                          })
 
-    def post(self, request, *args, **kwargs):
 
-        controller = GameViewController()
-        saved_tagging = None
-        saved_tag = None
-        current_user = CustomUserSerializer(data=request.user) # user instance
-        serializer = TaggingSerializer(data=request.data)
+def post(self, request, *args, **kwargs):
+    controller = GameViewController()
+    saved_tagging = None
+    saved_tag = None
+    current_user = CustomUserSerializer(data=request.user)  # user instance
+    serializer = TaggingSerializer(data=request.data)
 
-        if serializer.is_valid(raise_exception=True):
-            # saved_tagging = Tagging.objects.create(id=controller.generate_random_id(Tagging),
-            #                                        user=current_user,
-            #                                        gameround=current_user.data["gameround"],
-            #                                        resource=request.data["resource"],
-            #                                        tag=request.data["tag"],
-            #                                        created=request.data["created"],
-            #                                        score=request.data["score"],
-            #                                        origin=request.data["origin"]
-            #                                        )
-            # saved_tagging.save()
-            serializer = TaggingSerializer(saved_tagging)
-            return Response({'status': 'success', 'tagging': serializer.data}, status=status.HTTP_200_OK)
+    if serializer.is_valid(raise_exception=True):
+        # saved_tagging = Tagging.objects.create(id=controller.generate_random_id(Tagging),
+        #                                        user=current_user,
+        #                                        gameround=current_user.data["gameround"],
+        #                                        resource=request.data["resource"],
+        #                                        tag=request.data["tag"],
+        #                                        created=request.data["created"],
+        #                                        score=request.data["score"],
+        #                                        origin=request.data["origin"]
+        #                                        )
+        # saved_tagging.save()
+        serializer = TaggingSerializer(saved_tagging)
+        return Response({'status': 'success', 'tagging': serializer.data}, status=status.HTTP_200_OK)
 
-        if saved_tagging is None:
-            return Response({'tagging': serializer.data}, status=status.HTTP_204_NO_CONTENT)
-        else:
-            return Response(saved_tagging, status=status.HTTP_400_BAD_REQUEST)
-        # TODO: Resource id has to be sent with tag/tagging! ?
+    if saved_tagging is None:
+        return Response({'tagging': serializer.data}, status=status.HTTP_204_NO_CONTENT)
+    else:
+        return Response(saved_tagging, status=status.HTTP_400_BAD_REQUEST)
+    # TODO: Resource id has to be sent with tag/tagging! ?
 
-        # if saved_tagging.exists():
-            # saved_tag =
+    # if saved_tagging.exists():
+    # saved_tag =
 
 
 class ARTigoTabooGameView(APIView):
@@ -265,7 +286,7 @@ class ARTigoTabooGameView(APIView):
     def post(self, request, *args, **kwargs):
         controller = GameViewController()
         saved_tag = None
-        current_user = CustomUserSerializer(data=request.user) # user instance
+        current_user = CustomUserSerializer(data=request.user)  # user instance
         tag_serializer = TagSerializer(data=request.data)
 
         if tag_serializer.is_valid(raise_exception=True):
@@ -408,14 +429,10 @@ class GameroundView(APIView):
     """
     API endpoint that allows gamerounds to be viewed or edited
     """
-    serializer_class = GameroundSerializer
-
-    def get_queryset(self):
-        gamerounds = Gameround.objects.all()
-        return gamerounds
 
     def get(self, request, *args, **kwargs):
-        gameround = self.get_queryset()
+        controller = GameViewController()
+        gameround = Gameround.objects.all().filter(id=2015691768)
         serializer = GameroundSerializer(gameround, many=True)
         return Response(serializer.data)
 

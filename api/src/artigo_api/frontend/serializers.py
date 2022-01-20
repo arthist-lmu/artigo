@@ -166,10 +166,15 @@ class GamesessionSerializer2(serializers.ModelSerializer):
 class GameroundSerializer(serializers.ModelSerializer):
   gamesession = GamesessionSerializer(read_only=True)
   user = CustomUserSerializer(read_only=True)
+  tags_to_compare = serializers.SerializerMethodField('get_tags_to_compare')
 
   class Meta:
     model = Gameround
-    fields = ['id', 'user', 'gamesession', 'created', 'score']
+    fields = ['id', 'user', 'gamesession', 'created', 'score', 'tags_to_compare']
+
+  def get_tags_to_compare(self, round):
+    taggings = round.tags
+    return taggings
 
   def to_representation(self, data):
     data = super().to_representation(data)
