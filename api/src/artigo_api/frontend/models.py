@@ -213,7 +213,7 @@ class Gameround(models.Model):
     def tags(self):
         tags = self.taggings.values('tag')
 
-        return tags.values('tag_id', 'tag__name', 'tag__language')
+        return tags.values('tag_id', 'tag__name', 'tag__language', 'resource_id')
 
 
 class Tag(models.Model):
