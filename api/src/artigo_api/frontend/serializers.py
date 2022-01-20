@@ -135,22 +135,6 @@ class GamesessionSerializer(serializers.ModelSerializer):
     return data
 
 
-class GametypeWithGamesessionSerializer(serializers.ModelSerializer):
-  gametypes = serializers.SerializerMethodField()
-
-  class Meta:
-    model = Gamesession
-    fields = ['id', 'user', 'gametype', 'created']
-
-  def get_gametype(self, obj):
-    data = GametypeSerializer(obj.gametype.all(), many=True).data
-    return data
-
-  def to_representation(self, data):
-    data = super().to_representation(data)
-    return data
-
-
 class GamesessionSerializer2(serializers.ModelSerializer):
   gametype = GametypeSerializer(read_only=True)
 

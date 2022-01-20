@@ -33,10 +33,6 @@ class GameViewController:
     def get_time_created(self):
         pass
 
-    def get_resource(self):
-        current_resource = Resource.objects.all() # should return the current resource of the round
-        return current_resource
-
     def check_tag_exists(self, tagging_to_check):
         """
         Checks if another tagging string for the same resource has been added before, which is the same as the entered string
@@ -112,15 +108,6 @@ class GameViewController:
             elapsed_time = time.perf_counter() - start_time
         return elapsed_time
 
-    # TODO: finish this before post!
-    def coordinate_players(self, current_gameround):
-        """Check DB for previously played gameround"""
-        gamerounds = Gameround.objects.all()
-        gamesessions = Gamesession.objects.all()
-
-        if gamerounds.filter().exists():
-            pass
-
     def start_game(self, gametype, gameround):
 
         self.coordinate_players(gameround)
@@ -165,6 +152,22 @@ class GameViewController:
                     random_object = n
 
         return random_object
+
+    def get_resource(self):
+        random_resource_id = self.get_random_object(Resource)
+        current_resource = Resource.objects.all().filter(id=random_resource_id)
+        return current_resource
+
+        # TODO: finish this before post!
+    def coordinate_players(self, current_gameround):
+        """Check DB for previously played gameround"""
+        random_resource = self.get_resource()
+
+        gamerounds = Gameround.objects.all()
+        gamesessions = Gamesession.objects.all()
+
+        if gamerounds.order_by("?").first().filter(resource__in=random_resource).exists():
+            pass
 
 
 class GametypeView(APIView):
@@ -424,9 +427,8 @@ class GamesessionView(APIView):
     """
 
     def get(self, request, *args, **kwargs):
-        controller = GameViewController()
-        gamesession = Gamesession.objects.all().filter(id=controller.get_random_id(Gamesession))
-        serializer = GamesessionSerializer(gamesession, many=True)
+        gamesession = Gamesession.objects.all().order_by('?').first()
+        serializer = GamesessionSerializer(gamesession)
         return Response(serializer.data)
 
     def post(self, request, *args, **kwargs):
@@ -446,10 +448,13 @@ class GameroundView(APIView):
 
     def get(self, request, *args, **kwargs):
         controller = GameViewController()
-        gameround = Gameround.objects.all().get(id=controller.get_random_id(Gameround))
-        # gameround = Gameround.objects.all().order_by("?").first()
-        serializer = GameroundSerializer(gameround, many=True)
-        return Response(serializer.data)
+        random_resource = Resource.objects.all().filter(id=controller.get_random_object(Resource))
+        resource_serializer = ResourceSerializer(random_resource, many=True)
+
+        # gameround = Gameround.objects.all().order_by("?").first().filter(resource__in=random_resource)
+        gameround = Gameround.objects.all().order_by("?").first()
+        gameround_serializer = GameroundSerializer(gameround)
+        return Response(gameround_serializer.data)
 
     def post(self, request, *args, **kwargs):
         gameround = request.data.get_queryset()
@@ -483,7 +488,7 @@ class TaggingView(APIView):
                 return Response(serializer.data)
         else:
             tagging = self.get_queryset().filter(resource=9463)
-            serializer = HighestTagCountSerializer(tagging, many=True)
+            serializer = TaggingSerializer(tagging, many=True)
             return Response(serializer.data)
 
     def post(self, request, *args, **kwargs):
