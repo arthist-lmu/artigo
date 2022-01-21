@@ -21,99 +21,8 @@ class GameViewController:
     Class containing methods that control the order in which Game View methods get called
     also methods to check tags and calculate score & coordinate users
     """
-
-    def get_gameround(self):
-        current_gameround = None
-        return current_gameround
-
-    def get_gamesession(self):
-        current_gamesession = None
-        return current_gamesession
-
-    def get_time_created(self):
-        pass
-
-    def check_tag_exists(self, tagging_to_check):
-        """
-        Checks if another tagging string for the same resource has been added before, which is the same as the entered string
-        :return:
-        """
-        saved_tagging = None
-        saved_tag = None
-
-        tagging_serializer = TaggingSerializer(tagging_to_check)
-        tag_serializer = TagSerializer(tagging_to_check)
-        random_id = None
-
-        tagging_to_check.get_queryset()
-
-        while saved_tagging is None or saved_tag is None:
-            # TODO: check if condition is ok
-            if Tagging.objects.filter(tag=tagging_to_check).exists():
-                saved_tag = Tag()
-
-                while random_id is None:
-                    random_number = random.randint(0, Tag.objects.count() - 1)
-                    if Tag.objects.filter(id=random_number).exists():
-                        random_number_alternative = random.randint(0, Tag.objects.count() - 1)
-                        random_id = random_number_alternative
-                    else:
-                        random_id = random_number
-
-                saved_tag.id = random_id
-                saved_tag.name = tagging_to_check
-                saved_tag.language = tagging_to_check.language
-                saved_tag = tag_serializer.save()
-                return Response(saved_tag, status=status.HTTP_201_CREATED)
-            else:
-                saved_tagging = Tagging()
-                while random_id is None:
-                    random_number = random.randint(0, Tagging.objects.count() - 1)
-                    if Tagging.objects.filter(id=random_number).exists():
-                        random_number_alternative = random.randint(0, Tagging.objects.count() - 1)
-                        random_id = random_number_alternative
-                    else:
-                        random_id = random_number
-                saved_tagging.id = random_id
-                saved_tagging.tag = tagging_to_check
-                saved_tagging.gameround = self.get_gameround()
-                saved_tagging.score = self.calculate_score(tagging_to_check, saved_tagging.gameround)
-                saved_tagging.created = self.get_time_created()
-                saved_tagging.resource = self.get_resource()
-                saved_tagging = tagging_serializer.save()
-                return Response(saved_tagging, status=status.HTTP_200_OK)
-
-    def tag_exists(self):
-        if self.check_tag_exists(tagging) == status.HTTP_200_OK:
-            return True
-        else:
-            return False
-
-    def calculate_score(self, tagging_to_check, gameround):
-        # returns JSON Object // HTTP Status code
-        score_to_save = None
-        saved_tagging = None
-        # 'Matching' here: match played round with a previously played round (25 p) and with entire DB->Tagging(5p)
-
-        return Response(saved_tagging, status=status.HTTP_201_CREATED)
-
-    def timer(self, start):
-        """Start a new timer"""
-        start_time = start
-        elapsed_time = None
-        if start_time is not None:
-            start_time = time.perf_counter()
-        """Stop the timer, and return the elapsed time"""
-        if start_time is None:
-            elapsed_time = time.perf_counter() - start_time
-        return elapsed_time
-
-    def start_game(self, gametype, gameround):
-
-        self.coordinate_players(gameround)
-
     def generate_random_id(self, MyModel):
-        """ Picks a random id for an object"""
+        """ Picks a random id for an object to be created"""
         random_object = None
         if random_object is None:
             random_object = random.randrange(1, MyModel.objects.all().count() + 1)
@@ -156,18 +65,70 @@ class GameViewController:
     def get_resource(self):
         random_resource_id = self.get_random_object(Resource)
         current_resource = Resource.objects.all().filter(id=random_resource_id)
-        return current_resource
+        resource_serializer = ResourceSerializer(current_resource, many=True)
+        data = {'resource': resource_serializer.data}
+        return Response(data, status=status.HTTP_200_OK)
 
-        # TODO: finish this before post!
-    def coordinate_players(self, current_gameround):
-        """Check DB for previously played gameround"""
-        random_resource = self.get_resource()
+    def get_gameround_matching_resource(self, random_resource):
+        """Checks if a previously played game round exists for a randomly chosen resource"""
+        # TODO: decide whether to do the coordination here or in the other method!
+        current_gameround = Gameround.objects.all().filter(ressource__in=random_resource).order_by('?').first()
 
-        gamerounds = Gameround.objects.all()
-        gamesessions = Gamesession.objects.all()
+        if current_gameround.exists():
+            gameround_serializer = GameroundSerializer(current_gameround)
+            data = {'gameround': gameround_serializer.data}
+            return Response(data, status=status.HTTP_200_OK)
 
-        if gamerounds.order_by("?").first().filter(resource__in=random_resource).exists():
-            pass
+    def timer(self, start):
+        """Start a new timer as soon as a gameround has been selected"""
+        start_time = start
+        elapsed_time = None
+        if start_time is not None:
+            start_time = time.perf_counter()
+        """Stop the timer, and return the elapsed time"""
+        if start_time is None:
+            elapsed_time = time.perf_counter() - start_time
+        return elapsed_time
+
+    def get_gamesession(self):
+        """Retrieves a randomly chosen gamesession object"""
+        current_gamesession = Gamesession.objects.all().order_by('?').first()
+        gamesession_serializer = GamesessionSerializer(current_gamesession)
+        data = {'gameround': gamesession_serializer.data}
+        return Response(data, status=status.HTTP_200_OK)
+
+    def check_tagging_exists(self, tagging_to_check):
+        """
+        Matches tags entered with tags from the list of the tags from the matched Gameround object
+        :return:
+        """
+        # tagging_to_check is Tagging object entered by user --> through POST request?!
+        # matched_gameround = self.get_gameround_matching_resource() ?
+        # TODO: REVIEW!!! after finishing post method
+        if Tagging.objects.all().filter(tag=tagging_to_check).exists():
+
+            new_tagging = Tagging.objects.create()
+            tagging_serializer = TaggingSerializer(new_tagging)
+            data = {'tagging': tagging_serializer.data}
+            return Response(data, status=status.HTTP_200_OK)
+
+        elif not Tag.objects.all().filter(name=tagging_to_check).exists():
+            new_tag = Tag.objects.create()
+            tag_serializer = TagSerializer(new_tag)
+            data = {'tagging': tag_serializer.data}
+            return Response(data, status=status.HTTP_200_OK)
+
+        else:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+    def calculate_score(self):
+        """Calculate per game round and per session score!? - maybe split method"""
+        # returns JSON Object // HTTP Status code
+        score_to_save = None
+        data = None
+        # 'Matching' here: match played round with a previously played round (25 p) and with entire DB->Tagging(5p)
+
+        return Response(data, status=status.HTTP_201_CREATED)
 
 
 class GametypeView(APIView):
@@ -447,12 +408,11 @@ class GameroundView(APIView):
     """
 
     def get(self, request, *args, **kwargs):
+        # TODO: Finish this concept & move it to controller!
         controller = GameViewController()
-        random_resource = Resource.objects.all().filter(id=controller.get_random_object(Resource))
-        resource_serializer = ResourceSerializer(random_resource, many=True)
-
-        # gameround = Gameround.objects.all().order_by("?").first().filter(resource__in=random_resource)
-        gameround = Gameround.objects.all().order_by("?").first()
+        random_resource = controller.get_resource() # Response is a JSON object
+        random_resource_id = random_resource.get(random_resource.id) # id of the random Resource for the game round
+        gameround = Gameround.objects.all().filter(taggings__resource_id=random_resource_id).order_by("?").first()
         gameround_serializer = GameroundSerializer(gameround)
         return Response(gameround_serializer.data)
 

@@ -146,12 +146,6 @@ class Resource(models.Model):
 
         return tags.values('tag_id', 'tag__name', 'tag__language', 'count')
 
-    # @property
-    # def max_tag_count(self):
-    #     tags = self.taggings.values('tag').annotate(max_count=Max('tag'))
-    #
-    #     return tags.values('tag_id', 'tag__name', 'tag__language', 'count')
-
 
 class Gametype(models.Model):
     name = models.CharField(max_length=256)
