@@ -36,6 +36,55 @@ class GameTypeViewTests(TestCase):
         # self.assertEqual(len(response.responses), len(Gametype.objects.all()))
 
 
+class GamesessionViewTests(TestCase):
+
+    def test_get(self):
+        self.client.get('http://localhost:8000/artigo_api/gamesession')
+        self.assertEqual(response.Response, 200)
+
+    def test_post(self):
+        self.client.get('http://localhost:8000/artigo_api/gamesession')
+        pass
+
+
+class GameroundViewTests(TestCase):
+
+    def test_get(self):
+        self.client.get('http://localhost:8000/artigo_api/gameround')
+        self.assertEqual(response.Response, 200)
+
+    def test_post(self):
+        self.client.get('http://localhost:8000/artigo_api/gameround')
+        pass
+
+
+class TaggingViewTests(TestCase):
+
+    def test_get(self):
+        self.client.get('http://localhost:8000/artigo_api/tagging')
+        self.assertEqual(response.Response, 200)
+
+    def test_post(self):
+        pass
+
+
+class TagViewTests(TestCase):
+
+    def test_get(self):
+        self.client.get('http://localhost:8000/artigo_api/tag')
+        self.assertEqual(response.Response, 200)
+
+    def test_post(self):
+        pass
+
+
+class GameResourceViewTests(TestCase):
+
+    def test_get(self):
+        self.client.get('http://localhost:8000/artigo_api/game_resource')
+        self.assertEqual(response.Response, 200)
+
+
 class ARTigoGameViewTests(TestCase):
 
     def test_get(self):

@@ -5,13 +5,6 @@ from django.test import TestCase
 from frontend.models import *
 
 
-@pytest.mark.django_db
-def test_create_institution():
-    institution = Institution.objects.create(name="Institution")
-    assert institution.name == "Institution"
-    # assert source.name == "Source"
-
-
 class UsersManagersTests(TestCase):
 
     def test_create_user(self):
@@ -81,17 +74,26 @@ class TagTests(TestCase):
 
 class GamesessionTests(TestCase):
     def test_create_session(self):
+        # session = Gamesession.objects.create()
+        # assert session
         pass
 
 
 class GameroundTests(TestCase):
     def test_create_round(self):
-        pass
+        round = Gameround.objects.create(id=1)
+        assert round.id == 1
 
 
 class GametypeTests(TestCase):
     def test_create_type(self):
-        pass
+        gametype = Gametype.objects.create(name="Gametype")
+        assert gametype.name == "Gametype"
+
+    def test_name_size(self):
+        gametype = Gametype.objects.get(name="Gametype")
+        max_length = gametype._meta.get_field('name').max_length
+        self.assertEqual(max_length, 256)
 
 
 class ResourceTests(TestCase):
@@ -131,4 +133,10 @@ class LocationTests(TestCase):
 
 class InstitutionTests(TestCase):
     def test_create_institution(self):
-        pass
+        institution = Institution.objects.create(name="Institution")
+        assert institution.name == "Institution"
+
+    def test_size_institution(self):
+        institution = Institution.objects.get(name="Institution")
+        max_length = institution._meta.get_field('name').max_length
+        self.assertEqual(max_length, 256)
