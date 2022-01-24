@@ -13,12 +13,6 @@ class GameViewControllerTests(TestCase):
     def test_generate_random_id(self):
         pass
 
-    def test_pick_random_object(self):
-        pass
-
-    def test_get_random_object(self):
-        pass
-
     def test_test_get_random_id(self):
         pass
 

@@ -22,7 +22,7 @@ class GameViewController:
     also methods to check tags and calculate score & coordinate users
     """
     def generate_random_id(self, MyModel):
-        """ Picks a random id for an object to be created"""
+        """ Picks a random id for an object to be created in POST"""
         random_object = None
         if random_object is None:
             random_object = random.randrange(1, MyModel.objects.all().count() + 1)
@@ -30,16 +30,8 @@ class GameViewController:
                 random_object = random.randrange(1, MyModel.objects.all().count() + 1)
             return random_object
 
-    def pick_random_object(self, MyModel):
-        """ Picks a random id for an object, checks if object with that id exists and returns the random number"""
-        random_object = None
-        if random_object is None:
-            random_object = random.randrange(1, MyModel.objects.all().count() + 1)
-            while not MyModel.objects.all().filter(id=random_object).exists():
-                random_object = random.randrange(1, MyModel.objects.all().count() + 1)
-            return random_object
-
     def get_random_object(self, MyModel):
+        """Method that works for Tag a Tag game view"""
         random_object = None
         object_count = MyModel.objects.all().count() + 1
         while not MyModel.objects.all().filter(id=random_object).exists():
@@ -63,21 +55,21 @@ class GameViewController:
         return random_object
 
     def get_resource(self):
-        random_resource_id = self.get_random_object(Resource)
-        current_resource = Resource.objects.all().filter(id=random_resource_id)
-        resource_serializer = ResourceSerializer(current_resource, many=True)
-        data = {'resource': resource_serializer.data}
-        return Response(data, status=status.HTTP_200_OK)
+        """Retrieves a random resource object, not a response!"""
 
-    def get_gameround_matching_resource(self, random_resource):
-        """Checks if a previously played game round exists for a randomly chosen resource"""
-        # TODO: decide whether to do the coordination here or in the other method!
-        current_gameround = Gameround.objects.all().filter(ressource__in=random_resource).order_by('?').first()
+        current_resource = Resource.objects.all().order_by('?').first()
+        resource_serializer = ResourceSerializer(current_resource)  # Response is a serialized JSON object
+        resource = resource_serializer.data
+        return resource
 
-        if current_gameround.exists():
-            gameround_serializer = GameroundSerializer(current_gameround)
-            data = {'gameround': gameround_serializer.data}
-            return Response(data, status=status.HTTP_200_OK)
+    def get_gameround_matching_resource(self, random_resource_id):
+        """Checks if a previously played game round exists for a randomly chosen resource
+        Returns a serialized gameround object (played previously for this same resource)
+        """
+        current_gameround = Gameround.objects.all().filter(taggings__resource_id=random_resource_id).order_by("?").first()
+        gameround_serializer = GameroundSerializer(current_gameround)
+
+        return gameround_serializer.data
 
     def timer(self, start):
         """Start a new timer as soon as a gameround has been selected"""
@@ -195,8 +187,11 @@ class ARTigoGameView(APIView):
         # round = gameround
 
         # while duration is not None:
-        random_resource = Resource.objects.all().filter(id=controller.get_random_object(Resource))
-        resource_serializer = ResourceSerializer(random_resource, many=True)
+        random_resource = Resource.objects.all().order_by('?').first()
+        resource_serializer = ResourceSerializer(random_resource)
+
+        # A previously played gameround for this resource is coordinated for Tag verification
+        coordinated_gameround = controller.get_gameround_matching_resource(random_resource.id)
 
         gamesession = Gamesession.objects.none()
         gamesession_serializer = GamesessionSerializer(gamesession, many=True)
@@ -204,6 +199,7 @@ class ARTigoGameView(APIView):
         # TODO: only save if 5 rounds have been played! Tags/Taggings can be saved - find a way!
         return Response({'gametype': gametype_serializer.data,
                          'resource': resource_serializer.data,
+                         'coordinated_gameround': coordinated_gameround,
                          'gameround': gameround_serializer.data,
                          'gamesession': gamesession_serializer.data
                          })
@@ -247,11 +243,12 @@ class ARTigoTabooGameView(APIView):
 
     def get(self, request, *args, **kwargs):
         controller = GameViewController()
+
         gametype = Gametype.objects.all().filter(name="imageLabeler_Taboo")
         gametype_serializer = GametypeSerializer(gametype, many=True)
 
-        resource_suggestions = Resource.objects.all().filter(id=controller.get_random_object(Resource))
-        resource_serializer = TabooTagSerializer(resource_suggestions, many=True)
+        resource_suggestions = Resource.objects.all().order_by('?').first()
+        resource_serializer = TabooTagSerializer(resource_suggestions)
 
         # TODO: ask again if empty object neccessary
         gameround = Gameround.objects.none()
@@ -346,11 +343,12 @@ class CombinoGameView(APIView):
         """Potential condition for Tag a Tag Tag to be tagged to be returned"""
 
         controller = GameViewController()
+
         gametype = Gametype.objects.all().filter(name="Combino")
         gametype_serializer = GametypeSerializer(gametype, many=True)
 
-        resource_and_tags = Resource.objects.all().filter(id=controller.pick_random_object(Resource))
-        combination_serializer = CombinoTagsSerializer(resource_and_tags, many=True)
+        resource_and_tags = Resource.objects.all().order_by('?').first()
+        combination_serializer = CombinoTagsSerializer(resource_and_tags)
 
         gameround = Gameround.objects.none()
         gameround_serializer = GameroundSerializer(gameround, many=True)
@@ -403,12 +401,13 @@ class GameroundView(APIView):
     """
 
     def get(self, request, *args, **kwargs):
-        # TODO: Finish this concept & move it to controller!
+
         random_resource = Resource.objects.all().order_by('?').first()
         resource_serializer = ResourceSerializer(random_resource)  # Response is a serialized JSON object
         random_resource_id = random_resource.id   # id of the random Resource for the game round
         gameround = Gameround.objects.all().filter(taggings__resource_id=random_resource_id).order_by("?").first()
         gameround_serializer = GameroundSerializer(gameround)
+
         return Response({
             'resource to coordinate': resource_serializer.data,
             'gameround': gameround_serializer.data,
@@ -514,9 +513,8 @@ class GameResourceViewPicture(APIView):
     renderer_classes = [JPEGRenderer, PNGRenderer]
 
     def get(self, request, *args, **kwargs):
-        controller = GameViewController()
-        resource = Resource.objects.all().filter(id=controller.pick_random_object(Resource))
-        serializer = ResourceSerializer(resource, many=True)
+        resource = Resource.objects.all().order_by('?').first()
+        serializer = ResourceSerializer(resource)
         return Response({
             'resource and tags to combine': serializer.data
         })
