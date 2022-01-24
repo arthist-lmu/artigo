@@ -250,6 +250,9 @@ class ARTigoTabooGameView(APIView):
         resource_suggestions = Resource.objects.all().order_by('?').first()
         resource_serializer = TabooTagSerializer(resource_suggestions)
 
+        # A previously played gameround for this resource is coordinated for Tag verification
+        coordinated_gameround = controller.get_gameround_matching_resource(resource_suggestions.id)
+
         # TODO: ask again if empty object neccessary
         gameround = Gameround.objects.none()
         gameround_serializer = GameroundSerializer(gameround, many=True)
@@ -259,6 +262,7 @@ class ARTigoTabooGameView(APIView):
 
         return Response({'gametype': gametype_serializer.data,
                          'resource and taboo input': resource_serializer.data,
+                         'coordinated_gameround': coordinated_gameround,
                          'gameround': gameround_serializer.data,
                          'gamesession': gamesession_serializer.data
                          })
@@ -296,8 +300,12 @@ class TagATagGameView(APIView):
         gametype = Gametype.objects.all().filter(name="imageAndTagLabeler")
         gametype_serializer = GametypeSerializer(gametype, many=True)
 
-        resource_suggestions = Resource.objects.all().filter(id=controller.get_random_object(Resource))
+        random_id = controller.get_random_object(Resource)
+        resource_suggestions = Resource.objects.all().filter(id=random_id)
         suggestions_serializer = SuggestionsSerializer(resource_suggestions, many=True)
+
+        # A previously played gameround for this resource is coordinated for Tag verification
+        coordinated_gameround = controller.get_gameround_matching_resource(random_id)
 
         tag = Tagging.objects.filter(resource__in=resource_suggestions).order_by('?').first()
         tagging_serializer = TaggingSerializer(tag)
@@ -313,6 +321,7 @@ class TagATagGameView(APIView):
             'gametype': gametype_serializer.data,
             'tag': tagging_serializer.data,
             'resource and suggestions': suggestions_serializer.data,
+            'coordinated_gameround': coordinated_gameround,
             'gameround': gameround_serializer.data,
             'gamesession': gamesession_serializer.data
         })
@@ -350,6 +359,9 @@ class CombinoGameView(APIView):
         resource_and_tags = Resource.objects.all().order_by('?').first()
         combination_serializer = CombinoTagsSerializer(resource_and_tags)
 
+        # A previously played gameround for this resource is coordinated for Tag verification
+        coordinated_gameround = controller.get_gameround_matching_resource(resource_and_tags.id)
+
         gameround = Gameround.objects.none()
         gameround_serializer = GameroundSerializer(gameround, many=True)
 
@@ -359,6 +371,7 @@ class CombinoGameView(APIView):
         return Response({
             'gametype': gametype_serializer.data,
             'resource and tags to combine': combination_serializer.data,
+            'coordinated_gameround': coordinated_gameround,
             'gameround': gameround_serializer.data,
             'gamesession': gamesession_serializer.data
         })
