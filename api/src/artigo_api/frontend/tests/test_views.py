@@ -10,16 +10,34 @@ from frontend.views import *
 
 class GameViewControllerTests(TestCase):
 
-    def test_calculate_score(self):
-        pass
-
-    def test_check_tag_exists(self):
-        pass
-
     def test_generate_random_id(self):
         pass
 
     def test_pick_random_object(self):
+        pass
+
+    def test_get_random_object(self):
+        pass
+
+    def test_test_get_random_id(self):
+        pass
+
+    def test_get_resource(self):
+        pass
+
+    def test_get_gameround_matching_resource(self):
+        pass
+
+    def test_timer(self):
+        pass
+
+    def test_get_gamesession(self):
+        pass
+
+    def test_check_tagging_exists(self):
+        pass
+
+    def test_calculate_score(self):
         pass
 
 

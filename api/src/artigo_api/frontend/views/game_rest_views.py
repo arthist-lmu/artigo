@@ -404,12 +404,15 @@ class GameroundView(APIView):
 
     def get(self, request, *args, **kwargs):
         # TODO: Finish this concept & move it to controller!
-        controller = GameViewController()
-        random_resource = controller.get_resource() # Response is a JSON object
-        random_resource_id = random_resource.get(random_resource.id) # id of the random Resource for the game round
+        random_resource = Resource.objects.all().order_by('?').first()
+        resource_serializer = ResourceSerializer(random_resource)  # Response is a serialized JSON object
+        random_resource_id = random_resource.id   # id of the random Resource for the game round
         gameround = Gameround.objects.all().filter(taggings__resource_id=random_resource_id).order_by("?").first()
         gameround_serializer = GameroundSerializer(gameround)
-        return Response(gameround_serializer.data)
+        return Response({
+            'resource to coordinate': resource_serializer.data,
+            'gameround': gameround_serializer.data,
+        })
 
     def post(self, request, *args, **kwargs):
         gameround = request.data.get_queryset()
@@ -497,9 +500,8 @@ class GameResourceView(APIView):
     API view to handle resources
     """
     def get(self, request, *args, **kwargs):
-        controller = GameViewController()
-        resource = Resource.objects.all().filter(id=controller.get_random_id(Resource))
-        serializer = ResourceSerializer(resource, many=True)
+        resource = Resource.objects.all().order_by('?').first()
+        serializer = ResourceSerializer(resource)
         return Response({
             'resource': serializer.data
         })
