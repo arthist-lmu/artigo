@@ -130,6 +130,9 @@ class GamesessionSerializer(serializers.ModelSerializer):
     model = Gamesession
     fields = ['id', 'user', 'gametype', 'created']
 
+  def create(self, validated_data):
+    return Gamesession.objects.create(**validated_data)
+
   def to_representation(self, data):
     data = super().to_representation(data)
     return data
@@ -159,6 +162,9 @@ class GameroundSerializer(serializers.ModelSerializer):
   def get_tags_to_compare(self, round):
     taggings = round.tags
     return taggings
+
+  def create(self, validated_data):
+    return Gameround.objects.create(**validated_data)
 
   def to_representation(self, data):
     data = super().to_representation(data)

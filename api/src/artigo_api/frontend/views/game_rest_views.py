@@ -3,7 +3,7 @@ import random
 import time
 from datetime import datetime
 
-from rest_framework import status, renderers
+from rest_framework import status, renderers, permissions
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.renderers import (
@@ -14,6 +14,11 @@ from rest_framework.renderers import (
 from frontend.models import *
 from frontend.serializers import *
 from frontend.custom_renderers import *
+
+
+class IsNotAuthenticated(permissions.BasePermission):
+    def has_permission(self, request, view):
+        return not request.user.is_authenticated
 
 
 class GameViewController:
@@ -160,11 +165,12 @@ class ARTigoGameView(APIView):
 
     # TODO: USE LATER!!!!
     # renderer_classes = [renderers.JSONRenderer]
+    # permission_classes = [IsNotAuthenticated]
 
     def get(self, request, *args, **kwargs):
         controller = GameViewController()
-        gametype = Gametype.objects.all().filter(name="imageLabeler")
-        gametype_serializer = GametypeSerializer(gametype, many=True)
+        gametype = Gametype.objects.all().get(name="imageLabeler")
+        gametype_serializer = GametypeSerializer(gametype)
 
         # TODO: Build timer in!
         # controller.timer()
@@ -180,34 +186,41 @@ class ARTigoGameView(APIView):
         random_resource = Resource.objects.all().order_by('?').first()
         resource_serializer = ResourceSerializer(random_resource)
 
-        gamesession = Gamesession.save({
-            'id': 'New id',
-            'user': 'this user',
-            'gametype': 'imageLabeler',
-            'created': 'now',
-        })
+        current_score = 0
+        if not isinstance(request.user, CustomUser):
+            current_user_id = 1
+        else:
+            current_user_id = request.user.pk
 
-        gameround = Gameround.save({
-            'id': 'New id',
-            'user': 'this user',
-            'gamesession': 'imageLabeler',
-            'created': 'now',
-            'score': '',
-        })
+        gamesession = Gamesession.objects.create(
+            id=controller.generate_random_id(Gamesession),
+            user_id=current_user_id,
+            gametype=gametype,
+            created=datetime.now()
+        )
 
-        # TODO: only save if 5 rounds have been played! Tags/Taggings can be saved - find a way!
+        gameround = Gameround.objects.create(
+            id=controller.generate_random_id(Gameround),
+            user_id=current_user_id,
+            gamesession=gamesession,
+            created=datetime.now(),
+            score=current_score
+        )
+        gameround_serializer = GameroundSerializer(gameround)
+
         return Response({'gametype': gametype_serializer.data,
-                         'resource': resource_serializer.data
+                         'resource': resource_serializer.data,
+                         'gameround': gameround_serializer.data
                          })
 
     def post(self, request, *args, **kwargs):
         controller = GameViewController()
         id = controller.generate_random_id(Tagging)
 
-        if request.user is None:
-            current_user = '1'
+        if not isinstance(request.user, CustomUser):
+            current_user_id = 1
         else:
-            current_user = request.user
+            current_user_id = request.user.pk
 
         gameround = request.data.get('gameround')
         resource = request.data.get('resource')
@@ -234,7 +247,7 @@ class ARTigoGameView(APIView):
                                                    score=score,
                                                    origin=origin
                                                    )
-            saved_tagging.save()
+            saved_tagging.save(saved_tagging)
             serializer = TaggingSerializer(saved_tagging)
             return Response({'status': 'success', 'tagging': serializer.data}, status=status.HTTP_200_OK)
 

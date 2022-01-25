@@ -34,7 +34,8 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
     REQUIRED_FIELDS = ['username']
 
-    objects = CustomUserManager()
+    # objects = CustomUserManager()
+    objects = models.Manager()
 
     USERNAME_FIELD = 'email'
 
@@ -185,6 +186,11 @@ class Gamesession(models.Model):
 
         return super().save(*args, **kwargs)
 
+    def create(self, validated_data):
+        gamesession_data = validated_data.pop('gamesession')
+        Gamesession.objects.create(**gamesession_data)
+        return gamesession_data
+
 
 class Gameround(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, null=True)
@@ -200,8 +206,11 @@ class Gameround(models.Model):
 
         return super().save(*args, **kwargs)
 
-    def create(self):
-        pass
+    def create(self, validated_data):
+        gamesession_data = validated_data.pop('gamesession')
+        gameround = Gameround.objects.create(**validated_data)
+        Gamesession.objects.create(gameround=gameround, **gamesession_data)
+        return gameround
 
     @property
     def tags(self):
@@ -236,6 +245,7 @@ class Tagging(models.Model):
     # TODO: finish the create method in order to do the POST
     def create(self, tag):
         tagging = self.create(tag=tag)
+        return tagging
 
     def __str__(self):
         return str(self.tag) or ''
