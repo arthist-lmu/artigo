@@ -19,7 +19,7 @@ urlpatterns = [
     path('game_resource_picture', views.GameResourceViewPicture.as_view(), name='game_resource_picture'),
 
     # TODO: fix error
-    path('artigo_game/', views.ARTigoGameView.as_view(), name='ARTigo game'),
+    path('artigo_game/', views.ARTigoGameView.as_view(), name='Artigo game'),
     path('tagatag_game/', views.TagATagGameView.as_view(), name='Tag a Tag game'),
     path('artigo_taboo_game/', views.ARTigoTabooGameView.as_view(), name='ARTigo Taboo game'),
     path('combino_game/', views.CombinoGameView.as_view(), name='Combino game'),

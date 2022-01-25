@@ -54,6 +54,11 @@ class TaggingTests(TestCase):
         field_label = tagging._meta.get_field('tag').verbose_name()
         self.assertEqual(field_label, 'tag')
 
+    def test_str(self):
+        """Test for string representation"""
+        tagging = Tagging()
+        self.assertEqual(str(tagging), tagging.tag)
+
 
 class TagTests(TestCase):
     def test_create_tag(self):
@@ -70,6 +75,11 @@ class TagTests(TestCase):
         tag = Tag.objects.get(id=1)
         max_length = tag._meta.get_field('name').max_length
         self.assertEqual(max_length, 256)
+
+    def test_str(self):
+        """Test for string representation"""
+        tag = Tag()
+        self.assertEqual(str(tag), tag.name)
 
 
 class GamesessionTests(TestCase):
@@ -95,40 +105,80 @@ class GametypeTests(TestCase):
         max_length = gametype._meta.get_field('name').max_length
         self.assertEqual(max_length, 256)
 
+    def test_str(self):
+        """Test for string representation"""
+        gametype = Gametype()
+        self.assertEqual(str(gametype), gametype.name)
+
 
 class ResourceTests(TestCase):
     def test_create_resource(self):
         pass
+
+    def test_str(self):
+        """Test for string representation"""
+        resource = Resource()
+        self.assertEqual(str(resource), resource.hash_id)
 
 
 class TitleTests(TestCase):
     def test_create_title(self):
         pass
 
+    def test_str(self):
+        """Test for string representation"""
+        title = Title()
+        self.assertEqual(str(title), title.name)
+
 
 class CreatorTests(TestCase):
     def test_create_creator(self):
         pass
+
+    def test_str(self):
+        """Test for string representation"""
+        creator = Creator()
+        self.assertEqual(str(creator), creator.name)
 
 
 class ArtStyleTests(TestCase):
     def test_create_style(self):
         pass
 
+    def test_str(self):
+        """Test for string representation"""
+        style = ArtStyle()
+        self.assertEqual(str(style), style.name)
+
 
 class ArtMovementTests(TestCase):
     def test_create_movement(self):
         pass
+
+    def test_str(self):
+        """Test for string representation"""
+        movement = ArtMovement()
+        self.assertEqual(str(movement), movement.name)
 
 
 class ArtTechniqueTests(TestCase):
     def test_create_technique(self):
         pass
 
+    def test_str(self):
+        """Test for string representation"""
+        technique = ArtTechnique()
+        self.assertEqual(str(technique), technique.name)
+
 
 class LocationTests(TestCase):
     def test_create_location(self):
         pass
+
+    def test_str(self):
+        """Test for string representation"""
+        location = Location()
+        self.assertEqual(str(location), location.name)
 
 
 class InstitutionTests(TestCase):
@@ -140,3 +190,8 @@ class InstitutionTests(TestCase):
         institution = Institution.objects.get(name="Institution")
         max_length = institution._meta.get_field('name').max_length
         self.assertEqual(max_length, 256)
+
+    def test_str(self):
+        """Test for string representation"""
+        institution = Institution()
+        self.assertEqual(str(institution), institution.name)

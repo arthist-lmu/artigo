@@ -1,7 +1,7 @@
 import pytest
 
 from django.test import TestCase
-from rest_framework import response
+from rest_framework import response, status
 
 from frontend.models import *
 from frontend.serializers import *
@@ -11,6 +11,9 @@ from frontend.views import *
 class GameViewControllerTests(TestCase):
 
     def test_generate_random_id(self):
+        pass
+
+    def test_test_get_random_object(self):
         pass
 
     def test_test_get_random_id(self):
@@ -74,7 +77,23 @@ class TaggingViewTests(TestCase):
         self.assertEqual(response.Response, 200)
 
     def test_post(self):
-        pass
+        # TODO: REWRITE TO FIT TAGGING
+        data = {
+            'id': 'New tag id',
+            'tag': 'New tag',
+            'gameround': 'New gameround',
+            'created': 'date',
+            'score': 'points',
+            'resource': 'resource hash id',
+        }
+        self.assertEqual(Tagging.objects.count(), 0)
+        # TODO: figure out what to replace list_url with in this case
+        response = self.client.post(self.list_url, data=data)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(Tagging.objects.count(), 1)
+        tagging = Tagging.objects.all().first()
+        for field_name in data.keys():
+            self.assertEqual(getattr(tagging, field_name), data[field_name])
 
 
 class TagViewTests(TestCase):
@@ -84,7 +103,20 @@ class TagViewTests(TestCase):
         self.assertEqual(response.Response, 200)
 
     def test_post(self):
-        pass
+        # TODO: REWRITE TO FIT TAGGING
+        data = {
+            'id': 'New tag id',
+            'name': 'New tag',
+            'language': 'New gameround',
+        }
+        self.assertEqual(Tag.objects.count(), 0)
+        # TODO: figure out what to replace list_url with in this case
+        response = self.client.post(self.list_url, data=data)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(Tag.objects.count(), 1)
+        tag = Tag.objects.all().first()
+        for field_name in data.keys():
+            self.assertEqual(getattr(tag, field_name), data[field_name])
 
 
 class GameResourceViewTests(TestCase):
