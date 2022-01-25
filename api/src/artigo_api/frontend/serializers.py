@@ -172,10 +172,12 @@ class TaggingSerializer(serializers.ModelSerializer):
 
   class Meta:
     model = Tagging
-    fields = ('id', 'tag', 'gameround', 'created', 'score', 'resource')
+    fields = ('id', 'tag', 'gameround', 'created', 'score', 'resource', 'origin')
 
   def create(self, validated_data):
-    return Tagging.objects.create(**validated_data)
+    tagging = Tagging.objects.create(**validated_data)
+    tagging.save()
+    return tagging
 
   def to_representation(self, data):
     data = super().to_representation(data)

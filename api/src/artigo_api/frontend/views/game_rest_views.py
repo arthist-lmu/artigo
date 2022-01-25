@@ -54,14 +54,6 @@ class GameViewController:
 
         return random_object
 
-    def get_resource(self):
-        """Retrieves a random resource object, not a response!"""
-
-        current_resource = Resource.objects.all().order_by('?').first()
-        resource_serializer = ResourceSerializer(current_resource)  # Response is a serialized JSON object
-        resource = resource_serializer.data
-        return resource
-
     def get_gameround_matching_resource(self, random_resource_id):
         """Checks if a previously played game round exists for a randomly chosen resource
         Returns a serialized gameround object (played previously for this same resource)
@@ -206,22 +198,30 @@ class ARTigoGameView(APIView):
 
     def post(self, request, *args, **kwargs):
         controller = GameViewController()
+        id = controller.generate_random_id(Tagging)
+        current_user = request.user  # user instance
+        gameround = request.data.get('gameround')
+        resource = request.data.get('resource')
+        tag = request.data.get('tag')
+        created = request.data.get('created')
+        score = request.data.get('score')
+        origin = request.data.get('origin')
+
         saved_tagging = None
-        saved_tag = None
-        current_user = CustomUserSerializer(data=request.user)  # user instance
+
         serializer = TaggingSerializer(data=request.data)
 
         if serializer.is_valid(raise_exception=True):
-            # saved_tagging = Tagging.objects.create(id=controller.generate_random_id(Tagging),
-            #                                        user=current_user,
-            #                                        gameround=current_user.data["gameround"],
-            #                                        resource=request.data["resource"],
-            #                                        tag=request.data["tag"],
-            #                                        created=request.data["created"],
-            #                                        score=request.data["score"],
-            #                                        origin=request.data["origin"]
-            #                                        )
-            # saved_tagging.save()
+            saved_tagging = Tagging.objects.create(id=id,
+                                                   user=current_user,
+                                                   gameround=gameround,
+                                                   resource=resource,
+                                                   tag=tag,
+                                                   created=created,
+                                                   score=score,
+                                                   origin=origin
+                                                   )
+            saved_tagging.save()
             serializer = TaggingSerializer(saved_tagging)
             return Response({'status': 'success', 'tagging': serializer.data}, status=status.HTTP_200_OK)
 
@@ -229,7 +229,6 @@ class ARTigoGameView(APIView):
             return Response({'tagging': serializer.data}, status=status.HTTP_204_NO_CONTENT)
         else:
             return Response(saved_tagging, status=status.HTTP_400_BAD_REQUEST)
-    # TODO: Resource id has to be sent with tag/tagging! ?
 
 
 class ARTigoTabooGameView(APIView):
@@ -442,14 +441,13 @@ class TaggingView(APIView):
     """
 
     def get(self, request, *args, **kwargs):
-        """Potential condition for Tag a Tag Tag to be tagged to be returned"""
-        # TODO: FIX THIS WEIRD ISSUE [{}, {}]
-        # tagging = self.get_queryset().values().latest('created')
+        """Retrieves a random Tag"""
         tagging = Tagging.objects.all().order_by('?').first()
         serializer = TaggingSerializer(tagging)
         return Response(serializer.data)
 
     def post(self, request, *args, **kwargs):
+
         Tagging.objects.create(id=request.data["id"],
                                tag=request.data["tag"],
                                gameround=request.data["gameround"],
@@ -472,9 +470,8 @@ class TagView(APIView):
     """
 
     def get(self, request, *args, **kwargs):
-        controller = GameViewController()
-        tag = Tag.objects.all().filter(id=controller.get_random_object(Tag))
-        serializer = TagSerializer(tag, many=True)
+        tag = Tag.objects.all().order_by('?').first()
+        serializer = TagSerializer(tag)
         return Response(serializer.data)
 
     def post(self, request, *args, **kwargs):

@@ -16,9 +16,6 @@ class GameViewControllerTests(TestCase):
     def test_test_get_random_id(self):
         pass
 
-    def test_get_resource(self):
-        pass
-
     def test_get_gameround_matching_resource(self):
         pass
 
