@@ -34,8 +34,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
     REQUIRED_FIELDS = ['username']
 
-    # objects = CustomUserManager()
-    objects = models.Manager()
+    objects = CustomUserManager()
 
     USERNAME_FIELD = 'email'
 

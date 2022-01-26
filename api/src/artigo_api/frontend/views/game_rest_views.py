@@ -214,6 +214,7 @@ class ARTigoGameView(APIView):
                          })
 
     def post(self, request, *args, **kwargs):
+
         controller = GameViewController()
         id = controller.generate_random_id(Tagging)
 
@@ -239,7 +240,7 @@ class ARTigoGameView(APIView):
 
         if serializer.is_valid(raise_exception=True):
             saved_tagging = Tagging.objects.create(id=id,
-                                                   user=current_user,
+                                                   user_id=current_user_id,
                                                    gameround=gameround,
                                                    resource=resource,
                                                    tag=tag,
@@ -269,18 +270,37 @@ class ARTigoTabooGameView(APIView):
     def get(self, request, *args, **kwargs):
         controller = GameViewController()
 
-        gametype = Gametype.objects.all().filter(name="imageLabeler_Taboo")
-        gametype_serializer = GametypeSerializer(gametype, many=True)
+        gametype = Gametype.objects.all().get(name="imageLabeler_Taboo")
+        gametype_serializer = GametypeSerializer(gametype)
 
         resource_suggestions = Resource.objects.all().order_by('?').first()
         resource_serializer = TabooTagSerializer(resource_suggestions)
 
-        # A previously played gameround for this resource is coordinated for Tag verification
-        coordinated_gameround = controller.get_gameround_matching_resource(resource_suggestions.id)
+        current_score = 0
+        if not isinstance(request.user, CustomUser):
+            current_user_id = 1
+        else:
+            current_user_id = request.user.pk
+
+        gamesession = Gamesession.objects.create(
+            id=controller.generate_random_id(Gamesession),
+            user_id=current_user_id,
+            gametype=gametype,
+            created=datetime.now()
+        )
+
+        gameround = Gameround.objects.create(
+            id=controller.generate_random_id(Gameround),
+            user_id=current_user_id,
+            gamesession=gamesession,
+            created=datetime.now(),
+            score=current_score
+        )
+        gameround_serializer = GameroundSerializer(gameround)
 
         return Response({'gametype': gametype_serializer.data,
-                         'resource and taboo input': resource_serializer.data,
-                         'coordinated_gameround': coordinated_gameround
+                         'resourceand taboo input': resource_serializer.data,
+                         'gameround': gameround_serializer.data
                          })
 
     def post(self, request, *args, **kwargs):
@@ -288,6 +308,10 @@ class ARTigoTabooGameView(APIView):
         saved_tag = None
         current_user = CustomUserSerializer(data=request.user)  # user instance
         tag_serializer = TagSerializer(data=request.data)
+
+        random_resource = request.data('resource')
+        # A previously played gameround for this resource is coordinated for Tag verification
+        coordinated_gameround = controller.get_gameround_matching_resource(random_resource.id)
 
         if tag_serializer.is_valid(raise_exception=True):
             saved_tag = Tag.objects.create(id=controller.generate_random_id(Tag),
@@ -313,30 +337,52 @@ class TagATagGameView(APIView):
     def get(self, request, *args, **kwargs):
         """Potential condition for Tag a Tag Tag to be tagged to be returned"""
         controller = GameViewController()
-        gametype = Gametype.objects.all().filter(name="imageAndTagLabeler")
-        gametype_serializer = GametypeSerializer(gametype, many=True)
+        gametype = Gametype.objects.all().get(name="imageAndTagLabeler")
+        gametype_serializer = GametypeSerializer(gametype)
 
         random_id = controller.get_random_object(Resource)
         resource_suggestions = Resource.objects.all().filter(id=random_id)
         suggestions_serializer = SuggestionsSerializer(resource_suggestions, many=True)
 
-        # A previously played gameround for this resource is coordinated for Tag verification
-        coordinated_gameround = controller.get_gameround_matching_resource(random_id)
-
         tag = Tagging.objects.filter(resource__in=resource_suggestions).order_by('?').first()
         tagging_serializer = TaggingSerializer(tag)
 
-        return Response({
-            'gametype': gametype_serializer.data,
-            'tag': tagging_serializer.data,
-            'resource and suggestions': suggestions_serializer.data,
-            'coordinated_gameround': coordinated_gameround
-        })
+        current_score = 0
+        if not isinstance(request.user, CustomUser):
+            current_user_id = 1
+        else:
+            current_user_id = request.user.pk
+
+        gamesession = Gamesession.objects.create(
+            id=controller.generate_random_id(Gamesession),
+            user_id=current_user_id,
+            gametype=gametype,
+            created=datetime.now()
+        )
+
+        gameround = Gameround.objects.create(
+            id=controller.generate_random_id(Gameround),
+            user_id=current_user_id,
+            gamesession=gamesession,
+            created=datetime.now(),
+            score=current_score
+        )
+        gameround_serializer = GameroundSerializer(gameround)
+
+        return Response({'gametype': gametype_serializer.data,
+                         'tag': tagging_serializer.data,
+                         'resourceand and suggestions': suggestions_serializer.data,
+                         'gameround': gameround_serializer.data
+                         })
 
     def post(self, request, *args, **kwargs):
         saved_tagging = None
 
         serializer = TaggingSerializer(data=request.data)
+
+        random_resource = request.data('resource')
+        # A previously played gameround for this resource is coordinated for Tag verification
+        coordinated_gameround = controller.get_gameround_matching_resource(random_resource.id)
 
         if serializer.is_valid() and saved_tagging is not None:
 
@@ -360,23 +406,48 @@ class CombinoGameView(APIView):
 
         controller = GameViewController()
 
-        gametype = Gametype.objects.all().filter(name="Combino")
-        gametype_serializer = GametypeSerializer(gametype, many=True)
+        gametype = Gametype.objects.all().get(name="Combino")
+        gametype_serializer = GametypeSerializer(gametype)
 
         resource_and_tags = Resource.objects.all().order_by('?').first()
         combination_serializer = CombinoTagsSerializer(resource_and_tags)
 
-        # A previously played gameround for this resource is coordinated for Tag verification
-        coordinated_gameround = controller.get_gameround_matching_resource(resource_and_tags.id)
+        current_score = 0
+        if not isinstance(request.user, CustomUser):
+            current_user_id = 1
+        else:
+            current_user_id = request.user.pk
 
-        return Response({
-            'gametype': gametype_serializer.data,
-            'resource and tags to combine': combination_serializer.data,
-            'coordinated_gameround': coordinated_gameround
-        })
+        gamesession = Gamesession.objects.create(
+            id=controller.generate_random_id(Gamesession),
+            user_id=current_user_id,
+            gametype=gametype,
+            created=datetime.now()
+        )
+
+        gameround = Gameround.objects.create(
+            id=controller.generate_random_id(Gameround),
+            user_id=current_user_id,
+            gamesession=gamesession,
+            created=datetime.now(),
+            score=current_score
+        )
+        gameround_serializer = GameroundSerializer(gameround)
+
+        return Response({'gametype': gametype_serializer.data,
+                         'resourceand and tags to combine': combination_serializer.data,
+                         'gameround': gameround_serializer.data
+                         })
 
     def post(self, request, *args, **kwargs):
+        controller = GameViewController()
         saved_combined_tagging = None
+
+        random_resource = request.data('resource')
+
+        # A previously played gameround for this resource is coordinated for Tag verification
+        coordinated_gameround = controller.get_gameround_matching_resource(random_resource.id)
+
         # TODO: add correct serializer here
         combined_tagging = ResourceWithTaggingsSerializer(data=request.data)
         while saved_combined_tagging is None:
