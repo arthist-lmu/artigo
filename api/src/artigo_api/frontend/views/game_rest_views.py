@@ -1,7 +1,7 @@
 import random
 
 import time
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from rest_framework import status, renderers, permissions
 from rest_framework.views import APIView
@@ -68,12 +68,12 @@ class GameViewController:
 
         return gameround_serializer.data
 
-    def timer(self, start):
-        """Start a new timer as soon as a gameround has been selected"""
-        start_time = start
+    def timer(self):
+        """Start a new timer as soon as a gameround has been started/created"""
+        start_time = datetime.now()
         elapsed_time = None
         if start_time is not None:
-            start_time = time.perf_counter()
+            elapsed_time = time.perf_counter()
         """Stop the timer, and return the elapsed time"""
         if start_time is None:
             elapsed_time = time.perf_counter() - start_time
@@ -165,26 +165,13 @@ class ARTigoGameView(APIView):
 
     # TODO: USE LATER!!!!
     # renderer_classes = [renderers.JSONRenderer]
-    # permission_classes = [IsNotAuthenticated]
 
     def get(self, request, *args, **kwargs):
         controller = GameViewController()
+        resource_serializer = None
+        gameround_serializer = None
         gametype = Gametype.objects.all().get(name="imageLabeler")
         gametype_serializer = GametypeSerializer(gametype)
-
-        # TODO: Build timer in!
-        # controller.timer()
-        # rounds = gametype.rounds
-
-        # for round in rounds:
-        # for every round in the game session, load a randomly chosen resource and an empty gameround
-
-        # duration = gametype.round_duration
-        # round = gameround
-
-        # while duration is not None:
-        random_resource = Resource.objects.all().order_by('?').first()
-        resource_serializer = ResourceSerializer(random_resource)
 
         current_score = 0
         if not isinstance(request.user, CustomUser):
@@ -193,28 +180,42 @@ class ARTigoGameView(APIView):
             current_user_id = request.user.pk
 
         gamesession = Gamesession.objects.create(
-            id=controller.generate_random_id(Gamesession),
+            # id=controller.generate_random_id(Gamesession),
             user_id=current_user_id,
             gametype=gametype,
             created=datetime.now()
         )
 
-        gameround = Gameround.objects.create(
-            id=controller.generate_random_id(Gameround),
-            user_id=current_user_id,
-            gamesession=gamesession,
-            created=datetime.now(),
-            score=current_score
-        )
-        gameround_serializer = GameroundSerializer(gameround)
+        round_number = gametype.rounds
 
-        return Response({'gametype': gametype_serializer.data,
-                         'resource': resource_serializer.data,
-                         'gameround': gameround_serializer.data
-                         })
+        now = gamesession.created
+        now_plus_1 = now + timedelta(minutes=0.5)
+
+        while round_number != 0:
+            if now < now_plus_1:
+
+                random_resource = Resource.objects.all().order_by('?').first()
+                resource_serializer = ResourceSerializer(random_resource)
+
+                gameround = Gameround.objects.create(
+                    # id=controller.generate_random_id(Gameround),
+                    user_id=current_user_id,
+                    gamesession=gamesession,
+                    created=datetime.now(),
+                    score=current_score
+                )
+                gameround_serializer = GameroundSerializer(gameround)
+                round_number -= 1
+
+                return Response({# 'gametype': gametype_serializer.data,
+                                 'resource': resource_serializer.data,
+                                 'gameround': gameround_serializer.data,
+
+                                 })
+            else:
+                return Response(status=status.HTTP_408_REQUEST_TIMEOUT)
 
     def post(self, request, *args, **kwargs):
-
         controller = GameViewController()
         id = controller.generate_random_id(Tagging)
 
@@ -224,36 +225,32 @@ class ARTigoGameView(APIView):
             current_user_id = request.user.pk
 
         gameround = request.data.get('gameround')
-        resource = request.data.get('resource')
+        random_resource = request.data.get('resource')
         tag = request.data.get('tag')
-        created = request.data.get('created')
+        created = datetime.now()
         score = request.data.get('score')
         origin = request.data.get('origin')
-
         saved_tagging = None
-
-        random_resource = request.data('resource')
         # A previously played gameround for this resource is coordinated for Tag verification
         coordinated_gameround = controller.get_gameround_matching_resource(random_resource.id)
 
-        serializer = TaggingSerializer(data=request.data)
-
-        if serializer.is_valid(raise_exception=True):
+        tagging_serializer = TaggingSerializer(data=request.data)
+        if tagging_serializer.is_valid(raise_exception=True):
             saved_tagging = Tagging.objects.create(id=id,
                                                    user_id=current_user_id,
                                                    gameround=gameround,
-                                                   resource=resource,
+                                                   resource=random_resource,
                                                    tag=tag,
                                                    created=created,
                                                    score=score,
                                                    origin=origin
                                                    )
             saved_tagging.save(saved_tagging)
-            serializer = TaggingSerializer(saved_tagging)
-            return Response({'status': 'success', 'tagging': serializer.data}, status=status.HTTP_200_OK)
+            tagging_serializer = TaggingSerializer(saved_tagging)
+            return Response({'status': 'success', 'tagging': tagging_serializer.data}, status=status.HTTP_200_OK)
 
         if saved_tagging is None:
-            return Response({'tagging': serializer.data}, status=status.HTTP_204_NO_CONTENT)
+            return Response({'tagging': tagging_serializer.data}, status=status.HTTP_204_NO_CONTENT)
         else:
             return Response(saved_tagging, status=status.HTTP_400_BAD_REQUEST)
 
@@ -513,9 +510,37 @@ class TaggingView(APIView):
 
     def get(self, request, *args, **kwargs):
         """Retrieves a random Tag"""
-        tagging = Tagging.objects.all().order_by('?').first()
-        serializer = TaggingSerializer(tagging)
-        return Response(serializer.data)
+        # tagging = Tagging.objects.all().order_by('?').first()
+        # serializer = TaggingSerializer(tagging)
+
+        if not isinstance(request.user, CustomUser):
+            current_user_id = 1
+        else:
+            current_user_id = request.user.pk
+
+        gameround = request.data.get('gameround')
+        random_resource = request.data.get('resource')
+        score = 0
+        origin = ''
+
+        tag = Tag.objects.create(
+            name='randomlycreatedtagfor test',
+            language='de')
+
+        # tagging_serializer = TaggingSerializer(data=request.data)
+        # if tagging_serializer.is_valid(raise_exception=True):
+        saved_tagging = Tagging.objects.create(user_id=current_user_id,
+                                               gameround=gameround,
+                                               resource=random_resource,
+                                               tag=tag,
+                                               created=datetime.now(),
+                                               score=score,
+                                               origin=origin
+                                               )
+        # saved_tagging.save(saved_tagging)
+        tagging_serializer = TaggingSerializer(saved_tagging)
+
+        return Response(tagging_serializer.data)
 
     def post(self, request, *args, **kwargs):
         controller = GameViewController()

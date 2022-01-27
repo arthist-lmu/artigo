@@ -148,6 +148,7 @@ class Resource(models.Model):
 
 
 class Gametype(models.Model):
+    id = models.BigAutoField(primary_key=True)
     name = models.CharField(max_length=256)
     rounds = models.PositiveIntegerField(default=5)
     round_duration = models.PositiveIntegerField(default=60)
@@ -172,6 +173,7 @@ class Gametype(models.Model):
 
 
 class Gamesession(models.Model):
+    id = models.BigAutoField(primary_key=True)
     # gamemode = models.ForeignKey(Gamemode, on_delete=models.CASCADE)
     user = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, null=True)
     gametype = models.ForeignKey(Gametype, on_delete=models.CASCADE)
@@ -179,11 +181,11 @@ class Gamesession(models.Model):
 
     objects = models.Manager()
 
-    def save(self, *args, **kwargs):
-        if not self.id:
-            self.created = timezone.now()
-
-        return super().save(*args, **kwargs)
+    # def save(self, *args, **kwargs):
+    #     if not self.id:
+    #         self.created = timezone.now()
+    #
+    #     return super().save(*args, **kwargs)
 
     def create(self, validated_data):
         gamesession_data = validated_data.pop('gamesession')
@@ -192,6 +194,7 @@ class Gamesession(models.Model):
 
 
 class Gameround(models.Model):
+    id = models.BigAutoField(primary_key=True)
     user = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, null=True)
     gamesession = models.ForeignKey(Gamesession, on_delete=models.CASCADE)
     created = models.DateTimeField(editable=False)
@@ -199,11 +202,11 @@ class Gameround(models.Model):
 
     objects = models.Manager()
 
-    def save(self, *args, **kwargs):
-        if not self.id:
-            self.created = timezone.now()
-
-        return super().save(*args, **kwargs)
+    # def save(self, *args, **kwargs):
+    #     if not self.id:
+    #         self.created = timezone.now()
+    #
+    #     return super().save(*args, **kwargs)
 
     def create(self, validated_data):
         gamesession_data = validated_data.pop('gamesession')
@@ -219,17 +222,29 @@ class Gameround(models.Model):
 
 
 class Tag(models.Model):
-    # TODO: see if name should be oneToManyField instead of charfield
+    id = models.BigAutoField(primary_key=True)
     name = models.CharField(max_length=256)
     language = models.CharField(max_length=256)
 
     objects = models.Manager()
+
+    # def save(self, *args, **kwargs):
+    #     if not self.id:
+    #         self.created = timezone.now()
+    #
+    #     return super().save(*args, **kwargs)
+
+    def create(self, validated_data):
+        tag_data = validated_data.pop('tag')
+        Tag.objects.create(**tag_data)
+        return tag_data
 
     def __str__(self):
         return self.name or ''
 
 
 class Tagging(models.Model):
+    id = models.BigAutoField(primary_key=True)
     user = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, null=True)
     gameround = models.ForeignKey(Gameround, on_delete=models.CASCADE, related_name='taggings')
     resource = models.ForeignKey(Resource, on_delete=models.CASCADE, related_name='taggings')
@@ -242,18 +257,23 @@ class Tagging(models.Model):
     objects = models.Manager()
 
     # TODO: finish the create method in order to do the POST
-    def create(self, tag):
-        tagging = self.create(tag=tag)
+    # def create(self, tag):
+    #     tagging = self.create(tag=tag)
+    #     return tagging
+    def create(self, validated_data):
+        tag_data = validated_data.pop('tag')
+        tagging = Tagging.objects.create(**validated_data)
+        Tag.objects.create(name=tagging, **tag_data)
         return tagging
 
     def __str__(self):
         return str(self.tag) or ''
 
-    def save(self, *args, **kwargs):
-        if not self.id:
-            self.created = timezone.now()
-
-        return super().save(*args, **kwargs)
+    # def save(self, *args, **kwargs):
+    #     if not self.id:
+    #         self.created = timezone.now()
+    #
+    #     return super().save(*args, **kwargs)
 
 
 # class WebPages(models.Model):
