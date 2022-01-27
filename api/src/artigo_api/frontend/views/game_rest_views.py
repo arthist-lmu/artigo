@@ -79,13 +79,6 @@ class GameViewController:
             elapsed_time = time.perf_counter() - start_time
         return elapsed_time
 
-    def get_gamesession(self):
-        """Retrieves a randomly chosen gamesession object"""
-        current_gamesession = Gamesession.objects.all().order_by('?').first()
-        gamesession_serializer = GamesessionSerializer(current_gamesession)
-        data = {'gameround': gamesession_serializer.data}
-        return Response(data, status=status.HTTP_200_OK)
-
     def check_tagging_exists(self, tagging_to_check):
         """
         Matches tags entered with tags from the list of the tags from the matched Gameround object
@@ -168,8 +161,7 @@ class ARTigoGameView(APIView):
 
     def get(self, request, *args, **kwargs):
         controller = GameViewController()
-        resource_serializer = None
-        gameround_serializer = None
+
         gametype = Gametype.objects.all().get(name="imageLabeler")
         gametype_serializer = GametypeSerializer(gametype)
 
@@ -179,45 +171,31 @@ class ARTigoGameView(APIView):
         else:
             current_user_id = request.user.pk
 
-        gamesession = Gamesession.objects.create(
-            # id=controller.generate_random_id(Gamesession),
-            user_id=current_user_id,
-            gametype=gametype,
-            created=datetime.now()
-        )
+        gamesession = Gamesession.objects.create(user_id=current_user_id,
+                                                 gametype=gametype,
+                                                 created=datetime.now()
+                                                 )
 
-        round_number = gametype.rounds
+        random_resource = Resource.objects.all().order_by('?').first()
+        resource_serializer = ResourceSerializer(random_resource)
 
-        now = gamesession.created
-        now_plus_1 = now + timedelta(minutes=0.5)
+        gameround = Gameround.objects.create(user_id=current_user_id,
+                                             gamesession=gamesession,
+                                             created=datetime.now(),
+                                             score=current_score
+                                             )
+        gameround_serializer = GameroundSerializer(gameround)
 
-        while round_number != 0:
-            if now < now_plus_1:
-
-                random_resource = Resource.objects.all().order_by('?').first()
-                resource_serializer = ResourceSerializer(random_resource)
-
-                gameround = Gameround.objects.create(
-                    # id=controller.generate_random_id(Gameround),
-                    user_id=current_user_id,
-                    gamesession=gamesession,
-                    created=datetime.now(),
-                    score=current_score
-                )
-                gameround_serializer = GameroundSerializer(gameround)
-                round_number -= 1
-
-                return Response({# 'gametype': gametype_serializer.data,
-                                 'resource': resource_serializer.data,
-                                 'gameround': gameround_serializer.data,
+        return Response({# 'gametype': gametype_serializer.data,
+                            'resource': resource_serializer.data,
+                            'gameround': gameround_serializer.data,
 
                                  })
-            else:
-                return Response(status=status.HTTP_408_REQUEST_TIMEOUT)
+        # else:
+        #     return Response(status=status.HTTP_408_REQUEST_TIMEOUT)
 
     def post(self, request, *args, **kwargs):
         controller = GameViewController()
-        id = controller.generate_random_id(Tagging)
 
         if not isinstance(request.user, CustomUser):
             current_user_id = 1
@@ -236,8 +214,7 @@ class ARTigoGameView(APIView):
 
         tagging_serializer = TaggingSerializer(data=request.data)
         if tagging_serializer.is_valid(raise_exception=True):
-            saved_tagging = Tagging.objects.create(id=id,
-                                                   user_id=current_user_id,
+            saved_tagging = Tagging.objects.create(user_id=current_user_id,
                                                    gameround=gameround,
                                                    resource=random_resource,
                                                    tag=tag,
@@ -280,14 +257,14 @@ class ARTigoTabooGameView(APIView):
             current_user_id = request.user.pk
 
         gamesession = Gamesession.objects.create(
-            id=controller.generate_random_id(Gamesession),
+            # id=controller.generate_random_id(Gamesession),
             user_id=current_user_id,
             gametype=gametype,
             created=datetime.now()
         )
 
         gameround = Gameround.objects.create(
-            id=controller.generate_random_id(Gameround),
+            # id=controller.generate_random_id(Gameround),
             user_id=current_user_id,
             gamesession=gamesession,
             created=datetime.now(),
@@ -311,7 +288,7 @@ class ARTigoTabooGameView(APIView):
         coordinated_gameround = controller.get_gameround_matching_resource(random_resource.id)
 
         if tag_serializer.is_valid(raise_exception=True):
-            saved_tag = Tag.objects.create(id=controller.generate_random_id(Tag),
+            saved_tag = Tag.objects.create(# id=controller.generate_random_id(Tag),
                                            tag=request.data["name"],
                                            language=request.data["language"]
                                            )
@@ -351,14 +328,14 @@ class TagATagGameView(APIView):
             current_user_id = request.user.pk
 
         gamesession = Gamesession.objects.create(
-            id=controller.generate_random_id(Gamesession),
+            # id=controller.generate_random_id(Gamesession),
             user_id=current_user_id,
             gametype=gametype,
             created=datetime.now()
         )
 
         gameround = Gameround.objects.create(
-            id=controller.generate_random_id(Gameround),
+            # id=controller.generate_random_id(Gameround),
             user_id=current_user_id,
             gamesession=gamesession,
             created=datetime.now(),
@@ -416,14 +393,14 @@ class CombinoGameView(APIView):
             current_user_id = request.user.pk
 
         gamesession = Gamesession.objects.create(
-            id=controller.generate_random_id(Gamesession),
+            # id=controller.generate_random_id(Gamesession),
             user_id=current_user_id,
             gametype=gametype,
             created=datetime.now()
         )
 
         gameround = Gameround.objects.create(
-            id=controller.generate_random_id(Gameround),
+            # id=controller.generate_random_id(Gameround),
             user_id=current_user_id,
             gamesession=gamesession,
             created=datetime.now(),
@@ -512,20 +489,30 @@ class TaggingView(APIView):
         """Retrieves a random Tag"""
         # tagging = Tagging.objects.all().order_by('?').first()
         # serializer = TaggingSerializer(tagging)
-
+        current_score = 0
         if not isinstance(request.user, CustomUser):
             current_user_id = 1
         else:
             current_user_id = request.user.pk
 
-        gameround = request.data.get('gameround')
-        random_resource = request.data.get('resource')
+        gamesession = Gamesession.objects.create(
+            user_id=current_user_id,
+            gametype=Gametype.objects.all().order_by('?').first(),
+            created=datetime.now()
+        )
+        gameround = Gameround.objects.create(user_id=current_user_id,
+                                            gamesession=gamesession,
+                                            created=datetime.now(),
+                                            score=current_score)
+        random_resource = Resource.objects.all().order_by('?').first()
         score = 0
         origin = ''
 
         tag = Tag.objects.create(
             name='randomlycreatedtagfor test',
             language='de')
+
+        tag_serializer = TagSerializer(tag)
 
         # tagging_serializer = TaggingSerializer(data=request.data)
         # if tagging_serializer.is_valid(raise_exception=True):
@@ -544,7 +531,7 @@ class TaggingView(APIView):
 
     def post(self, request, *args, **kwargs):
         controller = GameViewController()
-        id = controller.generate_random_id(Tagging)
+
         tag = request.data['tag']
         gameround = request.data['gameround']
         created = request.data['created']
@@ -552,8 +539,7 @@ class TaggingView(APIView):
         resource = request.data['resource']
         origin = request.data['origin']
 
-        Tagging.objects.create(id=id,
-                               tag=tag,
+        Tagging.objects.create(tag=tag,
                                gameround=gameround,
                                created=created,
                                score=score,
@@ -579,10 +565,10 @@ class TagView(APIView):
         return Response(serializer.data)
 
     def post(self, request, *args, **kwargs):
-        tag = request.data.get_queryset()
+
         serializer = TagSerializer(data=request.data)
-        Tag.objects.create(id=request.data["id"],
-                           name=request.data["name"],
+
+        Tag.objects.create(name=request.data["name"],
                            language=request.data["language"]
                            )
 

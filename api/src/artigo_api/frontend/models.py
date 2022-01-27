@@ -119,7 +119,6 @@ class Title(models.Model):
 
 
 class Resource(models.Model):
-    # TODO: Find better solution for when new Resources are added!
     id = models.PositiveIntegerField(null=False, primary_key=True)
     hash_id = models.CharField(max_length=256)
     creators = models.ManyToManyField(Creator)
@@ -181,12 +180,6 @@ class Gamesession(models.Model):
 
     objects = models.Manager()
 
-    # def save(self, *args, **kwargs):
-    #     if not self.id:
-    #         self.created = timezone.now()
-    #
-    #     return super().save(*args, **kwargs)
-
     def create(self, validated_data):
         gamesession_data = validated_data.pop('gamesession')
         Gamesession.objects.create(**gamesession_data)
@@ -201,12 +194,6 @@ class Gameround(models.Model):
     score = models.PositiveIntegerField(default=0)
 
     objects = models.Manager()
-
-    # def save(self, *args, **kwargs):
-    #     if not self.id:
-    #         self.created = timezone.now()
-    #
-    #     return super().save(*args, **kwargs)
 
     def create(self, validated_data):
         gamesession_data = validated_data.pop('gamesession')
@@ -228,12 +215,6 @@ class Tag(models.Model):
 
     objects = models.Manager()
 
-    # def save(self, *args, **kwargs):
-    #     if not self.id:
-    #         self.created = timezone.now()
-    #
-    #     return super().save(*args, **kwargs)
-
     def create(self, validated_data):
         tag_data = validated_data.pop('tag')
         Tag.objects.create(**tag_data)
@@ -241,6 +222,12 @@ class Tag(models.Model):
 
     def __str__(self):
         return self.name or ''
+
+    # def save(self, *args, **kwargs):
+    #     if not self.id:
+    #         self.created = timezone.now()
+    #
+    #     return super().save(*args, **kwargs)
 
 
 class Tagging(models.Model):
