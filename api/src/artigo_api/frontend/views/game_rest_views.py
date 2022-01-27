@@ -487,35 +487,37 @@ class TaggingView(APIView):
 
     def get(self, request, *args, **kwargs):
         """Retrieves a random Tag"""
-        # tagging = Tagging.objects.all().order_by('?').first()
-        # serializer = TaggingSerializer(tagging)
+        tagging = Tagging.objects.all().order_by('?').first()
+        tagging_serializer = TaggingSerializer(tagging)
+
+        return Response(tagging_serializer.data)
+
+    def post(self, request, *args, **kwargs):
         current_score = 0
         if not isinstance(request.user, CustomUser):
             current_user_id = 1
         else:
             current_user_id = request.user.pk
+        gamesession = Gamesession.objects.create(user_id=current_user_id,
+                                                 gametype=Gametype.objects.all().order_by('?').first(),
+                                                 created=datetime.now())
 
-        gamesession = Gamesession.objects.create(
-            user_id=current_user_id,
-            gametype=Gametype.objects.all().order_by('?').first(),
-            created=datetime.now()
-        )
         gameround = Gameround.objects.create(user_id=current_user_id,
-                                            gamesession=gamesession,
-                                            created=datetime.now(),
-                                            score=current_score)
+                                             gamesession=gamesession,
+                                             created=datetime.now(),
+                                             score=current_score)
+
         random_resource = Resource.objects.all().order_by('?').first()
+        # A previously played gameround for this resource is coordinated for Tag verification
+        coordinated_gameround = controller.get_gameround_matching_resource(random_resource.id)
         score = 0
         origin = ''
 
         tag = Tag.objects.create(
-            name='randomlycreatedtagfor test',
+            name='new tag to test',
             language='de')
-
         tag_serializer = TagSerializer(tag)
 
-        # tagging_serializer = TaggingSerializer(data=request.data)
-        # if tagging_serializer.is_valid(raise_exception=True):
         saved_tagging = Tagging.objects.create(user_id=current_user_id,
                                                gameround=gameround,
                                                resource=random_resource,
@@ -524,29 +526,10 @@ class TaggingView(APIView):
                                                score=score,
                                                origin=origin
                                                )
-        # saved_tagging.save(saved_tagging)
         tagging_serializer = TaggingSerializer(saved_tagging)
 
-        return Response(tagging_serializer.data)
-
-    def post(self, request, *args, **kwargs):
-        controller = GameViewController()
-
-        tag = request.data['tag']
-        gameround = request.data['gameround']
-        created = request.data['created']
-        score = request.data['score']
-        resource = request.data['resource']
-        origin = request.data['origin']
-
-        Tagging.objects.create(tag=tag,
-                               gameround=gameround,
-                               created=created,
-                               score=score,
-                               resource=resource,
-                               origin=origin
-                               )
         serializer = TaggingSerializer(data=request.data)
+
         if serializer.is_valid():
             serializer.save()
             return Response({"status": "success", "data": serializer.data}, status=status.HTTP_200_OK)
@@ -560,9 +543,13 @@ class TagView(APIView):
     """
 
     def get(self, request, *args, **kwargs):
-        tag = Tag.objects.all().order_by('?').first()
-        serializer = TagSerializer(tag)
-        return Response(serializer.data)
+        # tag = Tag.objects.all().order_by('?').first()
+        # serializer = TagSerializer(tag)
+        tag = Tag.objects.create(
+            name='new tag to test now',
+            language='de')
+        tag_serializer = TagSerializer(tag)
+        return Response(tag_serializer.data)
 
     def post(self, request, *args, **kwargs):
 

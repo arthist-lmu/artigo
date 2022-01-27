@@ -3,6 +3,7 @@ from rest_framework import serializers
 
 # TODO: update fields according to model changes
 from frontend.models import *
+from rest_framework.relations import StringRelatedField
 
 
 class CustomUserSerializer(serializers.ModelSerializer):
@@ -138,18 +139,6 @@ class GamesessionSerializer(serializers.ModelSerializer):
     return data
 
 
-class GamesessionSerializer2(serializers.ModelSerializer):
-  gametype = GametypeSerializer(read_only=True)
-
-  class Meta:
-    model = Gamesession
-    fields = ['gametype', 'created']
-
-  def to_representation(self, data):
-    data = super().to_representation(data)
-    return data
-
-
 class GameroundSerializer(serializers.ModelSerializer):
   gamesession = GamesessionSerializer(read_only=True)
   user = CustomUserSerializer(read_only=True)
@@ -172,7 +161,7 @@ class GameroundSerializer(serializers.ModelSerializer):
 
 
 class TaggingSerializer(serializers.ModelSerializer):
-  tag = TagSerializer(read_only=True)
+  tag = StringRelatedField()
   resource = ResourceSerializer(read_only=True)
   gameround = GameroundSerializer(read_only=True)
 
@@ -180,13 +169,9 @@ class TaggingSerializer(serializers.ModelSerializer):
     model = Tagging
     fields = ('id', 'tag', 'gameround', 'created', 'score', 'resource', 'origin')
 
-  # def create(self, validated_data):
-  #   tagging = Tagging.objects.create(**validated_data)
-  #   tagging.save()
-  #   return tagging
   def create(self, validated_data):
     "other one"
-    return Gamesession.objects.create(**validated_data)
+    return Tagging.objects.create(**validated_data)
 
   def to_representation(self, data):
     data = super().to_representation(data)

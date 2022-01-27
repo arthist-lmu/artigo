@@ -209,7 +209,7 @@ class Gameround(models.Model):
 
 
 class Tag(models.Model):
-    id = models.BigAutoField(primary_key=True)
+    # id = models.BigAutoField(primary_key=True)
     name = models.CharField(max_length=256)
     language = models.CharField(max_length=256)
 
@@ -222,12 +222,6 @@ class Tag(models.Model):
 
     def __str__(self):
         return self.name or ''
-
-    # def save(self, *args, **kwargs):
-    #     if not self.id:
-    #         self.created = timezone.now()
-    #
-    #     return super().save(*args, **kwargs)
 
 
 class Tagging(models.Model):
@@ -243,10 +237,6 @@ class Tagging(models.Model):
 
     objects = models.Manager()
 
-    # TODO: finish the create method in order to do the POST
-    # def create(self, tag):
-    #     tagging = self.create(tag=tag)
-    #     return tagging
     def create(self, validated_data):
         tag_data = validated_data.pop('tag')
         tagging = Tagging.objects.create(**validated_data)
@@ -255,12 +245,6 @@ class Tagging(models.Model):
 
     def __str__(self):
         return str(self.tag) or ''
-
-    # def save(self, *args, **kwargs):
-    #     if not self.id:
-    #         self.created = timezone.now()
-    #
-    #     return super().save(*args, **kwargs)
 
 
 # class WebPages(models.Model):
