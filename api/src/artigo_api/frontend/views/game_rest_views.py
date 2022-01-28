@@ -487,13 +487,61 @@ class TaggingView(APIView):
 
     def get(self, request, *args, **kwargs):
         """Retrieves a random Tag"""
-        tagging = Tagging.objects.all().order_by('?').first()
-        tagging_serializer = TaggingSerializer(tagging)
+        # tagging = Tagging.objects.all().order_by('?').first()
+        # tagging_serializer = TaggingSerializer(tagging)
+        if not isinstance(request.user, CustomUser):
+            current_user_id = 1
+        else:
+            current_user_id = request.user.pk
+        score = 0
 
-        return Response(tagging_serializer.data)
+        gamesession = Gamesession.objects.create(user_id=current_user_id,
+                                                 gametype=Gametype.objects.all().order_by('?').first(),
+                                                 created=datetime.now())
+        gameround = Gameround.objects.create(user_id=current_user_id,
+                                             gamesession=gamesession,
+                                             created=datetime.now(),
+                                             score=score)
+        random_resource = Resource.objects.all().order_by('?').first()
+
+        # A previously played gameround for this resource is coordinated for Tag verification
+        controller = GameViewController()
+        coordinated_gameround = controller.get_gameround_matching_resource(random_resource.id)
+
+        origin = ''
+        user_input_tag = Tag.objects.create(name='new tag obj', language='de')
+        tag_serializer = TagSerializer(user_input_tag)
+
+        if Tagging.objects.all().filter(tag=user_input_tag).exists():
+            # if tagging like this exists, save tagging anyway and leave tag unchanged
+            score += 5
+            user_input_tagging = Tagging.objects.update_or_create(user_id=current_user_id,
+                                                                  gameround=gameround,
+                                                                  resource=random_resource,
+                                                                  tag=user_input_tag,
+                                                                  created=datetime.now(),
+                                                                  score=score,
+                                                                  origin=origin)
+
+            tagging_serializer = TaggingSerializer(user_input_tagging)
+
+            return Response({'tag and ': tag_serializer.data}, {'tagging': tagging_serializer.data})
+
+        elif not Tagging.objects.all().filter(tag=user_input_tag).exists():
+            # save tagging otherwise and del tag
+            user_input_tagging = Tagging.objects.create(user_id=current_user_id,
+                                                        gameround=gameround,
+                                                        resource=random_resource,
+                                                        tag=user_input_tag,
+                                                        created=datetime.now(),
+                                                        score=score,
+                                                        origin=origin)
+            user_input_tagging.save()
+            tagging_serializer = TaggingSerializer(user_input_tagging)
+            user_input_tag.delete()
+            return Response({'tagging only': tagging_serializer.data})
 
     def post(self, request, *args, **kwargs):
-        current_score = 0
         if not isinstance(request.user, CustomUser):
             current_user_id = 1
         else:
@@ -513,15 +561,10 @@ class TaggingView(APIView):
         score = 0
         origin = ''
 
-        tag = Tag.objects.create(
-            name='new tag to test',
-            language='de')
-        tag_serializer = TagSerializer(tag)
-
         saved_tagging = Tagging.objects.create(user_id=current_user_id,
                                                gameround=gameround,
                                                resource=random_resource,
-                                               tag=tag,
+                                               tag='new tag to test',
                                                created=datetime.now(),
                                                score=score,
                                                origin=origin

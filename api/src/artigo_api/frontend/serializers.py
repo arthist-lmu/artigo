@@ -3,7 +3,7 @@ from rest_framework import serializers
 
 # TODO: update fields according to model changes
 from frontend.models import *
-from rest_framework.relations import StringRelatedField
+from rest_framework.relations import StringRelatedField, SlugRelatedField
 
 
 class CustomUserSerializer(serializers.ModelSerializer):
@@ -170,7 +170,6 @@ class TaggingSerializer(serializers.ModelSerializer):
     fields = ('id', 'tag', 'gameround', 'created', 'score', 'resource', 'origin')
 
   def create(self, validated_data):
-    "other one"
     return Tagging.objects.create(**validated_data)
 
   def to_representation(self, data):
@@ -236,11 +235,7 @@ class SuggestionsSerializer(serializers.ModelSerializer):
     :param res:
     :return: A list of the ids of the validated Tags (not Taggings) per Resource
     """
-    # TODO: Find out where suggestions come from and improve method
-    suggestions = res.tags # returns the validated tags per resource
-    # cleans up sugestions list
-    # TODO: Review this
-    # for suggestion in suggestions:
+    suggestions = res.tags
     return suggestions
 
   def to_representation(self, data):

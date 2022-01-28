@@ -223,13 +223,18 @@ class Tag(models.Model):
     def __str__(self):
         return self.name or ''
 
+    @property
+    def tags(self):
+        tags = self.tagging.values('tag')
+        return tags.values('tag_id', 'tag__name', 'tag__language')
+
 
 class Tagging(models.Model):
-    id = models.BigAutoField(primary_key=True)
+    # id = models.BigAutoField(primary_key=True)
     user = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, null=True)
     gameround = models.ForeignKey(Gameround, on_delete=models.CASCADE, related_name='taggings')
     resource = models.ForeignKey(Resource, on_delete=models.CASCADE, related_name='taggings')
-    tag = models.ForeignKey(Tag, on_delete=models.CASCADE)
+    tag = models.ForeignKey(Tag, on_delete=models.CASCADE, related_name='tagging')
     created = models.DateTimeField(editable=False)
     score = models.PositiveIntegerField(default=0)
     # media_type = models.ForeignKey(Gamemode, on_delete=models.CASCADE)
