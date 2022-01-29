@@ -1,5 +1,5 @@
-# from frontend.models import *
 from rest_framework import serializers
+from frontend.views import tag_service
 
 # TODO: update fields according to model changes
 from frontend.models import *
@@ -168,9 +168,11 @@ class TaggingSerializer(serializers.ModelSerializer):
   class Meta:
     model = Tagging
     fields = ('id', 'tag', 'gameround', 'created', 'score', 'resource', 'origin')
+  # def create(self, validated_data):
+  #   return Tagging.objects.create(**validated_data)
 
   def create(self, validated_data):
-    return Tagging.objects.create(**validated_data)
+    return tag_service.create(**validated_data)
 
   def to_representation(self, data):
     data = super().to_representation(data)

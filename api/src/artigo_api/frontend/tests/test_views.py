@@ -10,9 +10,6 @@ from frontend.views import *
 
 class GameViewControllerTests(TestCase):
 
-    def test_generate_random_id(self):
-        pass
-
     def test_test_get_random_object(self):
         pass
 
@@ -23,9 +20,6 @@ class GameViewControllerTests(TestCase):
         pass
 
     def test_timer(self):
-        pass
-
-    def test_get_gamesession(self):
         pass
 
     def test_check_tagging_exists(self):

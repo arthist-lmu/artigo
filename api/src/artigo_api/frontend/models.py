@@ -209,8 +209,8 @@ class Gameround(models.Model):
 
 
 class Tag(models.Model):
-    # id = models.BigAutoField(primary_key=True)
     name = models.CharField(max_length=256)
+    # name = models.ForeignKey(Tagging, on_delete=models.CASCADE, related_name='tagging')
     language = models.CharField(max_length=256)
 
     objects = models.Manager()
@@ -230,11 +230,11 @@ class Tag(models.Model):
 
 
 class Tagging(models.Model):
-    # id = models.BigAutoField(primary_key=True)
     user = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, null=True)
     gameround = models.ForeignKey(Gameround, on_delete=models.CASCADE, related_name='taggings')
     resource = models.ForeignKey(Resource, on_delete=models.CASCADE, related_name='taggings')
     tag = models.ForeignKey(Tag, on_delete=models.CASCADE, related_name='tagging')
+    # tag = models.CharField(max_length=256)
     created = models.DateTimeField(editable=False)
     score = models.PositiveIntegerField(default=0)
     # media_type = models.ForeignKey(Gamemode, on_delete=models.CASCADE)
