@@ -162,14 +162,12 @@ class GameroundSerializer(serializers.ModelSerializer):
 
 class TaggingSerializer(serializers.ModelSerializer):
   tag = StringRelatedField()
-  resource = ResourceSerializer(read_only=True)
-  gameround = GameroundSerializer(read_only=True)
+  resource = ResourceSerializer()
+  gameround = GameroundSerializer()
 
   class Meta:
     model = Tagging
     fields = ('id', 'tag', 'gameround', 'created', 'score', 'resource', 'origin')
-  # def create(self, validated_data):
-  #   return Tagging.objects.create(**validated_data)
 
   def create(self, validated_data):
     return tag_service.create(**validated_data)

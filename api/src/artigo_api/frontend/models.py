@@ -261,3 +261,14 @@ class Tagging(models.Model):
 #
 #     def __str__(self):
 #         return self.about_creator
+
+class Combination(models.Model):
+    tagging_id = models.ForeignKey(Tagging, on_delete=models.CASCADE)
+    gameround = models.ForeignKey(Gameround, on_delete=models.CASCADE)
+    group_id = models.PositiveIntegerField(null=False)
+    created = models.DateTimeField()
+    score = models.PositiveIntegerField(null=False)
+
+    def __str__(self):
+        return str(self.tagging_id) or ''
+

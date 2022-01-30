@@ -2,6 +2,7 @@ import pytest
 
 from django.test import TestCase
 from rest_framework import response, status
+from rest_framework.response import Response
 
 from frontend.models import *
 from frontend.serializers import *
@@ -10,7 +11,7 @@ from frontend.views import *
 
 class GameViewControllerTests(TestCase):
 
-    def test_test_get_random_object(self):
+    def test_get_random_object(self):
         pass
 
     def test_test_get_random_id(self):
@@ -50,7 +51,12 @@ class GamesessionViewTests(TestCase):
 
     def test_post(self):
         self.client.get('http://localhost:8000/artigo_api/gamesession')
-        pass
+        data = {
+            'id': 'New tag id',
+            'user': 'New tag',
+            'gametype': 'some language',
+            'created': 'New tag',
+        }
 
 
 class GameroundViewTests(TestCase):
@@ -61,7 +67,13 @@ class GameroundViewTests(TestCase):
 
     def test_post(self):
         self.client.get('http://localhost:8000/artigo_api/gameround')
-        pass
+        data = {
+            'id': 'New tag id',
+            'user': 'New tag',
+            'gamesession': 'some language',
+            'created': 'New tag',
+            'score': 'some language',
+        }
 
 
 class TaggingViewTests(TestCase):
@@ -71,6 +83,7 @@ class TaggingViewTests(TestCase):
         self.assertEqual(response.Response, 200)
 
     def test_post(self):
+        self.client.get('http://localhost:8000/artigo_api/tagging')
         # TODO: REWRITE TO FIT TAGGING
         data = {
             'id': 'New tag id',
@@ -93,15 +106,19 @@ class TaggingViewTests(TestCase):
 class TagViewTests(TestCase):
 
     def test_get(self):
+        tag = Tag()
         self.client.get('http://localhost:8000/artigo_api/tag')
         self.assertEqual(response.Response, 200)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['name'], tag.name)
 
     def test_post(self):
-        # TODO: REWRITE TO FIT TAGGING
+        # TODO: REWRITE TO FIT TAG
+        self.client.get('http://localhost:8000/artigo_api/tag')
         data = {
             'id': 'New tag id',
             'name': 'New tag',
-            'language': 'New gameround',
+            'language': 'some language',
         }
         self.assertEqual(Tag.objects.count(), 0)
         # TODO: figure out what to replace list_url with in this case
@@ -124,33 +141,50 @@ class ARTigoGameViewTests(TestCase):
 
     def test_get(self):
         self.client.get('http://localhost:8000/artigo_api/artigo_game/')
+        self.assertEqual(response.Response, 200)
 
     def test_post(self):
-        pass
+        self.client.get('http://localhost:8000/artigo_api/artigo_game/')
+        tagging_data = {
+            'id': 'New tag id',
+            'tag': 'New tag',
+            'gameround': 'New gameround',
+            'created': 'date',
+            'score': 'points',
+            'resource': 'resource hash id',
+        }
+        tag_data = {
+            'id': 'New tag id',
+            'name': 'New tag',
+            'language': 'some language',
+        }
 
 
 class ARTigoTabooGameViewTests(TestCase):
 
     def test_get(self):
         self.client.get('http://localhost:8000/artigo_api/artigo_taboo_game/')
+        self.assertEqual(response.Response, 200)
 
     def test_post(self):
-        pass
+        self.client.get('http://localhost:8000/artigo_api/artigo_taboo_game/')
 
 
 class TagATagGameViewTests(TestCase):
 
     def test_get(self):
         self.client.get('http://localhost:8000/artigo_api/tagatag_game/')
+        self.assertEqual(response.Response, 200)
 
     def test_post(self):
-        pass
+        self.client.get('http://localhost:8000/artigo_api/tagatag_game/')
 
 
 class CombinoGameViewTests(TestCase):
 
     def test_get(self):
         self.client.get('http://localhost:8000/artigo_api/combino_game/')
+        self.assertEqual(response.Response, 200)
 
     def test_post(self):
-        pass
+        self.client.get('http://localhost:8000/artigo_api/combino_game/')

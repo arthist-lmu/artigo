@@ -584,6 +584,9 @@ class TaggingView(APIView):
             current_user_id = 1
         else:
             current_user_id = request.user.pk
+
+        tagging_serializer = TaggingSerializer(data=request.data)
+
         gamesession = Gamesession.objects.create(user_id=current_user_id,
                                                  gametype=Gametype.objects.all().order_by('?').first(),
                                                  created=datetime.now())
@@ -594,25 +597,25 @@ class TaggingView(APIView):
                                              score=current_score)
 
         random_resource = Resource.objects.all().order_by('?').first()
+
         # A previously played gameround for this resource is coordinated for Tag verification
-        coordinated_gameround = controller.get_gameround_matching_resource(random_resource.id)
+        # coordinated_gameround = controller.get_gameround_matching_resource(random_resource.id)
+
         score = 0
         origin = ''
 
-        saved_tagging = Tagging.objects.create(user_id=current_user_id,
-                                               gameround=gameround,
-                                               resource=random_resource,
-                                               tag='new tag to test',
-                                               created=datetime.now(),
-                                               score=score,
-                                               origin=origin
-                                               )
         tagging_serializer = TaggingSerializer(saved_tagging)
 
-        serializer = TaggingSerializer(data=request.data)
-
-        if serializer.is_valid():
-            serializer.save()
+        if tagging_serializer.is_valid():
+            saved_tagging = Tagging.objects.create(user_id=current_user_id,
+                                                   gameround=gameround,
+                                                   resource=random_resource,
+                                                   tag=Tag.objects.create(name=request.POST.get("name"),
+                                                                          language=request.POST.get("language")),
+                                                   created=datetime.now(),
+                                                   score=score,
+                                                   origin=origin)
+            tagging_serializer.save(saved_tagging)
             return Response({"status": "success", "data": serializer.data}, status=status.HTTP_200_OK)
         else:
             return Response({"status": "error", "data": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
