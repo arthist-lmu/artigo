@@ -147,7 +147,6 @@ class Resource(models.Model):
 
 
 class Gametype(models.Model):
-    id = models.BigAutoField(primary_key=True)
     name = models.CharField(max_length=256)
     rounds = models.PositiveIntegerField(default=5)
     round_duration = models.PositiveIntegerField(default=60)
@@ -166,13 +165,9 @@ class Gametype(models.Model):
 #
 #     def __str__(self):
 #         return self.name
-#
-#     def save(self, *args, **kwargs):
-#         pass
 
 
 class Gamesession(models.Model):
-    id = models.BigAutoField(primary_key=True)
     # gamemode = models.ForeignKey(Gamemode, on_delete=models.CASCADE)
     user = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, null=True)
     gametype = models.ForeignKey(Gametype, on_delete=models.CASCADE)
@@ -180,26 +175,14 @@ class Gamesession(models.Model):
 
     objects = models.Manager()
 
-    def create(self, validated_data):
-        gamesession_data = validated_data.pop('gamesession')
-        Gamesession.objects.create(**gamesession_data)
-        return gamesession_data
-
 
 class Gameround(models.Model):
-    id = models.BigAutoField(primary_key=True)
     user = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, null=True)
     gamesession = models.ForeignKey(Gamesession, on_delete=models.CASCADE)
     created = models.DateTimeField(editable=False)
     score = models.PositiveIntegerField(default=0)
 
     objects = models.Manager()
-
-    def create(self, validated_data):
-        gamesession_data = validated_data.pop('gamesession')
-        gameround = Gameround.objects.create(**validated_data)
-        Gamesession.objects.create(gameround=gameround, **gamesession_data)
-        return gameround
 
     @property
     def tags(self):
@@ -210,15 +193,9 @@ class Gameround(models.Model):
 
 class Tag(models.Model):
     name = models.CharField(max_length=256)
-    # name = models.ForeignKey(Tagging, on_delete=models.CASCADE, related_name='tagging')
     language = models.CharField(max_length=256)
 
     objects = models.Manager()
-
-    def create(self, validated_data):
-        tag_data = validated_data.pop('tag')
-        Tag.objects.create(**tag_data)
-        return tag_data
 
     def __str__(self):
         return self.name or ''
@@ -234,7 +211,6 @@ class Tagging(models.Model):
     gameround = models.ForeignKey(Gameround, on_delete=models.CASCADE, related_name='taggings')
     resource = models.ForeignKey(Resource, on_delete=models.CASCADE, related_name='taggings')
     tag = models.ForeignKey(Tag, on_delete=models.CASCADE, related_name='tagging')
-    # tag = models.CharField(max_length=256)
     created = models.DateTimeField(editable=False)
     score = models.PositiveIntegerField(default=0)
     # media_type = models.ForeignKey(Gamemode, on_delete=models.CASCADE)
@@ -242,14 +218,22 @@ class Tagging(models.Model):
 
     objects = models.Manager()
 
-    def create(self, validated_data):
-        tag_data = validated_data.pop('tag')
-        tagging = Tagging.objects.create(**validated_data)
-        Tag.objects.create(name=tagging, **tag_data)
-        return tagging
-
     def __str__(self):
         return str(self.tag) or ''
+
+
+class Combination(models.Model):
+    """Stores id of a tagging and group of ids it belongs to - for Combino in particular"""
+    user = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, null=True)
+    gameround = models.ForeignKey(Gameround, on_delete=models.CASCADE, null=True)
+    resource = models.ForeignKey(Resource, on_delete=models.CASCADE, null=True)
+    tagging_id = models.ManyToManyField(Tag)
+    group_id = models.PositiveIntegerField(null=False)
+    created = models.DateTimeField(editable=False)
+    score = models.PositiveIntegerField(default=0)
+
+    def __str__(self):
+        return str(self.tagging_id) or ''
 
 
 # class WebPages(models.Model):
@@ -258,17 +242,6 @@ class Tagging(models.Model):
 #     about_title = models.ForeignKey(Title, on_delete=models.CASCADE)
 #     url = models.URLField(max_length=256)
 #     language = models.CharField(max_length=256)
-#
-#     def __str__(self):
-#         return self.about_creator
 
-class Combination(models.Model):
-    tagging_id = models.ForeignKey(Tagging, on_delete=models.CASCADE)
-    gameround = models.ForeignKey(Gameround, on_delete=models.CASCADE)
-    group_id = models.PositiveIntegerField(null=False)
-    created = models.DateTimeField()
-    score = models.PositiveIntegerField(null=False)
 
-    def __str__(self):
-        return str(self.tagging_id) or ''
 

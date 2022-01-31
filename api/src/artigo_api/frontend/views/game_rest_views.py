@@ -633,10 +633,13 @@ class TagView(APIView):
 
     def post(self, request, *args, **kwargs):
         serializer = TagSerializer(data=request.data)
-        tag_input = Tag.objects.create(name=request.POST.get("name"),
-                                       language=request.POST.get("language"))
-        if serializer.is_valid():
-            serializer.save(tag_input)
+        # tag_input = Tag.objects.create(name=request.POST.get("name"), language=request.POST.get("language"))
+        if serializer.is_valid(raise_exception=True):
+            # serializer.save(tag_input)
+            name = request.data.get("name"),
+            language = request.data.get("language")
+            tag = Tag(name=name, language=language)
+            serializer.save(tag)
             return Response({"status": "success", "data": serializer.data}, status=status.HTTP_200_OK)
         else:
             return Response({"status": "error", "data": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)

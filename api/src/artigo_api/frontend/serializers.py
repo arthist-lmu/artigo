@@ -85,19 +85,6 @@ class ResourceSerializer(serializers.ModelSerializer):
     return data
 
 
-class GameroundWithResourceSerializer(ResourceSerializer):
-  gameround = serializers.ReadOnlyField()
-
-  class Meta(ResourceSerializer.Meta):
-    fields = ResourceSerializer.Meta.fields + ['gameround'] # + ['tags']
-
-  def to_representation(self, data):
-    data = super().to_representation(data)
-    data['gameround'] = GameroundSerializer(data['gameround']).data
-
-    return data
-
-
 class TagSerializer(serializers.ModelSerializer):
 
   class Meta:
@@ -105,7 +92,9 @@ class TagSerializer(serializers.ModelSerializer):
     fields = ('id', 'name', 'language')
 
   def create(self, validated_data):
-    return Tag.objects.create(**validated_data)
+    tag_data = validated_data.pop('tag')
+    Tag.objects.create(**tag_data)
+    return tag_data
 
   def to_representation(self, data):
     data = super().to_representation(data)
@@ -125,14 +114,16 @@ class GametypeSerializer(serializers.ModelSerializer):
 
 class GamesessionSerializer(serializers.ModelSerializer):
   gametype = GametypeSerializer(read_only=True)
-  user = CustomUserSerializer(read_only=True)
+  user = CustomUserSerializer(required=False, read_only=True)
 
   class Meta:
     model = Gamesession
     fields = ['id', 'user', 'gametype', 'created']
 
   def create(self, validated_data):
-    return Gamesession.objects.create(**validated_data)
+    gamesession_data = validated_data.pop('gamesession')
+    Gamesession.objects.create(**gamesession_data)
+    return gamesession_data
 
   def to_representation(self, data):
     data = super().to_representation(data)
@@ -141,7 +132,7 @@ class GamesessionSerializer(serializers.ModelSerializer):
 
 class GameroundSerializer(serializers.ModelSerializer):
   gamesession = GamesessionSerializer(read_only=True)
-  user = CustomUserSerializer(read_only=True)
+  user = CustomUserSerializer(required=False, read_only=True)
   tags_to_compare = serializers.SerializerMethodField('get_tags_to_compare')
 
   class Meta:
@@ -153,7 +144,10 @@ class GameroundSerializer(serializers.ModelSerializer):
     return taggings
 
   def create(self, validated_data):
-    return Gameround.objects.create(**validated_data)
+    gamesession_data = validated_data.pop('gamesession')
+    gameround = Gameround.objects.create(**validated_data)
+    Gamesession.objects.create(gameround=gameround, **gamesession_data)
+    return gameround
 
   def to_representation(self, data):
     data = super().to_representation(data)
@@ -170,7 +164,13 @@ class TaggingSerializer(serializers.ModelSerializer):
     fields = ('id', 'tag', 'gameround', 'created', 'score', 'resource', 'origin')
 
   def create(self, validated_data):
-    return tag_service.create(**validated_data)
+    tag_data = validated_data.pop('tag')
+    resource_data = validated_data.pop('resource')
+    gameround_data = validated_data.pop('gameround')
+    tagging = Tagging.objects.create(**validated_data)
+    Tag.objects.create(name=tagging, **tag_data)
+    Gameround.objects.create(**gameround_data)
+    return tagging
 
   def to_representation(self, data):
     data = super().to_representation(data)
@@ -178,9 +178,7 @@ class TaggingSerializer(serializers.ModelSerializer):
 
 
 class TagCountSerializer(serializers.ModelSerializer):
-  """Serializer with a count of a specific tag (over all resources)
-  e.g. tag: baum; count: x
-  """
+  """Serializer with a count of a specific tag (over all resources)"""
   tag = TagSerializer(read_only=True)
   tag_count = serializers.SerializerMethodField('get_tag_count')
 

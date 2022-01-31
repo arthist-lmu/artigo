@@ -1,8 +1,11 @@
 import pytest
-
+import json
+from django.urls import reverse
 from django.test import TestCase
 from rest_framework import response, status
 from rest_framework.response import Response
+from rest_framework.authtoken.models import Token
+from rest_framework.test import APITestCase
 
 from frontend.models import *
 from frontend.serializers import *
@@ -94,8 +97,7 @@ class TaggingViewTests(TestCase):
             'resource': 'resource hash id',
         }
         self.assertEqual(Tagging.objects.count(), 0)
-        # TODO: figure out what to replace list_url with in this case
-        response = self.client.post(self.list_url, data=data)
+        response = self.client.post('http://localhost:8000/artigo_api/tagging', data=data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(Tagging.objects.count(), 1)
         tagging = Tagging.objects.all().first()
@@ -121,8 +123,7 @@ class TagViewTests(TestCase):
             'language': 'some language',
         }
         self.assertEqual(Tag.objects.count(), 0)
-        # TODO: figure out what to replace list_url with in this case
-        response = self.client.post(self.list_url, data=data)
+        response = self.client.post('http://localhost:8000/artigo_api/tag', data=data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(Tag.objects.count(), 1)
         tag = Tag.objects.all().first()
@@ -158,6 +159,9 @@ class ARTigoGameViewTests(TestCase):
             'name': 'New tag',
             'language': 'some language',
         }
+
+        response = self.client.post('http://localhost:8000/artigo_api/artigo_game/', data=tagging_data)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
 
 class ARTigoTabooGameViewTests(TestCase):
