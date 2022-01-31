@@ -1,6 +1,6 @@
 import pytest
 
-from artigo_search.database.backbone import Backbone
+from ..database import Backbone
 
 
 def test_backbone():

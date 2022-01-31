@@ -207,7 +207,11 @@
     "title": "Search",
     "fields": {
       "default": "Simple search",
-      "advanced": "Advanced search"
+      "advanced": "Advanced search",
+      "results": "{n} Search results|{n} Search result|{n} Search results",
+      "per-page": "Results per page",
+      "display-tags": "Display tags",
+      "display-metadata": "Display metadata"
     },
     "texts": [
 
@@ -290,5 +294,8 @@
         ]
       }
     }
+  },
+  "error": {
+    "general": "An unknown error occurred. Please try again."
   }
 }

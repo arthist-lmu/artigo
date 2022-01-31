@@ -25,7 +25,7 @@
           prepend-icon="mdi-account"
           counter="75"
           clearable
-        ></v-text-field>
+        />
 
         <v-text-field
           v-model="user.email"
@@ -34,7 +34,7 @@
           prepend-icon="mdi-email"
           counter="75"
           clearable
-        ></v-text-field>
+        />
 
         <v-text-field
           v-model="user.password"
@@ -48,7 +48,7 @@
           prepend-icon="mdi-lock"
           counter="75"
           clearable
-        ></v-text-field>
+        />
 
         <v-text-field
           v-model="user.password_repeat"
@@ -62,13 +62,13 @@
           prepend-icon="mdi-lock"
           counter="75"
           clearable
-        ></v-text-field>
+        />
 
         <v-checkbox
           v-model="user.privacy_policy"
           :label="$t('user.fields.privacy-policy')"
           :rules="[checkTrue]"
-        ></v-checkbox>
+        />
       </v-form>
     </v-card-text>
 

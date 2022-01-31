@@ -114,7 +114,7 @@ export default {
     },
     checkLength(value) {
       if (value) {
-        if (value.length < 1) {
+        if (value.length < 5) {
           return this.$t('user.login.rules.min');
         }
         if (value.length > 75) {

@@ -23,7 +23,7 @@
           :key="field.key"
           v-model="query[field.key]"
           :placeholder="$t('resource.metadata.fields')[field.key]"
-          :prepend-icon="field.icon"
+          hide-details
           clearable
           multiple
           chips
@@ -41,7 +41,7 @@
       </v-form>
     </v-card-text>
 
-    <v-card-actions :class="isDialog ? 'pt-0 pb-6 px-6' : 'pb-8 px-0'">
+    <v-card-actions :class="isDialog ? 'pt-8 pb-6 px-6' : 'pb-8 px-0'">
       <v-btn
         @click="search"
         :disabled="!isFormValid"
@@ -57,6 +57,8 @@
 </template>
 
 <script>
+import router from '@/router/index';
+
 export default {
   props: {
     isDialog: Boolean,
@@ -69,7 +71,7 @@ export default {
       fields: [
         { key: 'titles', icon: 'mdi-' },
         { key: 'creators', icon: 'mdi-account' },
-        { key: 'date', icon: 'mdi-database-clock' },
+        { key: 'date', icon: 'mdi-clock' },
         { key: 'location', icon: 'mdi-map-marker' },
         { key: 'tags', icon: 'mdi-tag-multiple' },
       ],
@@ -77,9 +79,10 @@ export default {
   },
   methods: {
     search() {
-      // TODO
+      this.$store.dispatch('api/search', { 'query': this.query });
       this.close();
-      // TODO: go to search results page
+      this.query = {};
+      router.push({ name: 'search' });
     },
     close() {
       this.$emit('input', false);

@@ -31,8 +31,8 @@ message GetRequest {
 }
 
 message GetReply {
-  repeated SearchResultEntry entries = 1;
-  repeated AggregateResult aggregate = 2;
+  repeated Image entries = 1;
+  repeated AggregateResult aggregations = 2;
 }
 
 message StatusRequest {
@@ -102,6 +102,16 @@ message SearchTerm {
 message SearchRequest {
   repeated SearchTerm terms = 1;
   repeated string sources = 2;
+
+  enum Sorting {
+    SORTING_DEFAULT = 0;
+    SORTING_RANDOM = 1;
+  }
+
+  Sorting sorting = 3;
+  string seed = 4;
+
+  AggregateRequest aggregate = 5;
 }
 
 message SearchReply {
@@ -142,12 +152,6 @@ message AggregateReply {
   repeated ValueField field = 1;
 }
 
-message SearchResultEntry {
-  string id = 1;
-  repeated ValueField meta = 2;
-  Source source = 3;
-}
-
 message AggregateResult {
   string field = 1;
   repeated ValueField entries = 2;
@@ -174,6 +178,6 @@ message ListSearchResultRequest {
 }
 
 message ListSearchResultReply {
-  repeated SearchResultEntry entries = 1;
-  repeated AggregateResult aggregate = 2;
+  repeated Image entries = 1;
+  repeated AggregateResult aggregations = 2;
 }

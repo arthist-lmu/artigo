@@ -3,8 +3,6 @@
 </template>
 
 <script>
-import PageTabs from '@/components/PageTabs.vue';
-
 export default {
   computed: {
     items() {
@@ -17,7 +15,7 @@ export default {
     },
   },
   components: {
-    PageTabs,
+    PageTabs: () => import('@/components/PageTabs.vue'),
   },
 };
 </script>

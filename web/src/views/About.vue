@@ -12,9 +12,6 @@
 </template>
 
 <script>
-import PageTabs from '@/components/PageTabs.vue';
-import Contributors from '@/components/Contributors.vue';
-
 export default {
   data() {
     return {
@@ -53,8 +50,8 @@ export default {
     next();
   },
   components: {
-    PageTabs,
-    Contributors,
+    PageTabs: () => import('@/components/PageTabs.vue'),
+    Contributors: () => import('@/components/Contributors.vue'),
   },
 };
 </script>

@@ -5,7 +5,7 @@ import json
 import time
 import logging
 
-from artigo_search import index_pb2, index_pb2_grpc
+from . import index_pb2, index_pb2_grpc
 
 logger = logging.getLogger(__name__)
 
@@ -27,8 +27,7 @@ def extract_from_jsonl(file_path, media_folder):
     entries = []
 
     base_fields = {
-        'id', 'hash_id', 'meta', 
-        'tags', 'source',
+        'id', 'hash_id', 'meta', 'tags', 'source',
     }
 
     with open(file_path, 'r', encoding='utf-8') as file_obj:
@@ -199,7 +198,7 @@ class Client:
 
         for x in range(500):
             try:
-                return stub.list_search_result(request)
+                return self.stub.list_search_result(request)
             except grpc.RpcError as error:
                 if error.code() == grpc.StatusCode.FAILED_PRECONDITION:
                     time.sleep(0.01)  # search is still running

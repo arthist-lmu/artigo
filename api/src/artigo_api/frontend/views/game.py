@@ -1,10 +1,11 @@
 import json
 import logging
 import traceback
+
 from rest_framework.views import APIView
 
 
-class ArtigoGame(APIView):
+class Game(APIView):
     def get(self, request, format=None):
         resource = None
 

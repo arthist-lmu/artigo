@@ -10,11 +10,13 @@ module.exports = {
         ignored: [/node_modules/, /public/],
       },
     },
-    plugins: [
-      new webpack.DefinePlugin({
-        'APP_NAME': JSON.stringify(require('./package.json').name),
-      }),
-    ],
+    optimization: {
+      splitChunks: {
+        chunks: 'all',
+        minSize: 10000,
+        maxSize: 250000,
+      },
+    },
   },
   devServer: {
     disableHostCheck: true,

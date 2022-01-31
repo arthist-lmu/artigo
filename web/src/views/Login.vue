@@ -5,9 +5,6 @@
 </template>
 
 <script>
-import PageTabs from '@/components/PageTabs.vue';
-import LoginCard from '@/components/LoginCard.vue';
-
 export default {
   computed: {
     items() {
@@ -20,8 +17,8 @@ export default {
     },
   },
   components: {
-    PageTabs,
-    LoginCard,
+    PageTabs: () => import('@/components/PageTabs.vue'),
+    LoginCard: () => import('@/components/LoginCard.vue'),
   },
 };
 </script>

@@ -1,23 +1,8 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
 import i18n from '@/plugins/i18n';
+import store from '@/store';
 import RouterView from '@/views/RouterView.vue';
-
-import Home from '@/views/Home.vue';
-import Resource from '@/views/Resource.vue';
-import Collection from '@/views/Collection.vue';
-
-import Imprint from '@/views/Imprint.vue';
-import PrivacyPolicy from '@/views/PrivacyPolicy.vue';
-import Register from '@/views/Register.vue';
-import Login from '@/views/Login.vue';
-
-import About from '@/views/About.vue';
-import Highscore from '@/views/Highscore.vue';
-import Search from '@/views/Search.vue';
-import Game from '@/views/Game.vue';
-
-import NotFound from '@/views/NotFound.vue';
 
 Vue.use(VueRouter);
 const router = new VueRouter({
@@ -41,64 +26,64 @@ const router = new VueRouter({
         {
           path: '',
           name: 'home',
-          component: Home,
+          component: () => import('@/views/Home.vue'),
         },
         {
           path: 'resource/:id/',
           name: 'resource',
-          component: Resource,
+          component: () => import('@/views/Resource.vue'),
         },
         {
           path: 'collection/:name/',
           name: 'collection',
-          component: Collection,
+          component: () => import('@/views/Collection.vue'),
         },
         {
           path: 'imprint',
           name: 'imprint',
-          component: Imprint,
+          component: () => import('@/views/Imprint.vue'),
           meta: { title: 'imprint.title' },
         },
         {
           path: 'privacy-policy',
           name: 'privacy-policy',
-          component: PrivacyPolicy,
+          component: () => import('@/views/PrivacyPolicy.vue'),
           meta: { title: 'privacy-policy.title' },
         },
         {
           path: 'register',
           name: 'register',
-          component: Register,
+          component: () => import('@/views/Register.vue'),
           meta: { title: 'register.title' },
         },
         {
           path: 'login',
           name: 'login',
-          component: Login,
+          component: () => import('@/views/Login.vue'),
           meta: { title: 'login.title' },
         },
         {
           path: 'about',
           name: 'about',
-          component: About,
+          component: () => import('@/views/About.vue'),
           meta: { title: 'about.title' },
         },
         {
           path: 'highscore',
           name: 'highscore',
-          component: Highscore,
+          component: () => import('@/views/Highscore.vue'),
           meta: { title: 'highscore.title' },
         },
         {
           path: 'search',
           name: 'search',
-          component: Search,
+          component: () => import('@/views/Search.vue'),
           meta: { title: 'search.title' },
         },
         {
           path: 'game',
           name: 'game',
-          component: Game,
+          component: () => import('@/views/Game.vue'),
           meta: { title: 'game.title' },
         },
       ],
@@ -106,10 +91,32 @@ const router = new VueRouter({
     {
       path: '*',
       name: 'not-found',
-      component: NotFound,
-      meta: { title: 'Not Found' },
+      component: () => import('@/views/NotFound.vue'),
     },
   ],
+});
+
+const routerPush = VueRouter.prototype.push;
+VueRouter.prototype.push = function push(location) {
+  return new Promise((resolve, reject) => {
+    routerPush.call(this, location, () => {
+      resolve(this.currentRoute);
+    }, (error) => {
+      if (error.name === 'NavigationDuplicated') {
+        resolve(this.currentRoute);
+      } else {
+        reject(error);
+      }
+    });
+  });
+};
+
+router.beforeResolve((to, from, next) => {
+  if (to.name) {
+    const status = { loading: true, error: false };
+    store.dispatch('utils/setStatus', status, { root: true });
+  }
+  next();
 });
 
 router.afterEach((to) => {
@@ -119,6 +126,8 @@ router.afterEach((to) => {
       title = `${i18n.t(to.meta.title)} | ${title}`;
     }
     document.title = title;
+    const status = { loading: false, error: false };
+    store.dispatch('utils/setStatus', status, { root: true });
   });
 });
 export default router;

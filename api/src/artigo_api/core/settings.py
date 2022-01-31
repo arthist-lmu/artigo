@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 
 import os
 import environ
+
 from datetime import timedelta
 
 # Use django-environ config
@@ -22,7 +23,7 @@ env = environ.Env(
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-# Set .env file. To create copy values from .env.example and customize them
+# Set .env file. Copy values from .env.example and customize them
 environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 
 # Quick-start development settings - unsuitable for production
@@ -35,7 +36,6 @@ SECRET_KEY = env('SECRET_KEY')
 DEBUG = env('DEBUG')
 
 FORCE_SCRIPT_NAME = "/"
-
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -55,7 +55,8 @@ INSTALLED_APPS = [
     "allauth.socialaccount",
     "allauth.socialaccount.providers.github",
     "allauth.socialaccount.providers.google",
-#    "django_extensions", #(to see a list of all available urls install django-extensions and run: manage.py show_urls)
+    # to see a list of all available urls install django-extensions and run: manage.py show_urls
+    # "django_extensions",  
 ]
 
 SITE_ID = 1
@@ -91,19 +92,18 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:8080",
 ]
 
-#CSRF_USE_SESSIONS = False
-#CSRF_COOKIE_HTTPONLY = False
-#CSRF_COOKIE_SECURE = False
+# CSRF_USE_SESSIONS = False
+# CSRF_COOKIE_HTTPONLY = False
+# CSRF_COOKIE_SECURE = False
 
 # Should be true in production
-#SESSION_COOKIE_SECURE = False
+# SESSION_COOKIE_SECURE = False
+
 CSRF_TRUSTED_ORIGINS = [
     "http://localhost",
     "http://localhost:80/",
     "http://localhost:8080/",
-
 ]
-
 
 ROOT_URLCONF = "core.urls"
 
@@ -131,13 +131,20 @@ AUTHENTICATION_BACKENDS = [
 
 WSGI_APPLICATION = "core.wsgi.application"
 
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.memcached.PyMemcacheCache",
+        "LOCATION": "localhost:11211",
+        "TIMEOUT": 60 * 60 * 24,
+    }
+}
+
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
 
 DATABASES = {
-    "default": env.db()
+    "default": env.db('DATABASE_URL'),
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/2.1/ref/settings/#auth-password-validators
@@ -207,13 +214,12 @@ MEDIA_URL = FORCE_SCRIPT_NAME + "media/"
 GRPC_HOST = "localhost"
 GRPC_PORT = 50051
 
-
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 TEST_RUNNER = 'core.runner.PytestTestRunner'
 
 # Celery configuration
-CELERY_BROKER_URL = 'redis://redisai:6379'
-CELERY_RESULT_BACKEND = 'redis://redisai:6379'
+CELERY_BROKER_URL = 'redis://localhost:6379'
+CELERY_RESULT_BACKEND = 'redis://localhost:6379'
 CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TASK_SERIALIZER = 'json'
@@ -224,6 +230,7 @@ CELERY_BEAT_SCHEDULE = {
         'schedule': timedelta(hours=12),
     },
 }
+
 # Custom user model
 AUTH_USER_MODEL = 'frontend.CustomUser'
 
@@ -264,7 +271,6 @@ SOCIALACCOUNT_PROVIDERS = {
 }
 
 # Email Configuration
-
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = env('EMAIL_HOST')
 EMAIL_PORT = env('EMAIL_PORT')

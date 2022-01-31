@@ -7,20 +7,51 @@ import traceback
 
 from concurrent import futures
 from google.protobuf.json_format import MessageToJson, MessageToDict, ParseDict
-from artigo_search import index_pb2, index_pb2_grpc
-from artigo_search.plugins.cache import Cache
-from artigo_search.database.backbone import Backbone
-from artigo_search.database.aggregator import Aggregator
-from artigo_search.jobs import InsertJob
-from artigo_search.utils import meta_to_proto, tags_to_proto
-from artigo_search.utils import meta_from_proto, tags_from_proto, read_chunk
+from . import index_pb2, index_pb2_grpc
+from .plugins import Cache, Searcher
+from .database import Backbone, Aggregator
+from .jobs import InsertJob
+from .utils import meta_to_proto, tags_to_proto
+from .utils import meta_from_proto, tags_from_proto, read_chunk
 
 logger = logging.getLogger(__name__)
 
 
 def search(args):
     try:
-        pass
+        query = ParseDict(args['query'], index_pb2.SearchRequest())
+        backbone = Backbone(args['config'].get('opensearch', {}))
+
+        searcher = Searcher(backbone, aggregator=Aggregator(backbone))
+        search_results = searcher(query, size=args.get('size', 100))
+
+        result = index_pb2.ListSearchResultReply()
+
+        for e in search_results.get('entries', []):
+            entry = result.entries.add()
+            entry.id = e['id']
+
+            if e.get('meta'):
+                meta_to_proto(entry.meta, e['meta'])
+
+            if e.get('tags'):
+                tags_to_proto(entry.tags, e['tags'])
+
+            if e.get('source'):
+                entry.source.id = e['source']['id']
+                entry.source.name = e['source']['name']
+                entry.source.is_public = e['source']['is_public']
+
+        for a in search_results.get('aggregations', []):
+            aggregation = result.aggregations.add()
+            aggregation.field = a['field']
+
+            for e in a['entries']:
+                value_field = aggregation.entries.add()
+                value_field.key = e['name']
+                value_field.int_val = e['value']
+
+        return MessageToDict(result)
     except Exception as error:
         logger.error(f'[Server] Search: {repr(error)}')
         logger.error(traceback.format_exc())
@@ -71,7 +102,7 @@ class Commune(index_pb2_grpc.IndexServicer):
         return index_pb2.StatusReply(status='error')
 
     def get(self, request, context):
-        logger.info('[Server] Start get')
+        logger.info('[Server] Get')
 
         json_obj = MessageToDict(request)
         results = index_pb2.GetReply()
@@ -115,7 +146,7 @@ class Commune(index_pb2_grpc.IndexServicer):
                     'cache': cache[x.image.id],
                 }
 
-        logger.info('[Server] Start insert')
+        logger.info('[Server] Insert')
 
         backbone = Backbone(config=self.config.get('opensearch', {}))
         cache_config = self.config.get('cache', {'cache_dir': None})
@@ -163,7 +194,7 @@ class Commune(index_pb2_grpc.IndexServicer):
             db_cache = []
 
     def delete(self, request, context):
-        logger.info('[Server] Start delete')
+        logger.info('[Server] Delete')
 
         json_obj = MessageToDict(request)
 
@@ -173,7 +204,7 @@ class Commune(index_pb2_grpc.IndexServicer):
         return index_pb2.DeleteReply(status=status)
 
     def search(self, request, context):
-        logger.info('[Server] Start search')
+        logger.info('[Server] Search')
 
         json_obj = MessageToDict(request)
         job_id = uuid.uuid4().hex
@@ -261,14 +292,6 @@ class Server:
         try:
             while True:
                 n_jobs = len(self.commune.futures)
-
-                n_jobs_done = len([
-                    x for x in self.commune.futures
-                    if x['future'].done()
-                ])
-
-                logger.info(f'[Server] Jobs: {n_jobs_done}/{n_jobs}')
-
                 time.sleep(10)
         except KeyboardInterrupt:
             self.server.stop(0)

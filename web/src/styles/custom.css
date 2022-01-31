@@ -2,9 +2,10 @@
   text-transform: capitalize;
 }
 
-.clip {
-  text-overflow: ellipsis;
+span.clip {
+	text-overflow: ellipsis;
   overflow: hidden;
+  max-width: 250px !important;
 }
 
 p {

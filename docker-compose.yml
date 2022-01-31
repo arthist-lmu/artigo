@@ -1,9 +1,16 @@
 version: "3.2"
+
 services:
   redisai:
     image: redislabs/redisai:edge-cpu-bionic
     ports:
       - "127.0.0.1:6379:6379"
+
+  memcached:
+    image: memcached:1.6.10-buster
+    command: -I 32m
+    ports:
+      - "127.0.0.1:11211:11211"
 
   opensearch:
     image: opensearchproject/opensearch:latest
@@ -58,6 +65,9 @@ services:
       - POETRY_VIRTUALENVS_CREATE=False
       - PYTHONPATH=/search/src/
       # - GRPC_VERBOSITY=debug
+    depends_on:
+      - api
+      - redisai
     network_mode: "host"
 
   api:
@@ -81,13 +91,11 @@ services:
       - PYTHONPATH=/api/src/
     depends_on:
       - db
-      - search
       - redisai
-    ports:
-      - "127.0.0.1:8000:8000"
-# Activate again when shipping container
-#    env_file:
-#      - ./api/src/artigo_api/.env
+      - memcached
+    network_mode: "host"
+    env_file:
+      - ./api/src/artigo_api/.env
     
   web:
     image: artigo/web

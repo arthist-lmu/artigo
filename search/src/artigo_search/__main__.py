@@ -4,8 +4,8 @@ import logging
 import argparse
 import faulthandler
 
-from artigo_search.client import Client
-from artigo_search.server import Server
+from .client import Client
+from .server import Server
 
 faulthandler.enable()
 PYTHONFAULTHANDLER = 1

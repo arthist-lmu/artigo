@@ -210,11 +210,10 @@
     "fields": {
       "default": "Einfache Suche",
       "advanced": "Detaillierte Suche",
-      "tags": "Schlagwörter",
-      "artist": "Künstler:in",
-      "title": "Titel",
-      "location": "Standort",
-      "year": "Jahr"
+      "results": "{n} Suchergebnisse|{n} Suchergebnis|{n} Suchergebnisse",
+      "per-page": "Ergebnisse pro Seite",
+      "display-tags": "Zeige Schlagwörter",
+      "display-metadata": "Zeige Metadaten"
     },
     "texts": [
 
@@ -299,5 +298,8 @@
         ]
       }
     }
+  },
+  "error": {
+    "general": "Ein unbekannter Fehler ist aufgetreten. Bitte versuchen Sie es erneut."
   }
 }

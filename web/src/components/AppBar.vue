@@ -81,13 +81,14 @@
           />
         </v-dialog>
 
-        <v-spacer></v-spacer>
+        <v-spacer />
 
         <v-col cols="2">
           <v-combobox
             v-model="query"
             id="search"
             @click:append-outer="search"
+            @keyup.enter.native="search"
             :placeholder="$t('search.title')"
             append-outer-icon="mdi-magnify"
             hide-details
@@ -121,7 +122,6 @@ export default {
         register: false,
         login: false,
       },
-      locale: i18n.locale,
       langs: [
         'en',
         'de',
@@ -135,12 +135,21 @@ export default {
     },
     change(lang) {
       i18n.locale = lang;
-      this.locale = lang;
-      router.push({ params: { lang } });
-      document.documentElement.lang = lang;
     },
     search() {
-      // TODO
+      this.$store.dispatch('api/search', { 'query': this.query });
+      router.push({ name: 'search' });
+    },
+  },
+  computed: {
+    locale() {
+      return i18n.locale;
+    },
+  },
+  watch: {
+    locale(lang) {
+      router.push({ params: { lang } });
+      document.documentElement.lang = lang;
     },
   },
   created() {

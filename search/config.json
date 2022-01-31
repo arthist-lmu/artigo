@@ -6,6 +6,7 @@
         "cache_dir": "/cache"
     },
     "grpc": {
+        "host": "localhost",
         "port": 50051
     },
     "opensearch": {

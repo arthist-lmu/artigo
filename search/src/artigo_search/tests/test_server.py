@@ -3,7 +3,7 @@ import time
 import uuid
 import pytest
 
-from artigo_search import index_pb2, index_pb2_grpc
+from .. import index_pb2, index_pb2_grpc
 
 
 def request_insert():

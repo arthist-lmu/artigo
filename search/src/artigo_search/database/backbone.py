@@ -2,6 +2,7 @@ import logging
 
 from opensearchpy import OpenSearch, exceptions
 from opensearchpy.helpers import bulk
+from opensearch_dsl import Search, Q
 
 logger = logging.getLogger(__name__)
 
@@ -32,18 +33,18 @@ class Backbone:
                             'fields': {
                                 'keyword': {
                                     'type': 'keyword',
-                                    'ignore_above': 256
-                                }
-                            }
+                                    'ignore_above': 256,
+                                },
+                            },
                         },
                         'path': {
                             'type': 'text',
                             'fields': {
                                 'keyword': {
                                     'type': 'keyword',
-                                    'ignore_above': 256
-                                }
-                            }
+                                    'ignore_above': 256,
+                                },
+                            },
                         },
                         'meta': {
                             'type': 'nested',
@@ -53,27 +54,27 @@ class Backbone:
                                     'fields': {
                                         'keyword': {
                                             'type': 'keyword',
-                                            'ignore_above': 256
-                                        }
-                                    }
+                                            'ignore_above': 256,
+                                        },
+                                    },
                                 },
                                 'value_str': {
                                     'type': 'text',
                                     'fields': {
                                         'keyword': {
                                             'type': 'keyword',
-                                            'ignore_above': 256
+                                            'ignore_above': 256,
                                         }
                                     },
-                                    'copy_to': ['all_text']
+                                    'copy_to': ['all_text'],
                                 },
                                 'value_int': {
-                                    'type': 'long'
+                                    'type': 'long',
                                 },
                                 'value_float': {
-                                    'type': 'float'
-                                }
-                            }
+                                    'type': 'float',
+                                },
+                            },
                         },
                         'tags': {
                             'type': 'nested',
@@ -83,22 +84,22 @@ class Backbone:
                                     'fields': {
                                         'keyword': {
                                             'type': 'keyword',
-                                            'ignore_above': 256
-                                        }
-                                    }
+                                            'ignore_above': 256,
+                                        },
+                                    },
                                 },
                                 'name': {
                                     'type': 'text',
                                     'fields': {
                                         'keyword': {
                                             'type': 'keyword',
-                                            'ignore_above': 256
+                                            'ignore_above': 256,
                                         }
                                     },
-                                    'copy_to': ['all_text']
+                                    'copy_to': ['all_text'],
                                 },
                                 'count': {
-                                    'type': 'long'
+                                    'type': 'long',
                                 }
                             }
                         },
@@ -110,38 +111,38 @@ class Backbone:
                                     'fields': {
                                         'keyword': {
                                             'type': 'keyword',
-                                            'ignore_above': 256
-                                        }
-                                    }
+                                            'ignore_above': 256,
+                                        },
+                                    },
                                 },
                                 'name': {
                                     'type': 'text',
                                     'fields': {
                                         'keyword': {
                                             'type': 'keyword',
-                                            'ignore_above': 256
-                                        }
-                                    }
+                                            'ignore_above': 256,
+                                        },
+                                    },
                                 },
                                 'url': {
                                     'type': 'text',
                                     'fields': {
                                         'keyword': {
                                             'type': 'keyword',
-                                            'ignore_above': 256
-                                        }
-                                    }
+                                            'ignore_above': 256,
+                                        },
+                                    },
                                 },
                                 'is_public': {
-                                    'type': 'boolean'
-                                }
-                            }
+                                    'type': 'boolean',
+                                },
+                            },
                         },
                         'all_text': {
-                            'type': 'text'
-                        }
-                    }
-                }
+                            'type': 'text',
+                        },
+                    },
+                },
             }
 
             self.client.indices.create(index=self.index, body=body)
@@ -191,3 +192,108 @@ class Backbone:
                 yield x['_source']
         except exceptions.NotFoundError:
             return []
+
+    def aggregate(self, body):
+        try:
+            results = self.client.search(
+                index=self.index, doc_type=self.type,
+                body=body, size=0,
+            )
+
+            return results['aggregations']
+        except exceptions.NotFoundError:
+            return []
+
+    @staticmethod
+    def build_body(query):
+        terms = {'must': [], 'should': [], 'must_not': []}
+
+        for x in query.get('text_search', []):
+            term = None
+
+            if not x.get('field'):
+                term = Q('multi_match', fields=['all_text'], query=x['query'])
+            else:
+                field_path = [y for y in x['field'].split('.') if y]
+
+                if len(field_path) == 1:
+                    if field_path[0] == 'meta':
+                        term = Q('multi_match', fields=['all_text'], query=x['query'])
+                elif len(field_path) == 2:
+                    if field_path[0] == 'meta':
+                        term = Q('nested', path='meta', query=Q('bool', must=[
+                            Q('match', meta__name=field_path[1]),
+                            Q('match', meta__value_str=x['query']),
+                        ]))
+                    elif field_path[0] == 'tags':
+                        term = Q('nested', path='tags', query=Q('bool', must=[
+                            Q('match', tags__name=x['query']),
+                            Q('range', tags__count={'gte': 2}),
+                        ]))
+
+            if term is None:
+                continue
+
+            if x.get('flag'):
+                if x['flag'] == 'must':
+                    terms['must'].append(term)
+                elif x['flag'] == 'should':
+                    terms['should'].append(term)
+                else:
+                    terms['must_not'].append(term)
+            else:
+                terms['should'].append(term)
+
+        for x in query.get('range_search', []):
+            term = None
+
+            if not x.get('field'):
+                continue
+            else:
+                field_path = [y for y in x['field'].split('.') if y]
+
+                if len(field_path) == 2:
+                    if field_path[0] == 'meta':
+                        if x['relation'] == 'eq':
+                            value_match = Q('term', meta__value_int=x['query'])
+                        else:
+                            query = {x['relation']: x['query']}
+                            value_match = Q('range', meta__value_int=query)
+
+                        term = Q('nested', path='meta', query=Q('bool', must=[
+                            Q('match', meta__name=field_path[1]),
+                            value_match,
+                        ]))
+
+            if term is None:
+                continue
+
+            if x.get('flag'):
+                if x['flag'] == 'must':
+                    terms['must'].append(term)
+                elif x['flag'] == 'should':
+                    terms['should'].append(term)
+                else:
+                    terms['must_not'].append(term)
+            else:
+                terms['should'].append(term)
+
+        if query.get('sorting'):
+            if query['sorting'].lower() == 'random':
+                seed = query.get('seed', uuid.uuid4().hex)
+                functions = [{'random_score': {'seed': seed}}]
+
+                terms['should'].append(Q('function_score', functions=functions))
+
+        logger.info(f'[Server] Query {terms}')
+
+        search = Search().query(
+            Q(
+                'bool',
+                must=terms['must'],
+                should=terms['should'],
+                must_not=terms['must_not'],
+            )
+        )
+
+        return search.to_dict()

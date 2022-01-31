@@ -22,20 +22,19 @@ Postgres 1.6 GB after inital upload including all media files
 ### Requirements
 * [docker](https://docs.docker.com/get-docker/)
 * [docker-compose](https://docs.docker.com/compose/install/)
-* [poetry](https://pypi.org/project/poetry/) (When building without docker and to create the poetry.lock file)
+* [poetry](https://pypi.org/project/poetry/) (When building without docker and to create the `poetry.lock` file)
 
 ### Configuration Files
-Copy the content of .env.example files to .env files in the same location (api/src/artigo_api) and customize the settings
-(For now they should work without customizations).
+Copy the content of `.env.example` files to `.env` files in the same location and customize the settings.
 
 ### Setup process
-Create the `poetry.lock` file if it does not exist (preferably do this in a python venv):
+Create the `poetry.lock` file if it does not exist (preferably do this in a virtual environment):
 ```sh
 cd api
 poetry install --no-root
 ```
 
-To ensure that the data is retained, these local folders must be filled with data for migration:
+To ensure that the data is retained, local folders must be filled with data for migration:
 ```sh
 * /media
 * /dump
@@ -57,9 +56,9 @@ sudo docker-compose exec api python3 manage.py migrate auth
 sudo docker-compose exec api python3 manage.py migrate
 ```
 
-Import fixtures (inital data)
+Import fixtures (i.e., inital data):
 ```sh
-sudo docker-compose exec api python3 manage.py loaddata Sites.json
+sudo docker-compose exec api python3 manage.py loaddata sites.json
 ```
 
 
@@ -76,7 +75,7 @@ To export data, execute the following command:
 sudo docker-compose exec api python3 manage.py export --format jsonl --output /dump
 ```
 
-To connect directly to the db in the postgres container use the following command:
+To connect directly to the database in the PostgreSQL container, use the following command:
 ```sh
 sudo docker-compose exec -u postgres db psql -d artigo
 ```
@@ -87,14 +86,13 @@ Hot reloading is enabled for `api`. To display changes of `web`, run:
 sudo docker-compose exec web npm run build
 ```
 
-Alternativly you can run serve, to use a Hot-reload enabled instance on http://localhost:8080/
-
+Alternativly, use `serve` to enable a hot reloaded instance on `http://localhost:8080/`:
 ```sh
 sudo docker-compose exec web npm run serve
 ```
 
 ### Formatting
-Optionally the vue lint command can be used to help with standardized formatting
+Lint can be used to help with standardized formatting:
 ```sh
 sudo docker-compose exec web npm run lint --fix
 ```

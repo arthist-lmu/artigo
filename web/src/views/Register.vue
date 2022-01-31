@@ -5,9 +5,6 @@
 </template>
 
 <script>
-import PageTabs from '@/components/PageTabs.vue';
-import RegisterCard from '@/components/RegisterCard.vue';
-
 export default {
   computed: {
     items() {
@@ -20,8 +17,8 @@ export default {
     },
   },
   components: {
-    PageTabs,
-    RegisterCard,
+    PageTabs: () => import('@/components/PageTabs.vue'),
+    RegisterCard: () => import('@/components/RegisterCard.vue'),
   },
 };
 </script>
