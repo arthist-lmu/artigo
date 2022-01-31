@@ -237,7 +237,6 @@ class Combination(models.Model):
 
 
 # class WebPages(models.Model):
-#     # TODO: find better solution! (see below as well)
 #     about_creator = models.ForeignKey(Creator, on_delete=models.CASCADE)
 #     about_title = models.ForeignKey(Title, on_delete=models.CASCADE)
 #     url = models.URLField(max_length=256)
