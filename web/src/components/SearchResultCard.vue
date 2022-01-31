@@ -142,7 +142,7 @@ export default {
   methods: {
     search(value, field) {
       const query = { [field]: value };
-      this.$store.dispatch('api/search', { query });
+      this.$store.dispatch('search/post', { query });
     },
     goToResource() {
       router.push({ name: 'resource', params: { id: this.entry.id } });

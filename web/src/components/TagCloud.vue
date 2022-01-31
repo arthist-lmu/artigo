@@ -25,7 +25,7 @@ export default {
   methods: {
     search(value) {
       const query = { tags: value };
-      this.$store.dispatch('api/search', { query });
+      this.$store.dispatch('search/post', { query });
     },
   },
   computed: {

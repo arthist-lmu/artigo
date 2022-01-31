@@ -36,11 +36,20 @@ class SearchView(APIView):
                     if not isinstance(query, dict):
                         query = {'value': query}
 
+                    if query['value'].startswith('+'):
+                        query['flag'] = 'must'
+                        query['value'] = query['value'][1:]
+                    elif query['value'].startswith('-'):
+                        query['flag'] = 'not'
+                        query['value'] = query['value'][1:]
+
                     term = grpc_request.terms.add()
                     term.text.query = query['value']
 
                     if field == 'tags':
                         term.text.field = 'tags.name'
+                    elif field in ['all-text', '']:
+                        term.text.field = ''
                     else:
                         term.text.field = f'meta.{field}'
 

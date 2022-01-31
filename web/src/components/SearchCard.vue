@@ -57,8 +57,6 @@
 </template>
 
 <script>
-import router from '@/router/index';
-
 export default {
   props: {
     isDialog: Boolean,
@@ -79,10 +77,9 @@ export default {
   },
   methods: {
     search() {
-      this.$store.dispatch('api/search', { 'query': this.query });
+      this.$store.dispatch('search/post', { 'query': this.query });
       this.close();
       this.query = {};
-      router.push({ name: 'search' });
     },
     close() {
       this.$emit('input', false);

@@ -82,7 +82,7 @@ export default {
   },
   computed: {
     entries() {
-      const { entries } = this.$store.state.api.data;
+      const { entries } = this.$store.state.search.data;
       return entries || [];
     },
     pageEntries() {
@@ -102,6 +102,13 @@ export default {
     page() {
       window.scrollTo(0, 0);
     },
+  },
+  mounted() {
+    this.$store.dispatch('search/getURLParams', this.$route.query);
+    window.onpopstate = () => {
+      this.$store.commit('search/toggleBackBtn');
+      this.$store.dispatch('search/getURLParams', this.$route.query);
+    };
   },
   components: {
     SearchResultCard: () => import('@/components/SearchResultCard.vue'),

@@ -137,8 +137,7 @@ export default {
       i18n.locale = lang;
     },
     search() {
-      this.$store.dispatch('api/search', { 'query': this.query });
-      router.push({ name: 'search' });
+      this.$store.dispatch('search/post', { 'query': this.query });
     },
   },
   computed: {

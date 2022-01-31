@@ -13,7 +13,7 @@ export default {
   data() {
     return {
       display: false,
-      timeout: 2000,
+      timeout: 2500,
     };
   },
   computed: {
