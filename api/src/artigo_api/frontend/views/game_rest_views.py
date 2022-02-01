@@ -190,8 +190,8 @@ class ARTigoGameView(APIView):
             current_user_id = 1
         else:
             current_user_id = request.user.pk
-        gameround = request.GET.get('gameround', '')
-        random_resource = request.GET.get('resource', '')
+        gameround = request.data.get('gameround', '')
+        random_resource = request.data.get('resource', '')
         created = datetime.now()
         score = 0
         origin = ''
@@ -264,29 +264,25 @@ class ARTigoTabooGameView(APIView):
                          })
 
     def post(self, request, *args, **kwargs):
-        controller = GameViewController()
-        saved_tag = None
-        current_user = CustomUserSerializer(data=request.user)  # user instance
+        name = request.data.get('name', '')
+        language = request.data.get('language', '')
+
         tag_serializer = TagSerializer(data=request.data)
+        tagging_serializer = TaggingSerializer(data=request.data)
 
-        random_resource = request.data('resource')
-        # A previously played gameround for this resource is coordinated for Tag verification
-        coordinated_gameround = controller.get_gameround_matching_resource(random_resource.id)
-
-        if tag_serializer.is_valid(raise_exception=True):
-            saved_tag = Tag.objects.create(# id=controller.generate_random_id(Tag),
-                                           tag=request.data["name"],
-                                           language=request.data["language"]
-                                           )
-            saved_tag.save()
-            tag_serializer = TagSerializer(saved_tag)
-            return Response({'status': 'success', 'tag': tag_serializer.data}, status=status.HTTP_200_OK)
-
-        if saved_tag is None:
-            return Response({'tagging': tag_serializer.data}, status=status.HTTP_204_NO_CONTENT)
-
+        if Tag.objects.all().filter(name=name, language=language).exists():
+            if tag_serializer.is_valid(raise_exception=True):
+                tag_serializer.save(tag=request.data)
+                return Response({"status": "success", "data": tag_serializer.data}, status=status.HTTP_201_CREATED)
+            else:
+                return Response({"status": "error", "data": tag_serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
         else:
-            return Response(saved_tag, status=status.HTTP_400_BAD_REQUEST)
+            if tagging_serializer.is_valid(raise_exception=True):
+                tagging_serializer.save(tagging=request.data)
+                return Response({"status": "success", "data": tagging_serializer.data}, status=status.HTTP_200_OK)
+            else:
+                return Response({"status": "error", "data": tagging_serializer.errors},
+                                status=status.HTTP_400_BAD_REQUEST)
 
 
 class TagATagGameView(APIView):
@@ -314,14 +310,12 @@ class TagATagGameView(APIView):
             current_user_id = request.user.pk
 
         gamesession = Gamesession.objects.create(
-            # id=controller.generate_random_id(Gamesession),
             user_id=current_user_id,
             gametype=gametype,
             created=datetime.now()
         )
 
         gameround = Gameround.objects.create(
-            # id=controller.generate_random_id(Gameround),
             user_id=current_user_id,
             gamesession=gamesession,
             created=datetime.now(),
@@ -336,24 +330,25 @@ class TagATagGameView(APIView):
                          })
 
     def post(self, request, *args, **kwargs):
-        saved_tagging = None
+        name = request.data.get('name', '')
+        language = request.data.get('language', '')
 
-        serializer = TaggingSerializer(data=request.data)
+        tag_serializer = TagSerializer(data=request.data)
+        tagging_serializer = TaggingSerializer(data=request.data)
 
-        random_resource = request.data('resource')
-        # A previously played gameround for this resource is coordinated for Tag verification
-        coordinated_gameround = controller.get_gameround_matching_resource(random_resource.id)
-
-        if serializer.is_valid() and saved_tagging is not None:
-
-            serializer.save()
-            return Response({'tagging': serializer.data}, status=status.HTTP_201_CREATED)
-
-        elif saved_tagging is None:
-            return Response({'tagging': serializer.data}, status=status.HTTP_204_NO_CONTENT)
-
+        if Tag.objects.all().filter(name=name, language=language).exists():
+            if tag_serializer.is_valid(raise_exception=True):
+                tag_serializer.save(tag=request.data)
+                return Response({"status": "success", "data": tag_serializer.data}, status=status.HTTP_201_CREATED)
+            else:
+                return Response({"status": "error", "data": tag_serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
         else:
-            return Response({'tagging': serializer.data}, status=status.HTTP_400_BAD_REQUEST)
+            if tagging_serializer.is_valid(raise_exception=True):
+                tagging_serializer.save(tagging=request.data)
+                return Response({"status": "success", "data": tagging_serializer.data}, status=status.HTTP_200_OK)
+            else:
+                return Response({"status": "error", "data": tagging_serializer.errors},
+                                status=status.HTTP_400_BAD_REQUEST)
 
 
 class CombinoGameView(APIView):
@@ -395,15 +390,13 @@ class CombinoGameView(APIView):
 
     def post(self, request, *args, **kwargs):
 
-        # A previously played gameround for this resource is coordinated for Tag verification
-        # coordinated_gameround = controller.get_gameround_matching_resource(random_resource.id)
-
         combined_tagging_serializer = CombinationSerializer(data=request.data)
+
         if combined_tagging_serializer.is_valid(raise_exception=True):
             combined_tagging_serializer.save(combination=request.data)
-            return Response({"status": "success", "data": tagging_serializer.data}, status=status.HTTP_200_OK)
+            return Response({"status": "success", "data": combined_tagging_serializer.data}, status=status.HTTP_200_OK)
         else:
-            return Response({"status": "error", "data": tagging_serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"status": "error", "data": combined_tagging_serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class GamesessionView(APIView):

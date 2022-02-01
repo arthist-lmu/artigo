@@ -206,6 +206,7 @@ class TaggingSerializer(serializers.ModelSerializer):
 
 
 class TaggingGetSerializer(serializers.ModelSerializer):
+  """Tagging Serializer to be used only for GET request"""
   tag = StringRelatedField()
   resource = serializers.PrimaryKeyRelatedField(read_only=True) # StringRelatedField returns hash-id
   gameround = serializers.PrimaryKeyRelatedField(read_only=True)
