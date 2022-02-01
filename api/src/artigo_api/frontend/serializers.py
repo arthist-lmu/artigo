@@ -1,4 +1,6 @@
-from rest_framework import serializers
+from datetime import datetime
+
+from rest_framework import serializers, fields, request
 from frontend.views import tag_service
 
 # TODO: update fields according to model changes
@@ -10,6 +12,11 @@ class CustomUserSerializer(serializers.ModelSerializer):
   class Meta:
     model = CustomUser
     fields = ['id', 'username', 'is_superuser']
+
+  def create(self, validated_data):
+    user_data = validated_data.pop('user')
+    CustomUser.objects.create(**user_data)
+    return user_data
 
   def to_representation(self, data):
     data = super().to_representation(data)
@@ -144,9 +151,10 @@ class GameroundSerializer(serializers.ModelSerializer):
     return taggings
 
   def create(self, validated_data):
-    gamesession_data = validated_data.pop('gamesession')
+    gamesessions_data = validated_data.pop('gamesessions')
     gameround = Gameround.objects.create(**validated_data)
-    Gamesession.objects.create(gameround=gameround, **gamesession_data)
+    for gamesession_data in gamesessions_data:
+      Gameround.objects.create(gameround=gameround, **gamesession_data)
     return gameround
 
   def to_representation(self, data):
@@ -155,22 +163,112 @@ class GameroundSerializer(serializers.ModelSerializer):
 
 
 class TaggingSerializer(serializers.ModelSerializer):
-  tag = StringRelatedField()
-  resource = ResourceSerializer()
-  gameround = GameroundSerializer()
+  tag_id = serializers.PrimaryKeyRelatedField(queryset=Tag.objects.all(),
+                                              required=False,
+                                              source='tag',
+                                              write_only=False)
+  resource_id = serializers.PrimaryKeyRelatedField(queryset=Resource.objects.all(),
+                                                   required=True,
+                                                   source='resource',
+                                                   write_only=False)
+  gameround_id = serializers.PrimaryKeyRelatedField(queryset=Gameround.objects.all(),
+                                                    required=False,
+                                                    source='gameround',
+                                                    write_only=False)
+  user_id = serializers.PrimaryKeyRelatedField(queryset=CustomUser.objects.all(),
+                                               required=False,
+                                               source='user',
+                                               write_only=False)
 
   class Meta:
     model = Tagging
-    fields = ('id', 'tag', 'gameround', 'created', 'score', 'resource', 'origin')
+    depth = 1
+    fields = ('id', 'user_id', 'gameround_id', 'resource_id', 'tag_id', 'created', 'score', 'origin')
 
   def create(self, validated_data):
-    tag_data = validated_data.pop('tag')
-    resource_data = validated_data.pop('resource')
-    gameround_data = validated_data.pop('gameround')
-    tagging = Tagging.objects.create(**validated_data)
-    Tag.objects.create(name=tagging, **tag_data)
-    Gameround.objects.create(**gameround_data)
+    """Create and return a new tagging"""
+
+    tagging = Tagging(
+      user=validated_data.get("user"),
+      gameround=validated_data.get("gameround"),
+      resource=validated_data.get("resource"),
+      tag=validated_data.get("tag"),
+      created=datetime.now(),
+      score=validated_data.get("score"),
+      origin=validated_data.get("origin")
+    )
+    tagging.save()
     return tagging
+
+  # def create(self, validated_data):
+  #   """Create and return a new tagging"""
+  #   # request = self.context.get('request')
+  #   # tag = request.data.get('tag', None)
+  #
+  #   tags_data = validated_data.pop('tags')
+  #   resources_data = validated_data.pop('resources')
+  #   gamerounds_data = validated_data.pop('gamerounds')
+  #   users_data = validated_data.pop('users')
+  #   tagging = Tagging.objects.create(**validated_data)
+  #
+  #   for tag_data in tags_data:
+  #     Tag.objects.create(tagging=tagging, **tag_data)
+  #
+  #   for resource_data in resources_data:
+  #     Resource.objects.create(tagging=tagging, **resource_data)
+  #
+  #   for gameround_data in gamerounds_data:
+  #     Gameround.objects.create(tagging=tagging, **gameround_data)
+  #
+  #   for user_data in users_data:
+  #     User.objects.create(tagging=tagging, **user_data)
+  #
+  #   return tagging
+
+  def to_representation(self, data):
+    data = super().to_representation(data)
+    return data
+
+
+class TaggingGetSerializer(serializers.ModelSerializer):
+  tag = StringRelatedField()
+  resource = serializers.PrimaryKeyRelatedField(read_only=True) # StringRelatedField returns hash-id
+  gameround = serializers.PrimaryKeyRelatedField(read_only=True)
+  user = serializers.PrimaryKeyRelatedField(required=False, read_only=True)
+  # created = fields.DateField(input_formats=['%Y-%m-%dT%H:%M:%S.%fZ'])
+
+  class Meta:
+    model = Tagging
+    fields = ('id', 'user', 'gameround', 'resource', 'tag', 'created', 'score', 'origin')
+
+  def create(self, validated_data):
+    """Create and return a new tagging"""
+
+    tags_data = validated_data.pop('tag')
+    resources_data = validated_data.pop('resource')
+    gamerounds_data = validated_data.pop('gameround')
+    users_data = validated_data.pop('user')
+
+    tagging = Tagging.objects.create(**validated_data)
+
+    return tagging
+
+  def to_representation(self, data):
+    data = super().to_representation(data)
+    return data
+
+
+class CombinationSerializer(serializers.ModelSerializer):
+  resource = serializers.PrimaryKeyRelatedField(read_only=True)
+  gameround = serializers.PrimaryKeyRelatedField(read_only=True)
+  user = CustomUserSerializer(required=False, read_only=True)
+
+  class Meta:
+    model = Tagging
+    fields = ('id', 'user', 'gameround', 'resource', 'tagging_id', 'group_id', 'created', 'score', 'origin')
+
+  def create(self, validated_data):
+    pass
 
   def to_representation(self, data):
     data = super().to_representation(data)

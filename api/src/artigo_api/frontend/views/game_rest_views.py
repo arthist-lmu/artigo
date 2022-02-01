@@ -414,10 +414,6 @@ class CombinoGameView(APIView):
     """
 
     def get(self, request, *args, **kwargs):
-        """Potential condition for Tag a Tag Tag to be tagged to be returned"""
-
-        controller = GameViewController()
-
         gametype = Gametype.objects.all().get(name="Combino")
         gametype_serializer = GametypeSerializer(gametype)
 
@@ -431,14 +427,12 @@ class CombinoGameView(APIView):
             current_user_id = request.user.pk
 
         gamesession = Gamesession.objects.create(
-            # id=controller.generate_random_id(Gamesession),
             user_id=current_user_id,
             gametype=gametype,
             created=datetime.now()
         )
 
         gameround = Gameround.objects.create(
-            # id=controller.generate_random_id(Gameround),
             user_id=current_user_id,
             gamesession=gamesession,
             created=datetime.now(),
@@ -452,22 +446,16 @@ class CombinoGameView(APIView):
                          })
 
     def post(self, request, *args, **kwargs):
-        controller = GameViewController()
-        saved_combined_tagging = None
-
-        random_resource = request.data('resource')
 
         # A previously played gameround for this resource is coordinated for Tag verification
-        coordinated_gameround = controller.get_gameround_matching_resource(random_resource.id)
+        # coordinated_gameround = controller.get_gameround_matching_resource(random_resource.id)
 
-        # TODO: add correct serializer here
-        combined_tagging = ResourceWithTaggingsSerializer(data=request.data)
-        while saved_combined_tagging is None:
-            serializer = ResourceWithTaggingsSerializer(data=combined_tagging)
-            if serializer.is_valid(raise_exception=True):
-                saved_combined_tagging = serializer.save()
-                saved_obj = saved_combined_tagging
-                return Response(saved_obj, status=status.HTTP_201_CREATED)
+        combined_tagging_serializer = CombinationSerializer(data=request.data)
+        if combined_tagging_serializer.is_valid(raise_exception=True):
+            combined_tagging_serializer.save(combination=request.data)
+            return Response({"status": "success", "data": tagging_serializer.data}, status=status.HTTP_200_OK)
+        else:
+            return Response({"status": "error", "data": tagging_serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class GamesessionView(APIView):
@@ -525,100 +513,17 @@ class TaggingView(APIView):
 
     def get(self, request, *args, **kwargs):
         """Retrieves a random Tag"""
-        # tagging = Tagging.objects.all().order_by('?').first()
-        # tagging_serializer = TaggingSerializer(tagging)
-        if not isinstance(request.user, CustomUser):
-            current_user_id = 1
-        else:
-            current_user_id = request.user.pk
-        score = 0
-
-        gamesession = Gamesession.objects.create(user_id=current_user_id,
-                                                 gametype=Gametype.objects.all().order_by('?').first(),
-                                                 created=datetime.now())
-        gameround = Gameround.objects.create(user_id=current_user_id,
-                                             gamesession=gamesession,
-                                             created=datetime.now(),
-                                             score=score)
-        random_resource = Resource.objects.all().order_by('?').first()
-
-        # A previously played gameround for this resource is coordinated for Tag verification
-        controller = GameViewController()
-        coordinated_gameround = controller.get_gameround_matching_resource(random_resource.id)
-
-        origin = ''
-        user_input_tag = Tag.objects.create(name='new tag obj', language='de')
-        tag_serializer = TagSerializer(user_input_tag)
-
-        if Tagging.objects.all().filter(tag=user_input_tag).exists():
-            # if tagging like this exists, save tagging anyway and leave tag unchanged
-            score += 5
-            user_input_tagging = Tagging.objects.create(user_id=current_user_id,
-                                                        gameround=gameround,
-                                                        resource=random_resource,
-                                                        tag=user_input_tag,
-                                                        created=datetime.now(),
-                                                        score=score,
-                                                        origin=origin)
-
-            tagging_serializer = TaggingSerializer(user_input_tagging)
-
-            return Response({'tag and ': tag_serializer.data}, {'tagging': tagging_serializer.data})
-
-        elif not Tagging.objects.all().filter(tag=user_input_tag).exists():
-            # save tagging otherwise and del tag
-            user_input_tagging = Tagging.objects.create(user_id=current_user_id,
-                                                        gameround=gameround,
-                                                        resource=random_resource,
-                                                        tag=user_input_tag,
-                                                        created=datetime.now(),
-                                                        score=score,
-                                                        origin=origin)
-            user_input_tagging.save()
-            tagging_serializer = TaggingSerializer(user_input_tagging)
-            # user_input_tag.delete()
-            return Response({'tagging only': tagging_serializer.data})
+        tagging = Tagging.objects.all().order_by('?').first()
+        tagging_serializer = TaggingSerializer(tagging)
+        return Response({'tagging only': tagging_serializer.data})
 
     def post(self, request, *args, **kwargs):
-        if not isinstance(request.user, CustomUser):
-            current_user_id = 1
-        else:
-            current_user_id = request.user.pk
-
         tagging_serializer = TaggingSerializer(data=request.data)
-
-        gamesession = Gamesession.objects.create(user_id=current_user_id,
-                                                 gametype=Gametype.objects.all().order_by('?').first(),
-                                                 created=datetime.now())
-
-        gameround = Gameround.objects.create(user_id=current_user_id,
-                                             gamesession=gamesession,
-                                             created=datetime.now(),
-                                             score=current_score)
-
-        random_resource = Resource.objects.all().order_by('?').first()
-
-        # A previously played gameround for this resource is coordinated for Tag verification
-        # coordinated_gameround = controller.get_gameround_matching_resource(random_resource.id)
-
-        score = 0
-        origin = ''
-
-        tagging_serializer = TaggingSerializer(saved_tagging)
-
-        if tagging_serializer.is_valid():
-            saved_tagging = Tagging.objects.create(user_id=current_user_id,
-                                                   gameround=gameround,
-                                                   resource=random_resource,
-                                                   tag=Tag.objects.create(name=request.POST.get("name"),
-                                                                          language=request.POST.get("language")),
-                                                   created=datetime.now(),
-                                                   score=score,
-                                                   origin=origin)
-            tagging_serializer.save(saved_tagging)
-            return Response({"status": "success", "data": serializer.data}, status=status.HTTP_200_OK)
+        if tagging_serializer.is_valid(raise_exception=True):
+            tagging_serializer.save(tagging=request.data)
+            return Response({"status": "success", "data": tagging_serializer.data}, status=status.HTTP_200_OK)
         else:
-            return Response({"status": "error", "data": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"status": "error", "data": tagging_serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class TagView(APIView):
@@ -633,7 +538,6 @@ class TagView(APIView):
 
     def post(self, request, *args, **kwargs):
         serializer = TagSerializer(data=request.data)
-        # tag_input = Tag.objects.create(name=request.POST.get("name"), language=request.POST.get("language"))
         if serializer.is_valid(raise_exception=True):
             serializer.save(tag=request.data)
             return Response({"status": "success", "data": serializer.data}, status=status.HTTP_200_OK)

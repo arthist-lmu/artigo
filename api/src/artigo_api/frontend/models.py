@@ -90,6 +90,14 @@ class ArtStyle(models.Model):
         return self.name
 
 
+class WebPage(models.Model):
+    url = models.URLField(max_length=256)
+    language = models.CharField(max_length=256)
+
+    def __str__(self):
+        return str(self.url) or ''
+
+
 class Creator(models.Model):
     name = models.CharField(max_length=256)
     born = models.DateField(null=True)
@@ -97,6 +105,7 @@ class Creator(models.Model):
     nationality = models.CharField(max_length=256, null=True)
     locations = models.ManyToManyField(Location)
     techniques = models.ManyToManyField(ArtTechnique)
+    web_page = models.ManyToManyField(WebPage)
 
     objects = models.Manager()
 
@@ -111,6 +120,7 @@ class Title(models.Model):
     style = models.ForeignKey(ArtStyle, on_delete=models.CASCADE, null=True)
     movement = models.ForeignKey(ArtMovement, on_delete=models.CASCADE, null=True)
     locations = models.ManyToManyField(Location)
+    web_page = models.ManyToManyField(WebPage)
 
     objects = models.Manager()
 
@@ -211,7 +221,7 @@ class Tagging(models.Model):
     gameround = models.ForeignKey(Gameround, on_delete=models.CASCADE, related_name='taggings')
     resource = models.ForeignKey(Resource, on_delete=models.CASCADE, related_name='taggings')
     tag = models.ForeignKey(Tag, on_delete=models.CASCADE, related_name='tagging')
-    created = models.DateTimeField(editable=False)
+    created = models.DateTimeField(editable=False, null=True)
     score = models.PositiveIntegerField(default=0)
     # media_type = models.ForeignKey(Gamemode, on_delete=models.CASCADE)
     origin = models.URLField(max_length=256, blank=True, default='')
@@ -224,23 +234,16 @@ class Tagging(models.Model):
 
 class Combination(models.Model):
     """Stores id of a tagging and group of ids it belongs to - for Combino in particular"""
+    group_id = models.PositiveIntegerField(null=False)
     user = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, null=True)
     gameround = models.ForeignKey(Gameround, on_delete=models.CASCADE, null=True)
     resource = models.ForeignKey(Resource, on_delete=models.CASCADE, null=True)
-    tagging_id = models.ManyToManyField(Tag)
-    group_id = models.PositiveIntegerField(null=False)
+    tag_id = models.ManyToManyField(Tag)
     created = models.DateTimeField(editable=False)
     score = models.PositiveIntegerField(default=0)
 
     def __str__(self):
         return str(self.tagging_id) or ''
-
-
-# class WebPages(models.Model):
-#     about_creator = models.ForeignKey(Creator, on_delete=models.CASCADE)
-#     about_title = models.ForeignKey(Title, on_delete=models.CASCADE)
-#     url = models.URLField(max_length=256)
-#     language = models.CharField(max_length=256)
 
 
 

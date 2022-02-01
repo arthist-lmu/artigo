@@ -33,9 +33,9 @@ class ArtStyleAdmin(CustomModelAdmin):
     pass
 
 
-# @admin.register(WebPages)
-# class WebPagesAdmin(CustomModelAdmin):
-#     pass
+@admin.register(WebPage)
+class WebPageAdmin(CustomModelAdmin):
+    pass
 
 
 @admin.register(Resource)
