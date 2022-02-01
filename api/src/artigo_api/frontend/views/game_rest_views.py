@@ -195,20 +195,16 @@ class ARTigoGameView(APIView):
         created = datetime.now()
         score = 0
         origin = ''
-        # name = request.POST['name']
-        name = request.POST.get('name', '')
-        language = request.POST.get('language', '')
+        name = request.data.get('name', '')
+        language = request.data.get('language', '')
 
         # A previously played gameround for this resource is coordinated for Tag verification
         # coordinated_gameround = controller.get_gameround_matching_resource(random_resource.id)
 
-        # user_input_tag = Tag.objects.create(name=name, language=language)
-        # tag_serializer = TagSerializer(user_input_tag)
-
         tag_serializer = TagSerializer(data=request.data)
         tagging_serializer = TaggingSerializer(data=request.data)
 
-        if Tag.objects.all().filter(name=name).exists():
+        if Tag.objects.all().filter(name=name, language=language).exists():
             if tag_serializer.is_valid(raise_exception=True):
                 tag_serializer.save(tag=request.data)
                 return Response({"status": "success", "data": tag_serializer.data}, status=status.HTTP_201_CREATED)
