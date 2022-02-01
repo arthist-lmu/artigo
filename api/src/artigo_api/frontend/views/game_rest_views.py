@@ -165,8 +165,7 @@ class ARTigoGameView(APIView):
 
         gamesession = Gamesession.objects.create(user_id=current_user_id,
                                                  gametype=gametype,
-                                                 created=datetime.now()
-                                                 )
+                                                 created=datetime.now())
 
         random_resource = Resource.objects.all().order_by('?').first()
         resource_serializer = ResourceSerializer(random_resource)
@@ -174,8 +173,8 @@ class ARTigoGameView(APIView):
         gameround = Gameround.objects.create(user_id=current_user_id,
                                              gamesession=gamesession,
                                              created=datetime.now(),
-                                             score=current_score
-                                             )
+                                             score=current_score)
+
         gameround_serializer = GameroundSerializer(gameround)
 
         return Response({'gametype': gametype_serializer.data,
@@ -196,7 +195,6 @@ class ARTigoGameView(APIView):
         created = datetime.now()
         score = 0
         origin = ''
-        saved_tagging = None
         # name = request.POST['name']
         name = request.POST.get('name', '')
         language = request.POST.get('language', '')
@@ -210,64 +208,18 @@ class ARTigoGameView(APIView):
         tag_serializer = TagSerializer(data=request.data)
         tagging_serializer = TaggingSerializer(data=request.data)
 
-        # if Tagging.objects.all().filter(tag=user_input_tag).exists():
-        #     # if tagging like this exists, save tagging anyway and leave tag unchanged
-        #     score += 5
-        #     user_input_tagging = Tagging.objects.create(user_id=current_user_id,
-        #                                                 gameround=gameround,
-        #                                                 resource=random_resource,
-        #                                                 tag=user_input_tag,
-        #                                                 created=created,
-        #                                                 score=score,
-        #                                                 origin=origin)
-        #
-        #     tagging_serializer = TaggingSerializer(user_input_tagging)
-        #
-        #     return Response({'tag and ': tag_serializer.data}, {'tagging': tagging_serializer.data})
-        #
-        # elif not Tagging.objects.all().filter(tag=user_input_tag).exists():
-        #     # save tagging otherwise and del tag?
-        #     user_input_tagging = Tagging.objects.create(user_id=current_user_id,
-        #                                                 gameround=gameround,
-        #                                                 resource=random_resource,
-        #                                                 tag=user_input_tag,
-        #                                                 created=created,
-        #                                                 score=score,
-        #                                                 origin=origin)
-        #     user_input_tagging.save()
-        #     tagging_serializer = TaggingSerializer(user_input_tagging)
-        #     return Response({'tagging only': tagging_serializer.data})
-        #
-        # tagging_serializer = TaggingSerializer(data=request.data)
-        # if tagging_serializer.is_valid(raise_exception=True):
-        #     saved_tagging = Tagging.objects.create(user_id=current_user_id,
-        #                                            gameround=gameround,
-        #                                            resource=random_resource,
-        #                                            tag=user_input_tag,
-        #                                            created=created,
-        #                                            score=score,
-        #                                            origin=origin)
-        #     saved_tagging.save(saved_tagging)
-        #     tagging_serializer = TaggingSerializer(saved_tagging)
-        #     return Response({'status': 'success', 'tagging': tagging_serializer.data}, status=status.HTTP_200_OK)
-        #
-        # if saved_tagging is None:
-        #     return Response({'tagging': tagging_serializer.data}, status=status.HTTP_204_NO_CONTENT)
-        # else:
-        #     return Response(saved_tagging, status=status.HTTP_400_BAD_REQUEST)
-        if tag_serializer.is_valid(raise_exception=True):
-            user_input_tag = Tag.objects.create(name=name, language=language)
-            tag_serializer.save(user_input_tag)
-            user_input_tagging = Tagging.objects.create(user_id=current_user_id,
-                                                        gameround=gameround,
-                                                        resource=random_resource,
-                                                        created=created,
-                                                        score=score,
-                                                        origin=origin)
-            tagging_serializer.save(user_input_tagging)
-            return Response({'tagging': tagging_serializer}, status=status.HTTP_201_CREATED)
+        if Tag.objects.all().filter(name=name).exists():
+            if tag_serializer.is_valid(raise_exception=True):
+                tag_serializer.save(tag=request.data)
+                return Response({"status": "success", "data": tag_serializer.data}, status=status.HTTP_201_CREATED)
+            else:
+                return Response({"status": "error", "data": tag_serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
         else:
-            return Response(status=status.HTTP_400_BAD_REQUEST)
+            if tagging_serializer.is_valid(raise_exception=True):
+                tagging_serializer.save(tagging=request.data)
+                return Response({"status": "success", "data": tagging_serializer.data}, status=status.HTTP_200_OK)
+            else:
+                return Response({"status": "error", "data": tagging_serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class ARTigoTabooGameView(APIView):

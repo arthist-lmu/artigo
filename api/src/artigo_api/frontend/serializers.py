@@ -200,31 +200,6 @@ class TaggingSerializer(serializers.ModelSerializer):
     tagging.save()
     return tagging
 
-  # def create(self, validated_data):
-  #   """Create and return a new tagging"""
-  #   # request = self.context.get('request')
-  #   # tag = request.data.get('tag', None)
-  #
-  #   tags_data = validated_data.pop('tags')
-  #   resources_data = validated_data.pop('resources')
-  #   gamerounds_data = validated_data.pop('gamerounds')
-  #   users_data = validated_data.pop('users')
-  #   tagging = Tagging.objects.create(**validated_data)
-  #
-  #   for tag_data in tags_data:
-  #     Tag.objects.create(tagging=tagging, **tag_data)
-  #
-  #   for resource_data in resources_data:
-  #     Resource.objects.create(tagging=tagging, **resource_data)
-  #
-  #   for gameround_data in gamerounds_data:
-  #     Gameround.objects.create(tagging=tagging, **gameround_data)
-  #
-  #   for user_data in users_data:
-  #     User.objects.create(tagging=tagging, **user_data)
-  #
-  #   return tagging
-
   def to_representation(self, data):
     data = super().to_representation(data)
     return data
