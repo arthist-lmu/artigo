@@ -49,15 +49,20 @@
 
     <v-row
       v-if="entries.length > 0"
+      class="v-card v-card--flat v-sheet theme--light"
       no-gutters
     >
-      <SearchResultCard
+      <v-col
         v-for="entry in pageEntries"
         :key="entry.id"
-        :entry="entry"
-        :displayTags="display.tags"
-        :displayMetadata="display.metadata"
-      />
+        :cols="cols"
+      >
+        <SearchResultCard
+          :entry="entry"
+          :displayTags="display.tags"
+          :displayMetadata="display.metadata"
+        />
+      </v-col>
     </v-row>
   </v-container>
 </template>
@@ -93,6 +98,15 @@ export default {
     nPages() {
       return Math.ceil(this.entries.length / this.perPage);
     },
+    cols() {
+      if (!this.display.metadata) {
+        if (!this.display.tags) {
+          return 3;
+        }
+        return 6;
+      }
+      return 12;
+    },
   },
   watch: {
     entries() {
@@ -102,6 +116,18 @@ export default {
     page() {
       window.scrollTo(0, 0);
     },
+    display: {
+      handler(values) {
+        this.$store.dispatch('settings/setDisplay', { type: 'tags', value: values.tags });
+        this.$store.dispatch('settings/setDisplay', { type: 'metadata', value: values.metadata });
+      },
+      deep: true,
+    },
+  },
+  created() {
+    const { display } = this.$store.state.settings;
+    this.display.tags = display.tags;
+    this.display.metadata = display.metadata;
   },
   mounted() {
     this.$store.dispatch('search/getURLParams', this.$route.query);

@@ -6,13 +6,16 @@
     <v-card-text>
       <v-row>
         <v-col
-          v-if="displayTags"
-          cols="3"
+          v-if="cols.tags > 0"
+          :cols="cols.tags"
         >
-          <TagCloud :tags="tags" />
+          <TagCloud
+            v-if="displayTags"
+            :tags="tags"
+          />
         </v-col>
 
-        <v-col cols="3">
+        <v-col :cols="cols.image">
           <v-img
             :src="entry.path"
             class="grey lighten-1"
@@ -33,8 +36,8 @@
         </v-col>
 
         <v-col
-          v-if="displayMetadata"
-          cols="6"
+          v-if="displayMetadata && cols.metadata > 0"
+          :cols="cols.metadata"
         >
           <v-row
             justify="space-around"
@@ -152,6 +155,15 @@ export default {
     },
   },
   computed: {
+    cols() {
+      if (!this.displayMetadata) {
+        if (!this.displayTags) {
+          return { tags: 0, image: 12, metadata: 0 };
+        }
+        return { tags: 6, image: 6, metadata: 0 };
+      }
+      return { tags: 3, image: 3, metadata: 6 };
+    },
     metadata() {
       const metadata = {};
       const fields = [

@@ -1,4 +1,5 @@
 const webpack = require('webpack');
+const VuetifyLoaderPlugin = require('vuetify-loader/lib/plugin')
 
 module.exports = {
   publicPath: '/',
@@ -10,6 +11,9 @@ module.exports = {
         ignored: [/node_modules/, /public/],
       },
     },
+    plugins: [
+      new VuetifyLoaderPlugin(),
+    ],
     optimization: {
       splitChunks: {
         chunks: 'all',

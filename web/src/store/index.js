@@ -9,7 +9,21 @@ export default new Vuex.Store({
   modules,
   plugins: [
     createPersistedState({
-      paths: [],
+      paths: [
+        'settings.display',
+      ],
+      getState(key, storage) {
+        let value = storage.getItem(key);
+        try {
+          value = JSON.parse(value);
+        } catch (error) {
+          return undefined;
+        }
+        if (value && Object.keys(value).length) {
+          return value;
+        }
+        return undefined;
+      },
     }),
   ],
 });
