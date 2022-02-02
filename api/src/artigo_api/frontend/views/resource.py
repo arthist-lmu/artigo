@@ -1,64 +1,55 @@
-import random
+import grpc
+import hashlib
+import msgpack
 import logging
 import traceback
 
-from frontend.utils import media_url_to_image
-from frontend.models import Resource, Title, Tagging
-from frontend.serializers import ResourceSerializer, TagCountSerializer
-from datetime import datetime
-from django.db.models import Count
-from django.utils.decorators import method_decorator
-from django.views.decorators.cache import cache_page
-from rest_framework.views import APIView
+from .utils import RPCView
 from rest_framework.response import Response
-from rest_framework.exceptions import NotFound
+from rest_framework.exceptions import APIException, NotFound
+from frontend.utils import media_url_to_image
+
+from artigo_search import index_pb2, index_pb2_grpc
+from artigo_search.utils import meta_from_proto, tags_from_proto
 
 logger = logging.getLogger(__name__)
 
 
-class ResourceView(APIView):
-    # Add extra uncached view for random requests
-    # @method_decorator(cache_page(60*60*2))
-    def get(self, request, format=None):
-        resource = None
+class ResourceView(RPCView):
+    def parse_request(self, params):
+        grpc_request = index_pb2.GetRequest()
 
-        resource_id = request.query_params.get('id')
-        lang = request.query_params.get('lang', 'en')
+        if params.get('id'):
+            grpc_request.ids.extend([params.get('id')])
 
-        if request.query_params.get('random'):
-            resource_id = Resource.objects.random().id
+        # TODO: add random
 
-        if resource_id:
-            resource = self.get_resource_by_id(resource_id, lang)
+        return grpc_request
 
-        if resource:
-            return Response(resource)
+    def rpc_get(self, params):
+        grpc_request = self.parse_request(params)
+        stub = index_pb2_grpc.IndexStub(self.channel)
 
-        raise NotFound(detail='Unknown resource', code=404)
-
-    def get_resource_by_id(self, resource_id, lang=None):
         try:
-            resource = Resource.objects.get(id=resource_id)
-            taggings = Tagging.objects.filter(resource_id=resource.id)
+            response = stub.get(grpc_request)
 
-            if lang:
-                taggings = taggings.filter(tag__language=lang)
+            for x in response.entries:
+                return {
+                    'id': x.id,
+                    'meta': meta_from_proto(x.meta),
+                    'tags': tags_from_proto(x.tags),
+                    'path': media_url_to_image(x.id),
+                }
+        except grpc.RpcError as error:
+            pass
 
-            data = ResourceSerializer(resource).data
+    def get(self, request, format=None):
+        result = self.rpc_get(request.query_params)
 
-            if data.get('hash_id'):
-                data['path'] = media_url_to_image(data['hash_id'])
-
-            if taggings.exists():
-                tags = taggings.values('tag').annotate(count=Count('tag'))
-                tags = tags.values('tag_id', 'tag__name',
-                                   'tag__language', 'count')
-
-                data['tags'] = TagCountSerializer(tags, many=True).data
-
-            return data
-        except Exception as e:
-            logger.error(traceback.format_exc())
+        if result is None:
+            raise NotFound(detail='Unknown resource', code=404)
+        
+        return Response(result)
 
     def post(self, request, format=None):
         logger.debug("Process post")

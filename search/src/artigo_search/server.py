@@ -109,7 +109,7 @@ class Commune(index_pb2_grpc.IndexServicer):
 
         backbone = Backbone(config=self.config.get('opensearch', {}))
 
-        for x in backbone.get(hash_ids=json_obj['ids']):
+        for x in backbone.get(ids=json_obj['ids']):
             entry = results.entries.add()
             entry.id = x['id']
 

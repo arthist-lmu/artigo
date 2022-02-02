@@ -1,6 +1,6 @@
 <template>
   <v-card
-    :class="disabled ? 'disabled' : ''"
+    :class="value ? 'disabled' : ''"
     flat
   >
     <v-card-text>
@@ -16,23 +16,33 @@
         </v-col>
 
         <v-col :cols="cols.image">
-          <v-img
-            :src="entry.path"
-            class="grey lighten-1"
-            v-on:error="onError"
-            @click="goToResource"
-            style="cursor: pointer;"
+          <v-dialog
+            v-model="showModal"
+            max-width="750"
           >
-            <template v-slot:placeholder>
-              <v-row
-                class="fill-height ma-0"
-                justify="center"
-                align="center"
+            <template v-slot:activator="{ on, attrs }">
+              <v-img
+                :src="entry.path"
+                class="grey lighten-1"
+                v-bind="attrs"
+                v-on="on"
+                v-on:error="onError"
+                style="cursor: pointer;"
               >
-                <v-progress-circular indeterminate />
-              </v-row>
+                <template v-slot:placeholder>
+                  <v-row
+                    class="fill-height ma-0"
+                    justify="center"
+                    align="center"
+                  >
+                    <v-progress-circular indeterminate />
+                  </v-row>
+                </template>
+              </v-img>
             </template>
-          </v-img>
+
+            <ResourceCard :entry="entry" />
+          </v-dialog>
         </v-col>
 
         <v-col
@@ -127,19 +137,19 @@
 </template>
 
 <script>
-import router from '@/router/index';
-
 import TagCloud from '@/components/TagCloud.vue';
+import ResourceCard from '@/components/ResourceCard.vue';
 
 export default {
   props: {
     entry: Object,
+    value: Boolean,
     displayTags: Boolean,
     displayMetadata: Boolean,
   },
   data() {
     return {
-      disabled: false,
+      showModal: false,
     };
   },
   methods: {
@@ -147,11 +157,8 @@ export default {
       const query = { [field]: value };
       this.$store.dispatch('search/post', { query });
     },
-    goToResource() {
-      router.push({ name: 'resource', params: { id: this.entry.id } });
-    },
     onError() {
-      this.disabled = true;
+      this.$emit('input', true);
     },
   },
   computed: {
@@ -211,6 +218,7 @@ export default {
   },
   components: {
     TagCloud,
+    ResourceCard,
   },
 };
 </script>

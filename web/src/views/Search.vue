@@ -56,8 +56,10 @@
         v-for="entry in pageEntries"
         :key="entry.id"
         :cols="cols"
+        :class="disabledEntries[entry.id] ? 'disabled' : ''"
       >
         <SearchResultCard
+          v-model="disabledEntries[entry.id]"
           :entry="entry"
           :displayTags="display.tags"
           :displayMetadata="display.metadata"
@@ -75,6 +77,7 @@ export default {
         tags: true,
         metadata: true,
       },
+      disabledEntries: {},
       perPage: 10,
       perPageItems: [
         10,
@@ -113,13 +116,16 @@ export default {
       // TODO: what to display if there are no results?
       this.page = 1;
     },
+    disabledEntries(value) {
+      console.log(value);
+    },
     page() {
       window.scrollTo(0, 0);
     },
     display: {
-      handler(values) {
-        this.$store.dispatch('settings/setDisplay', { type: 'tags', value: values.tags });
-        this.$store.dispatch('settings/setDisplay', { type: 'metadata', value: values.metadata });
+      handler({ tags, metadata }) {
+        this.$store.dispatch('settings/setDisplay', { type: 'tags', value: tags });
+        this.$store.dispatch('settings/setDisplay', { type: 'metadata', value: metadata });
       },
       deep: true,
     },
@@ -162,5 +168,11 @@ export default {
 
 .v-alert .v-select .v-select__selection {
   margin-top: 0;
+}
+</style>
+
+<style scoped>
+.col.disabled {
+  display: none;
 }
 </style>

@@ -32,7 +32,6 @@ message GetRequest {
 
 message GetReply {
   repeated Image entries = 1;
-  repeated AggregateResult aggregations = 2;
 }
 
 message StatusRequest {

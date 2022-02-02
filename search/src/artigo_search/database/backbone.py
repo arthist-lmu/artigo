@@ -150,13 +150,13 @@ class Backbone:
     def status(self):
         return 'ok' if self.client.ping() else 'error'
 
-    def get(self, hash_ids):
-        body = {'query': {'ids': {'values': hash_ids}}}
+    def get(self, ids):
+        body = {'query': {'ids': {'values': ids}}}
 
         try:
             results = self.client.search(
                 index=self.index, doc_type=self.type,
-                body=body, size=len(hash_ids),
+                body=body, size=len(ids),
             )
 
             for x in results['hits']['hits']:
@@ -211,7 +211,7 @@ class Backbone:
         for x in query.get('text_search', []):
             term = None
 
-            if not x.get('field'):
+            if x.get('field', 'all-text'):
                 term = Q('multi_match', fields=['all_text'], query=x['query'])
             else:
                 field_path = [y for y in x['field'].split('.') if y]

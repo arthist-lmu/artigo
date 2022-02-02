@@ -4,6 +4,8 @@ import i18n from '@/plugins/i18n';
 import store from '@/store';
 import RouterView from '@/views/RouterView.vue';
 
+const InstituteUrl = 'https://www.kunstgeschichte.uni-muenchen.de';
+
 Vue.use(VueRouter);
 const router = new VueRouter({
   mode: 'history',
@@ -41,14 +43,18 @@ const router = new VueRouter({
         {
           path: 'imprint',
           name: 'imprint',
-          component: () => import('@/views/Imprint.vue'),
-          meta: { title: 'imprint.title' },
+          beforeEnter() {
+            window.open(`${InstituteUrl}/funktionen/impressum/index.html`, '_blank');
+          },
+          // component: () => import('@/views/Imprint.vue'),
         },
         {
           path: 'privacy-policy',
           name: 'privacy-policy',
-          component: () => import('@/views/PrivacyPolicy.vue'),
-          meta: { title: 'privacy-policy.title' },
+          beforeEnter() {
+            window.open(`${InstituteUrl}/funktionen/datenschutz/index.html`, '_blank');
+          },
+          // component: () => import('@/views/PrivacyPolicy.vue'),
         },
         {
           path: 'register',
