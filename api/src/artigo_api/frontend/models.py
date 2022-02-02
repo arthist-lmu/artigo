@@ -234,7 +234,7 @@ class Tagging(models.Model):
 
 class Combination(models.Model):
     """Stores id of a tagging and group of ids it belongs to - for Combino in particular"""
-    group_id = models.PositiveIntegerField(null=False)
+    group_id = models.PositiveIntegerField(null=False, primary_key=True)
     user = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, null=True)
     gameround = models.ForeignKey(Gameround, on_delete=models.CASCADE, null=True)
     resource = models.ForeignKey(Resource, on_delete=models.CASCADE, null=True)
