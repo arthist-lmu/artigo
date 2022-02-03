@@ -101,16 +101,16 @@ message SearchTerm {
 message SearchRequest {
   repeated SearchTerm terms = 1;
   repeated string sources = 2;
+  AggregateRequest aggregate = 3;
 
   enum Sorting {
     SORTING_DEFAULT = 0;
     SORTING_RANDOM = 1;
   }
 
-  Sorting sorting = 3;
-  string seed = 4;
-
-  AggregateRequest aggregate = 5;
+  Sorting sorting = 4;
+  string seed = 5;
+  int32 limit = 6;
 }
 
 message SearchReply {

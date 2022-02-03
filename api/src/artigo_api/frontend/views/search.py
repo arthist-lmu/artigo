@@ -49,7 +49,7 @@ class SearchView(RPCView):
                     if field == 'tags':
                         term.text.field = 'tags.name'
                     elif field in ['all-text', '']:
-                        term.text.field = ''
+                        term.text.field = 'all-text'
                     else:
                         term.text.field = f'meta.{field}'
 
@@ -68,6 +68,9 @@ class SearchView(RPCView):
             if isinstance(params['random'], (int, float, str)):
                 grpc_request.sorting = index_pb2.SearchRequest.SORTING_RANDOM
                 grpc_request.seed = str(params['random'])
+
+        if isinstance(params.get('limit', 100), int):
+            grpc_request.limit = params.get('limit', 100)
 
         return grpc_request
 

@@ -116,9 +116,6 @@ export default {
       // TODO: what to display if there are no results?
       this.page = 1;
     },
-    disabledEntries(value) {
-      console.log(value);
-    },
     page() {
       window.scrollTo(0, 0);
     },

@@ -231,8 +231,4 @@ export default {
 .v-card .v-expansion-panel-header > :not(.v-expansion-panel-header__icon) {
   flex: initial;
 }
-
-.v-card .v-expansion-panel-content__wrap {
-  padding: 0;
-}
 </style>

@@ -7,7 +7,7 @@ const collection = {
   },
   actions: {
     get({ commit }, params) {
-      axios.get('/get_collection', { params })
+      axios.get('/collection', { params })
         .then(({ data }) => {
           commit('updateData', data);
           console.log('collection', data);

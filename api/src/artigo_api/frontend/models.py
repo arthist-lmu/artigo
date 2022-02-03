@@ -134,7 +134,10 @@ class Tagging(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, null=True)
     gameround = models.ForeignKey(Gameround, on_delete=models.CASCADE)
     resource = models.ForeignKey(
-        Resource, on_delete=models.CASCADE, related_name='taggings')
+        Resource,
+        on_delete=models.CASCADE,
+        related_name='taggings',
+    )
     tag = models.ForeignKey(Tag, on_delete=models.CASCADE)
     created = models.DateTimeField(editable=False)
     score = models.PositiveIntegerField(default=0)

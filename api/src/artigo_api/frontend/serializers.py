@@ -90,3 +90,13 @@ class ResourceWithTaggingsSerializer(ResourceSerializer):
         data['tags'] = TagCountSerializer(data['tags'], many=True).data
 
         return data
+
+
+class UserTaggingCountSerializer(serializers.ModelSerializer):
+    name = serializers.ReadOnlyField(source='user__username')
+    count_taggings = serializers.IntegerField()
+    count_gamerounds = serializers.IntegerField()
+
+    class Meta:
+        model = CustomUser
+        fields = ('name', 'count_taggings', 'count_gamerounds')

@@ -23,7 +23,7 @@ def search(args):
         backbone = Backbone(args['config'].get('opensearch', {}))
 
         searcher = Searcher(backbone, aggregator=Aggregator(backbone))
-        search_results = searcher(query, size=args.get('size', 100))
+        search_results = searcher(query, args['query'].get('limit', 100))
 
         result = index_pb2.ListSearchResultReply()
 

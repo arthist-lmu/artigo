@@ -263,6 +263,16 @@
   },
   "highscore": {
     "title": "Bestenliste",
+    "fields": {
+      "alltime": "Beste Spieler aller Zeiten",
+      "current": "Beste Spieler im laufenden Monat",
+      "previous": "Beste Spieler im letzten Monat"
+    },
+    "headers": {
+      "name": "Name",
+      "count-taggings": "Anzahl Taggings",
+      "count-gamerounds": "Anzahl Spielrunden"
+    },
     "texts": [
 
     ]

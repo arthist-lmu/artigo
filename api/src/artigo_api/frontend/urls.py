@@ -8,8 +8,9 @@ urlpatterns = [
     # path('login', views.LoginView.as_view(), name='login'),
     # path('logout', views.LogoutView.as_view(), name='logout'),
     # path('register', views.RegisterView.as_view(), name='register'),
-    path('get_resource', views.ResourceView.as_view(), name='resource'),
-    path('get_collection', views.CollectionView.as_view(), name='collection'),
+    path('resource', views.ResourceView.as_view(), name='resource'),
+    path('collection', views.CollectionView.as_view(), name='collection'),
     path('search', views.SearchView.as_view(), name='search'),
     path('game', views.Game.as_view(), name='game'),
+    path('highscore', views.Highscore.as_view(), name='highscore'),
 ]

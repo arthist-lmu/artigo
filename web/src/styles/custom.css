@@ -2,6 +2,10 @@
   text-transform: capitalize;
 }
 
+.disabled {
+	display: none;
+}
+
 span.clip {
 	text-overflow: ellipsis;
   overflow: hidden;
@@ -10,4 +14,8 @@ span.clip {
 
 p {
   hyphens: auto;
+}
+
+.v-expansion-panel-content__wrap {
+  padding: 0;
 }

@@ -260,6 +260,16 @@
   },
   "highscore": {
     "title": "Highscore",
+    "fields": {
+      "alltime": "Best players of all time",
+      "current": "Best players this month",
+      "previous": "Best players last month"
+    },
+    "headers": {
+      "name": "Name",
+      "count-taggings": "Number of taggings",
+      "count-gamerounds": "Number of gamerounds"
+    },
     "texts": [
 
     ]

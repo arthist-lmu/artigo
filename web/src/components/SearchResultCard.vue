@@ -224,10 +224,6 @@ export default {
 </script>
 
 <style>
-.v-card.disabled {
-  display: none;
-}
-
 .v-image .v-responsive__content {
   width: 1000px !important;
 }
