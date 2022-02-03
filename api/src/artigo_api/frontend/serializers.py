@@ -150,6 +150,12 @@ class GameroundSerializer(serializers.ModelSerializer):
     taggings = round.tags
     return taggings
 
+  def get_field_names(self, *args, **kwargs):
+    field_names = self.context.get('fields', None)
+    if field_names:
+      return field_names
+    return super(GameroundSerializer, self).get_field_names(*args, **kwargs)
+
   def create(self, validated_data):
     gamesessions_data = validated_data.pop('gamesessions')
     gameround = Gameround.objects.create(**validated_data)
@@ -184,16 +190,37 @@ class TaggingSerializer(serializers.ModelSerializer):
 
   def create(self, validated_data):
     """Create and return a new tagging"""
+    # replace random_resource with resource object once you figure out how to get it from GET request
+    # resource_id = request
+    # A previously played gameround for this resource is coordinated for Tag verification
+    #current_gameround = Gameround.objects.all().filter(taggings__resource_id=resource_id).order_by("?").first()
+    #gameround_serializer = GameroundSerializer(current_gameround)
+    coordinated_gameround_tags = []
+
+    user = None
+    request = self.context.get("request")
+    if request and hasattr(request, "user"):
+      user = request.user
+
+    resource = None
+    request = self.context.get("request")
+    if request and hasattr(request, "resource"):
+      resource = request.resource
+
     score = 0
     tag_data = validated_data.pop('tag', None)
     if tag_data:
       tag = Tag.objects.get_or_create(**tag_data)[0]
       validated_data['tag'] = tag
-      if Tag.objects.all().filter(name=tag.name).exists():
+      if not Tag.objects.all().filter(name=tag.name).exists():
+        score = 0
+      elif Tag.objects.all().filter(name=tag.name).exists():
         score += 5
+      elif Tag.objects.all().filter(name=tag.name) in coordinated_gameround_tags:
+        score += 25
 
     tagging = Tagging(
-      user=validated_data.get("user"),
+      user=user,
       gameround=validated_data.get("gameround"),
       resource=validated_data.get("resource"),
       tag=validated_data.get("tag"),
