@@ -163,7 +163,6 @@ class GameroundSerializer(serializers.ModelSerializer):
 
 
 class TaggingSerializer(serializers.ModelSerializer):
-  # tag_id = serializers.PrimaryKeyRelatedField(queryset=Tag.objects.all(),required=False,source='tag',write_only=False)
   tag = TagSerializer(required=False, write_only=False)
   resource_id = serializers.PrimaryKeyRelatedField(queryset=Resource.objects.all(),
                                                    required=True,
@@ -185,13 +184,13 @@ class TaggingSerializer(serializers.ModelSerializer):
 
   def create(self, validated_data):
     """Create and return a new tagging"""
-
+    score = 0
     tag_data = validated_data.pop('tag', None)
     if tag_data:
       tag = Tag.objects.get_or_create(**tag_data)[0]
       validated_data['tag'] = tag
-
-    # tagging = Tagging.objects.create(**validated_data)
+      if Tag.objects.all().filter(name=tag.name).exists():
+        score += 5
 
     tagging = Tagging(
       user=validated_data.get("user"),
@@ -199,25 +198,9 @@ class TaggingSerializer(serializers.ModelSerializer):
       resource=validated_data.get("resource"),
       tag=validated_data.get("tag"),
       created=datetime.now(),
-      score=validated_data.get("score"),
-      origin=validated_data.get("origin")
+      score=score,
+      origin=""
     )
-
-    # gameround_data = validated_data.pop('gameround', None)
-    # if gameround_data:
-    #   gameround = Gameround.objects.get_or_create(**gameround_data)[0]
-    #   validated_data['gameround'] = gameround
-    #
-    # resource_data = validated_data.pop('resource', None)
-    # if tag_data:
-    #   resource = Resource.objects.get_or_create(**resource_data)[0]
-    #   validated_data['resource'] = resource
-    #
-    # user_data = validated_data.pop('user', None)
-    # if user_data:
-    #   user = CustomUser.objects.get_or_create(**user_data)[0]
-    #   validated_data['user'] = user
-
     tagging.save()
     return tagging
 
@@ -240,7 +223,6 @@ class TaggingGetSerializer(serializers.ModelSerializer):
 
   def create(self, validated_data):
     """Create and return a new tagging"""
-    # TODO: TEST a bit more, might work!
     tags_data = validated_data.pop('tag')
     resources_data = validated_data.pop('resource')
     gamerounds_data = validated_data.pop('gameround')

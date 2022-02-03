@@ -206,7 +206,6 @@ class ARTigoGameView(APIView):
         gameround = request.data.get('gameround', '')
         random_resource = request.data.get('resource', '')
         created = datetime.now()
-        # TODO: update score somehow
         score = 0
         origin = ''
         name = request.data.get('name', '')
@@ -219,8 +218,6 @@ class ARTigoGameView(APIView):
         tag_serializer = TagSerializer(data=request.data)
         tagging_serializer = TaggingSerializer(data=request.data)
 
-        # if Tag.objects.all().filter(name=name, language=language).exists():
-
         # if Tagging.objects.all().filter(user=current_user_id, gameround=gameround, resource=random_resource,
         #                                 tag=Tag.objects.all().get(name=name, language=language),
         #                                 created=created, score=score, origin=origin).exists():
@@ -228,12 +225,6 @@ class ARTigoGameView(APIView):
         # elif Tag.objects.all().get(name=name, language=language) in coordinated_gameround_tags:
         #     score += 25
 
-        # Tagging.objects.create(user=current_user_id, gameround=gameround, resource=random_resource,tag=tag, created=created,
-                               # score=score + 5, origin=origin)
-
-        # if tag_serializer.is_valid(raise_exception=True):
-            # tag = request.data
-            # tag_serializer.save(tag=request.data)
         if tagging_serializer.is_valid(raise_exception=True):
             tagging_serializer.save(tagging=request.data)
             return Response({"status": "success", "data": tagging_serializer.data}, status=status.HTTP_201_CREATED)
@@ -244,9 +235,7 @@ class ARTigoGameView(APIView):
 class ARTigoTabooGameView(APIView):
     """
     API View that retrieves the ARTigo Taboo game,
-    retrieves an empty game session to be filled with the necessary data and sent back to the server
-    retrieves a random resource per round along with the taboo tags for the respective resource
-    allows users to post tags that are verified and saved accordingly to either the Tag or Tagging table
+    5 Resource objects and gamerounds, along with a game session that is created on the spot
     """
     renderer_classes = (BrowsableAPIRenderer, JSONRenderer, HTMLFormRenderer)
 
