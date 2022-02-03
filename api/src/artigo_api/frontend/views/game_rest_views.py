@@ -235,11 +235,8 @@ class ARTigoGameView(APIView):
             # tag = request.data
             # tag_serializer.save(tag=request.data)
         if tagging_serializer.is_valid(raise_exception=True):
-                # tagging = request.data
             tagging_serializer.save(tagging=request.data)
             return Response({"status": "success", "data": tagging_serializer.data}, status=status.HTTP_201_CREATED)
-            # else:
-            # return Response({"status": "success", "data": tag_serializer.data},status=status.HTTP_201_CREATED)
         else:
             return Response({"status": "error", "data": tag_serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
@@ -292,18 +289,11 @@ class ARTigoTabooGameView(APIView):
         tag_serializer = TagSerializer(data=request.data)
         tagging_serializer = TaggingSerializer(data=request.data)
 
-        if Tag.objects.all().get(name=name, language=language).exists():
-            if tag_serializer.is_valid(raise_exception=True):
-                tag_serializer.save(tag=request.data)
-                return Response(tag_serializer.data, status=status.HTTP_201_CREATED)
-            else:
-                return Response(tag_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        if tagging_serializer.is_valid(raise_exception=True):
+            tagging_serializer.save(tagging=request.data)
+            return Response({"status": "success", "data": tagging_serializer.data}, status=status.HTTP_201_CREATED)
         else:
-            if tagging_serializer.is_valid(raise_exception=True):
-                tagging_serializer.save(tagging=request.data)
-                return Response(tagging_serializer.data, status=status.HTTP_200_OK)
-            else:
-                return Response(tagging_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"status": "error", "data": tag_serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class TagATagGameView(APIView):
@@ -357,19 +347,11 @@ class TagATagGameView(APIView):
         tag_serializer = TagSerializer(data=request.data)
         tagging_serializer = TaggingSerializer(data=request.data)
 
-        if Tag.objects.all().filter(name=name, language=language).exists():
-            if tag_serializer.is_valid(raise_exception=True):
-                tag_serializer.save(tag=request.data)
-                return Response({"status": "success", "data": tag_serializer.data}, status=status.HTTP_201_CREATED)
-            else:
-                return Response({"status": "error", "data": tag_serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+        if tagging_serializer.is_valid(raise_exception=True):
+            tagging_serializer.save(tagging=request.data)
+            return Response({"status": "success", "data": tagging_serializer.data}, status=status.HTTP_201_CREATED)
         else:
-            if tagging_serializer.is_valid(raise_exception=True):
-                tagging_serializer.save(tagging=request.data)
-                return Response({"status": "success", "data": tagging_serializer.data}, status=status.HTTP_200_OK)
-            else:
-                return Response({"status": "error", "data": tagging_serializer.errors},
-                                status=status.HTTP_400_BAD_REQUEST)
+            return Response({"status": "error", "data": tag_serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class CombinoGameView(APIView):
