@@ -6,6 +6,8 @@ from frontend.serializers import UserTaggingCountSerializer
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
 from django.db.models import Count
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_page
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.exceptions import APIException
@@ -31,6 +33,7 @@ class Highscore(APIView):
 
         return UserTaggingCountSerializer(users, many=True).data
 
+    @method_decorator(cache_page(60*60*2))
     def get(self, request, format=None):
         limit = request.query_params.get('limit', 10)
 

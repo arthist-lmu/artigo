@@ -17,6 +17,15 @@
       "creator": "Unbekannt"
     }
   },
+  "collection": {
+    "fields": {
+      "results": "{n} Objekte|{n} Objekt|{n} Objekte",
+      "per-page": "Objekte pro Seite"
+    },
+    "texts": [
+
+    ]
+  },
   "user": {
     "fields": {
       "username": "Benutzername",

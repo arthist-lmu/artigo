@@ -6,7 +6,7 @@
   >
     <v-img
       :src="entry.path"
-      class="grey lighten-1"
+      class="grey lighten-2"
       max-height="500px"
       contain
     >
@@ -176,6 +176,9 @@ export default {
           metadata[name] = value_str;
         }
       });
+      if (this.entry.source && this.entry.source.id) {
+        metadata.source = this.entry.source.name;
+      }
       return metadata;
     },
     title() {

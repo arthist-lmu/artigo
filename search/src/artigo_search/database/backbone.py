@@ -66,7 +66,7 @@ class Backbone:
                                             'ignore_above': 256,
                                         }
                                     },
-                                    'copy_to': ['all_text'],
+                                    'copy_to': ['all_text', 'all_meta'],
                                 },
                                 'value_int': {
                                     'type': 'long',
@@ -141,6 +141,9 @@ class Backbone:
                         'all_text': {
                             'type': 'text',
                         },
+                        'all_meta': {
+                            'type': 'text',
+                        },
                     },
                 },
             }
@@ -211,14 +214,14 @@ class Backbone:
         for x in query.get('text_search', []):
             term = None
 
-            if x.get('field', 'all-text'):
+            if x.get('field', 'all-text') == 'all-text':
                 term = Q('multi_match', fields=['all_text'], query=x['query'])
             else:
                 field_path = [y for y in x['field'].split('.') if y]
 
                 if len(field_path) == 1:
                     if field_path[0] == 'meta':
-                        term = Q('multi_match', fields=['all_text'], query=x['query'])
+                        term = Q('multi_match', fields=['all_meta'], query=x['query'])
                 elif len(field_path) == 2:
                     if field_path[0] == 'meta':
                         term = Q('nested', path='meta', query=Q('bool', must=[
@@ -229,6 +232,10 @@ class Backbone:
                         term = Q('nested', path='tags', query=Q('bool', must=[
                             Q('match', tags__name=x['query']),
                             Q('range', tags__count={'gte': 2}),
+                        ]))
+                    elif field_path[0] == 'source':
+                        term = Q('nested', path='source', query=Q('bool', must=[
+                            Q('match', source__name=x['query']),
                         ]))
 
             if term is None:

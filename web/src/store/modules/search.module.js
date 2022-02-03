@@ -10,10 +10,12 @@ const search = {
   },
   actions: {
     post({ commit, dispatch, state }, params) {
-      if (!state.backBtn) {
-        dispatch('setURLParams', params);
-      } else {
-        commit('toggleBackBtn');
+      if (!params.sourceView) {
+        if (!state.backBtn) {
+          dispatch('setURLParams', params);
+        } else {
+          commit('toggleBackBtn');
+        }
       }
       axios.post('/search', { params })
         .then(({ data }) => {

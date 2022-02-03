@@ -39,6 +39,12 @@ class ResourceView(RPCView):
                     'meta': meta_from_proto(x.meta),
                     'tags': tags_from_proto(x.tags),
                     'path': media_url_to_image(x.id),
+                    'source': {
+                        'id': x.source.id,
+                        'name': x.source.name,
+                        'url': x.source.url,
+                        'is_public': x.source.is_public,
+                    },
                 }
         except grpc.RpcError as error:
             pass

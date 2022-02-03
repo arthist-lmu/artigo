@@ -48,6 +48,8 @@ class SearchView(RPCView):
 
                     if field == 'tags':
                         term.text.field = 'tags.name'
+                    elif field == 'source':
+                        term.text.field = 'source.name'
                     elif field in ['all-text', '']:
                         term.text.field = 'all-text'
                     else:
@@ -89,6 +91,12 @@ class SearchView(RPCView):
                     'meta': meta_from_proto(x.meta),
                     'tags': tags_from_proto(x.tags),
                     'path': media_url_to_image(x.id),
+                    'source': {
+                        'id': x.source.id,
+                        'name': x.source.name,
+                        'url': x.source.url,
+                        'is_public': x.source.is_public,
+                    },
                 })
 
             aggregations = []

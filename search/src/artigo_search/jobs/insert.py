@@ -17,8 +17,8 @@ class InsertJob:
         doc = {
             'id': entry['id'], 
             'meta': entry['meta'],
-            'source': entry['source'],
             'tags': entry['tags'],
+            'source': entry['source'],
         }
 
         return 'ok', doc

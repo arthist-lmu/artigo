@@ -22,7 +22,10 @@
           <v-data-table
             :headers="headers"
             :items="entries"
+            :sort-by="['count_taggings', 'count_gamerounds']"
+            :sort-desc="[true, true]"
             hide-default-footer
+            multi-sort
             dense
           />
         </v-expansion-panel-content>

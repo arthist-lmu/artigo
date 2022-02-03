@@ -144,32 +144,3 @@ export default {
   },
 };
 </script>
-
-<style>
-.v-pagination__item, .v-pagination__navigation {
-  box-shadow: none;
-}
-
-.v-alert .v-select .v-input__control {
-  max-width: 65px;
-  min-height: 14px;
-}
-
-.v-alert .v-select .v-input__append-outer {
-  display: flex;
-  align-items: center;
-  margin-top: 0;
-  margin-bottom: 0;
-  height: 24px;
-}
-
-.v-alert .v-select .v-select__selection {
-  margin-top: 0;
-}
-</style>
-
-<style scoped>
-.col.disabled {
-  display: none;
-}
-</style>

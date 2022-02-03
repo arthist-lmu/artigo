@@ -9,7 +9,6 @@ urlpatterns = [
     # path('logout', views.LogoutView.as_view(), name='logout'),
     # path('register', views.RegisterView.as_view(), name='register'),
     path('resource', views.ResourceView.as_view(), name='resource'),
-    path('collection', views.CollectionView.as_view(), name='collection'),
     path('search', views.SearchView.as_view(), name='search'),
     path('game', views.Game.as_view(), name='game'),
     path('highscore', views.Highscore.as_view(), name='highscore'),

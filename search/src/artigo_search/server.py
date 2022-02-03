@@ -40,6 +40,7 @@ def search(args):
             if e.get('source'):
                 entry.source.id = e['source']['id']
                 entry.source.name = e['source']['name']
+                entry.source.url = e['source']['url']
                 entry.source.is_public = e['source']['is_public']
 
         for a in search_results.get('aggregations', []):
@@ -116,14 +117,14 @@ class Commune(index_pb2_grpc.IndexServicer):
             if x.get('meta'):
                 meta_to_proto(entry.meta, x['meta'])
 
+            if x.get('tags'):
+                tags_to_proto(entry.tags, x['tags'])
+
             if x.get('source'):
                 entry.source.id = x['source']['id']
                 entry.source.name = x['source']['name']
                 entry.source.url = x['source']['url']
                 entry.source.is_public = x['source']['is_public']
-
-            if x.get('tags'):
-                tags_to_proto(entry.tags, x['tags'])
 
         return results
 
@@ -141,8 +142,8 @@ class Commune(index_pb2_grpc.IndexServicer):
                 yield {
                     'id': x.image.id,
                     'meta': meta_from_proto(x.image.meta),
-                    'source': source,
                     'tags': tags_from_proto(x.image.tags),
+                    'source': source,
                     'cache': cache[x.image.id],
                 }
 
