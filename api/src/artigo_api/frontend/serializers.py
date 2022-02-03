@@ -72,8 +72,8 @@ class TitleSerializer(serializers.ModelSerializer):
 
 
 class ResourceSerializer(serializers.ModelSerializer):
-  creators = CreatorSerializer(many=True)
-  titles = TitleSerializer(many=True)
+  creators = StringRelatedField(many=True)
+  titles = StringRelatedField(many=True)
 
   class Meta:
     model = Resource
@@ -88,7 +88,6 @@ class ResourceSerializer(serializers.ModelSerializer):
 
   def to_representation(self, data):
     data = super().to_representation(data)
-
     return data
 
 
@@ -170,10 +169,11 @@ class GameroundSerializer(serializers.ModelSerializer):
 
 class TaggingSerializer(serializers.ModelSerializer):
   tag = TagSerializer(required=False, write_only=False)
-  resource_id = serializers.PrimaryKeyRelatedField(queryset=Resource.objects.all(),
-                                                   required=True,
-                                                   source='resource',
-                                                   write_only=False)
+  # resource_id = serializers.PrimaryKeyRelatedField(queryset=Resource.objects.all(),
+  #                                                  required=True,
+  #                                                  source='resource',
+  #                                                  write_only=False)
+  resource = ResourceSerializer(required=True, write_only=False)
   gameround_id = serializers.PrimaryKeyRelatedField(queryset=Gameround.objects.all(),
                                                     required=False,
                                                     source='gameround',
@@ -185,7 +185,7 @@ class TaggingSerializer(serializers.ModelSerializer):
 
   class Meta:
     model = Tagging
-    fields = ('id', 'user_id', 'gameround_id', 'resource_id', 'tag', 'created', 'score', 'origin')
+    fields = ('id', 'user_id', 'gameround_id', 'resource', 'tag', 'created', 'score', 'origin')
     depth = 1
 
   def create(self, validated_data):

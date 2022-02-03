@@ -185,10 +185,10 @@ class ARTigoGameView(APIView):
 
         return Response({  # 'gametype': gametype_serializer.data,
             'first resource': first_resource_serializer.data,
-            'second resource': second_resource_serializer.data,
-            'third resource': third_resource_serializer.data,
-            'fourth resource': fourth_resource_serializer.data,
-            'fifth resource': fifth_resource_serializer.data,
+            # 'second resource': second_resource_serializer.data,
+            # 'third resource': third_resource_serializer.data,
+            # 'fourth resource': fourth_resource_serializer.data,
+            # 'fifth resource': fifth_resource_serializer.data,
             'first_gameround': gameround_serializer.data,
         })
         # TODO: handle timeout after 5 min!
@@ -199,21 +199,16 @@ class ARTigoGameView(APIView):
 
     def post(self, request, *args, **kwargs):
         controller = GameViewController()
-        if not isinstance(request.user, CustomUser):
-            current_user_id = 1
-        else:
-            current_user_id = request.user.pk
+
         gameround = request.data.get('gameround', '')
         random_resource = request.data.get('resource', '')
-        created = datetime.now()
-        score = 0
-        origin = ''
-        name = request.data.get('name', '')
-        language = request.data.get('language', '')
 
         # A previously played gameround for this resource is coordinated for Tag verification
         # coordinated_gameround = controller.get_gameround_matching_resource(random_resource.id)
         # coordinated_gameround_tags = []
+
+        resource = request.GET.get('resource')
+        resource_serializer = ResourceSerializer(resource)
 
         tag_serializer = TagSerializer(data=request.data)
         tagging_serializer = TaggingSerializer(data=request.data)
