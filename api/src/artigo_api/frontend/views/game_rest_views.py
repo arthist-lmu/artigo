@@ -55,7 +55,8 @@ class GameViewController:
         """Checks if a previously played game round exists for a randomly chosen resource
         Returns a serialized gameround object (played previously for this same resource)
         """
-        current_gameround = Gameround.objects.all().filter(taggings__resource_id=random_resource_id).order_by("?").first()
+        current_gameround = Gameround.objects.all().filter(taggings__resource_id=random_resource_id).order_by(
+            "?").first()
         gameround_serializer = GameroundSerializer(current_gameround)
 
         return gameround_serializer.data
@@ -182,19 +183,19 @@ class ARTigoGameView(APIView):
 
         gameround_serializer = GameroundSerializer(gameround)
 
-        return Response({# 'gametype': gametype_serializer.data,
+        return Response({  # 'gametype': gametype_serializer.data,
             'first resource': first_resource_serializer.data,
             'second resource': second_resource_serializer.data,
             'third resource': third_resource_serializer.data,
             'fourth resource': fourth_resource_serializer.data,
             'fifth resource': fifth_resource_serializer.data,
             'first_gameround': gameround_serializer.data,
-                         })
+        })
         # TODO: handle timeout after 5 min!
         # if :
 
         # else:
-            # return Response(status=status.HTTP_408_REQUEST_TIMEOUT)
+        # return Response(status=status.HTTP_408_REQUEST_TIMEOUT)
 
     def post(self, request, *args, **kwargs):
         controller = GameViewController()
@@ -213,28 +214,34 @@ class ARTigoGameView(APIView):
 
         # A previously played gameround for this resource is coordinated for Tag verification
         # coordinated_gameround = controller.get_gameround_matching_resource(random_resource.id)
+        # coordinated_gameround_tags = []
 
         tag_serializer = TagSerializer(data=request.data)
         tagging_serializer = TaggingSerializer(data=request.data)
 
-        if Tag.objects.all().filter(name=name, language=language).exists():
-            if Tagging.objects.all().filter(user=current_user_id, gameround=gameround, resource=random_resource,
-                                            tag=Tag.objects.all().get(name=name, language=language),
-                                            created=created, score=score+5, origin=origin).exists():
+        # if Tag.objects.all().filter(name=name, language=language).exists():
 
-                if tag_serializer.is_valid(raise_exception=True):
-                    tag = request.data
-                    tag_serializer.save(tag)
-                    if tagging_serializer.is_valid(raise_exception=True):
-                        tagging_serializer.save(tagging=request.data, tag=tag)
-                        return Response({"status": "success", "data": tagging_serializer.data},
-                                        status=status.HTTP_201_CREATED)
-                    else:
-                        return Response({"status": "success", "data": tag_serializer.data},
-                                        status=status.HTTP_201_CREATED)
-                else:
-                    return Response({"status": "error", "data": tag_serializer.errors},
-                                    status=status.HTTP_400_BAD_REQUEST)
+        # if Tagging.objects.all().filter(user=current_user_id, gameround=gameround, resource=random_resource,
+        #                                 tag=Tag.objects.all().get(name=name, language=language),
+        #                                 created=created, score=score, origin=origin).exists():
+        #     score += 5
+        # elif Tag.objects.all().get(name=name, language=language) in coordinated_gameround_tags:
+        #     score += 25
+
+        # Tagging.objects.create(user=current_user_id, gameround=gameround, resource=random_resource,tag=tag, created=created,
+                               # score=score + 5, origin=origin)
+
+        # if tag_serializer.is_valid(raise_exception=True):
+            # tag = request.data
+            # tag_serializer.save(tag=request.data)
+        if tagging_serializer.is_valid(raise_exception=True):
+                # tagging = request.data
+            tagging_serializer.save(tagging=request.data)
+            return Response({"status": "success", "data": tagging_serializer.data}, status=status.HTTP_201_CREATED)
+            # else:
+            # return Response({"status": "success", "data": tag_serializer.data},status=status.HTTP_201_CREATED)
+        else:
+            return Response({"status": "error", "data": tag_serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class ARTigoTabooGameView(APIView):
@@ -285,19 +292,18 @@ class ARTigoTabooGameView(APIView):
         tag_serializer = TagSerializer(data=request.data)
         tagging_serializer = TaggingSerializer(data=request.data)
 
-        if Tag.objects.all().filter(name=name, language=language).exists():
+        if Tag.objects.all().get(name=name, language=language).exists():
             if tag_serializer.is_valid(raise_exception=True):
                 tag_serializer.save(tag=request.data)
-                return Response({"status": "success", "data": tag_serializer.data}, status=status.HTTP_201_CREATED)
+                return Response(tag_serializer.data, status=status.HTTP_201_CREATED)
             else:
-                return Response({"status": "error", "data": tag_serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+                return Response(tag_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         else:
             if tagging_serializer.is_valid(raise_exception=True):
                 tagging_serializer.save(tagging=request.data)
-                return Response({"status": "success", "data": tagging_serializer.data}, status=status.HTTP_200_OK)
+                return Response(tagging_serializer.data, status=status.HTTP_200_OK)
             else:
-                return Response({"status": "error", "data": tagging_serializer.errors},
-                                status=status.HTTP_400_BAD_REQUEST)
+                return Response(tagging_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class TagATagGameView(APIView):
@@ -416,7 +422,8 @@ class CombinoGameView(APIView):
             combined_tagging_serializer.save(combination=request.data)
             return Response({"status": "success", "data": combined_tagging_serializer.data}, status=status.HTTP_200_OK)
         else:
-            return Response({"status": "error", "data": combined_tagging_serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"status": "error", "data": combined_tagging_serializer.errors},
+                            status=status.HTTP_400_BAD_REQUEST)
 
 
 class GamesessionView(APIView):
@@ -435,7 +442,8 @@ class GamesessionView(APIView):
             gamesession_serializer.save(gamesession=request.data)
             return Response({"status": "success", "data": gamesession_serializer.data}, status=status.HTTP_200_OK)
         else:
-            return Response({"status": "error", "data": gamesession_serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"status": "error", "data": gamesession_serializer.errors},
+                            status=status.HTTP_400_BAD_REQUEST)
 
 
 class GameroundView(APIView):
@@ -447,7 +455,7 @@ class GameroundView(APIView):
 
         random_resource = Resource.objects.all().order_by('?').first()
         resource_serializer = ResourceSerializer(random_resource)  # Response is a serialized JSON object
-        random_resource_id = random_resource.id   # id of the random Resource for the game round
+        random_resource_id = random_resource.id  # id of the random Resource for the game round
         gameround = Gameround.objects.all().filter(taggings__resource_id=random_resource_id).order_by("?").first()
         gameround_serializer = GameroundSerializer(gameround)
 
@@ -509,6 +517,7 @@ class GameResourceView(APIView):
     """
     API view to handle resources
     """
+
     def get(self, request, *args, **kwargs):
         resource = Resource.objects.all().order_by('?').first()
         serializer = ResourceSerializer(resource)

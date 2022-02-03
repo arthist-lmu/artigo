@@ -219,12 +219,12 @@ class TaggingSerializer(serializers.ModelSerializer):
     #   validated_data['user'] = user
 
     tagging.save()
-
     return tagging
 
-  def to_representation(self, data):
-    data = super().to_representation(data)
-    return data
+  def to_representation(self, instance):
+    rep = super().to_representation(instance)
+    rep['tag'] = TagSerializer(instance.tag).data
+    return rep
 
 
 class TaggingGetSerializer(serializers.ModelSerializer):
