@@ -68,6 +68,13 @@ class TaggingTests(TestCase):
         tagging = Tagging()
         self.assertEqual(str(tagging), tagging.tag)
 
+    def test_model_can_create_tagging(self):
+        """Test the tagging model can create a tagging instance"""
+        old_count = Tagging.objects.count()
+        self.tagging.save()
+        new_count = Tagging.objects.count()
+        self.assertNotEqual(old_count, new_count)
+
 
 class TagTests(TestCase):
     def setUp(self):
@@ -96,6 +103,13 @@ class TagTests(TestCase):
         tag = Tag()
         self.assertEqual(str(tag), tag.name)
 
+    def test_model_can_create_tag(self):
+        """Test the tagging model can create a tag instance"""
+        old_count = Tag.objects.count()
+        self.tag.save()
+        new_count = Tag.objects.count()
+        self.assertNotEqual(old_count, new_count)
+
 
 class CombinationTests(TestCase):
     def setUp(self):
@@ -112,6 +126,13 @@ class CombinationTests(TestCase):
                                        created=self.combination_created,
                                        score=self.combination_score)
 
+    def test_model_can_create_combination(self):
+        """Test the tagging model can create a combination instance"""
+        old_count = Combination.objects.count()
+        self.combination.save()
+        new_count = Combination.objects.count()
+        self.assertNotEqual(old_count, new_count)
+
 
 class GamesessionTests(TestCase):
     def setUp(self):
@@ -121,6 +142,13 @@ class GamesessionTests(TestCase):
         self.gamesession = Gamesession(user=self.gamesession_user,
                                        gametype=self.gamesession_gametype,
                                        created=self.gamesession_created)
+
+    def test_model_can_create_gamesession(self):
+        """Test the tagging model can create a gamesession instance"""
+        old_count = Gamesession.objects.count()
+        self.gamesession.save()
+        new_count = Gamesession.objects.count()
+        self.assertNotEqual(old_count, new_count)
 
 
 class GameroundTests(TestCase):
@@ -134,6 +162,13 @@ class GameroundTests(TestCase):
                                    created=self.gameround_created,
                                    score=self.gameround_score)
 
+    def test_model_can_create_gameround(self):
+        """Test the tagging model can create a gameround instance"""
+        old_count = Gameround.objects.count()
+        self.gameround.save()
+        new_count = Gameround.objects.count()
+        self.assertNotEqual(old_count, new_count)
+
 
 class GametypeTests(TestCase):
     def setUp(self):
@@ -141,10 +176,10 @@ class GametypeTests(TestCase):
         self.gametype_rounds = 5
         self.gametype_rounds_duration = 60
         self.gametype_enabled = True
-        self.gameround = Gameround(name=self.gametype_name,
-                                   rounds=self.gametype_rounds,
-                                   rounds_duration=self.gametype_rounds_duration,
-                                   enabled=self.gametype_enabled)
+        self.gametype = Gametype(name=self.gametype_name,
+                                 rounds=self.gametype_rounds,
+                                 rounds_duration=self.gametype_rounds_duration,
+                                 enabled=self.gametype_enabled)
 
     def test_name_size(self):
         gametype = Gametype.objects.get(name="Gametype")
@@ -155,6 +190,13 @@ class GametypeTests(TestCase):
         """Test for string representation"""
         gametype = Gametype()
         self.assertEqual(str(gametype), gametype.name)
+
+    def test_model_can_create_gametype(self):
+        """Test the tagging model can create a gametype instance"""
+        old_count = Gametype.objects.count()
+        self.gametype.save()
+        new_count = Gametype.objects.count()
+        self.assertNotEqual(old_count, new_count)
 
 
 class ResourceTests(TestCase):
@@ -189,6 +231,13 @@ class ResourceTests(TestCase):
         resource = Resource()
         self.assertEqual(str(resource), resource.hash_id)
 
+    def test_model_can_create_resource(self):
+        """Test the tagging model can create a resource instance"""
+        old_count = Resource.objects.count()
+        self.resource.save()
+        new_count = Resource.objects.count()
+        self.assertNotEqual(old_count, new_count)
+
 
 class TitleTests(TestCase):
     def setUp(self):
@@ -211,6 +260,13 @@ class TitleTests(TestCase):
         """Test for string representation"""
         title = Title()
         self.assertEqual(str(title), title.name)
+
+    def test_model_can_create_title(self):
+        """Test the tagging model can create a title instance"""
+        old_count = Title.objects.count()
+        self.title.save()
+        new_count = Title.objects.count()
+        self.assertNotEqual(old_count, new_count)
 
 
 class CreatorTests(TestCase):
@@ -235,6 +291,13 @@ class CreatorTests(TestCase):
         creator = Creator()
         self.assertEqual(str(creator), creator.name)
 
+    def test_model_can_create_creator(self):
+        """Test the tagging model can create a creator instance"""
+        old_count = Creator.objects.count()
+        self.creator.save()
+        new_count = Creator.objects.count()
+        self.assertNotEqual(old_count, new_count)
+
 
 class ArtStyleTests(TestCase):
     def setUp(self):
@@ -242,6 +305,13 @@ class ArtStyleTests(TestCase):
         self.artstyle_language = "some language"
         self.artstyle = ArtStyle(name=self.artstyle_name,
                                  language=self.artstyle_language)
+
+    def test_model_can_create_artstyle(self):
+        """Test the tagging model can create an artstyle instance"""
+        old_count = ArtStyle.objects.count()
+        self.artstyle.save()
+        new_count = ArtStyle.objects.count()
+        self.assertNotEqual(old_count, new_count)
 
     def test_str(self):
         """Test for string representation"""
@@ -261,6 +331,13 @@ class ArtMovementTests(TestCase):
         movement = ArtMovement()
         self.assertEqual(str(movement), movement.name)
 
+    def test_model_can_create_artmovement(self):
+        """Test the tagging model can create an artmovement instance"""
+        old_count = ArtMovement.objects.count()
+        self.artmovement.save()
+        new_count = ArtMovement.objects.count()
+        self.assertNotEqual(old_count, new_count)
+
 
 class ArtTechniqueTests(TestCase):
     def setUp(self):
@@ -274,6 +351,13 @@ class ArtTechniqueTests(TestCase):
         technique = ArtTechnique()
         self.assertEqual(str(technique), technique.name)
 
+    def test_model_can_create_arttechnique(self):
+        """Test the tagging model can create an arttechnique instance"""
+        old_count = ArtTechnique.objects.count()
+        self.arttechnique.save()
+        new_count = ArtTechnique.objects.count()
+        self.assertNotEqual(old_count, new_count)
+
 
 class WebPageTests(TestCase):
     def setUp(self):
@@ -281,6 +365,13 @@ class WebPageTests(TestCase):
         self.webpage_language = "language of wp"
         self.webpage = WebPage(url=self.webpage_url,
                                language=self.webpage_language)
+
+    def test_model_can_create_webpage(self):
+        """Test the tagging model can create a webpage instance"""
+        old_count = WebPage.objects.count()
+        self.webpage.save()
+        new_count = WebPage.objects.count()
+        self.assertNotEqual(old_count, new_count)
 
 
 class LocationTests(TestCase):
@@ -294,6 +385,13 @@ class LocationTests(TestCase):
         """Test for string representation"""
         location = Location()
         self.assertEqual(str(location), location.name)
+
+    def test_model_can_create_location(self):
+        """Test the tagging model can create a location instance"""
+        old_count = Location.objects.count()
+        self.location.save()
+        new_count = Location.objects.count()
+        self.assertNotEqual(old_count, new_count)
 
 
 class InstitutionTests(TestCase):
@@ -318,3 +416,10 @@ class InstitutionTests(TestCase):
         """Test for string representation"""
         institution = Institution()
         self.assertEqual(str(institution), institution.name)
+
+    def test_model_can_create_institution(self):
+        """Test the tagging model can create an institution instance"""
+        old_count = Institution.objects.count()
+        self.institution.save()
+        new_count = Institution.objects.count()
+        self.assertNotEqual(old_count, new_count)

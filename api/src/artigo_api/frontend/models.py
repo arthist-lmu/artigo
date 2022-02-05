@@ -42,6 +42,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         return self.username
 
     def __str__(self):
+        """Return a human readable representation of the model instance."""
         return f'{self.email} ({self.username})' or ''
 
 
@@ -53,6 +54,7 @@ class Institution(models.Model):
     objects = models.Manager()
 
     def __str__(self):
+        """Return a human readable representation of the model instance."""
         return self.name
 
 
@@ -63,6 +65,7 @@ class Location(models.Model):
     objects = models.Manager()
 
     def __str__(self):
+        """Return a human readable representation of the model instance."""
         return self.name
 
 
@@ -71,6 +74,7 @@ class ArtTechnique(models.Model):
     language = models.CharField(max_length=256)
 
     def __str__(self):
+        """Return a human readable representation of the model instance."""
         return self.name
 
 
@@ -79,6 +83,7 @@ class ArtMovement(models.Model):
     language = models.CharField(max_length=256)
 
     def __str__(self):
+        """Return a human readable representation of the model instance."""
         return self.name
 
 
@@ -87,6 +92,7 @@ class ArtStyle(models.Model):
     language = models.CharField(max_length=256)
 
     def __str__(self):
+        """Return a human readable representation of the model instance."""
         return self.name
 
 
@@ -95,6 +101,7 @@ class WebPage(models.Model):
     language = models.CharField(max_length=256)
 
     def __str__(self):
+        """Return a human readable representation of the model instance."""
         return str(self.url) or ''
 
 
@@ -110,6 +117,7 @@ class Creator(models.Model):
     objects = models.Manager()
 
     def __str__(self):
+        """Return a human readable representation of the model instance."""
         return self.name
 
 
@@ -125,6 +133,7 @@ class Title(models.Model):
     objects = models.Manager()
 
     def __str__(self):
+        """Return a human readable representation of the model instance."""
         return self.name
 
 
@@ -147,6 +156,7 @@ class Resource(models.Model):
     objects = models.Manager()
 
     def __str__(self):
+        """Return a human readable representation of the model instance."""
         return self.hash_id or ''
 
     @property
@@ -165,6 +175,7 @@ class Gametype(models.Model):
     objects = models.Manager()
 
     def __str__(self):
+        """Return a human readable representation of the model instance."""
         return self.name
 
 
@@ -208,6 +219,7 @@ class Tag(models.Model):
     objects = models.Manager()
 
     def __str__(self):
+        """Return a human readable representation of the model instance."""
         return self.name or ''
 
     @property
@@ -229,6 +241,7 @@ class Tagging(models.Model):
     objects = models.Manager()
 
     def __str__(self):
+        """Return a human readable representation of the model instance."""
         return str(self.tag) or ''
 
 
@@ -243,6 +256,7 @@ class Combination(models.Model):
     score = models.PositiveIntegerField(default=0)
 
     def __str__(self):
+        """Return a human readable representation of the model instance."""
         return str(self.tag_id) or ''
 
 
