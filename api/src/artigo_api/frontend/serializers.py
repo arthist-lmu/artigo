@@ -5,6 +5,7 @@ from frontend.views import tag_service
 
 # TODO: update fields according to model changes
 from frontend.models import *
+from rest_framework.fields import ReadOnlyField
 from rest_framework.relations import StringRelatedField, SlugRelatedField
 
 
@@ -72,8 +73,8 @@ class TitleSerializer(serializers.ModelSerializer):
 
 
 class ResourceSerializer(serializers.ModelSerializer):
-  creators = StringRelatedField(many=True)
-  titles = StringRelatedField(many=True)
+  creators = serializers.ReadOnlyField(source='creator.name')
+  titles = serializers.ReadOnlyField(source='title.name')
 
   class Meta:
     model = Resource
@@ -95,7 +96,7 @@ class TagSerializer(serializers.ModelSerializer):
 
   class Meta:
     model = Tag
-    fields = ('name', 'language')
+    fields = ('id', 'name', 'language')
 
   def create(self, validated_data):
     tag_data = validated_data.pop('tag')
@@ -143,10 +144,11 @@ class GameroundSerializer(serializers.ModelSerializer):
 
   class Meta:
     model = Gameround
-    fields = ['id', 'user', 'gamesession', 'created', 'score', 'tags_to_compare']
+    fields = ('id', 'user', 'gamesession', 'created', 'score', 'tags_to_compare')
 
   def get_tags_to_compare(self, round):
     taggings = round.tags
+    # coordinated_gameround_tags_list = round.taggings.all().values_list("tag__name", flat=True)
     return taggings
 
   def get_field_names(self, *args, **kwargs):
@@ -169,11 +171,214 @@ class GameroundSerializer(serializers.ModelSerializer):
 
 class TaggingSerializer(serializers.ModelSerializer):
   tag = TagSerializer(required=False, write_only=False)
-  # resource_id = serializers.PrimaryKeyRelatedField(queryset=Resource.objects.all(),
-  #                                                  required=True,
-  #                                                  source='resource',
-  #                                                  write_only=False)
-  resource = ResourceSerializer(required=True, write_only=False)
+  resource_id = serializers.PrimaryKeyRelatedField(queryset=Resource.objects.all(),
+                                                   required=True,
+                                                   source='resource',
+                                                   write_only=False)
+  gameround_id = serializers.PrimaryKeyRelatedField(queryset=Gameround.objects.all(),
+                                                    required=False,
+                                                    source='gameround',
+                                                    write_only=False)
+  user_id = serializers.PrimaryKeyRelatedField(queryset=CustomUser.objects.all(),
+                                               required=False,
+                                               source='user',
+                                               write_only=False)
+  score = serializers.SerializerMethodField('get_score')
+
+  class Meta:
+    model = Tagging
+    fields = ('id', 'user_id', 'gameround_id', 'resource_id', 'tag', 'created', 'score', 'origin')
+    depth = 1
+
+  def create(self, validated_data):
+    """Create and return a new tagging"""
+
+    user = None
+    request = self.context.get("request")
+    if request and hasattr(request, "user"):
+      user = request.user
+
+    resource = None
+    # self means it refences post request instead of get
+    request = self.context.get("request")
+    if request and hasattr(request, "resource"):
+      resource = request.query_params("resource")
+
+    score = 0
+    tag_data = validated_data.pop('tag', None)
+    if tag_data:
+      tag = Tag.objects.get_or_create(**tag_data)[0]
+      validated_data['tag'] = tag
+      if not Tag.objects.all().filter(name=tag.name).exists():
+        score = 0
+      elif Tag.objects.all().filter(name=tag.name).exists():
+        score += 5
+
+        score = self.get_score(tagging=tag)
+
+    tagging = Tagging(
+      user=user,
+      gameround=validated_data.get("gameround"),
+      # resource=request.query_params['resource'],
+      resource=validated_data.get("resource"),
+      # resource=request.query_params.get('resource'),
+      tag=validated_data.get("tag"),
+      created=datetime.now(),
+      score=score,
+      origin=""
+    )
+    tagging.save()
+    return tagging
+
+  def get_score(self, tagging):
+    score = 0
+    resource_id = tagging.resource.id
+    # A previously played gameround for this resource is coordinated for Tag verification
+    coordinated_gameround = Gameround.objects.all().filter(taggings__resource_id=resource_id).order_by("?").first()
+    # list of tag_name from coordinated gameround
+    coordinated_gameround_tags = coordinated_gameround.taggings.all().values_list("tag__name", flat=True)
+
+    if Tag.objects.all().filter(name=tagging) in coordinated_gameround_tags:
+      score += 25
+
+    return score
+
+  def to_representation(self, instance):
+    rep = super().to_representation(instance)
+    rep['tag'] = TagSerializer(instance.tag).data
+    return rep
+
+
+class TaggingGetSerializer(serializers.ModelSerializer):
+  """Tagging Serializer to be used only for GET request"""
+  tag = StringRelatedField()
+  resource = serializers.PrimaryKeyRelatedField(read_only=True)
+  gameround = serializers.PrimaryKeyRelatedField(read_only=True)
+  user = serializers.PrimaryKeyRelatedField(required=False, read_only=True)
+
+  class Meta:
+    model = Tagging
+    fields = ('id', 'user', 'gameround', 'resource', 'tag', 'created', 'score', 'origin')
+
+  def create(self, validated_data):
+    """Create and return a new tagging"""
+    tags_data = validated_data.pop('tag')
+    resources_data = validated_data.pop('resource')
+    gamerounds_data = validated_data.pop('gameround')
+    users_data = validated_data.pop('user')
+    tagging = Tagging.objects.create(tag=tags_data, resource=resources_data, gameround=gamerounds_data, user= users_data)
+    return tagging
+
+  def to_representation(self, data):
+    data = super().to_representation(data)
+    return data
+
+
+class CombinationSerializer(serializers.ModelSerializer):
+  tag_id = serializers.PrimaryKeyRelatedField(queryset=Tag.objects.all(),
+                                              required=True,
+                                              source='tag',
+                                              write_only=False)
+  resource_id = serializers.PrimaryKeyRelatedField(queryset=Resource.objects.all(),
+                                                   required=True,
+                                                   source='resource',
+                                                   write_only=False)
+  gameround_id = serializers.PrimaryKeyRelatedField(queryset=Gameround.objects.all(),
+                                                    required=False,
+                                                    source='gameround',
+                                                    write_only=False)
+  user_id = serializers.PrimaryKeyRelatedField(queryset=CustomUser.objects.all(),
+                                               required=False,
+                                               source='user',
+                                               write_only=False)
+
+  class Meta:
+    model = Combination
+    depth = 1
+    fields = ('id', 'user_id', 'gameround_id', 'resource_id', 'tag_id', 'created', 'score')
+
+  def create(self, validated_data):
+    user = None
+    request = self.context.get("request")
+    if request and hasattr(request, "user"):
+      user = request.user
+
+    score = 0
+
+    tag_data = validated_data.pop('tag', None)
+    if tag_data:
+      tag = Tag.objects.get_or_create(**tag_data)[0]
+      validated_data['tag'] = tag
+      # Combination.objects.create(tag=tag, **validated_data)
+
+    combination = Combination(
+      user=user,
+      gameround=validated_data.get("gameround"),
+      resource=validated_data.get("resource"),
+      # tag_id=validated_data.get("tag"),
+      created=datetime.now(),
+      score=score
+    )
+    combination.tag_id.add(validated_data.get("tag"))
+    combination.save()
+    return combination
+
+  def to_representation(self, instance):
+    rep = super().to_representation(instance)
+    rep['tag'] = TagSerializer(instance.tag.all(), many=True).data
+    return rep
+
+
+class TagCountSerializer(serializers.ModelSerializer):
+  """Serializer with a count of a specific tag (over all resources)"""
+  tag = TagSerializer(read_only=True)
+  tag_count = serializers.SerializerMethodField('get_tag_count')
+
+  class Meta:
+    model = Tagging
+    fields = ('id', 'tag', 'gameround', 'resource', 'tag_count')
+
+  def get_tag_count(self, obj):
+    tag_count = Tagging.objects.filter(tag=obj.tag).count()
+    return tag_count
+
+  def to_representation(self, data):
+    data = super().to_representation(data)
+    return data
+
+
+class TabooTagSerializer(serializers.ModelSerializer):
+  creators = StringRelatedField(many=True)
+  titles = StringRelatedField(many=True)
+
+  taboo_tags = serializers.SerializerMethodField('get_taboo_tags')
+
+  class Meta:
+    model = Resource
+    fields = ['id', 'hash_id', 'titles', 'creators', 'taboo_tags']
+    read_only_fields = ['titles', 'creators', 'institution']
+
+  def get_taboo_tags(self, res):
+    """
+    :param res:
+    :return: A list of the ids of the validated Tags (not Taggings) per Resource
+    """
+    taboo_tags = res.tags
+    return taboo_tags
+
+  def to_representation(self, data):
+    data = super().to_representation(data)
+    return data
+
+
+class TabooTaggingSerializer(serializers.ModelSerializer):
+  # TODO: Add extra conditions for ARTigo Taboo post
+  tag = TagSerializer(required=False, write_only=False)
+  resource_id = serializers.PrimaryKeyRelatedField(queryset=Resource.objects.all(),
+                                                   required=True,
+                                                   source='resource',
+                                                   write_only=False)
+  # resource = ResourceSerializer(required=True, write_only=False)
   gameround_id = serializers.PrimaryKeyRelatedField(queryset=Gameround.objects.all(),
                                                     required=False,
                                                     source='gameround',
@@ -185,7 +390,7 @@ class TaggingSerializer(serializers.ModelSerializer):
 
   class Meta:
     model = Tagging
-    fields = ('id', 'user_id', 'gameround_id', 'resource', 'tag', 'created', 'score', 'origin')
+    fields = ('id', 'user_id', 'gameround_id', 'resource_id', 'tag', 'created', 'score', 'origin')
     depth = 1
 
   def create(self, validated_data):
@@ -237,113 +442,6 @@ class TaggingSerializer(serializers.ModelSerializer):
     return rep
 
 
-class TaggingGetSerializer(serializers.ModelSerializer):
-  """Tagging Serializer to be used only for GET request"""
-  tag = StringRelatedField()
-  resource = serializers.PrimaryKeyRelatedField(read_only=True) # StringRelatedField returns hash-id
-  gameround = serializers.PrimaryKeyRelatedField(read_only=True)
-  user = serializers.PrimaryKeyRelatedField(required=False, read_only=True)
-
-  class Meta:
-    model = Tagging
-    fields = ('id', 'user', 'gameround', 'resource', 'tag', 'created', 'score', 'origin')
-
-  def create(self, validated_data):
-    """Create and return a new tagging"""
-    tags_data = validated_data.pop('tag')
-    resources_data = validated_data.pop('resource')
-    gamerounds_data = validated_data.pop('gameround')
-    users_data = validated_data.pop('user')
-
-    tagging = Tagging.objects.create(tag=tags_data, resource=resources_data, gameround=gamerounds_data, user= users_data)
-    return tagging
-
-  def to_representation(self, data):
-    data = super().to_representation(data)
-    return data
-
-
-class CombinationSerializer(serializers.ModelSerializer):
-  tag_id = serializers.PrimaryKeyRelatedField(queryset=Tagging.objects.all(),
-                                              required=False,
-                                              source='tagging',
-                                              write_only=False)
-  resource_id = serializers.PrimaryKeyRelatedField(queryset=Resource.objects.all(),
-                                                   required=True,
-                                                   source='resource',
-                                                   write_only=False)
-  gameround_id = serializers.PrimaryKeyRelatedField(queryset=Gameround.objects.all(),
-                                                    required=False,
-                                                    source='gameround',
-                                                    write_only=False)
-  user_id = serializers.PrimaryKeyRelatedField(queryset=CustomUser.objects.all(),
-                                               required=False,
-                                               source='user',
-                                               write_only=False)
-
-  class Meta:
-    model = Combination
-    depth = 1
-    fields = ('group_id', 'user_id', 'gameround_id', 'resource_id', 'tag_id', 'created', 'score', 'origin')
-
-  def create(self, validated_data):
-    combination = Combination(
-      user=validated_data.get("user"),
-      gameround=validated_data.get("gameround"),
-      resource=validated_data.get("resource"),
-      tag_id=validated_data.get("tag_id"),
-      created=datetime.now(),
-      score=validated_data.get("score"),
-    )
-    combination.save()
-    return combination
-
-  def to_representation(self, data):
-    data = super().to_representation(data)
-    return data
-
-
-class TagCountSerializer(serializers.ModelSerializer):
-  """Serializer with a count of a specific tag (over all resources)"""
-  tag = TagSerializer(read_only=True)
-  tag_count = serializers.SerializerMethodField('get_tag_count')
-
-  class Meta:
-    model = Tagging
-    fields = ('id', 'tag', 'gameround', 'resource', 'tag_count')
-
-  def get_tag_count(self, obj):
-    tag_count = Tagging.objects.filter(tag=obj.tag).count()
-    return tag_count
-
-  def to_representation(self, data):
-    data = super().to_representation(data)
-    return data
-
-
-class TabooTagSerializer(serializers.ModelSerializer):
-  creators = CreatorSerializer(many=True)
-  titles = TitleSerializer(many=True)
-  taboo_tags = serializers.SerializerMethodField('get_taboo_tags')
-
-  class Meta:
-    model = Resource
-    fields = ['id', 'hash_id', 'titles', 'creators', 'taboo_tags']
-    read_only_fields = ['titles', 'creators', 'institution']
-
-  def get_taboo_tags(self, res):
-    """
-    :param res:
-    :return: A list of the ids of the validated Tags (not Taggings) per Resource
-    """
-    taboo_tags = res.tags
-    return taboo_tags
-
-  def to_representation(self, data):
-    data = super().to_representation(data)
-    return data
-
-
 class SuggestionsSerializer(serializers.ModelSerializer):
   creators = CreatorSerializer(many=True)
   titles = TitleSerializer(many=True)
@@ -365,6 +463,77 @@ class SuggestionsSerializer(serializers.ModelSerializer):
   def to_representation(self, data):
     data = super().to_representation(data)
     return data
+
+
+class TagATagTaggingSerializer(serializers.ModelSerializer):
+  # TODO: Add extra conditions for Tag a Tag post
+  tag = TagSerializer(required=False, write_only=False)
+  resource_id = serializers.PrimaryKeyRelatedField(queryset=Resource.objects.all(),
+                                                   required=True,
+                                                   source='resource',
+                                                   write_only=False)
+  # resource = ResourceSerializer(required=True, write_only=False)
+  gameround_id = serializers.PrimaryKeyRelatedField(queryset=Gameround.objects.all(),
+                                                    required=False,
+                                                    source='gameround',
+                                                    write_only=False)
+  user_id = serializers.PrimaryKeyRelatedField(queryset=CustomUser.objects.all(),
+                                               required=False,
+                                               source='user',
+                                               write_only=False)
+
+  class Meta:
+    model = Tagging
+    fields = ('id', 'user_id', 'gameround_id', 'resource_id', 'tag', 'created', 'score', 'origin')
+    depth = 1
+
+  def create(self, validated_data):
+    """Create and return a new tagging"""
+    # replace random_resource with resource object once you figure out how to get it from GET request
+    # resource_id = request
+    # A previously played gameround for this resource is coordinated for Tag verification
+    #current_gameround = Gameround.objects.all().filter(taggings__resource_id=resource_id).order_by("?").first()
+    #gameround_serializer = GameroundSerializer(current_gameround)
+    coordinated_gameround_tags = []
+
+    user = None
+    request = self.context.get("request")
+    if request and hasattr(request, "user"):
+      user = request.user
+
+    resource = None
+    request = self.context.get("request")
+    if request and hasattr(request, "resource"):
+      resource = request.resource
+
+    score = 0
+    tag_data = validated_data.pop('tag', None)
+    if tag_data:
+      tag = Tag.objects.get_or_create(**tag_data)[0]
+      validated_data['tag'] = tag
+      if not Tag.objects.all().filter(name=tag.name).exists():
+        score = 0
+      elif Tag.objects.all().filter(name=tag.name).exists():
+        score += 5
+      elif Tag.objects.all().filter(name=tag.name) in coordinated_gameround_tags:
+        score += 25
+
+    tagging = Tagging(
+      user=user,
+      gameround=validated_data.get("gameround"),
+      resource=validated_data.get("resource"),
+      tag=validated_data.get("tag"),
+      created=datetime.now(),
+      score=score,
+      origin=""
+    )
+    tagging.save()
+    return tagging
+
+  def to_representation(self, instance):
+    rep = super().to_representation(instance)
+    rep['tag'] = TagSerializer(instance.tag).data
+    return rep
 
 
 class CombinoTagsSerializer(serializers.ModelSerializer):

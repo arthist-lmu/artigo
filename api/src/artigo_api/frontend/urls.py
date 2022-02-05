@@ -14,6 +14,7 @@ urlpatterns = [
     path('gameround', views.GameroundView.as_view(), name='gameround'),
 
     path('tagging', views.TaggingView.as_view(), name='tagging'),
+    path('combination', views.CombinationView.as_view(), name='combination'),
     path('tag', views.TagView.as_view(), name='tag'),
     path('game_resource', views.GameResourceView.as_view(), name='game_resource'),
     path('game_resource_picture', views.GameResourceViewPicture.as_view(), name='game_resource_picture'),

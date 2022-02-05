@@ -43,7 +43,7 @@ class GameTypeViewTests(TestCase):
     def test_get(self):
         self.client.get('http://localhost:8000/artigo_api/gametype')
         self.assertEqual(response.Response, 200)
-        # self.assertEqual(len(response.responses), len(Gametype.objects.all()))
+        self.assertEqual(len(response.responses), len(Gametype.objects.all()))
 
 
 class GamesessionViewTests(TestCase):

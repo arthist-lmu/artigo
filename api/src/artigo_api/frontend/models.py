@@ -153,7 +153,7 @@ class Resource(models.Model):
     def tags(self):
         tags = self.taggings.values('tag').annotate(count=Count('tag'))
 
-        return tags.values('tag_id', 'tag__name', 'tag__language', 'count')
+        return tags.values('tag_id', 'tag__name', 'count')
 
 
 class Gametype(models.Model):
@@ -234,16 +234,16 @@ class Tagging(models.Model):
 
 class Combination(models.Model):
     """Stores id of a tagging and group of ids it belongs to - for Combino in particular"""
-    group_id = models.PositiveIntegerField(null=False, primary_key=True)
+    # group_id = models.BigAutoField(null=False, primary_key=True)
     user = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, null=True)
     gameround = models.ForeignKey(Gameround, on_delete=models.CASCADE, null=True)
     resource = models.ForeignKey(Resource, on_delete=models.CASCADE, null=True)
-    tag_id = models.ManyToManyField(Tag)
+    tag_id = models.ManyToManyField(Tag, null=True, related_name='combino_tags')
     created = models.DateTimeField(editable=False)
     score = models.PositiveIntegerField(default=0)
 
     def __str__(self):
-        return str(self.tagging_id) or ''
+        return str(self.tag_id) or ''
 
 
 

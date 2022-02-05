@@ -198,27 +198,16 @@ class ARTigoGameView(APIView):
         # return Response(status=status.HTTP_408_REQUEST_TIMEOUT)
 
     def post(self, request, *args, **kwargs):
-        controller = GameViewController()
-
         gameround = request.data.get('gameround', '')
         random_resource = request.data.get('resource', '')
 
-        # A previously played gameround for this resource is coordinated for Tag verification
-        # coordinated_gameround = controller.get_gameround_matching_resource(random_resource.id)
-        # coordinated_gameround_tags = []
+        # resource = request.GET.get('resource')
+        # resource = self.request.query_params.get('resource')
 
-        resource = request.GET.get('resource')
-        resource_serializer = ResourceSerializer(resource)
+        resource_serializer = ResourceSerializer(data=request.query_params.get('resource'))
 
         tag_serializer = TagSerializer(data=request.data)
         tagging_serializer = TaggingSerializer(data=request.data)
-
-        # if Tagging.objects.all().filter(user=current_user_id, gameround=gameround, resource=random_resource,
-        #                                 tag=Tag.objects.all().get(name=name, language=language),
-        #                                 created=created, score=score, origin=origin).exists():
-        #     score += 5
-        # elif Tag.objects.all().get(name=name, language=language) in coordinated_gameround_tags:
-        #     score += 25
 
         if tagging_serializer.is_valid(raise_exception=True):
             tagging_serializer.save(tagging=request.data)
@@ -261,8 +250,8 @@ class ARTigoTabooGameView(APIView):
         )
         gameround_serializer = GameroundSerializer(gameround)
 
-        return Response({'gametype': gametype_serializer.data,
-                         'resourceand taboo input': resource_serializer.data,
+        return Response({# 'gametype': gametype_serializer.data,
+                         'resource and taboo input': resource_serializer.data,
                          'gameround': gameround_serializer.data
                          })
 
@@ -271,7 +260,7 @@ class ARTigoTabooGameView(APIView):
         language = request.data.get('language', '')
 
         tag_serializer = TagSerializer(data=request.data)
-        tagging_serializer = TaggingSerializer(data=request.data)
+        tagging_serializer = TabooTaggingSerializer(data=request.data)
 
         if tagging_serializer.is_valid(raise_exception=True):
             tagging_serializer.save(tagging=request.data)
@@ -318,7 +307,7 @@ class TagATagGameView(APIView):
         )
         gameround_serializer = GameroundSerializer(gameround)
 
-        return Response({'gametype': gametype_serializer.data,
+        return Response({# 'gametype': gametype_serializer.data,
                          'tag': tagging_serializer.data,
                          'resourceand and suggestions': suggestions_serializer.data,
                          'gameround': gameround_serializer.data
@@ -329,7 +318,7 @@ class TagATagGameView(APIView):
         language = request.data.get('language', '')
 
         tag_serializer = TagSerializer(data=request.data)
-        tagging_serializer = TaggingSerializer(data=request.data)
+        tagging_serializer = TagATagTaggingSerializer(data=request.data)
 
         if tagging_serializer.is_valid(raise_exception=True):
             tagging_serializer.save(tagging=request.data)
@@ -347,11 +336,12 @@ class CombinoGameView(APIView):
         gametype = Gametype.objects.all().get(name="Combino")
         gametype_serializer = GametypeSerializer(gametype)
 
-        resource_and_tags = Resource.objects.all().order_by('?').first()
+        # resource_and_tags = Resource.objects.all().order_by('?').first()
+        resource_and_tags = Resource.objects.all().get(id=327888)
         combination_serializer = CombinoTagsSerializer(resource_and_tags)
 
         # TODO: implement list of tags for tags from serializer - test in get to use in post!
-        tag = Tagging.objects.filter(resource__in=resource_and_tags).order_by('?').first()
+        # tag = Tagging.objects.filter(resource__in=resource_and_tags).order_by('?').first()
 
         tags_list = []
 
@@ -375,7 +365,7 @@ class CombinoGameView(APIView):
         )
         gameround_serializer = GameroundSerializer(gameround)
 
-        return Response({'gametype': gametype_serializer.data,
+        return Response({# 'gametype': gametype_serializer.data,
                          'resourceand and tags to combine': combination_serializer.data,
                          'gameround': gameround_serializer.data
                          })
@@ -418,15 +408,15 @@ class GameroundView(APIView):
     """
 
     def get(self, request, *args, **kwargs):
-
-        random_resource = Resource.objects.all().order_by('?').first()
-        resource_serializer = ResourceSerializer(random_resource)  # Response is a serialized JSON object
-        random_resource_id = random_resource.id  # id of the random Resource for the game round
-        gameround = Gameround.objects.all().filter(taggings__resource_id=random_resource_id).order_by("?").first()
+        # random_resource = Resource.objects.all().order_by('?').first()
+        # resource_serializer = ResourceSerializer(random_resource)  # Response is a serialized JSON object
+        # random_resource_id = random_resource.id  # id of the random Resource for the game round
+        # gameround = Gameround.objects.all().filter(taggings__resource_id=random_resource_id).order_by("?").first()
+        gameround = Gameround.objects.all().order_by("?").first()
         gameround_serializer = GameroundSerializer(gameround)
 
         return Response({
-            'resource to coordinate': resource_serializer.data,
+            # 'resource to coordinate': resource_serializer.data,
             'gameround': gameround_serializer.data,
         })
 
@@ -458,6 +448,28 @@ class TaggingView(APIView):
             return Response({"status": "success", "data": tagging_serializer.data}, status=status.HTTP_200_OK)
         else:
             return Response({"status": "error", "data": tagging_serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class CombinationView(APIView):
+    """
+    API endpoint for combino
+    """
+
+    def get(self, request, *args, **kwargs):
+        """Retrieves a random Tag"""
+        tagging = Combination.objects.all().order_by('?').first()
+        tagging_serializer = CombinationSerializer(tagging)
+        return Response({'combination': tagging_serializer.data})
+
+    def post(self, request, *args, **kwargs):
+        combined_tagging_serializer = CombinationSerializer(data=request.data)
+
+        if combined_tagging_serializer.is_valid(raise_exception=True):
+            combined_tagging_serializer.save(combination=request.data)
+            return Response({"status": "success", "data": combined_tagging_serializer.data}, status=status.HTTP_200_OK)
+        else:
+            return Response({"status": "error", "data": combined_tagging_serializer.errors},
+                            status=status.HTTP_400_BAD_REQUEST)
 
 
 class TagView(APIView):
