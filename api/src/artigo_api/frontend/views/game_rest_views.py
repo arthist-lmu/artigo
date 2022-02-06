@@ -110,7 +110,6 @@ class GametypeView(APIView):
     """
     API View that handles retrieving the correct type of a game
     """
-    serializer_class = GametypeSerializer
 
     def get_queryset(self):
         gametypes = Gametype.objects.all()
