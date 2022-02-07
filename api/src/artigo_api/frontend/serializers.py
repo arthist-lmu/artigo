@@ -465,7 +465,6 @@ class TagATagTaggingSerializer(serializers.ModelSerializer):
                                                    required=True,
                                                    source='resource',
                                                    write_only=False)
-  # resource = ResourceSerializer(required=True, write_only=False)
   gameround_id = serializers.PrimaryKeyRelatedField(queryset=Gameround.objects.all(),
                                                     required=False,
                                                     source='gameround',
@@ -482,13 +481,6 @@ class TagATagTaggingSerializer(serializers.ModelSerializer):
 
   def create(self, validated_data):
     """Create and return a new tagging"""
-    # replace random_resource with resource object once you figure out how to get it from GET request
-    # resource_id = request
-    # A previously played gameround for this resource is coordinated for Tag verification
-    #current_gameround = Gameround.objects.all().filter(taggings__resource_id=resource_id).order_by("?").first()
-    #gameround_serializer = GameroundSerializer(current_gameround)
-    coordinated_gameround_tags = []
-
     user = None
     request = self.context.get("request")
     if request and hasattr(request, "user"):
@@ -500,6 +492,14 @@ class TagATagTaggingSerializer(serializers.ModelSerializer):
       resource = request.resource
 
     score = 0
+    resource_id = validated_data.get("resource")
+    # A previously played gameround for this resource is coordinated for Tag verification
+    coordinated_gameround = Gameround.objects.all().filter(taggings__resource_id=resource_id).order_by("?").first()
+    # TODO: Add extra condition for Tag Suggestions
+    tags_suggestions = []
+    # list of tag_name from coordinated gameround
+    coordinated_gameround_tags = coordinated_gameround.taggings.all().values_list("tag__name", flat=True)
+
     tag_data = validated_data.pop('tag', None)
     if tag_data:
       tag = Tag.objects.get_or_create(**tag_data)[0]
@@ -508,7 +508,7 @@ class TagATagTaggingSerializer(serializers.ModelSerializer):
         score = 0
       elif Tag.objects.all().filter(name=tag.name).exists():
         score += 5
-      elif Tag.objects.all().filter(name=tag.name) in coordinated_gameround_tags:
+      if tag.name in coordinated_gameround_tags:
         score += 25
 
     tagging = Tagging(
