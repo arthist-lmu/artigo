@@ -183,7 +183,7 @@ class TaggingSerializer(serializers.ModelSerializer):
                                                required=False,
                                                source='user',
                                                write_only=False)
-  score = serializers.SerializerMethodField('get_score')
+  # score = serializers.SerializerMethodField('get_score')
 
   class Meta:
     model = Tagging
@@ -205,6 +205,12 @@ class TaggingSerializer(serializers.ModelSerializer):
       resource = request.query_params("resource")
 
     score = 0
+    resource_id = validated_data.get("resource")
+    # A previously played gameround for this resource is coordinated for Tag verification
+    coordinated_gameround = Gameround.objects.all().filter(taggings__resource_id=resource_id).order_by("?").first()
+    # list of tag_name from coordinated gameround
+    coordinated_gameround_tags = coordinated_gameround.taggings.all().values_list("tag__name", flat=True)
+
     tag_data = validated_data.pop('tag', None)
     if tag_data:
       tag = Tag.objects.get_or_create(**tag_data)[0]
@@ -213,8 +219,10 @@ class TaggingSerializer(serializers.ModelSerializer):
         score = 0
       elif Tag.objects.all().filter(name=tag.name).exists():
         score += 5
+      if tag.name in coordinated_gameround_tags:
+        score += 25
 
-        score = self.get_score(tagging=tag)
+        # score = self.get_score(tagging=tag)
 
     tagging = Tagging(
       user=user,
@@ -230,18 +238,18 @@ class TaggingSerializer(serializers.ModelSerializer):
     tagging.save()
     return tagging
 
-  def get_score(self, tagging):
-    score = 0
-    resource_id = tagging.resource.id
-    # A previously played gameround for this resource is coordinated for Tag verification
-    coordinated_gameround = Gameround.objects.all().filter(taggings__resource_id=resource_id).order_by("?").first()
-    # list of tag_name from coordinated gameround
-    coordinated_gameround_tags = coordinated_gameround.taggings.all().values_list("tag__name", flat=True)
-
-    if Tag.objects.all().filter(name=tagging) in coordinated_gameround_tags:
-      score += 25
-
-    return score
+  # def get_score(self, tagging):
+  #   score = 0
+  #   resource_id = tagging.resource.id
+  #   # A previously played gameround for this resource is coordinated for Tag verification
+  #   coordinated_gameround = Gameround.objects.all().filter(taggings__resource_id=resource_id).order_by("?").first()
+  #   # list of tag_name from coordinated gameround
+  #   coordinated_gameround_tags = coordinated_gameround.taggings.all().values_list("tag__name", flat=True)
+  #
+  #   if tagging.tag.name in coordinated_gameround_tags:
+  #     score += 25
+  #
+  #   return score
 
   def to_representation(self, instance):
     rep = super().to_representation(instance)

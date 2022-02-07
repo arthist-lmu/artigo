@@ -7,32 +7,11 @@ from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
 from rest_framework.test import APITestCase, APIClient
 
-from frontend.models import *
-from frontend.views import *
+# from frontend.models import *
+# from frontend.views import *
 
 
-# class GameViewControllerTests(TestCase):
-#
-#     def test_get_random_object(self):
-#         pass
-#
-#     def test_test_get_random_id(self):
-#         pass
-#
-#     def test_get_gameround_matching_resource(self):
-#         pass
-#
-#     def test_timer(self):
-#         pass
-#
-#     def test_check_tagging_exists(self):
-#         pass
-#
-#     def test_calculate_score(self):
-#         pass
-
-
-class GameTypeViewTests(TestCase):
+class GameTypeViewTests(APITestCase):
     # def setUp(self):
     #     """Define the test client and other test variables."""
     #     self.client = APIClient()
@@ -43,24 +22,28 @@ class GameTypeViewTests(TestCase):
     #         format="json")
 
     def test_get_queryset(self):
+        self.client = APIClient()
         response = self.client.get('http://localhost:8000/artigo_api/gametype')
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.data), len(Gametype.objects.all()))
 
     def test_get(self):
+        self.client = APIClient()
         response = self.client.get('http://localhost:8000/artigo_api/gametype')
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.data), len(Gametype.objects.all()))
 
 
-class GamesessionViewTests(TestCase):
+class GamesessionViewTests(APITestCase):
 
     def test_get(self):
+        self.client = APIClient()
         response = self.client.get('http://localhost:8000/artigo_api/gamesession')
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.data), len(Gamesession.objects.all().order_by('?').first()))
 
     def test_post(self):
+        self.client = APIClient()
         self.client.get('http://localhost:8000/artigo_api/gamesession')
         data = {
             'id': 'New tag id',
@@ -68,16 +51,20 @@ class GamesessionViewTests(TestCase):
             'gametype': 'some language',
             'created': 'New tag',
         }
+        response = self.client.post('http://localhost:8000/artigo_api/gamesession', data=data, format='json')
+        self.assertEqual(response.status_code, 200)
 
 
-class GameroundViewTests(TestCase):
+class GameroundViewTests(APITestCase):
 
     def test_get(self):
+        self.client = APIClient()
         response = self.client.get('http://localhost:8000/artigo_api/gameround')
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.data), len(Gameround.objects.all().order_by('?').first()))
 
     def test_post(self):
+        self.client = APIClient()
         response = self.client.get('http://localhost:8000/artigo_api/gameround')
         data = {
             'id': 'New tag id',
@@ -86,18 +73,21 @@ class GameroundViewTests(TestCase):
             'created': 'New tag',
             'score': 'some language',
         }
+        response = self.client.post('http://localhost:8000/artigo_api/gameround', data=data, format='json')
+        self.assertEqual(response.status_code, 200)
 
 
-class TaggingViewTests(TestCase):
+class TaggingViewTests(APITestCase):
 
     def test_get(self):
+        self.client = APIClient()
         response = self.client.get('http://localhost:8000/artigo_api/tagging')
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.data), len(Tagging.objects.all().order_by('?').first()))
 
     def test_post(self):
+        self.client = APIClient()
         self.client.get('http://localhost:8000/artigo_api/tagging')
-        # TODO: REWRITE TO FIT TAGGING
         data = {
             'id': 'New tag id',
             'tag': 'New tag',
@@ -107,7 +97,7 @@ class TaggingViewTests(TestCase):
             'resource': 'resource hash id',
         }
         self.assertEqual(Tagging.objects.count(), 0)
-        response = self.client.post('http://localhost:8000/artigo_api/tagging', data=data)
+        response = self.client.post('http://localhost:8000/artigo_api/tagging', data=data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(Tagging.objects.count(), 1)
         tagging = Tagging.objects.all().first()
@@ -115,10 +105,11 @@ class TaggingViewTests(TestCase):
             self.assertEqual(getattr(tagging, field_name), data[field_name])
 
 
-class TagViewTests(TestCase):
+class TagViewTests(APITestCase):
 
     def test_get(self):
         # tag = Tag()
+        self.client = APIClient()
         response = self.client.get('http://localhost:8000/artigo_api/tag')
         self.assertEqual(response.Response, 200)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -127,6 +118,7 @@ class TagViewTests(TestCase):
 
     def test_post(self):
         # TODO: REWRITE TO FIT TAG
+        self.client = APIClient()
         self.client.get('http://localhost:8000/artigo_api/tag')
         data = {
             'id': 'New tag id',
@@ -134,7 +126,7 @@ class TagViewTests(TestCase):
             'language': 'some language',
         }
         self.assertEqual(Tag.objects.count(), 0)
-        response = self.client.post('http://localhost:8000/artigo_api/tag', data=data)
+        response = self.client.post('http://localhost:8000/artigo_api/tag', data=data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(Tag.objects.count(), 1)
         tag = Tag.objects.all().first()
@@ -142,7 +134,7 @@ class TagViewTests(TestCase):
             self.assertEqual(getattr(tag, field_name), data[field_name])
 
 
-class GameResourceViewTests(TestCase):
+class GameResourceViewTests(APITestCase):
 
     def setUp(self):
         self.client = APIClient()
@@ -153,15 +145,16 @@ class GameResourceViewTests(TestCase):
 
     def test_api_can_retrieve_a_resource(self):
         """Test the api has resource retrieve capability."""
-        # self.client = APIClient()
+        self.client = APIClient()
         self.assertEqual(self.response.status_code, status.HTTP_200_OK)
 
     def test_get(self):
+        self.client = APIClient()
         response = self.client.get('http://localhost:8000/artigo_api/game_resource')
         self.assertEqual(response.status_code, 200)
 
 
-class ARTigoGameViewTests(TestCase):
+class ARTigoGameViewTests(APITestCase):
 
     def setUp(self):
         self.client = APIClient()
@@ -179,6 +172,7 @@ class ARTigoGameViewTests(TestCase):
         self.assertEqual(self.response.status_code, status.HTTP_200_OK)
 
     def test_get(self):
+        self.client = APIClient()
         response = self.client.get('http://localhost:8000/artigo_api/artigo_game/')
         self.assertEqual(response.status_code, 200)
 
@@ -199,35 +193,32 @@ class ARTigoGameViewTests(TestCase):
             'resource': 'resource hash id',
         }
 
-        response = self.client.post('http://localhost:8000/artigo_api/artigo_game/', data=tagging_data)
+        response = self.client.post('http://localhost:8000/artigo_api/artigo_game/', data=tagging_data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
 
-class ARTigoTabooGameViewTests(TestCase):
+# class ARTigoTabooGameViewTests(APITestCase):
+#     def test_get(self):
+#         response = self.client.get('http://localhost:8000/artigo_api/artigo_taboo_game/')
+#         self.assertEqual(response.status_code, 200)
 
-    def test_get(self):
-        response = self.client.get('http://localhost:8000/artigo_api/artigo_taboo_game/')
-        self.assertEqual(response.status_code, 200)
-
-    def test_post(self):
-        response = self.client.get('http://localhost:8000/artigo_api/artigo_taboo_game/')
-
-
-class TagATagGameViewTests(TestCase):
-
-    def test_get(self):
-        response = self.client.get('http://localhost:8000/artigo_api/tagatag_game/')
-        self.assertEqual(response.status_code, 200)
-
-    def test_post(self):
-        response = self.client.get('http://localhost:8000/artigo_api/tagatag_game/')
+    # def test_post(self):
+    #     response = self.client.get('http://localhost:8000/artigo_api/artigo_taboo_game/')
 
 
-class CombinoGameViewTests(TestCase):
+# class TagATagGameViewTests(APITestCase):
+#     def test_get(self):
+#         response = self.client.get('http://localhost:8000/artigo_api/tagatag_game/')
+#         self.assertEqual(response.status_code, 200)
 
-    def test_get(self):
-        response = self.client.get('http://localhost:8000/artigo_api/combino_game/')
-        self.assertEqual(response.status_code, 200)
+    # def test_post(self):
+    #     response = self.client.get('http://localhost:8000/artigo_api/tagatag_game/')
 
-    def test_post(self):
-        response = self.client.get('http://localhost:8000/artigo_api/combino_game/')
+
+# class CombinoGameViewTests(APITestCase):
+#     def test_get(self):
+#         response = self.client.get('http://localhost:8000/artigo_api/combino_game/')
+#         self.assertEqual(response.status_code, 200)
+
+    # def test_post(self):
+    #     response = self.client.get('http://localhost:8000/artigo_api/combino_game/')

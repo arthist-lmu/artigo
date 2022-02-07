@@ -2,6 +2,7 @@ import random
 
 import time
 from datetime import datetime, timedelta
+from django.utils import timezone
 
 from rest_framework import status, renderers, permissions
 from rest_framework.views import APIView
@@ -182,19 +183,17 @@ class ARTigoGameView(APIView):
 
         gameround_serializer = GameroundSerializer(gameround)
 
-        return Response({  # 'gametype': gametype_serializer.data,
-            'first resource': first_resource_serializer.data,
-            # 'second resource': second_resource_serializer.data,
-            # 'third resource': third_resource_serializer.data,
-            # 'fourth resource': fourth_resource_serializer.data,
-            # 'fifth resource': fifth_resource_serializer.data,
-            'first_gameround': gameround_serializer.data,
-        })
-        # TODO: handle timeout after 5 min!
-        # if :
+        start_time = gamesession.created
 
-        # else:
-        # return Response(status=status.HTTP_408_REQUEST_TIMEOUT)
+        now = timezone.now()
+        end_of_game = start_time + timezone.timedelta(minutes=5)
+        # TODO: handle timeout after 5 min!
+        # request.session.set_expiry(300)
+        if end_of_game:
+            return Response({'resource': first_resource_serializer.data, 'gameround': gameround_serializer.data,})
+
+        else:
+            return Response(status=status.HTTP_408_REQUEST_TIMEOUT)
 
     def post(self, request, *args, **kwargs):
         gameround = request.data.get('gameround', '')
@@ -436,6 +435,7 @@ class TaggingView(APIView):
 
     def get(self, request, *args, **kwargs):
         """Retrieves a random Tag"""
+        # request.session.set_expiry(30)
         tagging = Tagging.objects.all().order_by('?').first()
         tagging_serializer = TaggingSerializer(tagging)
         return Response({'tagging only': tagging_serializer.data})

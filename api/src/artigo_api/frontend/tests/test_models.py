@@ -4,7 +4,7 @@ import pytest
 
 from django.contrib.auth import get_user_model
 from django.test import TestCase
-from frontend.models import *
+# from frontend.models import *
 
 
 class UsersManagersTests(TestCase):
@@ -39,54 +39,16 @@ class UsersManagersTests(TestCase):
                 email='super@user.com', password='foo', username='')
 
 
-class TaggingTests(TestCase):
-    def setUp(self):
-        # set up object
-        # tagging = Tagging.objects.create(tag="Tagging")
-        self.tagging_user = "username"
-        self.tagging_gameround = 1
-        self.tagging_resource = 1
-        self.tagging_tag = "Tagging to test"
-        self.tagging_created = datetime.now()
-        self.tagging_score = 0
-        self.tagging_origin = ""
-        self.tagging = Tagging(user=self.tagging_user,
-                               gameround=self.tagging_gameround,
-                               resource=self.tagging_resource,
-                               tag=self.tagging_tag,
-                               created=self.tagging_created,
-                               score=self.tagging_score,
-                               origin=self.tagging_origin)
-
-    def test_tag_label(self):
-        tagging = Tagging.objects.get(id=1)
-        field_label = tagging._meta.get_field('tag').verbose_name()
-        self.assertEqual(field_label, 'tag')
-
-    def test_str(self):
-        """Test for string representation"""
-        tagging = Tagging()
-        self.assertEqual(str(tagging), tagging.tag)
-
-    def test_model_can_create_tagging(self):
-        """Test the tagging model can create a tagging instance"""
-        old_count = Tagging.objects.count()
-        self.tagging.save()
-        new_count = Tagging.objects.count()
-        self.assertNotEqual(old_count, new_count)
-
-
 class TagTests(TestCase):
     def setUp(self):
         self.tag_name = "name of the tag"
         self.tag_language = "language of tag"
-        self.tag = Tag(name=self.tag_name,
-                       language=self.tag_language)
+        self.tag = Tag.objects.create(id=1, name=self.tag_name, language=self.tag_language)
 
-    def test_create_tag(self):
-        tag = Tag.objects.create(name="Tag")
-        assert tag.name == "Tag"
-        assert tag.language == tag.language
+    # def test_create_tag(self):
+    #     tag = Tag.objects.create(name="name of the tag")
+    #     assert tag.name == "Tag"
+    #     assert tag.language == tag.language
 
     def test_name_label(self):
         tag = Tag.objects.get(id=1)
@@ -100,14 +62,50 @@ class TagTests(TestCase):
 
     def test_str(self):
         """Test for string representation"""
-        tag = Tag()
-        self.assertEqual(str(tag), tag.name)
+        self.assertEqual(str(self.tag), self.tag.name)
 
     def test_model_can_create_tag(self):
         """Test the tagging model can create a tag instance"""
         old_count = Tag.objects.count()
         self.tag.save()
         new_count = Tag.objects.count()
+        self.assertNotEqual(old_count, new_count)
+
+
+class TaggingTests(TestCase):
+    def setUp(self):
+        # set up object
+        # tagging = Tagging.objects.create(tag="Tagging")
+        self.tagging_user = "username"
+        self.tagging_gameround = 1
+        self.tagging_resource = 1
+        self.tagging_tag = "Tagging to test"
+        self.tagging_created = datetime.now()
+        self.tagging_score = 0
+        self.tagging_origin = ""
+        self.tagging = Tagging.objects.create(id=1,
+                                              user=self.tagging_user,
+                                              gameround=self.tagging_gameround,
+                                              resource=self.tagging_resource,
+                                              tag=self.tagging_tag,
+                                              created=self.tagging_created,
+                                              score=self.tagging_score,
+                                              origin=self.tagging_origin)
+
+    def test_tag_label(self):
+        tagging = Tagging.objects.get(user="username")
+        field_label = tagging._meta.get_field('tag').verbose_name()
+        self.assertEqual(field_label, 'tag')
+
+    def test_str(self):
+        """Test for string representation"""
+        self.assertEqual(str(self.tagging), self.tagging.tag)
+
+    def test_model_can_create_tagging(self):
+        """Test the tagging model can create a tagging instance"""
+        old_count = Tagging.objects.count()
+        self.tagging.save()
+        new_count = Tagging.objects.count()
         self.assertNotEqual(old_count, new_count)
 
 
@@ -119,12 +117,12 @@ class CombinationTests(TestCase):
         self.combination_tag_id = 2
         self.combination_created = datetime.now()
         self.combination_score = 0
-        self.combination = Combination(user=self.combination_user,
-                                       gameround=self.combination_gameround,
-                                       resource=self.combination_resource,
-                                       tag_id=self.combination_tag_id,
-                                       created=self.combination_created,
-                                       score=self.combination_score)
+        self.combination = Combination.objects.create(user=self.combination_user,
+                                                      gameround=self.combination_gameround,
+                                                      resource=self.combination_resource,
+                                                      tag_id=self.combination_tag_id,
+                                                      created=self.combination_created,
+                                                      score=self.combination_score)
 
     def test_model_can_create_combination(self):
         """Test the tagging model can create a combination instance"""
@@ -139,9 +137,9 @@ class GamesessionTests(TestCase):
         self.gamesession_user = "username"
         self.gamesession_gametype = "imageLabeler"
         self.gamesession_created = datetime.now()
-        self.gamesession = Gamesession(user=self.gamesession_user,
-                                       gametype=self.gamesession_gametype,
-                                       created=self.gamesession_created)
+        self.gamesession = Gamesession.objects.create(user=self.gamesession_user,
+                                                      gametype=self.gamesession_gametype,
+                                                      created=self.gamesession_created)
 
     def test_model_can_create_gamesession(self):
         """Test the tagging model can create a gamesession instance"""
@@ -157,10 +155,10 @@ class GameroundTests(TestCase):
         self.gameround_gamesession = 1
         self.gameround_created = datetime.now()
         self.gameround_score = 0
-        self.gameround = Gameround(user=self.gameround_user,
-                                   gamesession=self.gameround_gamesession,
-                                   created=self.gameround_created,
-                                   score=self.gameround_score)
+        self.gameround = Gameround.objects.create(user=self.gameround_user,
+                                                  gamesession=self.gameround_gamesession,
+                                                  created=self.gameround_created,
+                                                  score=self.gameround_score)
 
     def test_model_can_create_gameround(self):
         """Test the tagging model can create a gameround instance"""
@@ -176,10 +174,10 @@ class GametypeTests(TestCase):
         self.gametype_rounds = 5
         self.gametype_rounds_duration = 60
         self.gametype_enabled = True
-        self.gametype = Gametype(name=self.gametype_name,
-                                 rounds=self.gametype_rounds,
-                                 rounds_duration=self.gametype_rounds_duration,
-                                 enabled=self.gametype_enabled)
+        self.gametype = Gametype.objects.create(name=self.gametype_name,
+                                                rounds=self.gametype_rounds,
+                                                rounds_duration=self.gametype_rounds_duration,
+                                                enabled=self.gametype_enabled)
 
     def test_name_size(self):
         gametype = Gametype.objects.get(name="Gametype")
@@ -188,8 +186,7 @@ class GametypeTests(TestCase):
 
     def test_str(self):
         """Test for string representation"""
-        gametype = Gametype()
-        self.assertEqual(str(gametype), gametype.name)
+        self.assertEqual(str(self.gametype), self.gametype.name)
 
     def test_model_can_create_gametype(self):
         """Test the tagging model can create a gametype instance"""
@@ -213,23 +210,22 @@ class ResourceTests(TestCase):
         self.resource_origin = ""
         self.resouce_enabled = True
         self.resource_media_type = "picture"
-        self.resource = Resource(id=self.resource_id,
-                                 hash_id=self.resource_hash_id,
-                                 creators=self.resource_crators,
-                                 titles=self.resource_titles,
-                                 created_start=self.resource_created_start,
-                                 created_end=self.resource_created_end,
-                                 location=self.resource_location,
-                                 institution_source=self.resource_institution_source,
-                                 institution=self.resource_institution,
-                                 origin=self.resource_origin,
-                                 enabled=self.resouce_enabled,
-                                 media_type=self.resource_media_type)
+        self.resource = Resource.objects.create(id=self.resource_id,
+                                                hash_id=self.resource_hash_id,
+                                                creators=self.resource_crators,
+                                                titles=self.resource_titles,
+                                                created_start=self.resource_created_start,
+                                                created_end=self.resource_created_end,
+                                                location=self.resource_location,
+                                                institution_source=self.resource_institution_source,
+                                                institution=self.resource_institution,
+                                                origin=self.resource_origin,
+                                                enabled=self.resouce_enabled,
+                                                media_type=self.resource_media_type)
 
     def test_str(self):
         """Test for string representation"""
-        resource = Resource()
-        self.assertEqual(str(resource), resource.hash_id)
+        self.assertEqual(str(self.resource), self.resource.hash_id)
 
     def test_model_can_create_resource(self):
         """Test the tagging model can create a resource instance"""
@@ -248,18 +244,16 @@ class TitleTests(TestCase):
         self.title_movement = "title movement"
         self.title_locations = "title locations"
         self.title_webpage = "www.title.com"
-        self.title = Title(name=self.title_name,
-                           language=self.title_language,
-                           technique=self.title_technique,
-                           style=self.title_style,
-                           movement=self.title_movement,
-                           locations=self.title_locations,
-                           web_page=self.title_webpage)
+        self.title = Title.objects.create(name=self.title_name,
+                                          technique=self.title_technique,
+                                          style=self.title_style,
+                                          movement=self.title_movement,
+                                          locations=self.title_locations,
+                                          web_page=self.title_webpage)
 
     def test_str(self):
         """Test for string representation"""
-        title = Title()
-        self.assertEqual(str(title), title.name)
+        self.assertEqual(str(self.title), self.title.name)
 
     def test_model_can_create_title(self):
         """Test the tagging model can create a title instance"""
@@ -278,18 +272,17 @@ class CreatorTests(TestCase):
         self.creator_locations = "some location"
         self.creator_techniques = "technique"
         self.creator_webpage = "www.creator.com"
-        self.creator = Creator(name=self.creator_name,
-                               born=self.creator_born,
-                               died=self.creator_died,
-                               nationality=self.creator_nationality,
-                               locations=self.creator_locations,
-                               techniques=self.creator_techniques,
-                               web_page=self.creator_webpage)
+        self.creator = Creator.objects.create(name=self.creator_name,
+                                              born=self.creator_born,
+                                              died=self.creator_died,
+                                              nationality=self.creator_nationality,
+                                              locations=self.creator_locations,
+                                              techniques=self.creator_techniques,
+                                              web_page=self.creator_webpage)
 
     def test_str(self):
         """Test for string representation"""
-        creator = Creator()
-        self.assertEqual(str(creator), creator.name)
+        self.assertEqual(str(self.creator), self.creator.name)
 
     def test_model_can_create_creator(self):
         """Test the tagging model can create a creator instance"""
@@ -303,8 +296,7 @@ class ArtStyleTests(TestCase):
     def setUp(self):
         self.artstyle_name = "style"
         self.artstyle_language = "some language"
-        self.artstyle = ArtStyle(name=self.artstyle_name,
-                                 language=self.artstyle_language)
+        self.artstyle = ArtStyle.objects.create(name=self.artstyle_name, language=self.artstyle_language)
 
     def test_model_can_create_artstyle(self):
         """Test the tagging model can create an artstyle instance"""
@@ -315,21 +307,18 @@ class ArtStyleTests(TestCase):
 
     def test_str(self):
         """Test for string representation"""
-        style = ArtStyle()
-        self.assertEqual(str(style), style.name)
+        self.assertEqual(str(self.artstyle), self.artstyle.name)
 
 
 class ArtMovementTests(TestCase):
     def setUp(self):
         self.artmovement_name = "style"
         self.artmovement_language = "some language"
-        self.artmovement = ArtMovement(name=self.artmovement_name,
-                                       language=self.artmovement_language)
+        self.artmovement = ArtMovement.objects.create(name=self.artmovement_name, language=self.artmovement_language)
 
     def test_str(self):
         """Test for string representation"""
-        movement = ArtMovement()
-        self.assertEqual(str(movement), movement.name)
+        self.assertEqual(str(self.artmovement), self.artmovement.name)
 
     def test_model_can_create_artmovement(self):
         """Test the tagging model can create an artmovement instance"""
@@ -343,13 +332,12 @@ class ArtTechniqueTests(TestCase):
     def setUp(self):
         self.arttechnique_name = "technique"
         self.arttechnique_language = "some language"
-        self.arttechnique = ArtTechnique(name=self.arttechnique_name,
-                                         language=self.arttechnique_language)
+        self.arttechnique = ArtTechnique.objects.create(name=self.arttechnique_name,
+                                                        language=self.arttechnique_language)
 
     def test_str(self):
         """Test for string representation"""
-        technique = ArtTechnique()
-        self.assertEqual(str(technique), technique.name)
+        self.assertEqual(str(self.arttechnique), self.arttechnique.name)
 
     def test_model_can_create_arttechnique(self):
         """Test the tagging model can create an arttechnique instance"""
@@ -363,8 +351,7 @@ class WebPageTests(TestCase):
     def setUp(self):
         self.webpage_url = "some url"
         self.webpage_language = "language of wp"
-        self.webpage = WebPage(url=self.webpage_url,
-                               language=self.webpage_language)
+        self.webpage = WebPage.objects.create(url=self.webpage_url, language=self.webpage_language)
 
     def test_model_can_create_webpage(self):
         """Test the tagging model can create a webpage instance"""
@@ -378,13 +365,11 @@ class LocationTests(TestCase):
     def setUp(self):
         self.location_name = "some location"
         self.location_country = "country"
-        self.location = Location(name=self.location_name,
-                                 country=self.location_country)
+        self.location = Location.objects.create(name=self.location_name, country=self.location_country)
 
     def test_str(self):
         """Test for string representation"""
-        location = Location()
-        self.assertEqual(str(location), location.name)
+        self.assertEqual(str(self.location), self.location.name)
 
     def test_model_can_create_location(self):
         """Test the tagging model can create a location instance"""
@@ -399,9 +384,9 @@ class InstitutionTests(TestCase):
         self.institution_name = "Institution"
         self.institution_url = "some Institution"
         self.institution_resource_url = "www.institution.com"
-        self.institution = Institution(name=self.institution_name,
-                                       institution_url=self.institution_url,
-                                       resource_url=self.institution_resource_url)
+        self.institution = Institution.objects.create(name=self.institution_name,
+                                                      institution_url=self.institution_url,
+                                                      resource_url=self.institution_resource_url)
 
     def test_create_institution(self):
         institution = Institution.objects.create(name="Institution")
@@ -414,8 +399,7 @@ class InstitutionTests(TestCase):
 
     def test_str(self):
         """Test for string representation"""
-        institution = Institution()
-        self.assertEqual(str(institution), institution.name)
+        self.assertEqual(str(self.institution), self.institution.name)
 
     def test_model_can_create_institution(self):
         """Test the tagging model can create an institution instance"""
