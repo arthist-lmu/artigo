@@ -4,7 +4,7 @@ import pytest
 
 from django.contrib.auth import get_user_model
 from django.test import TestCase
-# from frontend.models import *
+from frontend.models import *
 
 
 class UsersManagersTests(TestCase):
@@ -45,13 +45,8 @@ class TagTests(TestCase):
         self.tag_language = "language of tag"
         self.tag = Tag.objects.create(id=1, name=self.tag_name, language=self.tag_language)
 
-    # def test_create_tag(self):
-    #     tag = Tag.objects.create(name="name of the tag")
-    #     assert tag.name == "Tag"
-    #     assert tag.language == tag.language
-
     def test_name_label(self):
-        tag = Tag.objects.get(id=1)
+        tag = Tag.objects.get(name="name of the tag")
         field_label = tag._meta.get_field('name').verbose_name()
         self.assertEqual(field_label, 'name')
 
@@ -74,12 +69,11 @@ class TagTests(TestCase):
 
 class TaggingTests(TestCase):
     def setUp(self):
-        # set up object
-        # tagging = Tagging.objects.create(tag="Tagging")
-        self.tagging_user = "username"
+        self.tagging_user = None
         self.tagging_gameround = 1
         self.tagging_resource = 1
-        self.tagging_tag = "Tagging to test"
+        self.tagging_tag = {"name": "Tagging to test",
+                            "language": "en"}
         self.tagging_created = datetime.now()
         self.tagging_score = 0
         self.tagging_origin = ""
@@ -110,8 +104,9 @@ class TaggingTests(TestCase):
 
 
 class CombinationTests(TestCase):
+    # TODO: Review after Combino POST method working
     def setUp(self):
-        self.combination_user = "name of user"
+        self.combination_user = CustomUser.objects.all().get(username="carina")
         self.combination_gameround = 1
         self.combination_resource = "reshashid"
         self.combination_tag_id = 2
@@ -134,7 +129,7 @@ class CombinationTests(TestCase):
 
 class GamesessionTests(TestCase):
     def setUp(self):
-        self.gamesession_user = "username"
+        self.gamesession_user = None
         self.gamesession_gametype = "imageLabeler"
         self.gamesession_created = datetime.now()
         self.gamesession = Gamesession.objects.create(user=self.gamesession_user,
@@ -151,7 +146,7 @@ class GamesessionTests(TestCase):
 
 class GameroundTests(TestCase):
     def setUp(self):
-        self.gameround_user = "username"
+        self.gameround_user = CustomUser.objects.all().get(username="carina")
         self.gameround_gamesession = 1
         self.gameround_created = datetime.now()
         self.gameround_score = 0
@@ -176,11 +171,11 @@ class GametypeTests(TestCase):
         self.gametype_enabled = True
         self.gametype = Gametype.objects.create(name=self.gametype_name,
                                                 rounds=self.gametype_rounds,
-                                                rounds_duration=self.gametype_rounds_duration,
+                                                round_duration=self.gametype_rounds_duration,
                                                 enabled=self.gametype_enabled)
 
     def test_name_size(self):
-        gametype = Gametype.objects.get(name="Gametype")
+        gametype = Gametype.objects.get(name="NewGame")
         max_length = gametype._meta.get_field('name').max_length
         self.assertEqual(max_length, 256)
 
@@ -367,15 +362,19 @@ class LocationTests(TestCase):
         self.location_country = "country"
         self.location = Location.objects.create(name=self.location_name, country=self.location_country)
 
+    def test_create_location(self):
+        location = Location.objects.create(name="new location")
+        assert location.name == "new location"
+
     def test_str(self):
         """Test for string representation"""
         self.assertEqual(str(self.location), self.location.name)
 
     def test_model_can_create_location(self):
         """Test the tagging model can create a location instance"""
-        old_count = Location.objects.count()
+        old_count = Location.objects.all().count()
         self.location.save()
-        new_count = Location.objects.count()
+        new_count = Location.objects.all().count()
         self.assertNotEqual(old_count, new_count)
 
 

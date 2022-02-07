@@ -184,34 +184,42 @@ class ARTigoGameView(APIView):
         gameround_serializer = GameroundSerializer(gameround)
 
         start_time = gamesession.created
-
-        now = timezone.now()
-        end_of_game = start_time + timezone.timedelta(minutes=5)
+        # now = timezone.now()
+        end_of_game = start_time + timedelta(minutes=5)
         # TODO: handle timeout after 5 min!
         # request.session.set_expiry(300)
-        if end_of_game:
+        if not datetime.now() == end_of_game:
             return Response({'resource': first_resource_serializer.data, 'gameround': gameround_serializer.data,})
 
         else:
             return Response(status=status.HTTP_408_REQUEST_TIMEOUT)
 
     def post(self, request, *args, **kwargs):
-        gameround = request.data.get('gameround', '')
-        random_resource = request.data.get('resource', '')
-
+        # gameround = request.data.get('gameround', '')
+        # gameround = Gameround.objects.all().get(id=request.data)
+        # gameround = Gameround.objects.all().get(id=request.query_params.get('gameround'))
+        # random_resource = request.data.get('resource', '')
         # resource = request.GET.get('resource')
         # resource = self.request.query_params.get('resource')
-
-        resource_serializer = ResourceSerializer(data=request.query_params.get('resource'))
+        # resource_serializer = ResourceSerializer(data=request.query_params.get('resource'))
 
         tag_serializer = TagSerializer(data=request.data)
         tagging_serializer = TaggingSerializer(data=request.data)
+        gameround_id = request.data.get('gameround_id')
+        gameround = Gameround.objects.all().get(id=gameround_id)
 
-        if tagging_serializer.is_valid(raise_exception=True):
-            tagging_serializer.save(tagging=request.data)
-            return Response({"status": "success", "data": tagging_serializer.data}, status=status.HTTP_201_CREATED)
+        # time where the gameround was created
+        start_time = gameround.created
+        # time 5 mins after gameround was created
+        end_of_game = start_time + timedelta(minutes=5)
+        if not datetime.now() == end_of_game:
+            if tagging_serializer.is_valid(raise_exception=True):
+                tagging_serializer.save(tagging=request.data)
+                return Response({"status": "success", "data": tagging_serializer.data}, status=status.HTTP_201_CREATED)
+            else:
+                return Response({"status": "error", "data": tag_serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
         else:
-            return Response({"status": "error", "data": tag_serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(status=status.HTTP_408_REQUEST_TIMEOUT)
 
 
 class ARTigoTabooGameView(APIView):
@@ -419,7 +427,7 @@ class GameroundView(APIView):
         })
 
     def post(self, request, *args, **kwargs):
-        gameround_serializer = GamesroundSerializer(data=request.data)
+        gameround_serializer = GameroundSerializer(data=request.data)
         if gameround_serializer.is_valid(raise_exception=True):
             gameround_serializer.save(gameround=request.data)
             return Response({"status": "success", "data": gameround_serializer.data}, status=status.HTTP_200_OK)
@@ -437,14 +445,14 @@ class TaggingView(APIView):
         """Retrieves a random Tag"""
         # request.session.set_expiry(30)
         tagging = Tagging.objects.all().order_by('?').first()
-        tagging_serializer = TabooTaggingSerializer(tagging)
+        tagging_serializer = TagATagTaggingSerializer(tagging)
         return Response({'tagging only': tagging_serializer.data})
 
     def post(self, request, *args, **kwargs):
         tagging_serializer = TaggingSerializer(data=request.data)
         if tagging_serializer.is_valid(raise_exception=True):
             tagging_serializer.save(tagging=request.data)
-            return Response({"status": "success", "data": tagging_serializer.data}, status=status.HTTP_200_OK)
+            return Response({"status": "success", "data": tagging_serializer.data}, status=status.HTTP_201_CREATED)
         else:
             return Response({"status": "error", "data": tagging_serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
@@ -485,7 +493,7 @@ class TagView(APIView):
         serializer = TagSerializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
             serializer.save(tag=request.data)
-            return Response({"status": "success", "data": serializer.data}, status=status.HTTP_200_OK)
+            return Response({"status": "success", "data": serializer.data}, status=status.HTTP_201_CREATED)
         else:
             return Response({"status": "error", "data": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 

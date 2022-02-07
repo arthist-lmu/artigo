@@ -96,7 +96,7 @@ class TagSerializer(serializers.ModelSerializer):
 
   class Meta:
     model = Tag
-    fields = ('id', 'name', 'language')
+    fields = ('name', 'language')
 
   def create(self, validated_data):
     tag_data = validated_data.pop('tag')
@@ -170,6 +170,7 @@ class GameroundSerializer(serializers.ModelSerializer):
 
 
 class TaggingSerializer(serializers.ModelSerializer):
+  # TODO: maybe add second serializer without id for artigo
   tag = TagSerializer(required=False, write_only=False)
   resource_id = serializers.PrimaryKeyRelatedField(queryset=Resource.objects.all(),
                                                    required=True,
@@ -267,10 +268,12 @@ class TaggingGetSerializer(serializers.ModelSerializer):
 
 
 class CombinationSerializer(serializers.ModelSerializer):
+  # TODO: serializer für array of length 2
   tag_id = serializers.PrimaryKeyRelatedField(queryset=Tag.objects.all(),
                                               required=True,
                                               source='tag',
                                               write_only=False)
+  # tag_id = serializers.ReadOnlyField(source='tag.id')
   resource_id = serializers.PrimaryKeyRelatedField(queryset=Resource.objects.all(),
                                                    required=True,
                                                    source='resource',
@@ -304,28 +307,31 @@ class CombinationSerializer(serializers.ModelSerializer):
     # list of tag_name from coordinated gameround
     coordinated_gameround_tags = coordinated_gameround.taggings.all().values_list("tag__name", flat=True)
 
-    tag_data = validated_data.pop('tag', None)
-    if tag_data:
-      tag = Tag.objects.get_or_create(**tag_data)[0]
-      validated_data['tag'] = tag
-      # Combination.objects.create(tag=tag, **validated_data)
-      if not Tag.objects.all().filter(name=tag.name).exists():
-        score = 0
-      elif Tag.objects.all().filter(name=tag.name).exists():
-        score += 5
-      if tag.name in coordinated_gameround_tags:
-        score += 25
+    tag_data = validated_data.pop('tag')
+    # if tag_data:
+    #   tag = Tag.objects.get_or_create(**tag_data)[0]
+    #   validated_data['tag'] = tag
+    # combination = Combination.objects.create(tag_id=tag_data, **validated_data)
 
-    combination = Combination(
+      # if not Tag.objects.all().filter(name=tag.name).exists():
+      #   score = 0
+      # elif Tag.objects.all().filter(name=tag.name).exists():
+      #   score += 5
+      # if tag.name in coordinated_gameround_tags:
+      #   score += 25
+
+    combination = Combination.objects.create(
       user=user,
       gameround=validated_data.get("gameround"),
       resource=validated_data.get("resource"),
-      # tag_id=validated_data.get("tag"),
+      # tag_id=tag_data,
       created=datetime.now(),
       score=score
     )
-    combination.tag_id.add(validated_data.get("tag"))
-    combination.save()
+    for tag_object in tag_data:
+      combination.set(tag_id=tag_object)
+    # combination.tag_id.add(validated_data.get("tag"))
+    # combination.save()
     return combination
 
   def to_representation(self, instance):
@@ -390,18 +396,11 @@ class TabooTaggingSerializer(serializers.ModelSerializer):
                                                required=False,
                                                source='user',
                                                write_only=False)
-  # for testing only
-  # taboo_tags = serializers.SerializerMethodField('get_taboo_tags')
 
   class Meta:
     model = Tagging
     fields = ('id', 'user_id', 'gameround_id', 'resource_id', 'tag', 'created', 'score', 'origin')
     depth = 1
-
-  # for testing only
-  # def get_taboo_tags(self, tagging):
-  #   taboo_tags = tagging.resource.taggings.all().values_list("tag__name", flat=True)
-  #   return taboo_tags
 
   def create(self, validated_data):
     """Create and return a new tagging"""
@@ -478,7 +477,6 @@ class SuggestionsSerializer(serializers.ModelSerializer):
 
 
 class TagATagTaggingSerializer(serializers.ModelSerializer):
-  # TODO: Add extra conditions for Tag a Tag post
   tag = TagSerializer(required=False, write_only=False)
   resource_id = serializers.PrimaryKeyRelatedField(queryset=Resource.objects.all(),
                                                    required=True,
@@ -492,11 +490,15 @@ class TagATagTaggingSerializer(serializers.ModelSerializer):
                                                required=False,
                                                source='user',
                                                write_only=False)
+  suggested = serializers.SerializerMethodField('get_suggestions')
 
   class Meta:
     model = Tagging
-    fields = ('id', 'user_id', 'gameround_id', 'resource_id', 'tag', 'created', 'score', 'origin')
+    fields = ('id', 'user_id', 'gameround_id', 'resource_id', 'tag', 'created', 'score', 'origin', 'suggested')
     depth = 1
+
+  def get_suggestions(self, tagging):
+    return tagging.resource.taggings.all().values_list("tag__name", flat=True)
 
   def create(self, validated_data):
     """Create and return a new tagging"""
@@ -514,8 +516,8 @@ class TagATagTaggingSerializer(serializers.ModelSerializer):
     resource_id = validated_data.get("resource")
     # A previously played gameround for this resource is coordinated for Tag verification
     coordinated_gameround = Gameround.objects.all().filter(taggings__resource_id=resource_id).order_by("?").first()
-    # TODO: Add extra condition for Tag Suggestions
-    tags_suggestions = []
+    # tags suggested for user to choose from to tag (Tag + Resource)
+    tags_suggestions = resource_id.taggings.all().values_list("tag__name", flat=True)
     # list of tag_name from coordinated gameround
     coordinated_gameround_tags = coordinated_gameround.taggings.all().values_list("tag__name", flat=True)
 
@@ -523,6 +525,7 @@ class TagATagTaggingSerializer(serializers.ModelSerializer):
     if tag_data:
       tag = Tag.objects.get_or_create(**tag_data)[0]
       validated_data['tag'] = tag
+      # TODO: Figure out condition for Tag to be tagged!
       if not Tag.objects.all().filter(name=tag.name).exists():
         score = 0
       elif Tag.objects.all().filter(name=tag.name).exists():

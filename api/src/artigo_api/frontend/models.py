@@ -55,7 +55,7 @@ class Institution(models.Model):
 
     def __str__(self):
         """Return a human readable representation of the model instance."""
-        return self.name
+        return self.name or ''
 
 
 class Location(models.Model):
@@ -66,7 +66,7 @@ class Location(models.Model):
 
     def __str__(self):
         """Return a human readable representation of the model instance."""
-        return self.name
+        return self.name or ''
 
 
 class ArtTechnique(models.Model):
@@ -75,7 +75,7 @@ class ArtTechnique(models.Model):
 
     def __str__(self):
         """Return a human readable representation of the model instance."""
-        return self.name
+        return self.name or ''
 
 
 class ArtMovement(models.Model):
@@ -84,7 +84,7 @@ class ArtMovement(models.Model):
 
     def __str__(self):
         """Return a human readable representation of the model instance."""
-        return self.name
+        return self.name or ''
 
 
 class ArtStyle(models.Model):
@@ -93,7 +93,7 @@ class ArtStyle(models.Model):
 
     def __str__(self):
         """Return a human readable representation of the model instance."""
-        return self.name
+        return self.name or ''
 
 
 class WebPage(models.Model):
@@ -118,7 +118,7 @@ class Creator(models.Model):
 
     def __str__(self):
         """Return a human readable representation of the model instance."""
-        return self.name
+        return self.name or ''
 
 
 class Title(models.Model):
@@ -134,7 +134,7 @@ class Title(models.Model):
 
     def __str__(self):
         """Return a human readable representation of the model instance."""
-        return self.name
+        return self.name or ''
 
 
 class Resource(models.Model):
@@ -176,7 +176,7 @@ class Gametype(models.Model):
 
     def __str__(self):
         """Return a human readable representation of the model instance."""
-        return self.name
+        return self.name or ''
 
 
 # class Gamemode(models.Model):
@@ -233,7 +233,7 @@ class Tagging(models.Model):
     gameround = models.ForeignKey(Gameround, on_delete=models.CASCADE, related_name='taggings')
     resource = models.ForeignKey(Resource, on_delete=models.CASCADE, related_name='taggings')
     tag = models.ForeignKey(Tag, on_delete=models.CASCADE, related_name='tagging')
-    created = models.DateTimeField(editable=False, null=True)
+    created = models.DateTimeField(editable=False)
     score = models.PositiveIntegerField(default=0)
     # media_type = models.ForeignKey(Gamemode, on_delete=models.CASCADE)
     origin = models.URLField(max_length=256, blank=True, default='')
@@ -251,6 +251,7 @@ class Combination(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, null=True)
     gameround = models.ForeignKey(Gameround, on_delete=models.CASCADE, null=True)
     resource = models.ForeignKey(Resource, on_delete=models.CASCADE, null=True)
+    # TODO: tag_id as array
     tag_id = models.ManyToManyField(Tag, null=True, related_name='combino_tags')
     created = models.DateTimeField(editable=False)
     score = models.PositiveIntegerField(default=0)
