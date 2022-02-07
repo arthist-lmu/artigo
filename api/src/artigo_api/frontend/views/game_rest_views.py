@@ -437,7 +437,7 @@ class TaggingView(APIView):
         """Retrieves a random Tag"""
         # request.session.set_expiry(30)
         tagging = Tagging.objects.all().order_by('?').first()
-        tagging_serializer = TaggingSerializer(tagging)
+        tagging_serializer = TabooTaggingSerializer(tagging)
         return Response({'tagging only': tagging_serializer.data})
 
     def post(self, request, *args, **kwargs):

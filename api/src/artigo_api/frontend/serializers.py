@@ -296,12 +296,25 @@ class CombinationSerializer(serializers.ModelSerializer):
       user = request.user
 
     score = 0
+    resource_id = validated_data.get("resource")
+    # A previously played gameround for this resource is coordinated for Tag verification
+    coordinated_gameround = Gameround.objects.all().filter(taggings__resource_id=resource_id).order_by("?").first()
+    # TODO: Add extra condition for Combino
+    tags = []
+    # list of tag_name from coordinated gameround
+    coordinated_gameround_tags = coordinated_gameround.taggings.all().values_list("tag__name", flat=True)
 
     tag_data = validated_data.pop('tag', None)
     if tag_data:
       tag = Tag.objects.get_or_create(**tag_data)[0]
       validated_data['tag'] = tag
       # Combination.objects.create(tag=tag, **validated_data)
+      if not Tag.objects.all().filter(name=tag.name).exists():
+        score = 0
+      elif Tag.objects.all().filter(name=tag.name).exists():
+        score += 5
+      if tag.name in coordinated_gameround_tags:
+        score += 25
 
     combination = Combination(
       user=user,
@@ -364,13 +377,11 @@ class TabooTagSerializer(serializers.ModelSerializer):
 
 
 class TabooTaggingSerializer(serializers.ModelSerializer):
-  # TODO: Add extra conditions for ARTigo Taboo post
   tag = TagSerializer(required=False, write_only=False)
   resource_id = serializers.PrimaryKeyRelatedField(queryset=Resource.objects.all(),
                                                    required=True,
                                                    source='resource',
                                                    write_only=False)
-  # resource = ResourceSerializer(required=True, write_only=False)
   gameround_id = serializers.PrimaryKeyRelatedField(queryset=Gameround.objects.all(),
                                                     required=False,
                                                     source='gameround',
@@ -379,11 +390,18 @@ class TabooTaggingSerializer(serializers.ModelSerializer):
                                                required=False,
                                                source='user',
                                                write_only=False)
+  # for testing only
+  # taboo_tags = serializers.SerializerMethodField('get_taboo_tags')
 
   class Meta:
     model = Tagging
     fields = ('id', 'user_id', 'gameround_id', 'resource_id', 'tag', 'created', 'score', 'origin')
     depth = 1
+
+  # for testing only
+  # def get_taboo_tags(self, tagging):
+  #   taboo_tags = tagging.resource.taggings.all().values_list("tag__name", flat=True)
+  #   return taboo_tags
 
   def create(self, validated_data):
     """Create and return a new tagging"""
@@ -401,8 +419,8 @@ class TabooTaggingSerializer(serializers.ModelSerializer):
     resource_id = validated_data.get("resource")
     # A previously played gameround for this resource is coordinated for Tag verification
     coordinated_gameround = Gameround.objects.all().filter(taggings__resource_id=resource_id).order_by("?").first()
-    # TODO: Add extra condition for ARTigo Taboo
-    taboo_tags = []
+    # taboo tags to be compared with entered tags
+    taboo_tags = resource_id.taggings.all().values_list("tag__name", flat=True)
     # list of tag_name from coordinated gameround
     coordinated_gameround_tags = coordinated_gameround.taggings.all().values_list("tag__name", flat=True)
 
@@ -410,12 +428,13 @@ class TabooTaggingSerializer(serializers.ModelSerializer):
     if tag_data:
       tag = Tag.objects.get_or_create(**tag_data)[0]
       validated_data['tag'] = tag
-      if not Tag.objects.all().filter(name=tag.name).exists():
-        score = 0
-      elif Tag.objects.all().filter(name=tag.name).exists():
-        score += 5
-      if tag.name in coordinated_gameround_tags:
-        score += 25
+      if tag.name not in taboo_tags:
+        if not Tag.objects.all().filter(name=tag.name).exists():
+          score = 0
+        elif Tag.objects.all().filter(name=tag.name).exists():
+          score += 5
+        if tag.name in coordinated_gameround_tags:
+          score += 25
 
     tagging = Tagging(
       user=user,
