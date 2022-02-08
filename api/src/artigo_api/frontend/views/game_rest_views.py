@@ -195,14 +195,6 @@ class ARTigoGameView(APIView):
             return Response(status=status.HTTP_408_REQUEST_TIMEOUT)
 
     def post(self, request, *args, **kwargs):
-        # gameround = request.data.get('gameround', '')
-        # gameround = Gameround.objects.all().get(id=request.data)
-        # gameround = Gameround.objects.all().get(id=request.query_params.get('gameround'))
-        # random_resource = request.data.get('resource', '')
-        # resource = request.GET.get('resource')
-        # resource = self.request.query_params.get('resource')
-        # resource_serializer = ResourceSerializer(data=request.query_params.get('resource'))
-
         tag_serializer = TagSerializer(data=request.data)
         tagging_serializer = TaggingSerializer(data=request.data)
         gameround_id = request.data.get('gameround_id')
@@ -211,7 +203,7 @@ class ARTigoGameView(APIView):
         # time where the gameround was created
         start_time = gameround.created
         # time 5 mins after gameround was created
-        end_of_game = start_time + timedelta(minutes=5)
+        end_of_game = start_time + timedelta(seconds=20)
         if not datetime.now() == end_of_game:
             if tagging_serializer.is_valid(raise_exception=True):
                 tagging_serializer.save(tagging=request.data)
@@ -262,9 +254,6 @@ class ARTigoTabooGameView(APIView):
                          })
 
     def post(self, request, *args, **kwargs):
-        name = request.data.get('name', '')
-        language = request.data.get('language', '')
-
         tag_serializer = TagSerializer(data=request.data)
         tagging_serializer = TabooTaggingSerializer(data=request.data)
 
@@ -320,9 +309,6 @@ class TagATagGameView(APIView):
                          })
 
     def post(self, request, *args, **kwargs):
-        name = request.data.get('name', '')
-        language = request.data.get('language', '')
-
         tag_serializer = TagSerializer(data=request.data)
         tagging_serializer = TagATagTaggingSerializer(data=request.data)
 

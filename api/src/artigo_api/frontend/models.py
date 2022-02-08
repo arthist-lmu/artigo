@@ -252,13 +252,20 @@ class Combination(models.Model):
     gameround = models.ForeignKey(Gameround, on_delete=models.CASCADE, null=True)
     resource = models.ForeignKey(Resource, on_delete=models.CASCADE, null=True)
     # TODO: tag_id as array
-    tag_id = models.ManyToManyField(Tag, null=True, related_name='combino_tags')
+    tag_id = models.ManyToManyField(Tag, null=True)
     created = models.DateTimeField(editable=False)
     score = models.PositiveIntegerField(default=0)
+
+    objects = models.Manager()
 
     def __str__(self):
         """Return a human readable representation of the model instance."""
         return str(self.tag_id) or ''
+
+    # @property
+    # def tags(self):
+    #     tags = self.tagging.values('tag')
+    #     return tags.values('tag_id', 'tag__name', 'tag__language')
 
 
 

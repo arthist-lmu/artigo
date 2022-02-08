@@ -108,6 +108,22 @@ class TagSerializer(serializers.ModelSerializer):
     return data
 
 
+class TagWithIdSerializer(serializers.ModelSerializer):
+
+  class Meta:
+    model = Tag
+    fields = ('id', 'name', 'language')
+
+  def create(self, validated_data):
+    tag_data = validated_data.pop('tag')
+    Tag.objects.create(**tag_data)
+    return tag_data
+
+  def to_representation(self, data):
+    data = super().to_representation(data)
+    return data
+
+
 class GametypeSerializer(serializers.ModelSerializer):
 
   class Meta:
@@ -269,11 +285,11 @@ class TaggingGetSerializer(serializers.ModelSerializer):
 
 class CombinationSerializer(serializers.ModelSerializer):
   # TODO: serializer für array of length 2
-  tag_id = serializers.PrimaryKeyRelatedField(queryset=Tag.objects.all(),
-                                              required=True,
-                                              source='tag',
-                                              write_only=False)
+  # tag_id = serializers.PrimaryKeyRelatedField(queryset=Tag.objects.all(),required=True,source='tag',write_only=False)
   # tag_id = serializers.ReadOnlyField(source='tag.id')
+  # tag_id = serializers.ListField(child=serializers.CharField())
+  tag_id = TagWithIdSerializer(many=True)
+  # tag_id = serializers.SerializerMethodField('get_tag_id')
   resource_id = serializers.PrimaryKeyRelatedField(queryset=Resource.objects.all(),
                                                    required=True,
                                                    source='resource',
@@ -307,7 +323,7 @@ class CombinationSerializer(serializers.ModelSerializer):
     # list of tag_name from coordinated gameround
     coordinated_gameround_tags = coordinated_gameround.taggings.all().values_list("tag__name", flat=True)
 
-    tag_data = validated_data.pop('tag')
+    tag_data = validated_data.pop('tag_id')
     # if tag_data:
     #   tag = Tag.objects.get_or_create(**tag_data)[0]
     #   validated_data['tag'] = tag
@@ -334,9 +350,13 @@ class CombinationSerializer(serializers.ModelSerializer):
     # combination.save()
     return combination
 
+  def validate_tag_id(self, tag_id):
+    if len(tag_id) > 2:
+      raise serializers.ValidationError("Invalid number of items")
+
   def to_representation(self, instance):
     rep = super().to_representation(instance)
-    rep['tag'] = TagSerializer(instance.tag.all(), many=True).data
+    rep['tag_id'] = TagWithIdSerializer(instance.tag_id.all(), many=True).data
     return rep
 
 

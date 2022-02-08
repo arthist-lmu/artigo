@@ -182,12 +182,20 @@ class GameResourceViewTests(APITestCase):
         self.assertEqual(response.status_code, 200)
 
 
-class ARTigoGameViewTests(TestCase):
+class ARTigoGameViewTests(APITestCase):
 
     def setUp(self):
         self.client = APIClient()
-        self.artigo_game_data = {'gametype': 'imageLabeler',
-                                 'resource': '1404cc769fa538fab1b65b9cad201eca'}
+        self.resource = {'hash_id': '1404cc769fa538fab1b65b9cad201eca'}
+        self.user = CustomUser.objects.create(username="carina")
+        self.gametype = Gametype.objects.create(name="imageLabeler", rounds=5, round_duration=60, enabled=True),
+        self.gamesession = Gamesession.objects.create(user=self.user, gametype=self.gametype, created=datetime.now())
+        self.gameround = Gameround.objects.create(user=self.user, gamesession=self.gamesession,
+                                                  created=datetime.now(), score=0)
+        self.artigo_game_data = {'gametype': self.gametype,
+                                 'gamesession': self.gamesession,
+                                 'gameround': self.gameround,
+                                 'resource': self.resource}
         self.response = self.client.get('http://localhost:8000/artigo_api/artigo_game/',
                                         self.artigo_game_data,
                                         format="json")
