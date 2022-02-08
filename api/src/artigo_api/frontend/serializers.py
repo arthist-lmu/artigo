@@ -288,8 +288,7 @@ class CombinationSerializer(serializers.ModelSerializer):
   # tag_id = serializers.PrimaryKeyRelatedField(queryset=Tag.objects.all(),required=True,source='tag',write_only=False)
   # tag_id = serializers.ReadOnlyField(source='tag.id')
   # tag_id = serializers.ListField(child=serializers.CharField())
-  tag_id = TagWithIdSerializer(many=True)
-  # tag_id = serializers.SerializerMethodField('get_tag_id')
+  tag_id = TagWithIdSerializer(many=True, required=False)
   resource_id = serializers.PrimaryKeyRelatedField(queryset=Resource.objects.all(),
                                                    required=True,
                                                    source='resource',
@@ -325,7 +324,7 @@ class CombinationSerializer(serializers.ModelSerializer):
 
     tag_data = validated_data.pop('tag_id')
     # if tag_data:
-    #   tag = Tag.objects.get_or_create(**tag_data)[0]
+    #   tag = Tag.objects.get(tag_data)
     #   validated_data['tag'] = tag
     # combination = Combination.objects.create(tag_id=tag_data, **validated_data)
 
@@ -336,23 +335,20 @@ class CombinationSerializer(serializers.ModelSerializer):
       # if tag.name in coordinated_gameround_tags:
       #   score += 25
 
-    combination = Combination.objects.create(
+    combination = Combination(
       user=user,
       gameround=validated_data.get("gameround"),
       resource=validated_data.get("resource"),
-      # tag_id=tag_data,
       created=datetime.now(),
       score=score
     )
+    combination.save()
     for tag_object in tag_data:
-      combination.set(tag_id=tag_object)
+      combination.tag_id.add(tag_object)
     # combination.tag_id.add(validated_data.get("tag"))
-    # combination.save()
-    return combination
 
-  def validate_tag_id(self, tag_id):
-    if len(tag_id) > 2:
-      raise serializers.ValidationError("Invalid number of items")
+    if len(combination.tag_id) == 2:
+      return combination
 
   def to_representation(self, instance):
     rep = super().to_representation(instance)
