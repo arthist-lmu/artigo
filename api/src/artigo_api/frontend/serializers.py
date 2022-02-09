@@ -186,7 +186,7 @@ class GameroundSerializer(serializers.ModelSerializer):
 
 
 class TaggingSerializer(serializers.ModelSerializer):
-  tag = TagSerializer(required=False, write_only=False)
+  tag = TagSerializer(required=False, write_only=False, many=False)
   resource_id = serializers.PrimaryKeyRelatedField(queryset=Resource.objects.all(),
                                                    required=True,
                                                    source='resource',

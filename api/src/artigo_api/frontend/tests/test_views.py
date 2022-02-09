@@ -108,6 +108,7 @@ class TaggingViewTests(APITestCase):
                                                   created=datetime.now(), score=0)
         self.tag = Tag.objects.create(name="new tagging", language="en")
         self.resource = Resource.objects.create(id=1, hash_id='resource hash id')
+        # self.resource = Resource.objects.create(hash_id='1404cc769fa538fab1b65b9cad201eca')
         # self.tagging = Tagging.objects.create(user=self.user, gameround=self.gameround, resource=self.resource,
                                               # tag=self.tag, created=datetime.now(), score=0, origin='')
         self.tagging = {'tag': self.tag}
@@ -123,20 +124,21 @@ class TaggingViewTests(APITestCase):
     def test_post(self):
         self.client = APIClient()
         self.client.get('http://localhost:8000/artigo_api/tagging')
-        tag = {
-            'name': 'New tag',
-            'language': 'some language',
-        }
-        self.user = {'username': "carina"}
-        self.gameround = {'user': self.user}
-        self.resource = {'hash_id': 'hashidofresource'}
+        # tag = {
+        #     'name': 'New tag',
+        #     'language': 'some language',
+        # }
+        tag = {'tag': self.tag.name}
+        user = {'user': self.user.id}
+        gameround = {'gameround': self.gameround.id}
+        resource = {'resource': self.resource.hash_id}
         data = {
-            'user': self.user,
+            'user': user,
             'tag': tag,
-            'gameround': self.gameround,
+            'gameround': gameround,
             'created': datetime.now(),
             'score': 0,
-            'resource': self.resource,
+            'resource': resource,
         }
         self.assertEqual(Tagging.objects.count(), 0)
         response = self.client.post('http://localhost:8000/artigo_api/tagging', data=data, format='json')
@@ -166,7 +168,6 @@ class TagViewTests(APITestCase):
         self.client = APIClient()
         self.client.get('http://localhost:8000/artigo_api/tag')
         data = {
-            # 'id': 1,
             'name': 'New tag',
             'language': 'some language',
         }
@@ -203,7 +204,8 @@ class ARTigoGameViewTests(APITestCase):
 
     def setUp(self):
         self.client = APIClient()
-        self.resource = {'hash_id': '1404cc769fa538fab1b65b9cad201eca'}
+        self.resource = Resource.objects.create(hash_id='1404cc769fa538fab1b65b9cad201eca')
+        # self.resource = Resource.objects.create(id=1, hash_id='resource hash id')
         self.user = CustomUser.objects.create(username="carina")
         self.gametype = Gametype.objects.create(name="imageLabeler", rounds=5, round_duration=60, enabled=True)
         self.gamesession = Gamesession.objects.create(user=self.user, gametype=self.gametype, created=datetime.now())
@@ -221,28 +223,21 @@ class ARTigoGameViewTests(APITestCase):
         response = self.client.get('http://localhost:8000/artigo_api/artigo_game/')
         self.assertEqual(response.status_code, 200)
 
-    # def test_api_can_create_game_data(self):
-    #     """Test the api has resource retrieve capability."""
-    #     self.client = APIClient()
-    #     self.assertEqual(self.response.status_code, status.HTTP_200_OK)
-
     def test_post(self):
         self.client = APIClient()
         self.client.get('http://localhost:8000/artigo_api/artigo_game/')
         self.tag_data = {
-            'id': 2,
             'name': 'New tag',
             'language': 'some language',
         }
-        self.gameround = {'id': 3}
-        self.resource = {'hash_id': 'hashidofresource'}
+        gameround = {'gameround': self.gameround.id}
+        resource = {'resource': self.resource.hash_id}
         tagging_data = {
-            'id': 1,
             'tag': self.tag_data,
-            'gameround': self.gameround,
+            'gameround': gameround,
             'created': datetime.now(),
             'score': 0,
-            'resource': self.resource,
+            'resource': resource,
         }
         self.assertEqual(Tagging.objects.count(), 0)
         response = self.client.post('http://localhost:8000/artigo_api/artigo_game/', data=tagging_data, format='json')

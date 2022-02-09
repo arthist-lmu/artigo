@@ -74,15 +74,14 @@ class TaggingTests(TestCase):
         self.tagging_gameround = self.gameround
         self.tagging_resource = self.resource
         self.tag = self.tag
-        self.tagging_tag = self.tag
+        # self.tagging_tag = self.tag
         self.tagging_created = datetime.now()
         self.tagging_score = 0
         self.tagging_origin = ""
-        self.tagging = Tagging.objects.create(id=1,
-                                              user=self.tagging_user,
+        self.tagging = Tagging.objects.create(user=self.tagging_user,
                                               gameround=self.tagging_gameround,
                                               resource=self.tagging_resource,
-                                              tag=self.tagging_tag,
+                                              tag=self.tag,
                                               created=self.tagging_created,
                                               score=self.tagging_score,
                                               origin=self.tagging_origin)
@@ -95,13 +94,6 @@ class TaggingTests(TestCase):
     def test_str(self):
         """Test for string representation"""
         self.assertEqual(str(self.tagging), self.tagging.tag)
-
-    # def test_model_can_create_tagging(self):
-    #     """Test the tagging model can create a tagging instance"""
-    #     old_count = Tagging.objects.count()
-    #     self.tagging.save()
-    #     new_count = Tagging.objects.count()
-    #     self.assertNotEqual(old_count, new_count)
 
 
 class CombinationTests(TestCase):
@@ -248,7 +240,7 @@ class TitleTests(TestCase):
         self.movement = ArtMovement.objects.create(name="movement", language="en")
         self.webpage = WebPage.objects.create(url="www.webpage.com", language="en")
 
-        self.title_name = "Title"
+        self.title_name = "title name"
         self.title_language = "some other language"
         self.title_technique = self.technique
         self.title_style = self.style
@@ -273,7 +265,7 @@ class TitleTests(TestCase):
 
     def test_create_title(self):
         title = Title.objects.create(name=self.title_name)
-        assert title.name == "Title"
+        assert title.name == "title name"
 
 
 class CreatorTests(TestCase):

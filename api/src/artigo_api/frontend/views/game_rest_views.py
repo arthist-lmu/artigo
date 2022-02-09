@@ -2,6 +2,8 @@ import random
 
 import time
 from datetime import datetime, timedelta
+
+import pytz
 from django.utils import timezone
 
 from rest_framework import status, renderers, permissions
@@ -183,7 +185,7 @@ class ARTigoGameView(APIView):
 
         gameround = Gameround.objects.create(user_id=current_user_id,
                                              gamesession=gamesession,
-                                             created=datetime.now(),
+                                             created=datetime.utcnow().replace(tzinfo=pytz.UTC),
                                              score=current_score)
 
         gameround_serializer = GameroundSerializer(gameround)
@@ -208,14 +210,15 @@ class ARTigoGameView(APIView):
         start_time = gameround.created
         # time 5 mins after gameround was created
         end_of_game = start_time + timedelta(seconds=20)
-        if not datetime.now() >= end_of_game:
+        if not datetime.utcnow().replace(tzinfo=pytz.UTC) >= end_of_game:
             if tagging_serializer.is_valid(raise_exception=True):
                 tagging_serializer.save(tagging=request.data)
                 return Response({"status": "success", "data": tagging_serializer.data}, status=status.HTTP_201_CREATED)
             else:
                 return Response({"status": "error", "data": tag_serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
         else:
-            return Response(status=status.HTTP_200_OK)
+            # return Response(status=status.HTTP_200_OK)
+            return Response(status=status.HTTP_408_REQUEST_TIMEOUT)
 
 
 class ARTigoTabooGameView(APIView):
