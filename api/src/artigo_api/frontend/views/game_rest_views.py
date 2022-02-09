@@ -218,6 +218,7 @@ class ARTigoGameView(APIView):
                 return Response({"status": "error", "data": tag_serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
         else:
             # return Response(status=status.HTTP_200_OK)
+
             return Response(status=status.HTTP_408_REQUEST_TIMEOUT)
 
 
