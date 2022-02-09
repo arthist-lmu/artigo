@@ -43,15 +43,15 @@ class TagTests(TestCase):
     def setUp(self):
         self.tag_name = "name of the tag"
         self.tag_language = "language of tag"
-        self.tag = Tag.objects.create(id=1, name=self.tag_name, language=self.tag_language)
+        self.tag = Tag.objects.create(name=self.tag_name, language=self.tag_language)
 
     def test_name_label(self):
-        tag = Tag.objects.get(name="name of the tag")
-        field_label = tag._meta.get_field('name').verbose_name()
+        tag = Tag.objects.get(name=self.tag_name)
+        field_label = tag._meta.get_field('name').verbose_name
         self.assertEqual(field_label, 'name')
 
     def test_tag_size(self):
-        tag = Tag.objects.get(id=1)
+        tag = Tag.objects.get(name=self.tag_name)
         max_length = tag._meta.get_field('name').max_length
         self.assertEqual(max_length, 256)
 
@@ -59,25 +59,21 @@ class TagTests(TestCase):
         """Test for string representation"""
         self.assertEqual(str(self.tag), self.tag.name)
 
-    # def test_model_can_create_tag(self):
-    #     """Test the tagging model can create a tag instance"""
-    #     old_count = Tag.objects.count()
-    #     self.tag.save()
-    #     new_count = Tag.objects.count()
-    #     self.assertNotEqual(old_count, new_count)
-
 
 class TaggingTests(TestCase):
     def setUp(self):
         self.user = CustomUser.objects.create(username="carina")
         self.gametype = Gametype.objects.create(name="NewGame", rounds=5, round_duration=60, enabled=True)
         self.gamesession = Gamesession.objects.create(user=self.user, gametype=self.gametype, created=datetime.now())
-        self.tagging_user = self.user
-        self.tagging_gameround = Gameround.objects.create(user=self.user, gamesession=self.gamesession,
+        self.gameround = Gameround.objects.create(user=self.user, gamesession=self.gamesession,
                                                           created=datetime.now(), score=0)
-        self.tagging_resource = Resource.objects.create(id=1, hash_id="ba6abce620f33fb98ce7caf992476a6e", creators=[],
-                                                        titles=[], location="location", origin="")
+        self.resource = Resource.objects.create(id= 1, hash_id="ba6abce620f33fb98ce7caf992476a6e", origin="")
         self.tag = Tag.objects.create(name="tag to test", language="en")
+
+        self.tagging_user = self.user
+        self.tagging_gameround = self.gameround
+        self.tagging_resource = self.resource
+        self.tag = self.tag
         self.tagging_tag = self.tag
         self.tagging_created = datetime.now()
         self.tagging_score = 0
@@ -92,8 +88,8 @@ class TaggingTests(TestCase):
                                               origin=self.tagging_origin)
 
     def test_tag_label(self):
-        tagging = Tagging.objects.get(user="username")
-        field_label = tagging._meta.get_field('tag').verbose_name()
+        tagging = Tagging.objects.get(user=self.user)
+        field_label = tagging._meta.get_field('tag').verbose_name
         self.assertEqual(field_label, 'tag')
 
     def test_str(self):
@@ -114,30 +110,28 @@ class CombinationTests(TestCase):
         self.user = CustomUser.objects.create(username="carina")
         self.gametype = Gametype.objects.create(name="NewGame", rounds=5, round_duration=60, enabled=True)
         self.gamesession = Gamesession.objects.create(user=self.user, gametype=self.gametype, created=datetime.now())
-        self.combination_user = CustomUser.objects.create(username="carina")
-        self.combination_gameround = Gameround.objects.create(user=self.user, gamesession=self.gamesession,
-                                                          created=datetime.now(), score=0)
-        self.combination_resource = "reshashid"
-        self.combination_tag_id = 2
+        self.gameround = Gameround.objects.create(user=self.user, gamesession=self.gamesession,
+                                                  created=datetime.now(), score=0)
+        self.resource = Resource.objects.create(id=1, hash_id="ba6abce620f33fb98ce7caf992476a6e", origin="")
+        self.tag = Tag.objects.create(name="tag", language="en")
+
+        self.combination_user = self.user
+        self.combination_gameround = self.gameround
+        self.combination_resource = self.resource
+
+        self.combination_tag_id = self.tag
         self.combination_created = datetime.now()
         self.combination_score = 0
         self.combination = Combination.objects.create(user=self.combination_user,
                                                       gameround=self.combination_gameround,
                                                       resource=self.combination_resource,
-                                                      tag_id=self.combination_tag_id,
                                                       created=self.combination_created,
                                                       score=self.combination_score)
+        self.combination.tag_id.add(self.tag)
 
     def test_str(self):
         """Test for string representation"""
-        self.assertEqual(str(self.combination_tag_id), self.combination.tag_id)
-
-    # def test_model_can_create_combination(self):
-    #     """Test the tagging model can create a combination instance"""
-    #     old_count = Combination.objects.count()
-    #     self.combination.save()
-    #     new_count = Combination.objects.count()
-    #     self.assertNotEqual(old_count, new_count)
+        self.assertEqual(str(self.combination), self.combination.tag_id)
 
 
 class GamesessionTests(TestCase):
@@ -151,19 +145,16 @@ class GamesessionTests(TestCase):
                                                       gametype=self.gamesession_gametype,
                                                       created=self.gamesession_created)
 
-    # def test_model_can_create_gamesession(self):
-    #     """Test the tagging model can create a gamesession instance"""
-    #     old_count = Gamesession.objects.count()
-    #     self.gamesession.save()
-    #     new_count = Gamesession.objects.count()
-    #     self.assertNotEqual(old_count, new_count)
+    # def test_create_gamesession(self):
+    #     gamesession = Gamesession.objects.create(gametype=self.gametype)
+    #     assert gamesession.gametype.name == "NewGame"
 
 
 class GameroundTests(TestCase):
     def setUp(self):
-        self.user = CustomUser.objects.all().get(username="carina")
+        self.user = CustomUser.objects.create(username="carina")
         self.gametype = Gametype.objects.create(name="NewGame", rounds=5, round_duration=60, enabled=True)
-        self.gamesession = Gamesession.objects.create(user=self.user, gametype=self.gametype, created=datetime.now())
+        self.gamesession = Gamesession.objects.create(id=1, user=self.user, gametype=self.gametype, created=datetime.now())
         self.gameround_user = self.user
         self.gameround_gamesession = self.gamesession
         self.gameround_created = datetime.now()
@@ -172,6 +163,10 @@ class GameroundTests(TestCase):
                                                   gamesession=self.gameround_gamesession,
                                                   created=self.gameround_created,
                                                   score=self.gameround_score)
+
+    # def test_create_gameround(self):
+    #     gameround = Gameround.objects.create(created=self.gameround_created)
+    #     assert gameround.created == datetime.now()
 
 
 class GametypeTests(TestCase):
@@ -200,10 +195,26 @@ class GametypeTests(TestCase):
 
 class ResourceTests(TestCase):
     def setUp(self):
+        self.locations = Location.objects.create(name="location", country="country")
+        self.technique = ArtTechnique.objects.create(name="technique", language="en")
+        self.style = ArtStyle.objects.create(name="style", language="en")
+        self.movement = ArtMovement.objects.create(name="movement", language="en")
+        self.webpage = WebPage.objects.create(url="www.webpage.com", language="en")
+
+        self.creators = Creator.objects.create(name="creator", born=datetime.now(),
+                                               died=datetime.now(), nationality="de")
+        self.creators.locations.add(self.locations)
+        self.creators.techniques.add(self.technique)
+        self.creators.web_page.add(self.webpage)
+
+        self.titles = Title.objects.create(name="title", language="de", style=self.style, movement=self.movement)
+        self.titles.locations.add(self.locations)
+        self.titles.web_page.add(self.webpage)
+
         self.resource_id = 1
         self.resource_hash_id = "hashid"
-        self.resource_crators = []
-        self.resource_titles = []
+        self.resource_crators = self.creators
+        self.resource_titles = self.titles
         self.resource_created_start = datetime.now()
         self.resource_created_end = datetime.now()
         self.resource_location = "Location"
@@ -214,9 +225,6 @@ class ResourceTests(TestCase):
         self.resource_media_type = "picture"
         self.resource = Resource.objects.create(id=self.resource_id,
                                                 hash_id=self.resource_hash_id,
-                                                creators=self.resource_crators,
-                                                titles=self.resource_titles,
-                                                created_start=self.resource_created_start,
                                                 created_end=self.resource_created_end,
                                                 location=self.resource_location,
                                                 institution_source=self.resource_institution_source,
@@ -224,6 +232,8 @@ class ResourceTests(TestCase):
                                                 origin=self.resource_origin,
                                                 enabled=self.resouce_enabled,
                                                 media_type=self.resource_media_type)
+        self.resource.titles.add(self.titles)
+        self.resource.creators.add(self.creators)
 
     def test_str(self):
         """Test for string representation"""
@@ -232,19 +242,25 @@ class ResourceTests(TestCase):
 
 class TitleTests(TestCase):
     def setUp(self):
+        self.locations = Location.objects.create(name="location", country="country")
+        self.technique = ArtTechnique.objects.create(name="technique", language="en")
+        self.style = ArtStyle.objects.create(name="style", language="en")
+        self.movement = ArtMovement.objects.create(name="movement", language="en")
+        self.webpage = WebPage.objects.create(url="www.webpage.com", language="en")
+
         self.title_name = "Title"
         self.title_language = "some other language"
-        self.title_technique = "title technique"
-        self.title_style = "title style"
-        self.title_movement = "title movement"
-        self.title_locations = "title locations"
-        self.title_webpage = "www.title.com"
+        self.title_technique = self.technique
+        self.title_style = self.style
+        self.title_movement = self.movement
+        self.title_locations = self.locations
+        self.title_webpage = self.webpage
         self.title = Title.objects.create(name=self.title_name,
                                           technique=self.title_technique,
                                           style=self.title_style,
-                                          movement=self.title_movement,
-                                          locations=self.title_locations,
-                                          web_page=self.title_webpage)
+                                          movement=self.title_movement)
+        self.title.locations.add(self.locations)
+        self.title.web_page.add(self.webpage)
 
     def test_str(self):
         """Test for string representation"""
@@ -274,8 +290,7 @@ class CreatorTests(TestCase):
         self.creator = Creator.objects.create(name=self.creator_name,
                                               born=self.creator_born,
                                               died=self.creator_died,
-                                              nationality=self.creator_nationality,
-                                              )
+                                              nationality=self.creator_nationality)
         self.creator.locations.add(self.locations)
         self.creator.techniques.add(self.technique)
         self.creator.web_page.add(self.webpage)

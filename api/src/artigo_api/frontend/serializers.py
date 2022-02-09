@@ -281,10 +281,10 @@ class TaggingGetSerializer(serializers.ModelSerializer):
 
 
 class CombinationSerializer(serializers.ModelSerializer):
-  tag_id = serializers.PrimaryKeyRelatedField(queryset=Tag.objects.all(), source='tag', required=False, many=True)
+  # tag_id = serializers.PrimaryKeyRelatedField(queryset=Tag.objects.all(), source='tag', required=False, many=True)
   # tag_id = serializers.ReadOnlyField(source='tag.id')
   # tag_id = serializers.ListField(child=serializers.CharField())
-  # tag_id = TagWithIdSerializer(many=True, required=False, write_only=False)
+  tag_id = TagWithIdSerializer(many=True, required=False, write_only=False)
   resource_id = serializers.PrimaryKeyRelatedField(queryset=Resource.objects.all(),
                                                    required=True,
                                                    source='resource',
@@ -319,9 +319,6 @@ class CombinationSerializer(serializers.ModelSerializer):
     coordinated_gameround_tags = coordinated_gameround.taggings.all().values_list("tag__name", flat=True)
 
     tag_data = validated_data.pop('tag_id', None)
-    if tag_data:
-      tag = Tag.objects.get_or_create(**tag_data)[0]
-      validated_data['tag'] = tag
 
     combination = Combination(
       user=user,
@@ -331,8 +328,8 @@ class CombinationSerializer(serializers.ModelSerializer):
       score=score
     )
     combination.save()
-    for tag_object in tag_data[0]:
-      combination.tag_id.add(tag_object)
+    # for tag_object in tag_data[0]:
+    combination.tag_id.add(tag_data[0])
 
     # if len(combination.tag_id) == 2:
     return combination

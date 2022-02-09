@@ -33,7 +33,9 @@ class GamesessionViewTests(APITestCase):
 
     def setUp(self):
         self.client = APIClient()
-        self.gamesession_data = {'id': 1}
+        self.gametype = Gametype.objects.create(name="NewGame", rounds=5, round_duration=60, enabled=True)
+        self.user = CustomUser.objects.create(username="carina")
+        self.gamesession_data = {'gametype': self.gametype}
         self.response = self.client.get('http://localhost:8000/artigo_api/gamesession',
                                         self.gamesession_data,
                                         format="json")
@@ -47,10 +49,11 @@ class GamesessionViewTests(APITestCase):
     def test_post(self):
         self.client = APIClient()
         self.client.get('http://localhost:8000/artigo_api/gamesession')
+        user = {'user': self.user.id}
+        gametype = {"gametype": self.gametype.id}
         data = {
-            'id': 1,
-            'user': CustomUser.objects.all().order_by('?').first(),
-            'gametype': Gametype.objects.create(name="NewGame", rounds=5, round_duration=60, enabled=True),
+            'user': user,
+            'gametype': gametype,
             'created': datetime.now(),
         }
         response = self.client.post('http://localhost:8000/artigo_api/gamesession', data=data, format='json')
@@ -61,7 +64,10 @@ class GameroundViewTests(APITestCase):
 
     def setUp(self):
         self.client = APIClient()
-        self.gameround_data = {'id': 1}
+        self.user = CustomUser.objects.create(username="carina")
+        self.gametype = Gametype.objects.create(name="NewGame", rounds=5, round_duration=60, enabled=True)
+        self.gamesession = Gamesession.objects.create(user=self.user, gametype=self.gametype, created=datetime.now())
+        self.gameround_data = {'gamesession': self.gamesession}
         self.response = self.client.get('http://localhost:8000/artigo_api/gameround',
                                         self.gameround_data,
                                         format="json")
@@ -73,53 +79,64 @@ class GameroundViewTests(APITestCase):
 
     def test_post(self):
         self.client = APIClient()
-        # response = self.client.get('http://localhost:8000/artigo_api/gameround')
+        self.client.get('http://localhost:8000/artigo_api/gameround')
+        user = {'username': self.user.id}
+        gamesession = {"gamesession": self.gamesession.id}
         data = {
-            'id': 1,
-            'user': None,
-            'gamesession': Gamesession.objects.create(user=CustomUser.objects.create(username="carina"),
-                                                      gametype=Gametype.objects.create(name="NewGame", rounds=5,
-                                                                                       round_duration=60, enabled=True),
-                                                      created=datetime.now()),
+            'user': user,
+            'gamesession': gamesession,
             'created': datetime.now(),
             'score': 0,
         }
+        self.assertEqual(Gameround.objects.count(), 0)
         response = self.client.post('http://localhost:8000/artigo_api/gameround', data=data, format='json')
-        self.assertEqual(response.status_code, 201)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(Gameround.objects.count(), 1)
+        gameround = Gameround.objects.all().first()
+        for field_name in data.keys():
+            self.assertEqual(getattr(gameround, field_name), data[field_name])
 
 
 class TaggingViewTests(APITestCase):
 
     def setUp(self):
         self.client = APIClient()
-        self.tagging_data = {'id': 1}
+        self.user = CustomUser.objects.create(username="carina")
+        self.gametype = Gametype.objects.create(name="NewGame", rounds=5, round_duration=60, enabled=True)
+        self.gamesession = Gamesession.objects.create(user=self.user, gametype=self.gametype, created=datetime.now())
+        self.gameround = Gameround.objects.create(id=1, user=self.user, gamesession=self.gamesession,
+                                                  created=datetime.now(), score=0)
+        self.tag = Tag.objects.create(name="new tagging", language="en")
+        self.resource = Resource.objects.create(id=1, hash_id='resource hash id')
+        # self.tagging = Tagging.objects.create(user=self.user, gameround=self.gameround, resource=self.resource,
+                                              # tag=self.tag, created=datetime.now(), score=0, origin='')
+        self.tagging = {'tag': self.tag}
         self.response = self.client.get('http://localhost:8000/artigo_api/tagging',
-                                        self.tagging_data,
+                                        self.tagging,
                                         format="json")
     def test_get(self):
         self.client = APIClient()
         response = self.client.get('http://localhost:8000/artigo_api/tagging')
         self.assertEqual(response.status_code, 200)
-        # self.assertEqual(len(response.data), len(Tagging.objects.all().order_by('?').first()))
+        # self.assertEqual(len(response.data), len(Tagging.objects.get(tag=self.tag)))
 
     def test_post(self):
         self.client = APIClient()
         self.client.get('http://localhost:8000/artigo_api/tagging')
+        tag = {
+            'name': 'New tag',
+            'language': 'some language',
+        }
+        self.user = {'username': "carina"}
+        self.gameround = {'user': self.user}
+        self.resource = {'hash_id': 'hashidofresource'}
         data = {
-            'id': 1,
-            'tag': Tag.objects.create(name="new tagging", language="en"),
-            'gameround': Gameround.objects.create(id=1,
-                user=CustomUser.objects.create(username="carina"),
-                                                  gamesession=Gamesession.objects.create(
-                                                      user=CustomUser.objects.create(username="carina"),
-                                                      gametype=Gametype.objects.create(name="NewGame", rounds=5,
-                                                                                       round_duration=60, enabled=True),
-                                                                                         created=datetime.now()),
-                                                  created=datetime.now(),
-                                                  score=0),
+            'user': self.user,
+            'tag': tag,
+            'gameround': self.gameround,
             'created': datetime.now(),
             'score': 0,
-            'resource': 'resource hash id',
+            'resource': self.resource,
         }
         self.assertEqual(Tagging.objects.count(), 0)
         response = self.client.post('http://localhost:8000/artigo_api/tagging', data=data, format='json')
@@ -149,7 +166,7 @@ class TagViewTests(APITestCase):
         self.client = APIClient()
         self.client.get('http://localhost:8000/artigo_api/tag')
         data = {
-            'id': 1,
+            # 'id': 1,
             'name': 'New tag',
             'language': 'some language',
         }
@@ -187,13 +204,14 @@ class ARTigoGameViewTests(APITestCase):
     def setUp(self):
         self.client = APIClient()
         self.resource = {'hash_id': '1404cc769fa538fab1b65b9cad201eca'}
-        self.user = {'username': 'carina'}
+        self.user = CustomUser.objects.create(username="carina")
         self.gametype = Gametype.objects.create(name="imageLabeler", rounds=5, round_duration=60, enabled=True)
         self.gamesession = Gamesession.objects.create(user=self.user, gametype=self.gametype, created=datetime.now())
         self.gameround = Gameround.objects.create(user=self.user, gamesession=self.gamesession,
                                                   created=datetime.now(), score=0)
-        self.artigo_game_data = {'gameround': self.gameround,
-                                 'resource': self.resource}
+        self.tag = Tag.objects.create(name="new tag", language="en")
+        self.artigo_game_data = {'resource': self.resource}
+
         self.response = self.client.get('http://localhost:8000/artigo_api/artigo_game/',
                                         self.artigo_game_data,
                                         format="json")
@@ -203,30 +221,36 @@ class ARTigoGameViewTests(APITestCase):
         response = self.client.get('http://localhost:8000/artigo_api/artigo_game/')
         self.assertEqual(response.status_code, 200)
 
-    def test_api_can_create_game_data(self):
-        """Test the api has resource retrieve capability."""
-        self.client = APIClient()
-        self.assertEqual(self.response.status_code, status.HTTP_200_OK)
+    # def test_api_can_create_game_data(self):
+    #     """Test the api has resource retrieve capability."""
+    #     self.client = APIClient()
+    #     self.assertEqual(self.response.status_code, status.HTTP_200_OK)
 
     def test_post(self):
         self.client = APIClient()
         self.client.get('http://localhost:8000/artigo_api/artigo_game/')
-        tag_data = {
-            'id': 'New tag id',
+        self.tag_data = {
+            'id': 2,
             'name': 'New tag',
             'language': 'some language',
         }
+        self.gameround = {'id': 3}
+        self.resource = {'hash_id': 'hashidofresource'}
         tagging_data = {
-            'id': 'New tag id',
-            'tag': tag_data,
+            'id': 1,
+            'tag': self.tag_data,
             'gameround': self.gameround,
             'created': datetime.now(),
             'score': 0,
             'resource': self.resource,
         }
-
+        self.assertEqual(Tagging.objects.count(), 0)
         response = self.client.post('http://localhost:8000/artigo_api/artigo_game/', data=tagging_data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(Tagging.objects.count(), 1)
+        tagging = Tagging.objects.all().first()
+        for field_name in tagging_data.keys():
+            self.assertEqual(getattr(tagging, field_name), tagging_data[field_name])
 
 
 # class ARTigoTabooGameViewTests(APITestCase):
