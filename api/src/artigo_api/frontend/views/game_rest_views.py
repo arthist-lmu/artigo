@@ -152,7 +152,12 @@ class ARTigoGameView(APIView):
     # renderer_classes = [renderers.JSONRenderer]
 
     def get(self, request, *args, **kwargs):
-        gametype = Gametype.objects.all().get(name="imageLabeler")
+        try:
+            gametype = Gametype.objects.get(name="imageLabeler")
+        except Gametype.DoesNotExist:
+            print('There is no imageLabeler gametype in DB')
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        # gametype = Gametype.objects.get(name="imageLabeler")
         gametype_serializer = GametypeSerializer(gametype)
 
         current_score = 0
@@ -184,34 +189,33 @@ class ARTigoGameView(APIView):
         gameround_serializer = GameroundSerializer(gameround)
 
         start_time = gamesession.created
-        # now = timezone.now()
         end_of_game = start_time + timedelta(minutes=5)
-        # TODO: handle timeout after 5 min!
-        # request.session.set_expiry(300)
-        if not datetime.now() == end_of_game:
-            return Response({'resource': first_resource_serializer.data, 'gameround': gameround_serializer.data,})
 
+        if not datetime.now() >= end_of_game:
+            return Response({'resource': first_resource_serializer.data, 'gameround': gameround_serializer.data,
+                             })
         else:
-            return Response(status=status.HTTP_408_REQUEST_TIMEOUT)
+            # return Response(status=status.HTTP_408_REQUEST_TIMEOUT)
+            return Response(status=status.HTTP_200_OK)
 
     def post(self, request, *args, **kwargs):
         tag_serializer = TagSerializer(data=request.data)
         tagging_serializer = TaggingSerializer(data=request.data)
         gameround_id = request.data.get('gameround_id')
-        gameround = Gameround.objects.all().get(id=gameround_id)
+        gameround = Gameround.objects.get(id=gameround_id)
 
         # time where the gameround was created
         start_time = gameround.created
         # time 5 mins after gameround was created
         end_of_game = start_time + timedelta(seconds=20)
-        if not datetime.now() == end_of_game:
+        if not datetime.now() >= end_of_game:
             if tagging_serializer.is_valid(raise_exception=True):
                 tagging_serializer.save(tagging=request.data)
                 return Response({"status": "success", "data": tagging_serializer.data}, status=status.HTTP_201_CREATED)
             else:
                 return Response({"status": "error", "data": tag_serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
         else:
-            return Response(status=status.HTTP_408_REQUEST_TIMEOUT)
+            return Response(status=status.HTTP_200_OK)
 
 
 class ARTigoTabooGameView(APIView):
@@ -222,7 +226,7 @@ class ARTigoTabooGameView(APIView):
     renderer_classes = (BrowsableAPIRenderer, JSONRenderer, HTMLFormRenderer)
 
     def get(self, request, *args, **kwargs):
-        gametype = Gametype.objects.all().get(name="imageLabeler_Taboo")
+        gametype = Gametype.objects.get(name="imageLabeler_Taboo")
         gametype_serializer = GametypeSerializer(gametype)
 
         resource_suggestions = Resource.objects.all().order_by('?').first()
@@ -272,7 +276,7 @@ class TagATagGameView(APIView):
     def get(self, request, *args, **kwargs):
         """Potential condition for Tag a Tag Tag to be tagged to be returned"""
         controller = GameViewController()
-        gametype = Gametype.objects.all().get(name="imageAndTagLabeler")
+        gametype = Gametype.objects.get(name="imageAndTagLabeler")
         gametype_serializer = GametypeSerializer(gametype)
 
         random_id = controller.get_random_object(Resource)
@@ -325,7 +329,7 @@ class CombinoGameView(APIView):
     """
 
     def get(self, request, *args, **kwargs):
-        gametype = Gametype.objects.all().get(name="Combino")
+        gametype = Gametype.objects.get(name="Combino")
         gametype_serializer = GametypeSerializer(gametype)
 
         # resource_and_tags = Resource.objects.all().order_by('?').first()
@@ -357,9 +361,8 @@ class CombinoGameView(APIView):
         )
         gameround_serializer = GameroundSerializer(gameround)
 
-        return Response({# 'gametype': gametype_serializer.data,
-                         'resourceand and tags to combine': combination_serializer.data,
-                         'gameround': gameround_serializer.data
+        return Response({'resource and and tags to combine': combination_serializer.data,
+                         # 'gameround': gameround_serializer.data
                          })
 
     def post(self, request, *args, **kwargs):
@@ -472,7 +475,7 @@ class TagView(APIView):
 
     def get(self, request, *args, **kwargs):
         tag = Tag.objects.all().order_by('?').first()
-        tag_serializer = TagSerializer(tag)
+        tag_serializer = TagWithIdSerializer(tag)
         return Response(tag_serializer.data)
 
     def post(self, request, *args, **kwargs):

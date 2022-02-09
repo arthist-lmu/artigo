@@ -222,6 +222,10 @@ class Tag(models.Model):
         """Return a human readable representation of the model instance."""
         return self.name or ''
 
+    # def __iter__(self):
+    #     return [self.name,
+    #             self.language]
+
     @property
     def tags(self):
         tags = self.tagging.values('tag')
