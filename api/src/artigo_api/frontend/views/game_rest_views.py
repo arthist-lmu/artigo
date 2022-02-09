@@ -194,8 +194,7 @@ class ARTigoGameView(APIView):
         end_of_game = start_time + timedelta(minutes=5)
 
         if not datetime.now() >= end_of_game:
-            return Response({'resource': first_resource_serializer.data, 'gameround': gameround_serializer.data,
-                             })
+            return Response({'resource': first_resource_serializer.data, 'gameround': gameround_serializer.data,})
         else:
             # return Response(status=status.HTTP_408_REQUEST_TIMEOUT)
             return Response(status=status.HTTP_200_OK)
@@ -209,7 +208,7 @@ class ARTigoGameView(APIView):
         # time where the gameround was created
         start_time = gameround.created
         # time 5 mins after gameround was created
-        end_of_game = start_time + timedelta(seconds=20)
+        end_of_game = start_time + timedelta(seconds=60)
         if not datetime.utcnow().replace(tzinfo=pytz.UTC) >= end_of_game:
             if tagging_serializer.is_valid(raise_exception=True):
                 tagging_serializer.save(tagging=request.data)
@@ -256,20 +255,32 @@ class ARTigoTabooGameView(APIView):
         )
         gameround_serializer = GameroundSerializer(gameround)
 
-        return Response({# 'gametype': gametype_serializer.data,
-                         'resource and taboo input': resource_serializer.data,
-                         'gameround': gameround_serializer.data
-                         })
+        start_time = gamesession.created
+        end_of_game = start_time + timedelta(minutes=5)
+
+        if not datetime.now() >= end_of_game:
+            return Response({'resource and taboo input': resource_serializer.data,
+                             'gameround': gameround_serializer.data})
 
     def post(self, request, *args, **kwargs):
         tag_serializer = TagSerializer(data=request.data)
         tagging_serializer = TabooTaggingSerializer(data=request.data)
+        gameround_id = request.data.get('gameround_id')
+        gameround = Gameround.objects.get(id=gameround_id)
 
-        if tagging_serializer.is_valid(raise_exception=True):
-            tagging_serializer.save(tagging=request.data)
-            return Response({"status": "success", "data": tagging_serializer.data}, status=status.HTTP_201_CREATED)
+        # time where the gameround was created
+        start_time = gameround.created
+        # time 5 mins after gameround was created
+        end_of_game = start_time + timedelta(seconds=60)
+
+        if not datetime.utcnow().replace(tzinfo=pytz.UTC) >= end_of_game:
+            if tagging_serializer.is_valid(raise_exception=True):
+                tagging_serializer.save(tagging=request.data)
+                return Response({"status": "success", "data": tagging_serializer.data}, status=status.HTTP_201_CREATED)
+            else:
+                return Response({"status": "error", "data": tag_serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
         else:
-            return Response({"status": "error", "data": tag_serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(status=status.HTTP_408_REQUEST_TIMEOUT)
 
 
 class TagATagGameView(APIView):
@@ -309,22 +320,33 @@ class TagATagGameView(APIView):
             score=current_score
         )
         gameround_serializer = GameroundSerializer(gameround)
+        start_time = gamesession.created
+        end_of_game = start_time + timedelta(minutes=5)
 
-        return Response({# 'gametype': gametype_serializer.data,
-                         'tag': tagging_serializer.data,
-                         'resourceand and suggestions': suggestions_serializer.data,
-                         'gameround': gameround_serializer.data
-                         })
+        if not datetime.now() >= end_of_game:
+            return Response({'tag': tagging_serializer.data,
+                             'resourceand and suggestions': suggestions_serializer.data,
+                             'gameround': gameround_serializer.data})
 
     def post(self, request, *args, **kwargs):
         tag_serializer = TagSerializer(data=request.data)
         tagging_serializer = TagATagTaggingSerializer(data=request.data)
+        gameround_id = request.data.get('gameround_id')
+        gameround = Gameround.objects.get(id=gameround_id)
 
-        if tagging_serializer.is_valid(raise_exception=True):
-            tagging_serializer.save(tagging=request.data)
-            return Response({"status": "success", "data": tagging_serializer.data}, status=status.HTTP_201_CREATED)
+        # time where the gameround was created
+        start_time = gameround.created
+        # time 5 mins after gameround was created
+        end_of_game = start_time + timedelta(seconds=60)
+
+        if not datetime.utcnow().replace(tzinfo=pytz.UTC) >= end_of_game:
+            if tagging_serializer.is_valid(raise_exception=True):
+                tagging_serializer.save(tagging=request.data)
+                return Response({"status": "success", "data": tagging_serializer.data}, status=status.HTTP_201_CREATED)
+            else:
+                return Response({"status": "error", "data": tag_serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
         else:
-            return Response({"status": "error", "data": tag_serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(status=status.HTTP_408_REQUEST_TIMEOUT)
 
 
 class CombinoGameView(APIView):
