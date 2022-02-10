@@ -388,19 +388,31 @@ class CombinoGameView(APIView):
         gameround_serializer = GameroundSerializer(gameround)
 
         return Response({'resource and and tags to combine': combination_serializer.data,
-                         # 'gameround': gameround_serializer.data
+                         'gameround': gameround_serializer.data
                          })
 
     def post(self, request, *args, **kwargs):
 
         combined_tagging_serializer = CombinationSerializer(data=request.data)
+        gameround_id = request.data.get('gameround_id')
+        gameround = Gameround.objects.get(id=gameround_id)
 
-        if combined_tagging_serializer.is_valid(raise_exception=True):
-            combined_tagging_serializer.save(combination=request.data)
-            return Response({"status": "success", "data": combined_tagging_serializer.data}, status=status.HTTP_200_OK)
+        # time where the gameround was created
+        start_time = gameround.created
+        # time 5 mins after gameround was created
+        end_of_game = start_time + timedelta(seconds=60)
+
+        if not datetime.utcnow().replace(tzinfo=pytz.UTC) >= end_of_game:
+
+            if combined_tagging_serializer.is_valid(raise_exception=True):
+                combined_tagging_serializer.save(combination=request.data)
+                return Response({"status": "success", "data": combined_tagging_serializer.data},
+                                status=status.HTTP_200_OK)
+            else:
+                return Response({"status": "error", "data": combined_tagging_serializer.errors},
+                                status=status.HTTP_400_BAD_REQUEST)
         else:
-            return Response({"status": "error", "data": combined_tagging_serializer.errors},
-                            status=status.HTTP_400_BAD_REQUEST)
+            return Response(status=status.HTTP_408_REQUEST_TIMEOUT)
 
 
 class GamesessionView(APIView):

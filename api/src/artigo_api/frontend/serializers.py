@@ -281,9 +281,6 @@ class TaggingGetSerializer(serializers.ModelSerializer):
 
 
 class CombinationSerializer(serializers.ModelSerializer):
-  # tag_id = serializers.PrimaryKeyRelatedField(queryset=Tag.objects.all(), source='tag', required=False, many=True)
-  # tag_id = serializers.ReadOnlyField(source='tag.id')
-  # tag_id = serializers.ListField(child=serializers.CharField())
   tag_id = TagWithIdSerializer(many=True, required=False, write_only=False)
   resource_id = serializers.PrimaryKeyRelatedField(queryset=Resource.objects.all(),
                                                    required=True,
@@ -331,13 +328,8 @@ class CombinationSerializer(serializers.ModelSerializer):
     for tag_item in tag_data:
       tag = Tag.objects.get_or_create(**tag_item)[0]
       combination.tag_id.add(tag)
-    # tags = Tag.objects.filter(tag__id=tag_data[0])
-    # for tag_object in tag_data[0]:
-      # combination.tag_id.add(tag_object)
-      # combination.tag_id.add(tag_object)
-    # combination.tag_id.add(Tag.objects.get(id=tag_data[0]))
-
-    # if len(combination.tag_id) == 2:
+      # combo = [combination.tag_id]
+      # if len(combo) == 2:
     return combination
 
   def to_representation(self, instance):
