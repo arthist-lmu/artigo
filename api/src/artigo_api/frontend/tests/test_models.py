@@ -185,6 +185,33 @@ class GametypeTests(TestCase):
         assert gametype.name == "NewGame"
 
 
+class GamemodeTests(TestCase):
+    def setUp(self):
+        self.gamemode_name = "NewGameMode"
+        self.gamemode_media_type = "text"
+        self.gamemode_enabled = True
+        self.gamemode = Gamemode.objects.create(name=self.gamemode_name, media_type=self.gamemode_media_type,
+                                                enabled=self.gamemode_enabled)
+
+    def test_name_size(self):
+        gamemode = Gamemode.objects.get(name="NewGameMode")
+        max_length = gamemode._meta.get_field('name').max_length
+        self.assertEqual(max_length, 256)
+
+    def test_media_type_size(self):
+        gamemode = Gamemode.objects.get(media_type="text")
+        max_length = gamemode._meta.get_field('media_type').max_length
+        self.assertEqual(max_length, 256)
+
+    def test_str(self):
+        """Test for string representation"""
+        self.assertEqual(str(self.gamemode), self.gamemode.name)
+
+    def test_create_gamemode(self):
+        gamemode = Gamemode.objects.create(name=self.gamemode_name)
+        assert gamemode.name == "NewGameMode"
+
+
 class ResourceTests(TestCase):
     def setUp(self):
         self.locations = Location.objects.create(name="location", country="country")
