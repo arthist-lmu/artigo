@@ -405,7 +405,7 @@ class CombinoGameView(APIView):
         # time where the gameround was created
         start_time = gameround.created
         # time 5 mins after gameround was created
-        end_of_game = start_time + timedelta(seconds=60)
+        end_of_game = start_time + timedelta(minutes=60)
 
         if not datetime.utcnow().replace(tzinfo=pytz.UTC) >= end_of_game:
 

@@ -311,7 +311,7 @@ class CombinationSerializer(serializers.ModelSerializer):
     # A previously played gameround for this resource is coordinated for Tag verification
     coordinated_gameround = Gameround.objects.all().filter(taggings__resource_id=resource_id).order_by("?").first()
     # TODO: Add extra condition for Combino
-    tags = []
+    tags_to_combine = resource_id.taggings.all().values_list("tag__name", flat=True)
     # list of tag_name from coordinated gameround
     coordinated_gameround_tags = coordinated_gameround.taggings.all().values_list("tag__name", flat=True)
 
@@ -328,9 +328,27 @@ class CombinationSerializer(serializers.ModelSerializer):
     for tag_item in tag_data:
       tag = Tag.objects.get_or_create(**tag_item)[0]
       combination.tag_id.add(tag)
-      # combo = [combination.tag_id]
-      # if len(combo) == 2:
-    return combination
+
+      if combination.tag_id.count() == 2:
+        return combination
+
+  def update(self, combination, validated_data):
+    resource_id = validated_data.get("resource")
+    # A previously played gameround for this resource is coordinated for Tag verification
+    coordinated_gameround = Gameround.objects.all().filter(taggings__resource_id=resource_id).order_by("?").first()
+    # list of tag_name from coordinated gameround
+    coordinated_gameround_tags = coordinated_gameround.taggings.all().values_list("tag__name", flat=True)
+    # tags to combine by the user during a game round
+    tags_to_combine = resource_id.taggings.all().values_list("tag__name", flat=True)
+
+    if not Combination.objects.all().filter(tag_id=combination.tag_id).exists():
+      combination.score = 0
+    elif Combination.objects.all().filter(tag_id=combination.tag_id).exists():
+      combination.score += 5
+    if combination.tag_id in coordinated_gameround_tags:
+      combination.score += 25
+
+    return super().update(combination, validated_data)
 
   def to_representation(self, instance):
     rep = super().to_representation(instance)
