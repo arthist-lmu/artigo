@@ -179,17 +179,17 @@ class Gametype(models.Model):
         return self.name or ''
 
 
-# class Gamemode(models.Model):
-#     name = models.CharField(max_length=256, default='text')
-#     media_type = models.CharField(max_length=256)
-#     enabled = models.BooleanField(default=True)
-#
-#     def __str__(self):
-#         return self.name
+class Gamemode(models.Model):
+    name = models.CharField(max_length=256, default='text')
+    media_type = models.CharField(max_length=256)
+    enabled = models.BooleanField(default=True)
+
+    def __str__(self):
+        return self.name or ''
 
 
 class Gamesession(models.Model):
-    # gamemode = models.ForeignKey(Gamemode, on_delete=models.CASCADE)
+    # gamemode = models.ForeignKey(Gamemode, on_delete=models.CASCADE, null=True)
     user = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, null=True)
     gametype = models.ForeignKey(Gametype, on_delete=models.CASCADE)
     created = models.DateTimeField(editable=False)
@@ -222,14 +222,6 @@ class Tag(models.Model):
         """Return a human readable representation of the model instance."""
         return self.name or ''
 
-    # def __iter__(self):
-    #     return [self.name,
-    #             self.language]
-
-    # @property
-    # def tag_ids(self):
-    #     return self.tag.all()
-
     @property
     def tags(self):
         tags = self.tagging.values('tag')
@@ -243,7 +235,7 @@ class Tagging(models.Model):
     tag = models.ForeignKey(Tag, on_delete=models.CASCADE, related_name='tagging')
     created = models.DateTimeField(editable=False)
     score = models.PositiveIntegerField(default=0)
-    # media_type = models.ForeignKey(Gamemode, on_delete=models.CASCADE)
+    # media_type = models.ForeignKey(Gamemode, on_delete=models.CASCADE, null=True)
     origin = models.URLField(max_length=256, blank=True, default='')
 
     objects = models.Manager()
@@ -259,7 +251,6 @@ class Combination(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, null=True)
     gameround = models.ForeignKey(Gameround, on_delete=models.CASCADE, null=True)
     resource = models.ForeignKey(Resource, on_delete=models.CASCADE, null=True)
-    # TODO: tag_id as array
     tag_id = models.ManyToManyField(Tag, null=True)
     created = models.DateTimeField(editable=False)
     score = models.PositiveIntegerField(default=0)

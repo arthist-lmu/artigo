@@ -77,9 +77,9 @@ class GameroundAdmin(CustomModelAdmin):
     pass
 
 
-# @admin.register(Gamemode)
-# class GamemodeAdmin(CustomModelAdmin):
-#     pass
+@admin.register(Gamemode)
+class GamemodeAdmin(CustomModelAdmin):
+    pass
 
 
 @admin.register(Tag)
