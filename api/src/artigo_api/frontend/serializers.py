@@ -429,10 +429,10 @@ class TabooTaggingSerializer(serializers.ModelSerializer):
     if request and hasattr(request, "user"):
       user = request.user
 
-    resource = None
-    request = self.context.get("request")
-    if request and hasattr(request, "resource"):
-      resource = request.resource
+    # resource = None
+    # request = self.context.get("request")
+    # if request and hasattr(request, "resource"):
+    #   resource = request.resource
 
     score = 0
     resource_id = validated_data.get("resource")
@@ -445,7 +445,11 @@ class TabooTaggingSerializer(serializers.ModelSerializer):
 
     tag_data = validated_data.pop('tag', None)
     if tag_data:
-      tag = Tag.objects.get_or_create(**tag_data)[0]
+      # tag = Tag.objects.get_or_create(**tag_data)[0]
+      tag = Tag.objects.get_or_create(
+        language=tag_data['language'],
+        name=tag_data['name'].upper()
+      )[0]
       validated_data['tag'] = tag
       if tag.name not in taboo_tags:
         if not Tag.objects.all().filter(name=tag.name).exists():
@@ -527,10 +531,10 @@ class TagATagTaggingSerializer(serializers.ModelSerializer):
     if request and hasattr(request, "user"):
       user = request.user
 
-    resource = None
-    request = self.context.get("request")
-    if request and hasattr(request, "resource"):
-      resource = request.resource
+    # resource = None
+    # request = self.context.get("request")
+    # if request and hasattr(request, "resource"):
+    #   resource = request.resource
 
     score = 0
     resource_id = validated_data.get("resource")
@@ -543,7 +547,11 @@ class TagATagTaggingSerializer(serializers.ModelSerializer):
 
     tag_data = validated_data.pop('tag', None)
     if tag_data:
-      tag = Tag.objects.get_or_create(**tag_data)[0]
+      # tag = Tag.objects.get_or_create(**tag_data)[0]
+      tag = Tag.objects.get_or_create(
+        language=tag_data['language'],
+        name=tag_data['name'].upper()
+      )[0]
       validated_data['tag'] = tag
       # TODO: Figure out condition for Tag to be tagged!
       if not Tag.objects.all().filter(name=tag.name).exists():
