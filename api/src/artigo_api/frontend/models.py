@@ -180,7 +180,7 @@ class Gametype(models.Model):
 
 
 class Gamemode(models.Model):
-    name = models.CharField(max_length=256, default='text')
+    name = models.CharField(max_length=256)
     media_type = models.CharField(max_length=256)
     enabled = models.BooleanField(default=True)
 
@@ -189,7 +189,7 @@ class Gamemode(models.Model):
 
 
 class Gamesession(models.Model):
-    # gamemode = models.ForeignKey(Gamemode, on_delete=models.CASCADE, null=True)
+    gamemode = models.ForeignKey(Gamemode, on_delete=models.CASCADE, null=True)
     user = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, null=True)
     gametype = models.ForeignKey(Gametype, on_delete=models.CASCADE)
     created = models.DateTimeField(editable=False)
@@ -235,7 +235,7 @@ class Tagging(models.Model):
     tag = models.ForeignKey(Tag, on_delete=models.CASCADE, related_name='tagging')
     created = models.DateTimeField(editable=False)
     score = models.PositiveIntegerField(default=0)
-    # media_type = models.ForeignKey(Gamemode, on_delete=models.CASCADE, null=True)
+    media_type = models.ForeignKey(Gamemode, on_delete=models.CASCADE, null=True)
     origin = models.URLField(max_length=256, blank=True, default='')
 
     objects = models.Manager()
