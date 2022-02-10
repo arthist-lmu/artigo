@@ -228,7 +228,11 @@ class TaggingSerializer(serializers.ModelSerializer):
 
     tag_data = validated_data.pop('tag', None)
     if tag_data:
-      tag = Tag.objects.get_or_create(**tag_data)[0]
+      # tag = Tag.objects.get_or_create(**tag_data)[0]
+      tag = Tag.objects.get_or_create(
+        language=tag_data['language'],
+        name=tag_data['name'].upper()
+      )[0]
       validated_data['tag'] = tag
       if not Tag.objects.all().filter(name=tag.name).exists():
         score = 0
