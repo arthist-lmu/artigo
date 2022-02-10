@@ -226,6 +226,10 @@ class Tag(models.Model):
     #     return [self.name,
     #             self.language]
 
+    # @property
+    # def tag_ids(self):
+    #     return self.tag.all()
+
     @property
     def tags(self):
         tags = self.tagging.values('tag')

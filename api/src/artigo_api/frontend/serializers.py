@@ -318,8 +318,6 @@ class CombinationSerializer(serializers.ModelSerializer):
     # list of tag_name from coordinated gameround
     coordinated_gameround_tags = coordinated_gameround.taggings.all().values_list("tag__name", flat=True)
 
-    tag_data = validated_data.pop('tag_id', None)
-
     combination = Combination(
       user=user,
       gameround=validated_data.get("gameround"),
@@ -328,8 +326,16 @@ class CombinationSerializer(serializers.ModelSerializer):
       score=score
     )
     combination.save()
+
+    tag_data = validated_data.pop('tag_id', None)
+    for tag_item in tag_data:
+      tag = Tag.objects.get_or_create(**tag_item)[0]
+      combination.tag_id.add(tag)
+    # tags = Tag.objects.filter(tag__id=tag_data[0])
     # for tag_object in tag_data[0]:
-    combination.tag_id.add(tag_data[0])
+      # combination.tag_id.add(tag_object)
+      # combination.tag_id.add(tag_object)
+    # combination.tag_id.add(Tag.objects.get(id=tag_data[0]))
 
     # if len(combination.tag_id) == 2:
     return combination

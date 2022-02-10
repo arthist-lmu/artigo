@@ -131,7 +131,7 @@ class TaggingViewTests(APITestCase):
         tag = {'tag': self.tag.name}
         user = {'user': self.user.id}
         gameround = {'gameround': self.gameround.id}
-        resource = {'resource': self.resource.hash_id}
+        resource = {'resource': self.resource.id}
         data = {
             'user': user,
             'tag': tag,
@@ -142,7 +142,7 @@ class TaggingViewTests(APITestCase):
         }
         self.assertEqual(Tagging.objects.count(), 0)
         response = self.client.post('http://localhost:8000/artigo_api/tagging', data=data, format='json')
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.data)
         self.assertEqual(Tagging.objects.count(), 1)
         tagging = Tagging.objects.all().first()
         for field_name in data.keys():
