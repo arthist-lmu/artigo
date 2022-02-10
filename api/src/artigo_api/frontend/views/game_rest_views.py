@@ -358,8 +358,7 @@ class CombinoGameView(APIView):
         gametype = Gametype.objects.get(name="Combino")
         gametype_serializer = GametypeSerializer(gametype)
 
-        # resource_and_tags = Resource.objects.all().order_by('?').first()
-        resource_and_tags = Resource.objects.all().get(id=327888)
+        resource_and_tags = Resource.objects.all().order_by('?').first()
         combination_serializer = CombinoTagsSerializer(resource_and_tags)
 
         # TODO: implement list of tags for tags from serializer - test in get to use in post!
@@ -385,11 +384,17 @@ class CombinoGameView(APIView):
             created=datetime.now(),
             score=current_score
         )
+
         gameround_serializer = GameroundSerializer(gameround)
 
-        return Response({'resource and and tags to combine': combination_serializer.data,
-                         'gameround': gameround_serializer.data
-                         })
+        start_time = gamesession.created
+        end_of_game = start_time + timedelta(minutes=5)
+
+        if not datetime.now() >= end_of_game:
+
+            return Response({'resource and and tags to combine': combination_serializer.data,
+                             'gameround': gameround_serializer.data
+                             })
 
     def post(self, request, *args, **kwargs):
 
