@@ -24,91 +24,6 @@ class IsNotAuthenticated(permissions.BasePermission):
         return not request.user.is_authenticated
 
 
-class GameViewController:
-    """
-    Class containing methods that control the order in which Game View methods get called
-    also methods to check tags and calculate score & coordinate users
-    """
-
-    def get_random_object(self, MyModel):
-        """Method that works for Tag a Tag game view"""
-        random_object = None
-        object_count = MyModel.objects.all().count() + 1
-        while not MyModel.objects.all().filter(id=random_object).exists():
-            for obj in range(object_count):
-                n = random.randint(1, object_count)
-                if MyModel.objects.all().filter(id=n).exists():
-                    random_object = n
-                    return random_object
-
-    def get_random_id(self, MyModel):
-        """Method for large querysets"""
-        random_object = None
-        object_count = MyModel.objects.all().count() + 1
-        for obj in range(object_count):
-            n = random.randint(1, object_count)
-            while not MyModel.objects.all().filter(id=n).exists():
-                alt = random.randint(1, object_count)
-                if MyModel.objects.all().filter(id=alt).exists():
-                    random_object = n
-
-        return random_object
-
-    def get_gameround_matching_resource(self, random_resource_id):
-        """Checks if a previously played game round exists for a randomly chosen resource
-        Returns a serialized gameround object (played previously for this same resource)
-        """
-        current_gameround = Gameround.objects.all().filter(taggings__resource_id=random_resource_id).order_by(
-            "?").first()
-        gameround_serializer = GameroundSerializer(current_gameround)
-
-        return gameround_serializer.data
-
-    def timer(self):
-        """Start a new timer as soon as a gameround has been started/created"""
-        start_time = datetime.now()
-        elapsed_time = None
-        if start_time is not None:
-            elapsed_time = time.perf_counter()
-        """Stop the timer, and return the elapsed time"""
-        if start_time is None:
-            elapsed_time = time.perf_counter() - start_time
-        return elapsed_time
-
-    def check_tagging_exists(self, tagging_to_check):
-        """
-        Matches tags entered with tags from the list of the tags from the matched Gameround object
-        :return:
-        """
-        # tagging_to_check is Tagging object entered by user --> through POST request?!
-        # matched_gameround = self.get_gameround_matching_resource() ?
-        # TODO: REVIEW!!! after finishing post method
-        if Tagging.objects.all().filter(tag=tagging_to_check).exists():
-
-            new_tagging = Tagging.objects.create()
-            tagging_serializer = TaggingSerializer(new_tagging)
-            data = {'tagging': tagging_serializer.data}
-            return Response(data, status=status.HTTP_200_OK)
-
-        elif not Tag.objects.all().filter(name=tagging_to_check).exists():
-            new_tag = Tag.objects.create()
-            tag_serializer = TagSerializer(new_tag)
-            data = {'tagging': tag_serializer.data}
-            return Response(data, status=status.HTTP_200_OK)
-
-        else:
-            return Response(status=status.HTTP_400_BAD_REQUEST)
-
-    def calculate_score(self):
-        """Calculate per game round and per session score!? - maybe split method"""
-        # returns JSON Object // HTTP Status code
-        score_to_save = None
-        data = None
-        # 'Matching' here: match played round with a previously played round (25 p) and with entire DB->Tagging(5p)
-
-        return Response(data, status=status.HTTP_201_CREATED)
-
-
 class GametypeView(APIView):
     """
     API View that handles retrieving the correct type of a game
@@ -537,15 +452,15 @@ class GameResourceView(APIView):
         })
 
 
-class GameResourceViewPicture(APIView):
-    """
-    API view to handle resources
-    """
-    renderer_classes = [JPEGRenderer, PNGRenderer]
-
-    def get(self, request, *args, **kwargs):
-        resource = Resource.objects.all().order_by('?').first()
-        serializer = ResourceSerializer(resource)
-        return Response({
-            'resource and tags to combine': serializer.data
-        })
+# class GameResourceViewPicture(APIView):
+#     """
+#     API view to handle resources
+#     """
+#     renderer_classes = [JPEGRenderer, PNGRenderer]
+#
+#     def get(self, request, *args, **kwargs):
+#         resource = Resource.objects.all().order_by('?').first()
+#         serializer = ResourceSerializer(resource)
+#         return Response({
+#             'resource and tags to combine': serializer.data
+#         })

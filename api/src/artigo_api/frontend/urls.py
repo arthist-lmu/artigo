@@ -17,7 +17,7 @@ urlpatterns = [
     path('combination', views.CombinationView.as_view(), name='combination'),
     path('tag', views.TagView.as_view(), name='tag'),
     path('game_resource', views.GameResourceView.as_view(), name='game_resource'),
-    path('game_resource_picture', views.GameResourceViewPicture.as_view(), name='game_resource_picture'),
+    # path('game_resource_picture', views.GameResourceViewPicture.as_view(), name='game_resource_picture'),
 
     # TODO: fix error
     path('artigo_game/', views.ARTigoGameView.as_view(), name='Artigo game'),
