@@ -3,7 +3,6 @@ from datetime import datetime
 from rest_framework import serializers, fields, request
 from frontend.views import tag_service
 
-# TODO: update fields according to model changes
 from frontend.models import *
 from rest_framework.fields import ReadOnlyField
 from rest_framework.relations import StringRelatedField, SlugRelatedField
@@ -70,6 +69,10 @@ class TitleSerializer(serializers.ModelSerializer):
   class Meta:
     model = Title
     fields = ['id', 'name', 'language', 'technique', 'style', 'movement']
+
+  def to_representation(self, data):
+    data = super().to_representation(data)
+    return data
 
 
 class ResourceSerializer(serializers.ModelSerializer):

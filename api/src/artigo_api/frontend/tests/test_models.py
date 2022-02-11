@@ -1,6 +1,7 @@
 from datetime import datetime
 
 import pytest
+import pytz
 
 from django.contrib.auth import get_user_model
 from django.test import TestCase
@@ -64,17 +65,18 @@ class TaggingTests(TestCase):
     def setUp(self):
         self.user = CustomUser.objects.create(username="carina")
         self.gametype = Gametype.objects.create(name="NewGame", rounds=5, round_duration=60, enabled=True)
-        self.gamesession = Gamesession.objects.create(user=self.user, gametype=self.gametype, created=datetime.now())
+        self.gamesession = Gamesession.objects.create(user=self.user, gametype=self.gametype,
+                                                      created=datetime.utcnow().replace(tzinfo=pytz.UTC))
         self.gameround = Gameround.objects.create(user=self.user, gamesession=self.gamesession,
-                                                          created=datetime.now(), score=0)
-        self.resource = Resource.objects.create(id= 1, hash_id="ba6abce620f33fb98ce7caf992476a6e", origin="")
+                                                  created=datetime.utcnow().replace(tzinfo=pytz.UTC), score=0)
+        self.resource = Resource.objects.create(id=1, hash_id="ba6abce620f33fb98ce7caf992476a6e", origin="")
         self.tag = Tag.objects.create(name="tag to test", language="en")
 
         self.tagging_user = self.user
         self.tagging_gameround = self.gameround
         self.tagging_resource = self.resource
-        self.tag = self.tag
-        # self.tagging_tag = self.tag
+        # self.tag = self.tag
+        self.tagging_tag = self.tag
         self.tagging_created = datetime.now()
         self.tagging_score = 0
         self.tagging_origin = ""
@@ -93,25 +95,27 @@ class TaggingTests(TestCase):
 
     def test_str(self):
         """Test for string representation"""
-        self.assertEqual(str(self.tagging), self.tagging.tag)
+        self.assertEqual(str(self.tagging), self.tagging.tag.name)
 
 
 class CombinationTests(TestCase):
-    # TODO: Review after Combino POST method working
+
     def setUp(self):
         self.user = CustomUser.objects.create(username="carina")
         self.gametype = Gametype.objects.create(name="NewGame", rounds=5, round_duration=60, enabled=True)
-        self.gamesession = Gamesession.objects.create(user=self.user, gametype=self.gametype, created=datetime.now())
+        self.gamesession = Gamesession.objects.create(user=self.user, gametype=self.gametype,
+                                                      created=datetime.utcnow().replace(tzinfo=pytz.UTC))
         self.gameround = Gameround.objects.create(user=self.user, gamesession=self.gamesession,
-                                                  created=datetime.now(), score=0)
+                                                  created=datetime.utcnow().replace(tzinfo=pytz.UTC), score=0)
         self.resource = Resource.objects.create(id=1, hash_id="ba6abce620f33fb98ce7caf992476a6e", origin="")
-        self.tag = Tag.objects.create(name="tag", language="en")
+        self.tag1 = Tag.objects.create(name="tag", language="en")
+        self.tag2 = Tag.objects.create(name="second tag", language="en")
 
         self.combination_user = self.user
         self.combination_gameround = self.gameround
         self.combination_resource = self.resource
 
-        self.combination_tag_id = self.tag
+        # self.combination_tag_id = [self.tag1, self.tag2]
         self.combination_created = datetime.now()
         self.combination_score = 0
         self.combination = Combination.objects.create(user=self.combination_user,
@@ -119,7 +123,8 @@ class CombinationTests(TestCase):
                                                       resource=self.combination_resource,
                                                       created=self.combination_created,
                                                       score=self.combination_score)
-        self.combination.tag_id.add(self.tag)
+        self.combination.tag_id.add(self.tag1)
+        self.combination.tag_id.add(self.tag2)
 
     def test_str(self):
         """Test for string representation"""
@@ -132,7 +137,7 @@ class GamesessionTests(TestCase):
         self.gametype = Gametype.objects.create(name="NewGame", rounds=5, round_duration=60, enabled=True)
         self.gamesession_user = self.user
         self.gamesession_gametype = self.gametype
-        self.gamesession_created = datetime.now()
+        self.gamesession_created = datetime.utcnow().replace(tzinfo=pytz.UTC)
         self.gamesession = Gamesession.objects.create(user=self.gamesession_user,
                                                       gametype=self.gamesession_gametype,
                                                       created=self.gamesession_created)
@@ -149,7 +154,7 @@ class GameroundTests(TestCase):
         self.gamesession = Gamesession.objects.create(id=1, user=self.user, gametype=self.gametype, created=datetime.now())
         self.gameround_user = self.user
         self.gameround_gamesession = self.gamesession
-        self.gameround_created = datetime.now()
+        self.gameround_created = datetime.utcnow().replace(tzinfo=pytz.UTC)
         self.gameround_score = 0
         self.gameround = Gameround.objects.create(user=self.gameround_user,
                                                   gamesession=self.gameround_gamesession,
@@ -220,8 +225,8 @@ class ResourceTests(TestCase):
         self.movement = ArtMovement.objects.create(name="movement", language="en")
         self.webpage = WebPage.objects.create(url="www.webpage.com", language="en")
 
-        self.creators = Creator.objects.create(name="creator", born=datetime.now(),
-                                               died=datetime.now(), nationality="de")
+        self.creators = Creator.objects.create(name="creator", born=datetime.utcnow().replace(tzinfo=pytz.UTC),
+                                               died=datetime.utcnow().replace(tzinfo=pytz.UTC), nationality="de")
         self.creators.locations.add(self.locations)
         self.creators.techniques.add(self.technique)
         self.creators.web_page.add(self.webpage)
@@ -267,8 +272,8 @@ class TitleTests(TestCase):
         self.movement = ArtMovement.objects.create(name="movement", language="en")
         self.webpage = WebPage.objects.create(url="www.webpage.com", language="en")
 
-        self.title_name = "title name"
-        self.title_language = "some other language"
+        self.title_name = "titlename"
+        self.title_language = "en"
         self.title_technique = self.technique
         self.title_style = self.style
         self.title_movement = self.movement
@@ -286,13 +291,13 @@ class TitleTests(TestCase):
         self.assertEqual(str(self.title), self.title.name)
 
     def test_title_size(self):
-        title = Title.objects.get(name=self.title_name)
+        title = Title.objects.get(name="titlename")
         max_length = title._meta.get_field('name').max_length
         self.assertEqual(max_length, 256)
 
     def test_create_title(self):
         title = Title.objects.create(name=self.title_name)
-        assert title.name == "title name"
+        assert title.name == "titlename"
 
 
 class CreatorTests(TestCase):
@@ -302,8 +307,8 @@ class CreatorTests(TestCase):
         self.webpage = WebPage.objects.create(url="www.webpage.com", language="en")
 
         self.creator_name = "Artist"
-        self.creator_born = datetime.now()
-        self.creator_died = datetime.now()
+        self.creator_born = datetime.utcnow().replace(tzinfo=pytz.UTC)
+        self.creator_died = datetime.utcnow().replace(tzinfo=pytz.UTC)
         self.creator_nationality = "some nationality"
 
         self.creator = Creator.objects.create(name=self.creator_name,

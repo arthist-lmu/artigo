@@ -150,7 +150,7 @@ class ARTigoGameView(APIView):
     allows users to post tags that are verified and saved accordingly to either the Tag or Tagging table
     """
 
-    # TODO: USE LATER!!!!
+    # can be used later
     # renderer_classes = [renderers.JSONRenderer]
 
     def get(self, request, *args, **kwargs):
@@ -196,8 +196,7 @@ class ARTigoGameView(APIView):
         if not datetime.now() >= end_of_game:
             return Response({'resource': first_resource_serializer.data, 'gameround': gameround_serializer.data,})
         else:
-            # return Response(status=status.HTTP_408_REQUEST_TIMEOUT)
-            return Response(status=status.HTTP_200_OK)
+            return Response(status=status.HTTP_408_REQUEST_TIMEOUT)
 
     def post(self, request, *args, **kwargs):
         tag_serializer = TagSerializer(data=request.data)
@@ -216,8 +215,6 @@ class ARTigoGameView(APIView):
             else:
                 return Response({"status": "error", "data": tag_serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
         else:
-            # return Response(status=status.HTTP_200_OK)
-
             return Response(status=status.HTTP_408_REQUEST_TIMEOUT)
 
 
@@ -430,14 +427,14 @@ class GamesessionView(APIView):
         serializer = GamesessionSerializer(gamesession)
         return Response(serializer.data)
 
-    def post(self, request, *args, **kwargs):
-        gamesession_serializer = GamesessionSerializer(data=request.data)
-        if gamesession_serializer.is_valid(raise_exception=True):
-            gamesession_serializer.save(gamesession=request.data)
-            return Response({"status": "success", "data": gamesession_serializer.data}, status=status.HTTP_200_OK)
-        else:
-            return Response({"status": "error", "data": gamesession_serializer.errors},
-                            status=status.HTTP_400_BAD_REQUEST)
+    # def post(self, request, *args, **kwargs):
+    #     gamesession_serializer = GamesessionSerializer(data=request.data)
+    #     if gamesession_serializer.is_valid(raise_exception=True):
+    #         gamesession_serializer.save(gamesession=request.data)
+    #         return Response({"status": "success", "data": gamesession_serializer.data}, status=status.HTTP_200_OK)
+    #     else:
+    #         return Response({"status": "error", "data": gamesession_serializer.errors},
+    #                         status=status.HTTP_400_BAD_REQUEST)
 
 
 class GameroundView(APIView):
@@ -458,14 +455,14 @@ class GameroundView(APIView):
             'gameround': gameround_serializer.data,
         })
 
-    def post(self, request, *args, **kwargs):
-        gameround_serializer = GameroundSerializer(data=request.data)
-        if gameround_serializer.is_valid(raise_exception=True):
-            gameround_serializer.save(gameround=request.data)
-            return Response({"status": "success", "data": gameround_serializer.data}, status=status.HTTP_200_OK)
-        else:
-            return Response({"status": "error", "data": gameround_serializer.errors},
-                            status=status.HTTP_400_BAD_REQUEST)
+    # def post(self, request, *args, **kwargs):
+    #     gameround_serializer = GameroundSerializer(data=request.data)
+    #     if gameround_serializer.is_valid(raise_exception=True):
+    #         gameround_serializer.save(gameround=request.data)
+    #         return Response({"status": "success", "data": gameround_serializer.data}, status=status.HTTP_200_OK)
+    #     else:
+    #         return Response({"status": "error", "data": gameround_serializer.errors},
+    #                         status=status.HTTP_400_BAD_REQUEST)
 
 
 class TaggingView(APIView):
@@ -475,9 +472,8 @@ class TaggingView(APIView):
 
     def get(self, request, *args, **kwargs):
         """Retrieves a random Tag"""
-        # request.session.set_expiry(30)
         tagging = Tagging.objects.all().order_by('?').first()
-        tagging_serializer = TagATagTaggingSerializer(tagging)
+        tagging_serializer = TaggingSerializer(tagging)
         return Response({'tagging only': tagging_serializer.data})
 
     def post(self, request, *args, **kwargs):
