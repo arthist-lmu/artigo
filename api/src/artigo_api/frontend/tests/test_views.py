@@ -313,6 +313,14 @@ class ARTigoTabooGameViewTests(APITestCase):
         self.resource = Resource.objects.create(id=1, hash_id='1404cc769fa538fab1b65b9cad201eca')
         self.gametype = Gametype.objects.create(id=1, name="imageLabeler_Taboo", rounds=5,
                                                 round_duration=60, enabled=True)
+        self.gamesession = Gamesession.objects.create(id=1, user=self.user, gametype=self.gametype,
+                                                      created=datetime.utcnow().replace(tzinfo=pytz.UTC))
+        self.gameround = Gameround.objects.create(id=1, user=self.user, gamesession=self.gamesession,
+                                                  created=datetime.utcnow().replace(tzinfo=pytz.UTC), score=0)
+        self.tag = Tag.objects.create(name="new tag", language="en")
+        self.tagging = Tagging.objects.create(user=self.user, gameround=self.gameround, resource=self.resource,
+                                              tag=self.tag, created=datetime.utcnow().replace(tzinfo=pytz.UTC),
+                                              score=0, origin='')
         self.response = self.client.get('http://localhost:8000/artigo_api/artigo_taboo_game/', format="json")
 
     def test_get(self):
@@ -320,8 +328,21 @@ class ARTigoTabooGameViewTests(APITestCase):
         response = self.client.get('http://localhost:8000/artigo_api/artigo_taboo_game/')
         self.assertEqual(response.status_code, 200)
 
-    # def test_post(self):
-    #     response = self.client.get('http://localhost:8000/artigo_api/artigo_taboo_game/')
+    def test_post(self):
+        self.client = APIClient()
+        self.client.get('http://localhost:8000/artigo_api/artigo_taboo_game/')
+        tag_data = {
+            'name': 'New tag',
+            'language': 'some language',
+        }
+
+        tagging_data = {
+            'tag': tag_data,
+            'gameround_id': 1,
+            'resource_id': 1,
+        }
+        response = self.client.post('http://localhost:8000/artigo_api/artigo_game/', data=tagging_data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
 
 class TagATagGameViewTests(APITestCase):
