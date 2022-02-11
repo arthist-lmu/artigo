@@ -286,13 +286,14 @@ class TagATagGameView(APIView):
     """
 
     def get(self, request, *args, **kwargs):
-        """Potential condition for Tag a Tag Tag to be tagged to be returned"""
+        # TODO: REVIEW!!!!
         controller = GameViewController()
         gametype = Gametype.objects.get(name="imageAndTagLabeler")
         gametype_serializer = GametypeSerializer(gametype)
 
-        random_id = controller.get_random_object(Resource)
-        resource_suggestions = Resource.objects.all().filter(id=random_id)
+        # random_id = controller.get_random_object(Resource)
+        random_id = Resource.objects.all().order_by('?').first()
+        resource_suggestions = Resource.objects.all().filter(id=random_id.id)
         suggestions_serializer = SuggestionsSerializer(resource_suggestions, many=True)
 
         tag = Tagging.objects.filter(resource__in=resource_suggestions).order_by('?').first()

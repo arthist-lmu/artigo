@@ -274,8 +274,8 @@ class ARTigoGameViewTests(APITestCase):
         self.client = APIClient()
         self.resource = Resource.objects.create(id=1, hash_id='1404cc769fa538fab1b65b9cad201eca')
         # self.resource = Resource.objects.create(id=1, hash_id='resource hash id')
-        self.user = CustomUser.objects.create(username="carina")
-        self.gametype = Gametype.objects.create(name="imageLabeler", rounds=5, round_duration=60, enabled=True)
+        self.user = CustomUser.objects.create(id=1, username="carina")
+        self.gametype = Gametype.objects.create(id=1, name="imageLabeler", rounds=5, round_duration=60, enabled=True)
         self.gamesession = Gamesession.objects.create(id=1, user=self.user, gametype=self.gametype,
                                                       created=datetime.utcnow().replace(tzinfo=pytz.UTC))
         self.gameround = Gameround.objects.create(id=1, user=self.user, gamesession=self.gamesession,
@@ -323,47 +323,58 @@ class ARTigoGameViewTests(APITestCase):
             self.assertEqual(getattr(tagging, field_name), tagging_data[field_name])
 
 
-# class ARTigoTabooGameViewTests(APITestCase):
-#
-#     def setUp(self):
-#         self.client = APIClient()
-#         response = self.client.get('http://localhost:8000/artigo_api/artigo_taboo_game/', format="json")
-#
-#     def test_get(self):
-#         self.client = APIClient()
-#         response = self.client.get('http://localhost:8000/artigo_api/artigo_taboo_game/')
-#         self.assertEqual(response.status_code, 200)
+class ARTigoTabooGameViewTests(APITestCase):
+
+    def setUp(self):
+        self.client = APIClient()
+        self.user = CustomUser.objects.create(id=1, username="carina")
+        self.gametype = Gametype.objects.create(id=1, name="imageLabeler_Taboo", rounds=5,
+                                                round_duration=60, enabled=True)
+        self.response = self.client.get('http://localhost:8000/artigo_api/artigo_taboo_game/', format="json")
+
+    def test_get(self):
+        self.client = APIClient()
+        response = self.client.get('http://localhost:8000/artigo_api/artigo_taboo_game/')
+        self.assertEqual(response.status_code, 200)
 
     # def test_post(self):
     #     response = self.client.get('http://localhost:8000/artigo_api/artigo_taboo_game/')
 
 
-# class TagATagGameViewTests(APITestCase):
-#     def test_get(self):
-#         response = self.client.get('http://localhost:8000/artigo_api/tagatag_game/')
-#         self.assertEqual(response.status_code, 200)
+class TagATagGameViewTests(APITestCase):
+    def setUp(self):
+        self.client = APIClient()
+        self.user = CustomUser.objects.create(id=1, username="carina")
+        self.gametype = Gametype.objects.create(id=1, name="imageAndTagLabeler", rounds=5,
+                                                round_duration=60, enabled=True)
+        self.response = self.client.get('http://localhost:8000/artigo_api/tagatag_game/', format="json")
+
+    # def test_get(self):
+    #     self.client = APIClient()
+    #     response = self.client.get('http://localhost:8000/artigo_api/tagatag_game/')
+    #     self.assertEqual(response.status_code, 200)
 
     # def test_post(self):
     #     response = self.client.get('http://localhost:8000/artigo_api/tagatag_game/')
 
 
-# class CombinoGameViewTests(APITestCase):
-#
-#     def setUp(self):
-#         self.client = APIClient()
+class CombinoGameViewTests(APITestCase):
+
+    def setUp(self):
+        self.client = APIClient()
 #         self.resource = {'hash_id': '1404cc769fa538fab1b65b9cad201eca'}
-#         self.user = CustomUser.objects.create(username="carina")
-#         self.gametype = Gametype.objects.create(name="Combino", rounds=5, round_duration=60, enabled=True)
+        self.user = CustomUser.objects.create(id=1, username="carina")
+        self.gametype = Gametype.objects.create(id=1, name="Combino", rounds=5, round_duration=60, enabled=True)
 #         self.gamesession = Gamesession.objects.create(user=self.user, gametype=self.gametype, created=datetime.now())
 #         self.gameround = Gameround.objects.create(user=self.user, gamesession=self.gamesession,
 #                                                   created=datetime.now(), score=0)
 #         self.combino_data = None
-#         self.response = self.client.get('http://localhost:8000/artigo_api/combino_game/',
-#                                         self.combino_data, format="json")
+        self.response = self.client.get('http://localhost:8000/artigo_api/combino_game/', format="json")
 #
-#     def test_get(self):
-#         response = self.client.get('http://localhost:8000/artigo_api/combino_game/')
-#         self.assertEqual(response.status_code, 200)
+    def test_get(self):
+        self.client = APIClient()
+        response = self.client.get('http://localhost:8000/artigo_api/combino_game/')
+        self.assertEqual(response.status_code, 200)
 
     # def test_post(self):
     #     response = self.client.get('http://localhost:8000/artigo_api/combino_game/')
