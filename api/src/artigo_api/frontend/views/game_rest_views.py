@@ -75,7 +75,7 @@ class ARTigoGameView(APIView):
             print('There is no imageLabeler gametype in DB')
             return Response(status=status.HTTP_404_NOT_FOUND)
         # gametype = Gametype.objects.get(name="imageLabeler")
-        gametype_serializer = GametypeSerializer(gametype)
+        # gametype_serializer = GametypeSerializer(gametype)
 
         current_score = 0
         if not isinstance(request.user, CustomUser):

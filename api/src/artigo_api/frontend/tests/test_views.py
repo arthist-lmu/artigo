@@ -381,8 +381,7 @@ class TagATagGameViewTests(APITestCase):
             'gameround_id': 1,
             'resource_id': 1,
         }
-        response = self.client.post('http://localhost:8000/artigo_api/tagatag_game/', data=tagging_data,
-                                    format='json')
+        response = self.client.post('http://localhost:8000/artigo_api/tagatag_game/', data=tagging_data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
 
