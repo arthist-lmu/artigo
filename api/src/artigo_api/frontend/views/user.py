@@ -14,13 +14,12 @@ logger = logging.getLogger(__name__)
 
 
 class UserView(APIView):
-    #    authentication_classes = [TokenAuthentication]
-    #    permission_classes = [IsAuthenticated]
+    # authentication_classes = [TokenAuthentication]
+    # permission_classes = [IsAuthenticated]
 
     def post(self, request, format=None):
-
         if not request.user.is_authenticated:
-            raise APIException('User is not authenticated.')
+            raise APIException('not_authenticated')
 
         try:
             user = request.user
@@ -33,11 +32,14 @@ class UserView(APIView):
         except Exception as e:
             logger.error(traceback.format_exc())
 
+        raise APIException('unknown_error')
+
     def get(self, request, format=None):
         content = {
             'user': str(request.user),  # `django.contrib.auth.User` instance.
             'auth': str(request.auth),  # None
         }
+
         return Response(content)
 
 
@@ -53,10 +55,10 @@ class LoginView(APIView):
         password = request.data['params'].get('password')
 
         if not username:
-            raise APIException('Username is not provided.')
+            raise APIException('username_not_provided')
 
         if not password:
-            raise APIException('Password is not provided.')
+            raise APIException('password_not_provided')
 
         user = auth.authenticate(username=username, password=password)
 
@@ -69,9 +71,8 @@ class LoginView(APIView):
                 'date_joined': user.date_joined,
             })
 
-        raise APIException('Unknown user.')
-"""
-"""
+        raise APIException('unknown_user')
+
 class LogoutView(APIView):
     def post(self, request, format=None):
         auth.logout(request)
@@ -86,16 +87,16 @@ class RegisterView(APIView):
         email = request.data['params'].get('email')
 
         if not username:
-            raise APIException('Username is not provided.')
+            raise APIException('username_not_provided')
 
         if not password:
-            raise APIException('Password is not provided.')
+            raise APIException('password_not_provided')
 
         if not email:
-            raise APIException('Email is not provided.')
+            raise APIException('email_not_provided')
 
         if auth.models.User.objects.filter(username=username).count() > 0:
-            raise APIException('Username already taken.')
+            raise APIException('username_already_taken')
 
         user = auth.models.User.objects.create_user(username, email, password)
         user.save()
@@ -110,5 +111,5 @@ class RegisterView(APIView):
                 'date_joined': user.date_joined,
             })
 
-        raise APIException('Unknown user.')
+        raise APIException('unknown_user')
 """

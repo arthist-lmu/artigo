@@ -46,7 +46,6 @@ const router = new VueRouter({
           beforeEnter() {
             window.open(`${instituteUrl}/funktionen/impressum/index.html`, '_blank');
           },
-          component: () => import('@/views/Imprint.vue'),
         },
         {
           path: 'privacy-policy',
@@ -54,7 +53,6 @@ const router = new VueRouter({
           beforeEnter() {
             window.open(`${instituteUrl}/funktionen/datenschutz/index.html`, '_blank');
           },
-          component: () => import('@/views/PrivacyPolicy.vue'),
         },
         {
           path: 'register',

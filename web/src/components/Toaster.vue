@@ -4,7 +4,7 @@
     :timeout="timeout"
     :color="color"
   >
-    {{ detail }}
+    {{ keyInObj(detail, $t("error")) ? $t("error")[detail] : $t("error.unknown_error") }}
   </v-snackbar>
 </template>
 

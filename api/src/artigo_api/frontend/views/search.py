@@ -156,6 +156,6 @@ class SearchView(RPCView):
             result = self.rpc_post(request.data['params'])
 
         if result is None:
-            raise APIException('Search could not be executed.')
+            raise APIException('unknown_error')
 
         return Response(result)

@@ -1,5 +1,4 @@
 import axios from 'axios';
-import i18n from '@/plugins/i18n';
 import store from '@/store';
 import { API_LOCATION } from '@/../app.config';
 
@@ -22,15 +21,14 @@ instance.interceptors.response.use((response) => {
   return response;
 }, ({ response }) => {
   const status = { loading: false, error: true };
-  const message = { type: 'error', timestamp: new Date() };
-  if (response.data.detail == null) {
-    message.detail = i18n.t('error.general');
-  } else {
-    message.detail = response.data.detail;
-  }
   store.dispatch('utils/setStatus', status, { root: true });
-  store.dispatch('utils/setMessage', message, { root: true });
-  return response.data;
+  const message = { type: 'error', timestamp: new Date() };
+  message.detail = response.data.detail || 'unknown_error';
+  console.log(message);
+  if (message.detail !== 'not_authenticated') {
+    store.dispatch('utils/setMessage', message, { root: true });
+  }
+  return new Promise(() => { });
 });
 
 export default instance;
