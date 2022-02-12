@@ -71,8 +71,15 @@ class SearchView(RPCView):
                 grpc_request.sorting = index_pb2.SearchRequest.SORTING_RANDOM
                 grpc_request.seed = str(params['random'])
 
-        if isinstance(params.get('limit', 100), int):
-            grpc_request.limit = params.get('limit', 100)
+        if isinstance(params.get('limit'), int):
+            grpc_request.limit = params['limit']
+        else:
+            grpc_request.limit = 100
+
+        if isinstance(params.get('offset'), int):
+            grpc_request.offset = params['offset']
+        else:
+            grpc_request.offset = 0
 
         return grpc_request
 
@@ -112,7 +119,12 @@ class SearchView(RPCView):
 
                 aggregations.append(values)
 
-            return {'entries': entries, 'aggregations': aggregations}
+            return {
+                'total': response.total,
+                'offset': response.offset,
+                'entries': entries,
+                'aggregations': aggregations,
+            }
         except grpc.RpcError as error:
             if error.code() == grpc.StatusCode.FAILED_PRECONDITION:
                 return {'job_id': job_id}

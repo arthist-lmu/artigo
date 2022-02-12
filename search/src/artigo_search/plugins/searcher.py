@@ -11,13 +11,11 @@ class Searcher:
         self.backbone = backbone
         self.aggregator = aggregator
 
-    def __call__(self, query, size=100):
+    def __call__(self, query, limit=100, offset=0):
         query = self.parse_query(query)
 
         body = self.backbone.build_body(query)
-        entries = self.backbone.search(body, size=size)
-
-        result = {'entries': list(entries)}
+        result = self.backbone.search(body, limit, offset)
 
         if self.aggregator and query.get('aggregate'):
             if query['aggregate'].get('use_query', False):

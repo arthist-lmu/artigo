@@ -2,7 +2,7 @@
   <v-container class="pa-0">
     <v-alert>
       <v-col class="d-flex pa-0 align-center">
-        <div>{{ $tc('search.fields.results', entries.length) }}</div>
+        <div>{{ $tc('search.fields.results', total) }}</div>
 
         <div style="width: 290px;">
           <v-select
@@ -89,17 +89,23 @@ export default {
     };
   },
   computed: {
+    total() {
+      return this.$store.state.search.data.total;
+    },
+    offset() {
+      return this.$store.state.search.data.offset;
+    },
     entries() {
       const { entries } = this.$store.state.search.data;
       return entries || [];
     },
     pageEntries() {
-      const firstEntry = (this.page - 1) * this.perPage;
+      const firstEntry = (this.page - 1) * this.perPage - this.offset;
       const lastEntry = firstEntry + this.perPage;
       return this.entries.slice(firstEntry, lastEntry);
     },
     nPages() {
-      return Math.ceil(this.entries.length / this.perPage);
+      return Math.ceil(this.total / this.perPage);
     },
     cols() {
       if (!this.display.metadata) {
@@ -113,10 +119,20 @@ export default {
   },
   watch: {
     entries() {
-      // TODO: what to display if there are no results?
-      this.page = 1;
+      if (this.offset === 0) {
+        this.page = 1;
+      }
     },
-    page() {
+    page(value) {
+      const lastEntry = this.entries.length + this.offset;
+      const withLastEntry = this.total === lastEntry;
+      if (
+        ((value * this.perPage > lastEntry) && !withLastEntry)
+        || (value * this.perPage <= this.offset)
+      ) {
+        const offset = (value - 1) * this.perPage;
+        this.$store.dispatch('search/post', { offset, sourceView: true });
+      }
       window.scrollTo(0, 0);
     },
     display: {
@@ -133,6 +149,7 @@ export default {
     this.display.metadata = display.metadata;
   },
   mounted() {
+    // TODO: test properly
     this.$store.dispatch('search/getURLParams', this.$route.query);
     window.onpopstate = () => {
       this.$store.commit('search/toggleBackBtn');

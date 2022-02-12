@@ -1,3 +1,5 @@
+import crypto from 'crypto';
+
 export default {
   methods: {
     keyInObj(key, obj) {
@@ -12,6 +14,18 @@ export default {
     },
     capitalize(str) {
       return str && `${str.charAt(0).toUpperCase()}${str.slice(1)}`;
+    },
+    getHash(x) {
+      const md5 = crypto.createHash('md5');
+      return md5.update(JSON.stringify(x)).digest('hex');
+    },
+    getHeight(selector, padding = true) {
+      const main = document.querySelector(selector);
+      if (padding) return main.clientHeight;
+      let { paddingTop, paddingBottom } = getComputedStyle(main);
+      paddingTop = parseFloat(paddingTop);
+      paddingBottom = parseFloat(paddingBottom);
+      return main.clientHeight - paddingTop - paddingBottom;
     },
   },
 };

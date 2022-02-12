@@ -1,3 +1,4 @@
+import uuid
 import logging
 
 from opensearchpy import OpenSearch, exceptions
@@ -184,17 +185,19 @@ class Backbone:
 
         return 'ok'
 
-    def search(self, body, size=100):
+    def search(self, body, limit=100, offset=0):
         try:
             results = self.client.search(
                 index=self.index, doc_type=self.type,
-                body=body, size=size,
+                body=body, from_=offset, size=limit,
             )
 
-            for x in results['hits']['hits']:
-                yield x['_source']
+            total = results['hits']['total']['value']
+            hits = [x['_source'] for x in results['hits']['hits']]
+
+            return {'total': total, 'entries': hits}
         except exceptions.NotFoundError:
-            return []
+            return {'total': 0, 'entries': []}
 
     def aggregate(self, body):
         try:

@@ -77,7 +77,7 @@ export default {
   },
   methods: {
     search() {
-      this.$store.dispatch('search/post', { 'query': this.query });
+      this.$store.dispatch('search/post', { query: this.query });
       this.close();
       this.query = {};
     },

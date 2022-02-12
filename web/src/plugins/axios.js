@@ -32,4 +32,5 @@ instance.interceptors.response.use((response) => {
   store.dispatch('utils/setMessage', message, { root: true });
   return response.data;
 });
+
 export default instance;

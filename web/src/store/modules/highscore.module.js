@@ -19,4 +19,5 @@ const highscore = {
     },
   },
 };
+
 export default highscore;

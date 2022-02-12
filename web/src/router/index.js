@@ -4,9 +4,9 @@ import i18n from '@/plugins/i18n';
 import store from '@/store';
 import RouterView from '@/views/RouterView.vue';
 
-const InstituteUrl = 'https://www.kunstgeschichte.uni-muenchen.de';
-
 Vue.use(VueRouter);
+
+const instituteUrl = 'https://www.kunstgeschichte.uni-muenchen.de';
 const router = new VueRouter({
   mode: 'history',
   base: process.env.BASE_URL,
@@ -44,7 +44,7 @@ const router = new VueRouter({
           path: 'imprint',
           name: 'imprint',
           beforeEnter() {
-            window.open(`${InstituteUrl}/funktionen/impressum/index.html`, '_blank');
+            window.open(`${instituteUrl}/funktionen/impressum/index.html`, '_blank');
           },
           component: () => import('@/views/Imprint.vue'),
         },
@@ -52,7 +52,7 @@ const router = new VueRouter({
           path: 'privacy-policy',
           name: 'privacy-policy',
           beforeEnter() {
-            window.open(`${InstituteUrl}/funktionen/datenschutz/index.html`, '_blank');
+            window.open(`${instituteUrl}/funktionen/datenschutz/index.html`, '_blank');
           },
           component: () => import('@/views/PrivacyPolicy.vue'),
         },
@@ -128,7 +128,7 @@ router.beforeResolve((to, from, next) => {
 router.afterEach((to) => {
   Vue.nextTick(() => {
     let title = 'ARTigo – Social Image Tagging';
-    if (to.meta) {
+    if (Object.keys(to.meta).length) {
       title = `${i18n.t(to.meta.title)} | ${title}`;
     }
     document.title = title;
@@ -136,4 +136,5 @@ router.afterEach((to) => {
     store.dispatch('utils/setStatus', status, { root: true });
   });
 });
+
 export default router;

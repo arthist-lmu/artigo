@@ -22,10 +22,15 @@ def search(args):
         query = ParseDict(args['query'], index_pb2.SearchRequest())
         backbone = Backbone(args['config'].get('opensearch', {}))
 
+        limit = args['query'].get('limit', 100)
+        offset = args['query'].get('offset', 0)
+
         searcher = Searcher(backbone, aggregator=Aggregator(backbone))
-        search_results = searcher(query, args['query'].get('limit', 100))
+        search_results = searcher(query, limit=limit, offset=offset)
 
         result = index_pb2.ListSearchResultReply()
+        result.total = search_results.get('total', 0)
+        result.offset = offset
 
         for e in search_results.get('entries', []):
             entry = result.entries.add()

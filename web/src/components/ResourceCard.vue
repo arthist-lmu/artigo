@@ -5,6 +5,7 @@
     flat
   >
     <v-img
+      v-if="showImage"
       :src="entry.path"
       class="grey lighten-2"
       max-height="500px"
@@ -104,7 +105,7 @@
           <v-expansion-panel-content>
             <v-row
               v-for="(value, field) in metadata"
-              :key="value"
+              :key="`${field}:${value}`"
               class="mb-2"
               justify="space-around"
               no-gutters
@@ -146,6 +147,10 @@ export default {
   props: {
     ...VCard.props,
     entry: Object,
+    showImage: {
+      type: Boolean,
+      default: true,
+    },
   },
   data() {
     return {

@@ -1,15 +1,26 @@
 import axios from '@/plugins/axios';
 import router from '@/router';
+import mixins from '@/mixins';
 
 const search = {
   namespaced: true,
   state: {
-    data: {},
+    data: {
+      total: 0,
+      offset: 0,
+      entries: [],
+      aggregations: [],
+    },
+    params: {},
     jobId: null,
     backBtn: false,
   },
   actions: {
     post({ commit, dispatch, state }, params) {
+      if (mixins.methods.keyInObj('offset', params)) {
+        params = { ...state.params, ...params };
+      }
+      commit('resetData', params);
       if (!params.sourceView) {
         if (!state.backBtn) {
           dispatch('setURLParams', params);
@@ -71,8 +82,20 @@ const search = {
     },
   },
   mutations: {
+    resetData(state, params) {
+      if (!router.currentRoute.path.endsWith('/search')) {
+        state.data.total = 0;
+        state.data.offset = 0;
+        state.data.entries = [];
+        state.data.aggregations = [];
+      }
+      state.params = params;
+    },
     updateData(state, data) {
-      state.data = data;
+      state.data.total = data.total || 0;
+      state.data.offset = data.offset || 0;
+      state.data.entries = data.entries || [];
+      state.data.aggregations = data.aggregations || [];
     },
     updateJobId(state, jobId) {
       state.jobId = jobId;
@@ -82,4 +105,5 @@ const search = {
     },
   },
 };
+
 export default search;

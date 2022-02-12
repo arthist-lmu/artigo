@@ -105,7 +105,7 @@
 
           <v-row
             v-for="(value, field) in metadata"
-            :key="value"
+            :key="`${field}:${value}`"
             class="mb-2"
             justify="space-around"
             no-gutters
