@@ -40,55 +40,35 @@ class LocationSerializer(serializers.ModelSerializer):
     model = Location
     fields = ['id', 'name', 'country']
 
-  def to_representation(self, data):
-    data = super().to_representation(data)
-    return data
 
 class ArtTechniqueSerializer(serializers.ModelSerializer):
   class Meta:
     model = ArtTechnique
     fields = ['id', 'name', 'language']
 
-  def to_representation(self, data):
-    data = super().to_representation(data)
-    return data
 
 class ArtMovementSerializer(serializers.ModelSerializer):
   class Meta:
     model = ArtMovement
     fields = ['id', 'name', 'language']
 
-  def to_representation(self, data):
-    data = super().to_representation(data)
-    return data
 
 class ArtStyleSerializer(serializers.ModelSerializer):
   class Meta:
     model = ArtStyle
     fields = ['id', 'name', 'language']
 
-  def to_representation(self, data):
-    data = super().to_representation(data)
-    return data
 
 class CreatorSerializer(serializers.ModelSerializer):
   class Meta:
     model = Creator
     fields = ['id', 'name', 'born', 'died', 'nationality', 'locations', 'techniques']
 
-  def to_representation(self, data):
-    data = super().to_representation(data)
-    return data
-
 
 class TitleSerializer(serializers.ModelSerializer):
   class Meta:
     model = Title
     fields = ['id', 'name', 'language', 'technique', 'style', 'movement']
-
-  def to_representation(self, data):
-    data = super().to_representation(data)
-    return data
 
 
 class ResourceSerializer(serializers.ModelSerializer):

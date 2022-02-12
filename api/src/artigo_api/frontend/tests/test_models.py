@@ -60,22 +60,25 @@ class TagTests(TestCase):
         """Test for string representation"""
         self.assertEqual(str(self.tag), self.tag.name)
 
+    def test_create_tag(self):
+        tag = Tag.objects.create(name=self.tag_name)
+        assert tag.name == "name of the tag"
+
 
 class TaggingTests(TestCase):
     def setUp(self):
-        self.user = CustomUser.objects.create(username="carina")
-        self.gametype = Gametype.objects.create(name="NewGame", rounds=5, round_duration=60, enabled=True)
-        self.gamesession = Gamesession.objects.create(user=self.user, gametype=self.gametype,
+        self.user = CustomUser.objects.create(id=1, username="carina")
+        self.gametype = Gametype.objects.create(id=1, name="NewGame", rounds=5, round_duration=60, enabled=True)
+        self.gamesession = Gamesession.objects.create(id=1, user=self.user, gametype=self.gametype,
                                                       created=datetime.utcnow().replace(tzinfo=pytz.UTC))
-        self.gameround = Gameround.objects.create(user=self.user, gamesession=self.gamesession,
+        self.gameround = Gameround.objects.create(id=1, user=self.user, gamesession=self.gamesession,
                                                   created=datetime.utcnow().replace(tzinfo=pytz.UTC), score=0)
         self.resource = Resource.objects.create(id=1, hash_id="ba6abce620f33fb98ce7caf992476a6e", origin="")
-        self.tag = Tag.objects.create(name="tag to test", language="en")
+        self.tag = Tag.objects.create(id=1, name="tag to test", language="en")
 
         self.tagging_user = self.user
         self.tagging_gameround = self.gameround
         self.tagging_resource = self.resource
-        # self.tag = self.tag
         self.tagging_tag = self.tag
         self.tagging_created = datetime.now()
         self.tagging_score = 0
@@ -97,6 +100,15 @@ class TaggingTests(TestCase):
         """Test for string representation"""
         self.assertEqual(str(self.tagging), self.tagging.tag.name)
 
+    def test_create_tagging(self):
+        tagging = Tagging.objects.create(
+            tag=self.tag,
+            gameround=self.tagging_gameround,
+            resource=self.tagging_resource,
+            created=self.tagging_created
+        )
+        assert tagging.tag == self.tag
+
 
 class CombinationTests(TestCase):
 
@@ -115,7 +127,6 @@ class CombinationTests(TestCase):
         self.combination_gameround = self.gameround
         self.combination_resource = self.resource
 
-        # self.combination_tag_id = [self.tag1, self.tag2]
         self.combination_created = datetime.now()
         self.combination_score = 0
         self.combination = Combination.objects.create(user=self.combination_user,
@@ -128,30 +139,42 @@ class CombinationTests(TestCase):
 
     def test_str(self):
         """Test for string representation"""
-        self.assertEqual(str(self.combination), self.combination.tag_id)
+        self.assertEqual(str(self.combination), self.combination.tag_id.name)
+
+    def test_create_combination(self):
+        combination = Combination.objects.create(
+            gameround=self.combination_gameround,
+            created=self.combination_created
+        )
+        assert combination.gameround == self.combination_gameround
 
 
 class GamesessionTests(TestCase):
     def setUp(self):
-        self.user = CustomUser.objects.create(username="carina")
-        self.gametype = Gametype.objects.create(name="NewGame", rounds=5, round_duration=60, enabled=True)
+        self.user = CustomUser.objects.create(id=1, username="carina")
+        self.gametype = Gametype.objects.create(id=1, name="NewGame", rounds=5, round_duration=60, enabled=True)
         self.gamesession_user = self.user
         self.gamesession_gametype = self.gametype
         self.gamesession_created = datetime.utcnow().replace(tzinfo=pytz.UTC)
-        self.gamesession = Gamesession.objects.create(user=self.gamesession_user,
+        self.gamesession = Gamesession.objects.create(id=1,
+                                                      user=self.gamesession_user,
                                                       gametype=self.gamesession_gametype,
-                                                      created=self.gamesession_created)
+                                                      created=datetime.utcnow().replace(tzinfo=pytz.UTC))
 
-    # def test_create_gamesession(self):
-    #     gamesession = Gamesession.objects.create(gametype=self.gametype)
-    #     assert gamesession.gametype.name == "NewGame"
+    def test_create_gamesession(self):
+        gamesession = Gamesession.objects.create(
+            gametype=self.gametype,
+            created=self.gamesession_created
+        )
+        assert gamesession.gametype == self.gamesession_gametype
 
 
 class GameroundTests(TestCase):
     def setUp(self):
         self.user = CustomUser.objects.create(username="carina")
         self.gametype = Gametype.objects.create(name="NewGame", rounds=5, round_duration=60, enabled=True)
-        self.gamesession = Gamesession.objects.create(id=1, user=self.user, gametype=self.gametype, created=datetime.now())
+        self.gamesession = Gamesession.objects.create(id=1, user=self.user, gametype=self.gametype,
+                                                      created=datetime.utcnow().replace(tzinfo=pytz.UTC))
         self.gameround_user = self.user
         self.gameround_gamesession = self.gamesession
         self.gameround_created = datetime.utcnow().replace(tzinfo=pytz.UTC)
@@ -161,9 +184,12 @@ class GameroundTests(TestCase):
                                                   created=self.gameround_created,
                                                   score=self.gameround_score)
 
-    # def test_create_gameround(self):
-    #     gameround = Gameround.objects.create(created=self.gameround_created)
-    #     assert gameround.created == datetime.now()
+    def test_create_gameround(self):
+        gameround = Gameround.objects.create(
+            gamesession=self.gameround_gamesession,
+            created=self.gameround_created
+        )
+        assert gameround.gamesession == self.gameround_gamesession
 
 
 class GametypeTests(TestCase):
@@ -219,37 +245,36 @@ class GamemodeTests(TestCase):
 
 class ResourceTests(TestCase):
     def setUp(self):
-        self.locations = Location.objects.create(name="location", country="country")
-        self.technique = ArtTechnique.objects.create(name="technique", language="en")
-        self.style = ArtStyle.objects.create(name="style", language="en")
-        self.movement = ArtMovement.objects.create(name="movement", language="en")
-        self.webpage = WebPage.objects.create(url="www.webpage.com", language="en")
+        self.locations = Location.objects.create(id=1, name="location", country="country")
+        self.technique = ArtTechnique.objects.create(id=1, name="technique", language="en")
+        self.style = ArtStyle.objects.create(id=1, name="style", language="en")
+        self.movement = ArtMovement.objects.create(id=1, name="movement", language="en")
+        self.webpage = WebPage.objects.create(id=1, url="www.webpage.com", language="en")
 
-        self.creators = Creator.objects.create(name="creator", born=datetime.utcnow().replace(tzinfo=pytz.UTC),
+        self.creators = Creator.objects.create(id=1, name="creator", born=datetime.utcnow().replace(tzinfo=pytz.UTC),
                                                died=datetime.utcnow().replace(tzinfo=pytz.UTC), nationality="de")
         self.creators.locations.add(self.locations)
         self.creators.techniques.add(self.technique)
         self.creators.web_page.add(self.webpage)
 
-        self.titles = Title.objects.create(name="title", language="de", style=self.style, movement=self.movement)
+        self.titles = Title.objects.create(id=1, name="title", language="de", style=self.style, movement=self.movement)
         self.titles.locations.add(self.locations)
         self.titles.web_page.add(self.webpage)
 
-        self.resource_id = 1
         self.resource_hash_id = "hashid"
         self.resource_crators = self.creators
         self.resource_titles = self.titles
-        self.resource_created_start = datetime.now()
-        self.resource_created_end = datetime.now()
+
         self.resource_location = "Location"
         self.resource_institution_source = "source"
         self.resource_institution = "institution"
         self.resource_origin = ""
         self.resouce_enabled = True
         self.resource_media_type = "picture"
-        self.resource = Resource.objects.create(id=self.resource_id,
+        self.resource = Resource.objects.create(id=1,
                                                 hash_id=self.resource_hash_id,
-                                                created_end=self.resource_created_end,
+                                                created_start=datetime.utcnow().replace(tzinfo=pytz.UTC),
+                                                created_end=datetime.utcnow().replace(tzinfo=pytz.UTC),
                                                 location=self.resource_location,
                                                 institution_source=self.resource_institution_source,
                                                 institution=self.resource_institution,
@@ -262,6 +287,12 @@ class ResourceTests(TestCase):
     def test_str(self):
         """Test for string representation"""
         self.assertEqual(str(self.resource), self.resource.hash_id)
+
+    def test_create_resource(self):
+        resource = Resource.objects.create(
+            media_type=self.resource_media_type
+        )
+        assert resource.media_type == "picture"
 
 
 class TitleTests(TestCase):
@@ -279,7 +310,8 @@ class TitleTests(TestCase):
         self.title_movement = self.movement
         self.title_locations = self.locations
         self.title_webpage = self.webpage
-        self.title = Title.objects.create(name=self.title_name,
+        self.title = Title.objects.create(# id=1,
+                                          name=self.title_name,
                                           technique=self.title_technique,
                                           style=self.title_style,
                                           movement=self.title_movement)
@@ -291,7 +323,7 @@ class TitleTests(TestCase):
         self.assertEqual(str(self.title), self.title.name)
 
     def test_title_size(self):
-        title = Title.objects.get(name="titlename")
+        title = Title.objects.get(name=self.title_name)
         max_length = title._meta.get_field('name').max_length
         self.assertEqual(max_length, 256)
 
