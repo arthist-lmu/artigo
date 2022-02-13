@@ -310,8 +310,7 @@ class TitleTests(TestCase):
         self.title_movement = self.movement
         self.title_locations = self.locations
         self.title_webpage = self.webpage
-        self.title = Title.objects.create(# id=1,
-                                          name=self.title_name,
+        self.title = Title.objects.create(name=self.title_name,
                                           technique=self.title_technique,
                                           style=self.title_style,
                                           movement=self.title_movement)

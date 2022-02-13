@@ -20,14 +20,25 @@ from django.urls import include, path
 from django.conf import settings
 from django.conf.urls.static import static
 from rest_framework.authtoken import views
+from rest_framework.schemas import get_schema_view
+from rest_framework.documentation import include_docs_urls
+
 
 urlpatterns = [
+
     path('artigo_api/', include('frontend.urls')),
     path('admin/', admin.site.urls),
     path('accounts/', include('allauth.urls')),
     path('rest-auth/', include('dj_rest_auth.urls')),
     path('rest-auth/registration/', include('dj_rest_auth.registration.urls')),
     path('api-token-auth/', views.obtain_auth_token),
+    path('docs/', include_docs_urls(title='ARTigo API')),
+    path('schema', get_schema_view(
+        title="ARTigo API",
+        description="API for all the games",
+        version="1.0.0"),
+        name='openapi-schema'),
+
 ]
 
 

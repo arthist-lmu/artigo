@@ -26,7 +26,7 @@ class IsNotAuthenticated(permissions.BasePermission):
 
 class GametypeView(APIView):
     """
-    API View that handles retrieving the correct type of a game
+    API View that handles retrieving game types
     """
 
     def get_queryset(self):
@@ -61,7 +61,10 @@ class GametypeView(APIView):
 class ARTigoGameView(APIView):
     """
     API View that retrieves the ARTigo game,
-    retrieves an game session as well as a random resource per round
+    get:
+    retrieves an game session as well as a random resource per game round
+
+    post:
     allows users to post tags that are verified and saved accordingly to either the Tag or Tagging table
     """
 
@@ -136,9 +139,13 @@ class ARTigoGameView(APIView):
 class ARTigoTabooGameView(APIView):
     """
     API View that retrieves the ARTigo Taboo game,
-    5 Resource objects and gamerounds, along with a game session that is created on the spot
+    get:
+    retrieves an game session and a random resource per game round
+
+    post:
+    allows users to post tags that are verified and saved accordingly to either the Tag or Tagging table
     """
-    renderer_classes = (BrowsableAPIRenderer, JSONRenderer, HTMLFormRenderer)
+    # renderer_classes = (BrowsableAPIRenderer, JSONRenderer, HTMLFormRenderer)
 
     def get(self, request, *args, **kwargs):
         gametype = Gametype.objects.get(name="imageLabeler_Taboo")
@@ -198,6 +205,11 @@ class ARTigoTabooGameView(APIView):
 class TagATagGameView(APIView):
     """
     API endpoint that retrieves the Tag a Tag game
+    get:
+    retrieves a game session and a random resource as well as a tag and a list of suggested tags per game round
+
+    post:
+    allows users to post tags that are verified and saved accordingly to either the Tag or Tagging table
     """
 
     def get(self, request, *args, **kwargs):
@@ -262,6 +274,11 @@ class TagATagGameView(APIView):
 class CombinoGameView(APIView):
     """
     API endpoint that retrieves the Combino game view
+    get:
+    retrieves an game session and a random resource per game round as well as a list of tags to combine during a round
+
+    post:
+    allows users to post combinations of 2 tags that are verified and saved accordingly to the Combination table
     """
 
     def get(self, request, *args, **kwargs):
@@ -333,6 +350,8 @@ class CombinoGameView(APIView):
 class GamesessionView(APIView):
     """
     API View that handles gamesessions
+    get:
+    retrieves an random game session
     """
 
     def get(self, request, *args, **kwargs):
@@ -353,6 +372,8 @@ class GamesessionView(APIView):
 class GameroundView(APIView):
     """
     API endpoint that allows gamerounds to be viewed or edited
+    get:
+    retrieves a random game round
     """
 
     def get(self, request, *args, **kwargs):
@@ -381,6 +402,11 @@ class GameroundView(APIView):
 class TaggingView(APIView):
     """
     API endpoint that allows taggings to be viewed or edited
+    get:
+    retrieves a random tagging
+
+    post:
+    allows users to post taggings that are verified and saved accordingly to the Tagging table
     """
 
     def get(self, request, *args, **kwargs):
@@ -400,7 +426,12 @@ class TaggingView(APIView):
 
 class CombinationView(APIView):
     """
-    API endpoint for combino
+    API endpoint for combinations
+    get:
+    retrieves a random combination
+
+    post:
+    allows users to enter a combination
     """
 
     def get(self, request, *args, **kwargs):
@@ -423,6 +454,11 @@ class CombinationView(APIView):
 class TagView(APIView):
     """
     API endpoint that allows tags to be viewed or edited
+    get:
+    retrieves a random tag from the database
+
+    post:
+    allows users to post tags that are verified and saved accordingly to the Tag table
     """
 
     def get(self, request, *args, **kwargs):
@@ -442,6 +478,8 @@ class TagView(APIView):
 class GameResourceView(APIView):
     """
     API view to handle resources
+    get:
+    retrieves a random resource object
     """
 
     def get(self, request, *args, **kwargs):
