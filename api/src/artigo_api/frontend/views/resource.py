@@ -6,7 +6,7 @@ import traceback
 
 from .utils import RPCView
 from rest_framework.response import Response
-from rest_framework.exceptions import APIException, NotFound
+from rest_framework.exceptions import APIException
 from frontend.utils import media_url_to_image
 
 from artigo_search import index_pb2, index_pb2_grpc
@@ -21,8 +21,6 @@ class ResourceView(RPCView):
 
         if params.get('id'):
             grpc_request.ids.extend([params.get('id')])
-
-        # TODO: add random
 
         return grpc_request
 
@@ -53,7 +51,7 @@ class ResourceView(RPCView):
         result = self.rpc_get(request.query_params)
 
         if result is None:
-            raise NotFound(detail='Unknown resource', code=404)
+            raise APIException('unknown_resource')
         
         return Response(result)
 
@@ -69,4 +67,4 @@ class ResourceView(RPCView):
             }
             return Response(performance)
 
-        raise NotFound(detail='Unknown resource', code=404)
+        raise APIException('unknown_resource')

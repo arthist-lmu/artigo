@@ -67,8 +67,9 @@ class SearchView(RPCView):
             grpc_request.aggregate.size = 250
 
         if params.get('random'):
+            grpc_request.sorting = index_pb2.SearchRequest.SORTING_RANDOM
+
             if isinstance(params['random'], (int, float, str)):
-                grpc_request.sorting = index_pb2.SearchRequest.SORTING_RANDOM
                 grpc_request.seed = str(params['random'])
 
         if isinstance(params.get('limit'), int):
