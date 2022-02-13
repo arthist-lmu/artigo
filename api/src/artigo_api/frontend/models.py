@@ -145,10 +145,8 @@ class Resource(models.Model):
     created_start = models.DateField(null=True)
     created_end = models.DateField(null=True)
     location = models.CharField(max_length=512, null=True)
-    # source_id = models.CharField(max_length=256)
     institution_source = models.CharField(max_length=512, blank=True)
     institution = models.CharField(max_length=512, blank=True)
-    # TODO: Determine if URLField or FilePathField?!
     origin = models.URLField(max_length=256, null=True)
     enabled = models.BooleanField(default=True)
     media_type = models.CharField(max_length=256, default='picture')

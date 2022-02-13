@@ -28,7 +28,6 @@ class GameTypeViewTests(APITestCase):
         self.client = APIClient()
         response = self.client.get('http://localhost:8000/artigo_api/gametype')
         self.assertEqual(response.status_code, 200)
-        # self.assertEqual(len(response.data), len(Gametype.objects.all().get(name=self.gametype_data)))
 
 
 class GamesessionViewTests(APITestCase):
@@ -135,13 +134,8 @@ class TaggingViewTests(APITestCase):
             'gameround_id': 1,
             'resource_id': 1,
         }
-        # self.assertEqual(Tagging.objects.count(), 0)
         response = self.client.post(reverse('tagging'), data=data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.data)
-        # self.assertEqual(Tagging.objects.count(), 1)
-        # tagging = Tagging.objects.all().first()
-        # for field_name in data.keys():
-            # self.assertEqual(getattr(tagging, field_name), data[field_name])
 
 
 class CombinationViewTests(APITestCase):
@@ -182,13 +176,8 @@ class CombinationViewTests(APITestCase):
             'gameround_id': 1,
             'resource_id': 1,
         }
-        # self.assertEqual(Combination.objects.count(), 0)
         response = self.client.post('http://localhost:8000/artigo_api/combination', data=data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.data)
-        # self.assertEqual(Combination.objects.count(), 1)
-        # tagging = Combination.objects.all().first()
-        # for field_name in data.keys():
-            # self.assertEqual(getattr(tagging, field_name), data[field_name])
 
 
 class TagViewTests(APITestCase):
@@ -302,13 +291,8 @@ class ARTigoGameViewTests(APITestCase):
             'gameround_id': 1,
             'resource_id': 1,
         }
-        # self.assertEqual(Tagging.objects.count(), 0)
         response = self.client.post(reverse('Artigo game'), data=tagging_data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        # self.assertEqual(Tagging.objects.count(), 1)
-        # tagging = Tagging.objects.all().first()
-        # for field_name in tagging_data.keys():
-            # self.assertEqual(getattr(tagging, field_name), tagging_data[field_name])
 
 
 class ARTigoTabooGameViewTests(APITestCase):
@@ -429,10 +413,5 @@ class CombinoGameViewTests(APITestCase):
             'gameround_id': 1,
             'resource_id': 1,
         }
-        # self.assertEqual(Combination.objects.count(), 0)
         response = self.client.post(reverse('Combino game'), data=combination_data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.data)
-        # self.assertEqual(Combination.objects.count(), 1)
-        # tagging = Combination.objects.all().first()
-        # for field_name in tagging_data.keys():
-            # self.assertEqual(getattr(tagging, field_name), tagging_data[field_name])

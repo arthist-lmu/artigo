@@ -80,7 +80,7 @@ class TaggingTests(TestCase):
         self.tagging_gameround = self.gameround
         self.tagging_resource = self.resource
         self.tagging_tag = self.tag
-        self.tagging_created = datetime.now()
+        self.tagging_created = datetime.utcnow().replace(tzinfo=pytz.UTC)
         self.tagging_score = 0
         self.tagging_origin = ""
         self.tagging = Tagging.objects.create(user=self.tagging_user,
@@ -127,12 +127,11 @@ class CombinationTests(TestCase):
         self.combination_gameround = self.gameround
         self.combination_resource = self.resource
 
-        self.combination_created = datetime.now()
         self.combination_score = 0
         self.combination = Combination.objects.create(user=self.combination_user,
                                                       gameround=self.combination_gameround,
                                                       resource=self.combination_resource,
-                                                      created=self.combination_created,
+                                                      created=datetime.utcnow().replace(tzinfo=pytz.UTC),
                                                       score=self.combination_score)
         self.combination.tag_id.add(self.tag1)
         self.combination.tag_id.add(self.tag2)
@@ -144,7 +143,7 @@ class CombinationTests(TestCase):
     def test_create_combination(self):
         combination = Combination.objects.create(
             gameround=self.combination_gameround,
-            created=self.combination_created
+            created=datetime.utcnow().replace(tzinfo=pytz.UTC)
         )
         assert combination.gameround == self.combination_gameround
 
@@ -304,7 +303,7 @@ class TitleTests(TestCase):
         self.movement = ArtMovement.objects.create(name="movement", language="en")
         self.webpage = WebPage.objects.create(url="www.webpage.com", language="en")
 
-        self.title_name = "titlename"
+        self.title_name = "title of resource"
         self.title_language = "en"
         self.title_technique = self.technique
         self.title_style = self.style
@@ -323,13 +322,13 @@ class TitleTests(TestCase):
         self.assertEqual(str(self.title), self.title.name)
 
     def test_title_size(self):
-        title = Title.objects.get(name=self.title_name)
+        title = Title.objects.get(name="title of resource")
         max_length = title._meta.get_field('name').max_length
-        self.assertEqual(max_length, 256)
+        self.assertEqual(max_length, 512)
 
     def test_create_title(self):
         title = Title.objects.create(name=self.title_name)
-        assert title.name == "titlename"
+        assert title.name == "title of resource"
 
 
 class CreatorTests(TestCase):
