@@ -339,7 +339,7 @@ class CombinoGameView(APIView):
             if combined_tagging_serializer.is_valid(raise_exception=True):
                 combined_tagging_serializer.save(combination=request.data)
                 return Response({"status": "success", "data": combined_tagging_serializer.data},
-                                status=status.HTTP_200_OK)
+                                status=status.HTTP_201_CREATED)
             else:
                 return Response({"status": "error", "data": combined_tagging_serializer.errors},
                                 status=status.HTTP_400_BAD_REQUEST)
@@ -445,7 +445,8 @@ class CombinationView(APIView):
 
         if combined_tagging_serializer.is_valid(raise_exception=True):
             combined_tagging_serializer.save(combination=request.data)
-            return Response({"status": "success", "data": combined_tagging_serializer.data}, status=status.HTTP_200_OK)
+            return Response({"status": "success", "data": combined_tagging_serializer.data},
+                            status=status.HTTP_201_CREATED)
         else:
             return Response({"status": "error", "data": combined_tagging_serializer.errors},
                             status=status.HTTP_400_BAD_REQUEST)

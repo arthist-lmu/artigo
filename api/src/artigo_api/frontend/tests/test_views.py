@@ -150,11 +150,17 @@ class CombinationViewTests(APITestCase):
         self.client = APIClient()
         self.user = CustomUser.objects.create(username="carina")
         self.gametype = Gametype.objects.create(name="combino", rounds=5, round_duration=60, enabled=True)
-        self.gamesession = Gamesession.objects.create(user=self.user, gametype=self.gametype, created=datetime.now())
+        self.gamesession = Gamesession.objects.create(id=1, user=self.user, gametype=self.gametype,
+                                                      created=datetime.utcnow().replace(tzinfo=pytz.UTC))
         self.gameround = Gameround.objects.create(id=1, user=self.user, gamesession=self.gamesession,
                                                   created=datetime.utcnow().replace(tzinfo=pytz.UTC), score=0)
-        self.tag_id = Tag.objects.create(name="new tagging", language="en")
         self.resource = Resource.objects.create(id=1, hash_id='resource hash id')
+        self.tag_id = Tag.objects.create(name="new tagging", language="en")
+        self.tag1 = Tag.objects.create(name="new tag", language="en")
+        self.tag2 = Tag.objects.create(name="new tag two", language="en")
+        self.tagging = Tagging.objects.create(user=self.user, gameround=self.gameround, resource=self.resource,
+                                              tag=self.tag1, created=datetime.utcnow().replace(tzinfo=pytz.UTC),
+                                              score=0, origin='')
 
         self.combination = {'tag': self.tag_id}
         self.response = self.client.get('http://localhost:8000/artigo_api/combination',
@@ -397,11 +403,14 @@ class CombinoGameViewTests(APITestCase):
         self.gameround = Gameround.objects.create(id=1, user=self.user, gamesession=self.gamesession,
                                                   created=datetime.utcnow().replace(tzinfo=pytz.UTC), score=0)
         self.tag1 = Tag.objects.create(name="new tag", language="en")
-
         self.tag2 = Tag.objects.create(name="new tag two", language="en")
-
-#         self.combino_data = None
-        self.response = self.client.get('http://localhost:8000/artigo_api/combino_game/', format="json")
+        self.tagging = Tagging.objects.create(user=self.user, gameround=self.gameround, resource=self.resource,
+                                              tag=self.tag1, created=datetime.utcnow().replace(tzinfo=pytz.UTC),
+                                              score=0, origin='')
+        self.combination = {'tag_id': self.tag1}
+        self.response = self.client.get('http://localhost:8000/artigo_api/combino_game/',
+                                        self.combination,
+                                        format="json")
 
     def test_get(self):
         self.client = APIClient()
@@ -411,13 +420,12 @@ class CombinoGameViewTests(APITestCase):
     def test_post(self):
         self.client = APIClient()
         self.client.get('http://localhost:8000/artigo_api/combino_game/')
-        tag_data = {
-            'name': 'New tag',
-            'language': 'some language',
-        }
+
+        tag1 = {'name': 'New tag', 'language': 'en'}
+        tag2 = {'name': 'second tag', 'language': 'en'}
 
         combination_data = {
-            'tag': tag_data,
+            'tag_id': [tag1, tag2],
             'gameround_id': 1,
             'resource_id': 1,
         }

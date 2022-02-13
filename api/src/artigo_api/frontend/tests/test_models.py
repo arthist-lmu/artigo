@@ -290,6 +290,7 @@ class ResourceTests(TestCase):
 
     def test_create_resource(self):
         resource = Resource.objects.create(
+            id=2,
             media_type=self.resource_media_type
         )
         assert resource.media_type == "picture"
