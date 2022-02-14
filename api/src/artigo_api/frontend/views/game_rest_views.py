@@ -67,7 +67,6 @@ class ARTigoGameView(APIView):
     post:
     allows users to post tags that are verified and saved accordingly to either the Tag or Tagging table
     """
-
     # can be used later
     # renderer_classes = [renderers.JSONRenderer]
 
@@ -77,8 +76,6 @@ class ARTigoGameView(APIView):
         except Gametype.DoesNotExist:
             print('There is no imageLabeler gametype in DB')
             return Response(status=status.HTTP_404_NOT_FOUND)
-        # gametype = Gametype.objects.get(name="imageLabeler")
-        # gametype_serializer = GametypeSerializer(gametype)
 
         current_score = 0
         if not isinstance(request.user, CustomUser):
@@ -92,14 +89,14 @@ class ARTigoGameView(APIView):
 
         random_resource_1 = Resource.objects.all().order_by('?').first()
         first_resource_serializer = ResourceSerializer(random_resource_1)
-        random_resource_2 = Resource.objects.all().order_by('?').first()
-        second_resource_serializer = ResourceSerializer(random_resource_2)
-        random_resource_3 = Resource.objects.all().order_by('?').first()
-        third_resource_serializer = ResourceSerializer(random_resource_3)
-        random_resource_4 = Resource.objects.all().order_by('?').first()
-        fourth_resource_serializer = ResourceSerializer(random_resource_4)
-        random_resource_5 = Resource.objects.all().order_by('?').first()
-        fifth_resource_serializer = ResourceSerializer(random_resource_5)
+        # random_resource_2 = Resource.objects.all().order_by('?').first()
+        # second_resource_serializer = ResourceSerializer(random_resource_2)
+        # random_resource_3 = Resource.objects.all().order_by('?').first()
+        # third_resource_serializer = ResourceSerializer(random_resource_3)
+        # random_resource_4 = Resource.objects.all().order_by('?').first()
+        # fourth_resource_serializer = ResourceSerializer(random_resource_4)
+        # random_resource_5 = Resource.objects.all().order_by('?').first()
+        # fifth_resource_serializer = ResourceSerializer(random_resource_5)
 
         gameround = Gameround.objects.create(user_id=current_user_id,
                                              gamesession=gamesession,
@@ -147,8 +144,11 @@ class ARTigoTabooGameView(APIView):
     """
 
     def get(self, request, *args, **kwargs):
-        gametype = Gametype.objects.get(name="imageLabeler_Taboo")
-        gametype_serializer = GametypeSerializer(gametype)
+        try:
+            gametype = Gametype.objects.get(name="imageLabeler_Taboo")
+        except Gametype.DoesNotExist:
+            print('There is no imageLabeler_Taboo gametype in DB')
+            return Response(status=status.HTTP_404_NOT_FOUND)
 
         resource_suggestions = Resource.objects.all().order_by('?').first()
         resource_serializer = TabooTagSerializer(resource_suggestions)
@@ -212,8 +212,11 @@ class TagATagGameView(APIView):
     """
 
     def get(self, request, *args, **kwargs):
-        gametype = Gametype.objects.get(name="imageAndTagLabeler")
-        gametype_serializer = GametypeSerializer(gametype)
+        try:
+            gametype = Gametype.objects.get(name="imageAndTagLabeler")
+        except Gametype.DoesNotExist:
+            print('There is no imageAndTagLabeler gametype in DB')
+            return Response(status=status.HTTP_404_NOT_FOUND)
 
         random_id = Resource.objects.all().order_by('?').first()
         resource_suggestions = Resource.objects.all().filter(id=random_id.id)
@@ -281,8 +284,11 @@ class CombinoGameView(APIView):
     """
 
     def get(self, request, *args, **kwargs):
-        gametype = Gametype.objects.get(name="Combino")
-        gametype_serializer = GametypeSerializer(gametype)
+        try:
+            gametype = Gametype.objects.get(name="Combino")
+        except Gametype.DoesNotExist:
+            print('There is no Combino gametype in DB')
+            return Response(status=status.HTTP_404_NOT_FOUND)
 
         resource_and_tags = Resource.objects.all().order_by('?').first()
         combination_serializer = CombinoTagsSerializer(resource_and_tags)
