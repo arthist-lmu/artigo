@@ -136,10 +136,6 @@ class CombinationTests(TestCase):
         self.combination.tag_id.add(self.tag1)
         self.combination.tag_id.add(self.tag2)
 
-    def test_str(self):
-        """Test for string representation"""
-        self.assertEqual(str(self.combination), self.combination.tag_id.name)
-
     def test_create_combination(self):
         combination = Combination.objects.create(
             gameround=self.combination_gameround,
