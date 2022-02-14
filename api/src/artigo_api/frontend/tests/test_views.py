@@ -5,10 +5,7 @@ import json
 
 import pytz
 from django.urls import reverse, resolve
-from django.test import TestCase
 from rest_framework import response, status
-from rest_framework.response import Response
-from rest_framework.authtoken.models import Token
 from rest_framework.test import APITestCase, APIClient
 
 from frontend.models import *
@@ -46,19 +43,6 @@ class GamesessionViewTests(APITestCase):
         self.client = APIClient()
         response = self.client.get(reverse('gamesession'))
         self.assertEqual(response.status_code, 200)
-# TODO: Maybe test gamesession create
-    # def test_post(self):
-    #     self.client = APIClient()
-    #     self.client.get('http://localhost:8000/artigo_api/gamesession')
-    #     user = {'user': self.user.id}
-    #     gametype = {"gametype": self.gametype.id}
-    #     data = {
-    #         'user': user,
-    #         'gametype': gametype,
-    #         'created': datetime.utcnow().replace(tzinfo=pytz.UTC),
-    #     }
-    #     response = self.client.post('http://localhost:8000/artigo_api/gamesession', data=data, format='json')
-    #     self.assertEqual(response.status_code, 201)
 
 
 class GameroundViewTests(APITestCase):
@@ -77,31 +61,6 @@ class GameroundViewTests(APITestCase):
         self.client = APIClient()
         response = self.client.get('http://localhost:8000/artigo_api/gameround')
         self.assertEqual(response.status_code, 200)
-
-    # def test_resolve_to_gameround_view(self):
-    #     resolver = resolve('/')
-    #     self.assertEqual(resolver.func.__name__, GameroundView.as_view().__name__)
-
-    # TODO: Maybe test gameround create
-
-    # def test_post(self):
-    #     self.client = APIClient()
-    #     self.client.get('http://localhost:8000/artigo_api/gameround')
-    #     user = {'username': self.user.id}
-    #     gamesession = {"gamesession": self.gamesession.id}
-    #     data = {
-    #         'user': user,
-    #         'gamesession': gamesession,
-    #         'created': datetime.utcnow().replace(tzinfo=pytz.UTC),
-    #         'score': 0,
-    #     }
-    #     self.assertEqual(Gameround.objects.count(), 0)
-    #     response = self.client.post('http://localhost:8000/artigo_api/gameround', data=data, format='json')
-    #     self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-    #     self.assertEqual(Gameround.objects.count(), 1)
-    #     gameround = Gameround.objects.all().first()
-    #     for field_name in data.keys():
-    #         self.assertEqual(getattr(gameround, field_name), data[field_name])
 
 
 class TaggingViewTests(APITestCase):
