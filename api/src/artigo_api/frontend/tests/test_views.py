@@ -4,7 +4,7 @@ import pytest
 import json
 
 import pytz
-from django.urls import reverse
+from django.urls import reverse, resolve
 from django.test import TestCase
 from rest_framework import response, status
 from rest_framework.response import Response
@@ -21,12 +21,12 @@ class GameTypeViewTests(APITestCase):
         """Define the test client and other test variables."""
         self.client = APIClient()
         self.gametype_data = {'name': 'imageLabeler'}
-        self.response = self.client.post('http://localhost:8000/artigo_api/gametype',
+        self.response = self.client.post(reverse('gametype'),
                                          self.gametype_data, format="json")
 
     def test_get(self):
         self.client = APIClient()
-        response = self.client.get('http://localhost:8000/artigo_api/gametype')
+        response = self.client.get(reverse('gametype'))
         self.assertEqual(response.status_code, 200)
 
 
@@ -38,13 +38,13 @@ class GamesessionViewTests(APITestCase):
         self.user = CustomUser.objects.create(username="carina")
         self.created = datetime.utcnow().replace(tzinfo=pytz.UTC)
         self.gamesession_data = {'gametype': self.gametype}
-        self.response = self.client.get('http://localhost:8000/artigo_api/gamesession',
+        self.response = self.client.get(reverse('gamesession'),
                                         self.gamesession_data,
                                         format="json")
 
     def test_get(self):
         self.client = APIClient()
-        response = self.client.get('http://localhost:8000/artigo_api/gamesession')
+        response = self.client.get(reverse('gamesession'))
         self.assertEqual(response.status_code, 200)
 # TODO: Maybe test gamesession create
     # def test_post(self):
@@ -77,6 +77,10 @@ class GameroundViewTests(APITestCase):
         self.client = APIClient()
         response = self.client.get('http://localhost:8000/artigo_api/gameround')
         self.assertEqual(response.status_code, 200)
+
+    # def test_resolve_to_gameround_view(self):
+    #     resolver = resolve('/')
+    #     self.assertEqual(resolver.func.__name__, GameroundView.as_view().__name__)
 
     # TODO: Maybe test gameround create
 
@@ -269,13 +273,13 @@ class ARTigoGameViewTests(APITestCase):
                                  'gameround': self.gameround,
                                  'gamesession': self.gamesession}
 
-        self.response = self.client.get('http://localhost:8000/artigo_api/artigo_game/',
+        self.response = self.client.get(reverse('Artigo game'),
                                         self.artigo_game_data,
                                         format="json")
 
     def test_get(self):
         self.client = APIClient()
-        response = self.client.get('http://localhost:8000/artigo_api/artigo_game/')
+        response = self.client.get(reverse('Artigo game'))
         self.assertEqual(response.status_code, 200)
 
     def test_post(self):
@@ -392,7 +396,7 @@ class CombinoGameViewTests(APITestCase):
                                               tag=self.tag1, created=datetime.utcnow().replace(tzinfo=pytz.UTC),
                                               score=0, origin='')
         self.combination = {'tag_id': self.tag1}
-        self.response = self.client.get('http://localhost:8000/artigo_api/combino_game/',
+        self.response = self.client.get(reverse('Combino game'),
                                         self.combination,
                                         format="json")
 
