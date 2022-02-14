@@ -7,7 +7,9 @@
 
       <ImageCanvas
         :src="entry.path"
+        selectType="rectangle"
         v-on:load="loaded"
+        @mouseUp="update"
         class="my-4 grey lighten-2"
         height="70vh"
         contain
@@ -81,6 +83,9 @@ export default {
           this.reload();
         }
       }, 1000);
+    },
+    update(values) {
+      console.log(values);
     },
     postTag() {
       this.$store.dispatch('resource/post', {
