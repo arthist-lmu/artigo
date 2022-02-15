@@ -7,9 +7,8 @@
 
       <ImageCanvas
         :src="entry.path"
-        selectType="rectangle"
         v-on:load="loaded"
-        @mouseUp="update"
+        v-on:error="onError"
         class="my-4 grey lighten-2"
         height="70vh"
         contain
@@ -84,6 +83,9 @@ export default {
         }
       }, 1000);
     },
+    onError() {
+      this.reload();
+    },
     update(values) {
       console.log(values);
     },
@@ -113,7 +115,7 @@ export default {
     this.reload();
   },
   components: {
-    ImageCanvas: () => import('@/components/ImageCanvas.vue'),
+    ImageCanvas: () => import('@/components/annotator/ImageCanvas.vue'),
   },
 };
 </script>
