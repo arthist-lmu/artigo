@@ -8,8 +8,8 @@ import traceback
 from concurrent import futures
 from google.protobuf.json_format import MessageToJson, MessageToDict, ParseDict
 from . import index_pb2, index_pb2_grpc
-from .plugins import Cache, Searcher
-from .database import Backbone, Aggregator
+from .plugins import *
+from .database import *
 from .jobs import InsertJob
 from .utils import meta_to_proto, tags_to_proto
 from .utils import meta_from_proto, tags_from_proto, read_chunk
@@ -66,7 +66,14 @@ def search(args):
 
 
 def init_plugins(config):
-    data = {}
+    reconciliator = ReconciliatorPluginManager(
+        configs=config.get('reconciliators', [])
+    )
+    reconciliator.find()
+
+    data = {
+        'reconciliator': reconciliator,
+    }
 
     return data
 
@@ -88,8 +95,6 @@ class Commune(index_pb2_grpc.IndexServicer):
         self.insert_process_pool = futures.ProcessPoolExecutor(
             max_workers=8, initializer=InsertJob().init_worker, initargs=(config,)
         )
-        
-        self.max_results = config.get('index', {}).get('max_results', 100)
 
     def status(self, request, context):
         futures_data = {x['id']: i for i, x in enumerate(self.futures)}
@@ -151,8 +156,6 @@ class Commune(index_pb2_grpc.IndexServicer):
                     'source': source,
                     'cache': cache[x.image.id],
                 }
-
-        logger.info('[Server] Insert')
 
         backbone = Backbone(config=self.config.get('opensearch', {}))
         cache_config = self.config.get('cache', {'cache_dir': None})
@@ -223,18 +226,12 @@ class Commune(index_pb2_grpc.IndexServicer):
         }
 
         variable['future'] = self.process_pool.submit(
-            search, copy.deepcopy(variable)
+            search, copy.deepcopy(variable),
         )
 
         self.futures.append(variable)
 
         return index_pb2.SearchReply(id=job_id)
-
-    def aggregate(self, request, context):
-        backbone = Backbone(config=self.config.get('opensearch', {}))
-        aggregator = Aggregator(backbone)
-
-        # TODO
 
     def list_search_result(self, request, context):
         futures_data = {x['id']: i for i, x in enumerate(self.futures)}
@@ -269,6 +266,29 @@ class Commune(index_pb2_grpc.IndexServicer):
         context.set_details('Unknown job')
 
         return index_pb2.ListSearchResultReply()
+
+    def reconcile(self, request, context):
+        logger.info('[Server] Reconcile')
+
+        json_obj = MessageToDict(request)
+        result = index_pb2.ReconcileReply()
+
+        reconciliator = self.managers.get('reconciliator')
+        size = 5 if request.size <= 0 else request.size
+
+        for e in reconciliator.run(json_obj, size):
+            entry = result.entries.add()
+            entry.id = e['id']
+            entry.name = e['name']
+
+            if e.get('description'):
+                entry.description = e['description']
+
+            entry.score = e['score']
+            entry.match = e['match']
+            entry.service = e['service']
+
+        return result
 
 
 class Server:

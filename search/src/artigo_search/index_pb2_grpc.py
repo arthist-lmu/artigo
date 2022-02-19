@@ -39,6 +39,11 @@ class IndexStub(object):
                 request_serializer=index__pb2.AggregateRequest.SerializeToString,
                 response_deserializer=index__pb2.AggregateReply.FromString,
                 )
+        self.reconcile = channel.unary_unary(
+                '/artigo.search.Index/reconcile',
+                request_serializer=index__pb2.ReconcileRequest.SerializeToString,
+                response_deserializer=index__pb2.ReconcileReply.FromString,
+                )
         self.insert = channel.stream_stream(
                 '/artigo.search.Index/insert',
                 request_serializer=index__pb2.InsertRequest.SerializeToString,
@@ -84,6 +89,12 @@ class IndexServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def reconcile(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
     def insert(self, request_iterator, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
@@ -123,6 +134,11 @@ def add_IndexServicer_to_server(servicer, server):
                     servicer.aggregate,
                     request_deserializer=index__pb2.AggregateRequest.FromString,
                     response_serializer=index__pb2.AggregateReply.SerializeToString,
+            ),
+            'reconcile': grpc.unary_unary_rpc_method_handler(
+                    servicer.reconcile,
+                    request_deserializer=index__pb2.ReconcileRequest.FromString,
+                    response_serializer=index__pb2.ReconcileReply.SerializeToString,
             ),
             'insert': grpc.stream_stream_rpc_method_handler(
                     servicer.insert,
@@ -226,6 +242,23 @@ class Index(object):
         return grpc.experimental.unary_unary(request, target, '/artigo.search.Index/aggregate',
             index__pb2.AggregateRequest.SerializeToString,
             index__pb2.AggregateReply.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def reconcile(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/artigo.search.Index/reconcile',
+            index__pb2.ReconcileRequest.SerializeToString,
+            index__pb2.ReconcileReply.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 

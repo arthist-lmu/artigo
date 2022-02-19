@@ -16,7 +16,7 @@ from artigo_search.utils import meta_from_proto, tags_from_proto
 logger = logging.getLogger(__name__)
 
 
-class SearchView(RPCView):
+class Search(RPCView):
     def parse_request(self, params):
         grpc_request = index_pb2.SearchRequest()
 

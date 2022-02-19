@@ -93,6 +93,12 @@
 
     ]
   },
+  "reconcile": {
+    "title": "Abgleichen",
+    "fields": {
+      "no-results": "Für Ihre Suchanfrage wurden leider keine Einträge bei Drittanbietern gefunden."
+    }
+  },
   "about": {
     "title": "Über ARTigo",
     "texts": [

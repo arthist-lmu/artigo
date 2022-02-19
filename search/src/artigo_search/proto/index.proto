@@ -19,6 +19,9 @@ service Index {
   rpc aggregate(AggregateRequest)
     returns (AggregateReply) {}
 
+  rpc reconcile(ReconcileRequest)
+    returns (ReconcileReply) {}
+
   rpc insert(stream InsertRequest)
     returns (stream InsertReply) {}
 
@@ -155,6 +158,30 @@ message AggregateReply {
 message AggregateResult {
   string field = 1;
   repeated ValueField entries = 2;
+}
+
+message ReconcileTerm {
+  string name = 1;
+  string type = 2;
+}
+
+message ReconcileRequest {
+  repeated ReconcileTerm terms = 1;
+  int32 size = 2;
+  string lang = 3;
+}
+
+message ReconcileResult {
+  string id = 1;
+  string name = 2;
+  string description = 3;
+  int32 score = 4;
+  bool match = 5;
+  string service = 6;
+}
+
+message ReconcileReply {
+  repeated ReconcileResult entries = 1;
 }
 
 message Image {

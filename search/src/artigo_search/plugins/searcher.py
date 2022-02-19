@@ -1,7 +1,7 @@
 import uuid
 import logging
 
-from .. import index_pb2
+from artigo_search import index_pb2
 
 logger = logging.getLogger(__name__)
 
@@ -35,7 +35,8 @@ class Searcher:
 
         return result
 
-    def parse_query(self, query):
+    @staticmethod
+    def parse_query(query):
         text_search = []
         range_search = []
 

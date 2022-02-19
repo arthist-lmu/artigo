@@ -23,11 +23,12 @@
             <template v-slot:activator="{ on, attrs }">
               <v-img
                 :src="entry.path"
-                class="grey lighten-1"
+                max-height="250"
                 v-bind="attrs"
                 v-on="on"
                 v-on:error="onError"
                 style="cursor: pointer;"
+                contain
               >
                 <template v-slot:placeholder>
                   <v-row
@@ -94,11 +95,17 @@
                 v-for="creator in creators"
                 :key="creator"
                 :title="creator"
-                @click="search(creators, 'creators')"
+                @click.self="search(creators, 'creators')"
                 class="mr-1 mb-2"
                 outlined
               >
                 <span class="clip">{{ creator }}</span>
+
+                <ReconcileButton
+                  :entryId="entry.id"
+                  :name="creator"
+                  type="creator"
+                />
               </v-chip>
             </v-col>
           </v-row>
@@ -137,9 +144,6 @@
 </template>
 
 <script>
-import TagCloud from '@/components/TagCloud.vue';
-import ResourceCard from '@/components/ResourceCard.vue';
-
 export default {
   props: {
     entry: Object,
@@ -220,8 +224,9 @@ export default {
     },
   },
   components: {
-    TagCloud,
-    ResourceCard,
+    TagCloud: () => import('@/components/TagCloud.vue'),
+    ResourceCard: () => import('@/components/ResourceCard.vue'),
+    ReconcileButton: () => import('@/components/ReconcileButton.vue'),
   },
 };
 </script>

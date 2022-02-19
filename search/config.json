@@ -13,5 +13,11 @@
         "host": "localhost",
         "port": 9200,
         "index": "artigo"
-    }
+    },
+    "reconciliators": [
+        {
+            "type": "WikidataReconciliator",
+            "disabled": false
+        }
+    ]
 }

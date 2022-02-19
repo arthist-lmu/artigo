@@ -34,9 +34,9 @@
 
 <script>
 export default {
-  data() {
-    return {
-      items: [
+  computed: {
+    items() {
+      return [
         {
           group: this.$t('contributors.fields.informatics'),
           persons: [
@@ -90,8 +90,8 @@ export default {
             { name: 'Eva Schmidt' },
           ],
         },
-      ],
-    };
+      ];
+    },
   },
 };
 </script>

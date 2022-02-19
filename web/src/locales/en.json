@@ -93,6 +93,12 @@
 
     ]
   },
+  "reconcile": {
+    "title": "Reconcile",
+    "fields": {
+      "no-results": "Unfortunately, no third-party results were found for your search query."
+    }
+  },
   "about": {
     "title": "About ARTigo",
     "texts": [

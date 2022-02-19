@@ -178,29 +178,3 @@ class Client:
             request.names.extend([str(params['name'])])
 
         return self.stub.delete(request)
-
-    def search(self, params):
-        request = index_pb2.SearchRequest()
-
-        for query in params['query']:
-            term_field = request.terms.add()
-            term_field.text.query = query['value']
-            term_field.text.flag = query['flag']
-
-            if query.get('field'):
-                if not isinstance(query['field'], str):
-                    continue
-
-                term_field.text.field = query['field']
-
-        response = self.stub.search(request)
-        request = index_pb2.ListSearchResultRequest(id=response.id)
-
-        for x in range(500):
-            try:
-                return self.stub.list_search_result(request)
-            except grpc.RpcError as error:
-                if error.code() == grpc.StatusCode.FAILED_PRECONDITION:
-                    time.sleep(0.01)  # search is still running
-
-        return {'status': 'error', 'job_id': response.id}

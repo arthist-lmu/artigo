@@ -10,11 +10,10 @@ import '@/styles/custom.css';
 Vue.mixin(mixins);
 const ARTigo = Vue.extend({
   created() {
-    this.$store.dispatch('user/getCSRFToken').then(() => {
-      this.$store.dispatch('user/get');
-    });
+    this.$store.dispatch('user/get');
   },
 });
+
 new ARTigo({
   vuetify,
   router,

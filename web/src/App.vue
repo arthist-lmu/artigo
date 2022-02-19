@@ -4,6 +4,7 @@
     <AppBar />
     <Loader />
     <Toaster />
+    <ReconcileDialog />
 
     <v-main class="mx-6 mb-6">
       <router-view />
@@ -16,6 +17,7 @@ import AppBar from '@/components/AppBar.vue';
 import NavBar from '@/components/NavBar.vue';
 import Loader from '@/components/Loader.vue';
 import Toaster from '@/components/Toaster.vue';
+import ReconcileDialog from '@/components/ReconcileDialog.vue';
 
 export default {
   components: {
@@ -23,6 +25,7 @@ export default {
     AppBar,
     Loader,
     Toaster,
+    ReconcileDialog,
   },
 };
 </script>

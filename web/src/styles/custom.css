@@ -12,7 +12,7 @@ span.clip {
   max-width: 250px !important;
 }
 
-p {
+p, div {
   hyphens: auto;
 }
 
