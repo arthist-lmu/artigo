@@ -68,6 +68,9 @@
           v-model="user.privacy_policy"
           :label="$t('user.fields.privacy-policy')"
           :rules="[checkTrue]"
+          on-icon="mdi-check-circle-outline"
+          off-icon="mdi-checkbox-blank-circle-outline"
+          color="primary"
         />
       </v-form>
     </v-card-text>

@@ -5,7 +5,7 @@ const reconcile = {
   namespaced: true,
   state: {
     data: {
-      entries: [],
+      reconciliations: [],
     },
   },
   actions: {
@@ -19,7 +19,7 @@ const reconcile = {
   },
   mutations: {
     updateData(state, data) {
-      state.data.entries = data.entries || [];
+      state.data.reconciliations = data.reconciliations;
     },
   },
 };

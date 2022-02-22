@@ -276,17 +276,23 @@ class Commune(index_pb2_grpc.IndexServicer):
         reconciliator = self.managers.get('reconciliator')
         size = 5 if request.size <= 0 else request.size
 
-        for e in reconciliator.run(json_obj, size):
-            entry = result.entries.add()
-            entry.id = e['id']
-            entry.name = e['name']
+        for x in reconciliator.run(json_obj, size):
+            reconciliation = result.reconciliations.add()
+            reconciliation.term.name = x['name']
+            reconciliation.term.type = x['type']
+            reconciliation.service = x['service']
 
-            if e.get('description'):
-                entry.description = e['description']
+            if x.get('id'):
+                reconciliation.term.id = x['id']
 
-            entry.score = e['score']
-            entry.match = e['match']
-            entry.service = e['service']
+            for e in x['entries']:
+                entry = reconciliation.entries.add()
+                entry.id = e['id']
+                entry.name = e['name']
+                entry.score = e['score']
+
+                if e.get('description'):
+                    entry.description = e['description']
 
         return result
 

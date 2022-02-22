@@ -68,11 +68,21 @@
                 v-for="title in titles"
                 :key="title"
                 :title="title"
-                @click="search(title, 'titles')"
                 class="mr-1 mb-2"
                 outlined
               >
-                <span class="clip">{{ title }}</span>
+                <span
+                  @click="search(title, 'titles')"
+                  style="cursor: pointer;"
+                  class="clip"
+                >
+                  {{ title }}
+                </span>
+
+                <ReconcileButton
+                  :entries="[entry]"
+                  type="resource"
+                />
               </v-chip>
             </v-col>
           </v-row>
@@ -95,15 +105,19 @@
                 v-for="creator in creators"
                 :key="creator"
                 :title="creator"
-                @click.self="search(creators, 'creators')"
                 class="mr-1 mb-2"
                 outlined
               >
-                <span class="clip">{{ creator }}</span>
+                <span
+                  @click="search(creators, 'creators')"
+                  class="clip"
+                  style="cursor: pointer;"
+                >
+                  {{ creator }}
+                </span>
 
                 <ReconcileButton
-                  :entryId="entry.id"
-                  :name="creator"
+                  :entries="[entry]"
                   type="creator"
                 />
               </v-chip>

@@ -110,7 +110,10 @@ class Search(RPCView):
             aggregations = []
 
             for x in response.aggregations:
-                values = {'field': x.field, 'entries': []}
+                values = {
+                    'field': x.field,
+                    'entries': [],
+                }
 
                 for entry in x.entries:
                     values['entries'].append({

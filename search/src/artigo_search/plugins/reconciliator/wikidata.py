@@ -2,6 +2,7 @@ import json
 import logging
 
 from urllib import parse
+from itertools import islice
 from artigo_search.plugins import (
     ReconciliatorPlugin,
     ReconciliatorPluginManager,
@@ -15,7 +16,6 @@ class WikidataReconciliator(ReconciliatorPlugin):
     default_config = {
         'endpoint': 'https://wikidata.reconci.link/{}/api',
         'params': {
-            'limit': 5,
             'timeout': 20000,
         },
         'lang': 'en',
@@ -36,23 +36,22 @@ class WikidataReconciliator(ReconciliatorPlugin):
         self.resource_type = self.config['resource_type']
 
     def __call__(self, query, size=5):
-        if size is not None and isinstance(size, int):
-            self.params['limit'] = size
-
         lang = query.get('lang', self.lang)
         endpoint = self.endpoint.format(lang)
 
-        query = self.parse_query(query)
+        query = self.parse_query(query, size)
         urls = self.parse_url(endpoint, query)
 
         for _, entries in self.harvest(list(urls)):
             for entry in entries:
                 yield entry
 
-    def parse_query(self, query):
+    def parse_query(self, query, size, n=10):
         queries = {}
 
-        for i, term in enumerate(query['terms']):
+        for term in query['terms']:
+            key = f'{term["type"]}:{term["name"]}'
+
             if term['type'] == 'creator':
                 term['type'] = self.creator_type
             elif term['type'] == 'resource':
@@ -60,28 +59,45 @@ class WikidataReconciliator(ReconciliatorPlugin):
             else:
                 continue
 
-            queries[f'q{i}'] = {
+            queries[key] = {
                 'query': term['name'],
                 'type': term['type'],
+                'limit': size,
             }
 
-        return dict(
-            {'queries': queries},
-            **self.params,
-        )
+        if n > 0:
+            iter_queries = iter(queries)
+
+            for _ in range(0, len(queries), n):
+                query_chunk = {
+                    key: queries[key]
+                    for key in islice(iter_queries, n)
+                }
+
+                yield dict(
+                    {'queries': query_chunk},
+                    **self.params,
+                )
 
     def extract(self, url, response):
-        entries = []
+        reconciliations = []
 
-        for results in json.loads(response).values():
-            for result in results['result']:
-                entries.append({
+        for key, x in json.loads(response).items():
+            values = {
+                'name': key.split(':', 1)[-1],
+                'type': key.split(':', 1)[0],
+                'service': 'Wikidata',
+                'entries': [],
+            }
+
+            for result in x['result']:
+                values['entries'].append({
                     'id': result['id'],
                     'name': result['name'],
                     'description': result['description'],
                     'score': int(result['score']),
-                    'match': result['match'],
-                    'service': 'Wikidata',
                 })
 
-        return url, entries
+            reconciliations.append(values)
+
+        return url, reconciliations

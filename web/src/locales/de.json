@@ -94,8 +94,11 @@
     ]
   },
   "reconcile": {
-    "title": "Abgleichen",
+    "title": "Metadaten abgleichen",
     "fields": {
+      "creator": "Künstler:innen abgleichen",
+      "resource": "Titel abgleichen",
+      "results": "{n} Einträge für|{n} Eintrag für|{n} Einträge für",
       "no-results": "Für Ihre Suchanfrage wurden leider keine Einträge bei Drittanbietern gefunden."
     }
   },

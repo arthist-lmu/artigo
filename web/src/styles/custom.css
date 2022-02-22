@@ -8,8 +8,17 @@
 
 span.clip {
 	text-overflow: ellipsis;
+  white-space: nowrap;
   overflow: hidden;
   max-width: 250px !important;
+}
+
+span.clip.w100 {
+  max-width: 100% !important;
+}
+
+.v-expansion-panel-header > span {
+  padding-top: 1px;
 }
 
 p, div {

@@ -161,8 +161,9 @@ message AggregateResult {
 }
 
 message ReconcileTerm {
-  string name = 1;
-  string type = 2;
+  string id = 1;
+  string name = 2;
+  string type = 3;
 }
 
 message ReconcileRequest {
@@ -171,17 +172,21 @@ message ReconcileRequest {
   string lang = 3;
 }
 
-message ReconcileResult {
+message ReconcileEntry {
   string id = 1;
   string name = 2;
   string description = 3;
   int32 score = 4;
-  bool match = 5;
-  string service = 6;
+}
+
+message ReconcileResult {
+  ReconcileTerm term = 1;
+  repeated ReconcileEntry entries = 2;
+  string service = 3;
 }
 
 message ReconcileReply {
-  repeated ReconcileResult entries = 1;
+  repeated ReconcileResult reconciliations = 1;
 }
 
 message Image {

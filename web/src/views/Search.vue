@@ -25,6 +25,9 @@
           v-model="display.tags"
           class="mt-0 pt-0 ml-4"
           :label="$t('search.fields.display-tags')"
+          on-icon="mdi-check-circle-outline"
+          off-icon="mdi-checkbox-blank-circle-outline"
+          color="primary"
           hide-details
         />
 
@@ -32,7 +35,15 @@
           v-model="display.metadata"
           class="mt-0 pt-0 ml-4"
           :label="$t('search.fields.display-metadata')"
+          on-icon="mdi-check-circle-outline"
+          off-icon="mdi-checkbox-blank-circle-outline"
+          color="primary"
           hide-details
+        />
+
+        <ReconcileButton
+          :entries="pageEntries"
+          class="ml-4"
         />
       </v-col>
     </v-alert>
@@ -158,6 +169,7 @@ export default {
   },
   components: {
     SearchResultCard: () => import('@/components/SearchResultCard.vue'),
+    ReconcileButton: () => import('@/components/ReconcileButton.vue'),
   },
 };
 </script>

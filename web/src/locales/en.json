@@ -94,8 +94,11 @@
     ]
   },
   "reconcile": {
-    "title": "Reconcile",
+    "title": "Reconcile metadata",
     "fields": {
+      "creator": "Reconcile creators",
+      "resource": "Reconcile titles",
+      "results": "{n} entries for|{n} entry for|{n} entries for",
       "no-results": "Unfortunately, no third-party results were found for your search query."
     }
   },
