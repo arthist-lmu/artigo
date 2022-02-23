@@ -25,6 +25,11 @@
     <v-card-title class="mb-2">
       <div class="text-h5 max-w mb-1">
         {{ title }}
+
+        <ReconcileButton
+          :entries="[entry]"
+          type="resource"
+        />
       </div>
 
       <div class="text-h6 max-w grey--text">
@@ -34,6 +39,11 @@
           class="creator"
         >
           {{ creator }}
+
+          <ReconcileButton
+            :entries="[entry]"
+            type="creator"
+          />
         </span>
       </div>
     </v-card-title>
@@ -227,6 +237,9 @@ export default {
       }
       return [];
     },
+  },
+  components: {
+    ReconcileButton: () => import('@/components/ReconcileButton.vue'),
   },
 };
 </script>

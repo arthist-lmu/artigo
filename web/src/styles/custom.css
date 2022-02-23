@@ -30,7 +30,7 @@ p, div {
 }
 
 .v-pagination__item, .v-pagination__navigation {
-  box-shadow: none;
+  box-shadow: none !important;
 }
 
 .v-alert .v-select .v-input__control {

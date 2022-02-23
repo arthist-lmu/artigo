@@ -9,7 +9,7 @@
           <v-img
             :src="entry.path"
             class="grey lighten-2"
-            :max-height="maxHeight"
+            max-height="70vh"
             v-bind="attrs"
             v-on="on"
             style="cursor: pointer;"

@@ -167,10 +167,6 @@ export default {
   content: "\F05E1";
 }
 
-.v-btn.remove:hover .v-icon {
-  color: #ff5252;
-}
-
 .v-btn.remove:hover .v-icon::before {
   content: "\F015A";
 }
