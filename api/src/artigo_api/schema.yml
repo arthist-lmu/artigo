@@ -59,7 +59,7 @@ paths:
   /resource/:
     get:
       operationId: resource_retrieve
-      description: Retrieve metadata and crowd-generated tags of a resource by `id`.
+      description: Retrieve metadata and crowd-generated tags of a resource.
       parameters:
       - in: query
         name: id
@@ -80,39 +80,59 @@ paths:
                 type: object
                 properties:
                   id:
+                    description: Resource identifier
                     type: string
                   meta:
+                    description: Metadata
                     type: array
                     items:
                       properties:
                         name:
+                          description: Name of field
                           type: string
+                          enum:
+                          - titles
+                          - creators
+                          - location
+                          - institution
                         value_str:
+                          description: String value of field
                           type: string
                   tags:
+                    description: Crowd-generated tags
                     type: array
                     items:
                       properties:
                         id:
+                          description: Tag identifier
                           type: string
                         name:
+                          description: Name of tag
                           type: string
                         language:
+                          description: Language of tag
                           type: string
                         count:
+                          description: Number of taggings
                           type: integer
                   path:
+                    description: File path to resource image
                     type: string
                   source:
+                    description: Source information
                     type: object
                     properties:
                       id:
+                        description: Source identifier
                         type: string
                       name:
+                        description: Name of source
                         type: string
                       url:
+                        description: URL of source
                         type: string
                       is_public:
+                        description: Publicly visible?
                         type: boolean
           description: ''
   /rest-auth/login/:
@@ -584,7 +604,9 @@ paths:
   /search/:
     post:
       operationId: search_create
-      description: Search metadata and crowd-generated tags of resources.
+      description: Search metadata and crowd-generated tags of resources. For longer
+        lasting search queries a `job_id` is returned, which can be used to receive
+        status updates.
       parameters:
       - in: query
         name: aggregate
@@ -592,99 +614,56 @@ paths:
           type: array
           items:
             type: string
+        description: Metadata fields that should be aggregated
+      - in: query
+        name: job_id
+        schema:
+          type: string
       - in: query
         name: limit
         schema:
           type: integer
           minimum: 0
           maximum: 10000
+        description: Maximum number of search results
       - in: query
         name: offset
         schema:
           type: integer
           minimum: 0
           maximum: 10000
+        description: Number of search results to skip
       - in: query
         name: query
         schema:
-          type: object
-          properties:
-            titles:
-              type: array
-              items:
-                properties:
-                  value:
-                    type: string
-                  flag:
-                    type: string
-                    enum:
-                    - should
-                    - must
-                    - not
-            creators:
-              type: array
-              items:
-                properties:
-                  value:
-                    type: string
-                  flag:
-                    type: string
-                    enum:
-                    - should
-                    - must
-                    - not
-            location:
-              type: array
-              items:
-                properties:
-                  value:
-                    type: string
-                  flag:
-                    type: string
-                    enum:
-                    - should
-                    - must
-                    - not
-            institution:
-              type: array
-              items:
-                properties:
-                  value:
-                    type: string
-                  flag:
-                    type: string
-                    enum:
-                    - should
-                    - must
-                    - not
-            source:
-              type: array
-              items:
-                properties:
-                  value:
-                    type: string
-                  flag:
-                    type: string
-                    enum:
-                    - should
-                    - must
-                    - not
-            tags:
-              type: array
-              items:
-                properties:
-                  value:
-                    type: string
-                  flag:
-                    type: string
-                    enum:
-                    - should
-                    - must
-                    - not
+          type: array
+          items:
+            properties:
+              name:
+                description: Name of field
+                type: string
+                enum:
+                - titles
+                - creators
+                - location
+                - institution
+                - source
+                - tags
+                - all-text
+              value:
+                description: Value of field
+                type: string
+              flag:
+                type: string
+                enum:
+                - should
+                - must
+                - not
       - in: query
         name: random
         schema:
           type: string
+        description: Random seed
       tags:
       - search
       security:
