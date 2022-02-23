@@ -8,6 +8,7 @@ from .utils import RPCView
 from django.core.cache import cache
 from rest_framework.response import Response
 from rest_framework.exceptions import APIException
+from drf_spectacular.utils import extend_schema, OpenApiParameter
 from frontend.utils import media_url_to_image
 
 from artigo_search import index_pb2, index_pb2_grpc
@@ -151,6 +152,254 @@ class Search(RPCView):
 
         return {'job_id': response.id}
 
+    @extend_schema(
+        parameters=[
+            OpenApiParameter(
+                name='query',
+                type={
+                    'type': 'object',
+                    'properties': {
+                        'titles': {
+                            'type': 'array',
+                            'items': {
+                                'properties': {
+                                    'value': {
+                                        'type': 'string',
+                                    },
+                                    'flag': {
+                                        'type': 'string',
+                                        'enum': [
+                                            'should',
+                                            'must',
+                                            'not',
+                                        ],
+                                    },
+                                },
+                            },
+                        },
+                        'creators': {
+                            'type': 'array',
+                            'items': {
+                                'properties': {
+                                    'value': {
+                                        'type': 'string',
+                                    },
+                                    'flag': {
+                                        'type': 'string',
+                                        'enum': [
+                                            'should',
+                                            'must',
+                                            'not',
+                                        ],
+                                    },
+                                },
+                            },
+                        },
+                        'location': {
+                            'type': 'array',
+                            'items': {
+                                'properties': {
+                                    'value': {
+                                        'type': 'string',
+                                    },
+                                    'flag': {
+                                        'type': 'string',
+                                        'enum': [
+                                            'should',
+                                            'must',
+                                            'not',
+                                        ],
+                                    },
+                                },
+                            },
+                        },
+                        'institution': {
+                            'type': 'array',
+                            'items': {
+                                'properties': {
+                                    'value': {
+                                        'type': 'string',
+                                    },
+                                    'flag': {
+                                        'type': 'string',
+                                        'enum': [
+                                            'should',
+                                            'must',
+                                            'not',
+                                        ],
+                                    },
+                                },
+                            },
+                        },
+                        'source': {
+                            'type': 'array',
+                            'items': {
+                                'properties': {
+                                    'value': {
+                                        'type': 'string',
+                                    },
+                                    'flag': {
+                                        'type': 'string',
+                                        'enum': [
+                                            'should',
+                                            'must',
+                                            'not',
+                                        ],
+                                    },
+                                },
+                            },
+                        },
+                        'tags': {
+                            'type': 'array',
+                            'items': {
+                                'properties': {
+                                    'value': {
+                                        'type': 'string',
+                                    },
+                                    'flag': {
+                                        'type': 'string',
+                                        'enum': [
+                                            'should',
+                                            'must',
+                                            'not',
+                                        ],
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
+            ),
+            OpenApiParameter(
+                name='aggregate',
+                type={
+                    'type': 'array',
+                    'items': {
+                        'type': 'string',
+                    },
+                },
+            ),
+            OpenApiParameter(
+                name='random',
+                type=str,
+            ),
+            OpenApiParameter(
+                name='limit',
+                type={
+                    'type': 'integer',
+                    'minimum': 0,
+                    'maximum': 10000,
+                },
+            ),
+            OpenApiParameter(
+                name='offset',
+                type={
+                    'type': 'integer',
+                    'minimum': 0,
+                    'maximum': 10000,
+                },
+            ),
+        ],
+        responses={
+            200: {
+                'type': 'object',
+                'properties': {
+                    'total': {
+                        'type': 'integer',
+                    },
+                    'offset': {
+                        'type': 'integer',
+                    },
+                    'entries': {
+                        'type': 'array',
+                        'items': {
+                            'properties': {
+                                'id': {
+                                    'type': 'string',
+                                },
+                                'meta': {
+                                    'type': 'array',
+                                    'items': {
+                                        'properties': {
+                                            'name': {
+                                                'type': 'string',
+                                            },
+                                            'value_str': {
+                                                'type': 'string',
+                                            },
+                                        },
+                                    },
+                                },
+                                'tags': {
+                                    'type': 'array',
+                                    'items': {
+                                        'properties': {
+                                            'id': {
+                                                'type': 'string',
+                                            },
+                                            'name': {
+                                                'type': 'string',
+                                            },
+                                            'language': {
+                                                'type': 'string',
+                                            },
+                                            'count': {
+                                                'type': 'integer',
+                                            },
+                                        },
+                                    },
+                                },
+                                'path': {
+                                    'type': 'string',
+                                },
+                                'source': {
+                                    'type': 'object',
+                                    'properties': {
+                                        'id': {
+                                            'type': 'string',
+                                        },
+                                        'name': {
+                                            'type': 'string',
+                                        },
+                                        'url': {
+                                            'type': 'string',
+                                        },
+                                        'is_public': {
+                                            'type': 'boolean',
+                                        },
+                                    },
+                                },
+                            },
+                        },
+                    },
+                    'aggregations': {
+                        'type': 'array',
+                        'items': {
+                            'properties': {
+                                'field': {
+                                    'type': 'string',
+                                },
+                                'entries': {
+                                    'type': 'array',
+                                    'items': {
+                                        'properties': {
+                                            'name': {
+                                                'type': 'string',
+                                            },
+                                            'count': {
+                                                'type': 'integer',
+                                            },
+                                        },
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+        },
+        description='Search metadata and crowd-generated tags of resources.',
+    )
     def post(self, request, format=None):
         job_id = request.data['params'].get('job_id')
 

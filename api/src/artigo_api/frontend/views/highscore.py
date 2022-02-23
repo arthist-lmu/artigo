@@ -11,10 +11,12 @@ from django.views.decorators.cache import cache_page
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.exceptions import APIException
+from drf_spectacular.utils import extend_schema
 
 logger = logging.getLogger(__name__)
 
 
+@extend_schema(methods=['GET'], exclude=True)
 class Highscore(APIView):
     def count(self, taggings, created=None, limit=10):
         if created is not None:

@@ -7,10 +7,12 @@ from rest_framework.response import Response
 from rest_framework.exceptions import APIException
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
+from drf_spectacular.utils import extend_schema
 
 logger = logging.getLogger(__name__)
 
 
+@extend_schema(methods=['GET', 'POST'], exclude=True)
 class UserView(APIView):
     # authentication_classes = [TokenAuthentication]
     # permission_classes = [IsAuthenticated]
@@ -34,8 +36,8 @@ class UserView(APIView):
 
     def get(self, request, format=None):
         content = {
-            'user': str(request.user),  # `django.contrib.auth.User` instance.
-            'auth': str(request.auth),  # None
+            'user': str(request.user),
+            'auth': str(request.auth),
         }
 
         return Response(content)
