@@ -11,7 +11,7 @@ const reconcile = {
   actions: {
     post({ commit }, params) {
       params = { lang: i18n.locale, ...params };
-      axios.post('/reconcile', { params })
+      axios.post('/reconcile/', { params })
         .then(({ data }) => {
           commit('updateData', data);
         });

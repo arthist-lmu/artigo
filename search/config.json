@@ -6,11 +6,11 @@
         "cache_dir": "/cache"
     },
     "grpc": {
-        "host": "localhost",
+        "host": "search",
         "port": 50051
     },
     "opensearch": {
-        "host": "localhost",
+        "host": "opensearch",
         "port": 9200,
         "index": "artigo"
     },

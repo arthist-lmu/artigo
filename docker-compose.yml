@@ -68,7 +68,8 @@ services:
     depends_on:
       - api
       - redisai
-    network_mode: "host"
+    ports:
+      - "127.0.0.1:50051:50051"
 
   api:
     image: artigo/api
@@ -93,9 +94,10 @@ services:
       - db
       - redisai
       - memcached
-    network_mode: "host"
     env_file:
       - ./api/src/artigo_api/.env
+    ports:
+      - "127.0.0.1:8000:8000"
     
   web:
     image: artigo/web

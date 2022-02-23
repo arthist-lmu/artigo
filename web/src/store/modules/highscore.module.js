@@ -7,7 +7,7 @@ const highscore = {
   },
   actions: {
     get({ commit }, params) {
-      axios.get('/highscore', { params })
+      axios.get('/highscore/', { params })
         .then(({ data }) => {
           commit('updateData', data);
         });

@@ -12,25 +12,24 @@ class HarvesterPlugin(Plugin):
     def __init__(self, config=None, name=None):
         super().__init__(config, name)
 
-        self.semaphore = asyncio.Semaphore(5)
-
     def harvest(self, urls: list) -> list:
-        self.urls = set(urls); results = self.init()
-        results.sort(key=lambda x: urls.index(x[0]))
+        self.urls = set(urls)
+        results = self.init(n=5)
 
-        return results
+        return [x for x in results if x[1]]
 
-    def init(self):
+    def init(self, n=5):
         try:
-            self.loop = asyncio.get_event_loop()
+            loop = asyncio.get_event_loop()
         except:
-            self.loop = asyncio.new_event_loop()
-            asyncio.set_event_loop(self.loop)
-            self.loop = asyncio.get_event_loop()
+            loop = asyncio.new_event_loop()
+            asyncio.set_event_loop(loop)
+            loop = asyncio.get_event_loop()
 
+        self.semaphore = asyncio.Semaphore(n)
         future = asyncio.ensure_future(self.run())
 
-        return self.loop.run_until_complete(future)
+        return loop.run_until_complete(future)
 
     async def run(self):
         tasks = []

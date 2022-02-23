@@ -7,13 +7,13 @@ const resource = {
   },
   actions: {
     get({ commit }, params) {
-      axios.get('/resource', { params })
+      axios.get('/resource/', { params })
         .then(({ data }) => {
           commit('updateData', data);
         });
     },
     post({ commit }, params) {
-      axios.post('/resource', params)
+      axios.post('/resource/', params)
         .then(({ data }) => {
           commit('updateData', data);
         });

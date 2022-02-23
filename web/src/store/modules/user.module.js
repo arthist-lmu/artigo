@@ -8,7 +8,7 @@ const user = {
   },
   actions: {
     get({ commit }, params) {
-      axios.get('/rest-auth/user', params)
+      axios.get('/rest-auth/user/', params)
         .then(({ data }) => {
           commit('updateData', data);
           commit('updateLoggedIn', true);
