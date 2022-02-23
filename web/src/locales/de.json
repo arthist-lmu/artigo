@@ -67,6 +67,9 @@
   "privacy-policy": {
     "title": "Datenschutz"
   },
+  "api": {
+    "title": "API"
+  },
   "login": {
     "title": "Login",
     "texts": [

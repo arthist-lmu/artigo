@@ -24,44 +24,56 @@ class Search(RPCView):
         if params.get('query'):
             query = params['query']
 
-            if not isinstance(query, dict):
+            if isinstance(query, str):
                 query = {'all-text': query}
+            elif isinstance(query, list):
+                query_dict = {}
 
-            for field, queries in query.items():
-                if isinstance(queries, str):
-                    queries = queries.split()
-                elif not isinstance(queries, (set, list)):
-                    queries = [queries]
+                for q in query:
+                    if not isinstance(q, dict):
+                        q = {'value': q}
 
-                for query in queries:
-                    if not isinstance(query, dict):
-                        query = {'value': query}
+                    field = q.get('name', 'all-text')
+                    query_dict[field] = q
 
-                    if query['value'].startswith('+'):
-                        query['flag'] = 'must'
-                        query['value'] = query['value'][1:]
-                    elif query['value'].startswith('-'):
-                        query['flag'] = 'not'
-                        query['value'] = query['value'][1:]
+                query = query_dict
 
-                    term = grpc_request.terms.add()
-                    term.text.query = query['value']
+            if isinstance(query, dict):
+                for field, queries in query.items():
+                    if isinstance(queries, str):
+                        queries = queries.split()
+                    elif not isinstance(queries, (set, list)):
+                        queries = [queries]
 
-                    if field == 'tags':
-                        term.text.field = 'tags.name'
-                    elif field == 'source':
-                        term.text.field = 'source.name'
-                    elif field in ['all-text', '']:
-                        term.text.field = 'all-text'
-                    else:
-                        term.text.field = f'meta.{field}'
+                    for q in queries:
+                        if not isinstance(q, dict):
+                            q = {'value': q}
 
-                    if query.get('flag') == 'must':
-                        term.text.flag = index_pb2.TextSearchTerm.MUST
-                    elif query.get('flag') == 'not':
-                        term.text.flag = index_pb2.TextSearchTerm.NOT
-                    else:
-                        term.text.flag = index_pb2.TextSearchTerm.SHOULD
+                        if q['value'].startswith('+'):
+                            q['flag'] = 'must'
+                            q['value'] = q['value'][1:]
+                        elif q['value'].startswith('-'):
+                            q['flag'] = 'not'
+                            q['value'] = q['value'][1:]
+
+                        term = grpc_request.terms.add()
+                        term.text.query = q['value']
+
+                        if field == 'tags':
+                            term.text.field = 'tags.name'
+                        elif field == 'source':
+                            term.text.field = 'source.name'
+                        elif field in ['all-text', '']:
+                            term.text.field = 'all-text'
+                        else:
+                            term.text.field = f'meta.{field}'
+
+                        if q.get('flag') == 'must':
+                            term.text.flag = index_pb2.TextSearchTerm.MUST
+                        elif q.get('flag') == 'not':
+                            term.text.flag = index_pb2.TextSearchTerm.NOT
+                        else:
+                            term.text.flag = index_pb2.TextSearchTerm.SHOULD
 
         for field in params.get('aggregate', []):
             grpc_request.aggregate.fields.extend([field])
@@ -95,18 +107,22 @@ class Search(RPCView):
             entries = []
 
             for x in response.entries:
-                entries.append({
+                entry = {
                     'id': x.id,
                     'meta': meta_from_proto(x.meta),
                     'tags': tags_from_proto(x.tags),
                     'path': media_url_to_image(x.id),
-                    'source': {
+                }
+
+                if x.source.id:
+                    entry['source'] = {
                         'id': x.source.id,
                         'name': x.source.name,
                         'url': x.source.url,
                         'is_public': x.source.is_public,
-                    },
-                })
+                    }
+
+                entries.append(entry)
 
             aggregations = []
 
@@ -157,120 +173,40 @@ class Search(RPCView):
             OpenApiParameter(
                 name='query',
                 type={
-                    'type': 'object',
-                    'properties': {
-                        'titles': {
-                            'type': 'array',
-                            'items': {
-                                'properties': {
-                                    'value': {
-                                        'type': 'string',
-                                    },
-                                    'flag': {
-                                        'type': 'string',
-                                        'enum': [
-                                            'should',
-                                            'must',
-                                            'not',
-                                        ],
-                                    },
-                                },
+                    'type': 'array',
+                    'items': {
+                        'properties': {
+                            'name': {
+                                'description': 'Name of field',
+                                'type': 'string',
+                                'enum': [
+                                    'titles',
+                                    'creators',
+                                    'location',
+                                    'institution',
+                                    'source',
+                                    'tags',
+                                    'all-text',
+                                ],
+                            },
+                            'value': {
+                                'description': 'Value of field',
+                                'type': 'string',
+                            },
+                            'flag': {
+                                'type': 'string',
+                                'enum': [
+                                    'should',
+                                    'must',
+                                    'not',
+                                ],
                             },
                         },
-                        'creators': {
-                            'type': 'array',
-                            'items': {
-                                'properties': {
-                                    'value': {
-                                        'type': 'string',
-                                    },
-                                    'flag': {
-                                        'type': 'string',
-                                        'enum': [
-                                            'should',
-                                            'must',
-                                            'not',
-                                        ],
-                                    },
-                                },
-                            },
-                        },
-                        'location': {
-                            'type': 'array',
-                            'items': {
-                                'properties': {
-                                    'value': {
-                                        'type': 'string',
-                                    },
-                                    'flag': {
-                                        'type': 'string',
-                                        'enum': [
-                                            'should',
-                                            'must',
-                                            'not',
-                                        ],
-                                    },
-                                },
-                            },
-                        },
-                        'institution': {
-                            'type': 'array',
-                            'items': {
-                                'properties': {
-                                    'value': {
-                                        'type': 'string',
-                                    },
-                                    'flag': {
-                                        'type': 'string',
-                                        'enum': [
-                                            'should',
-                                            'must',
-                                            'not',
-                                        ],
-                                    },
-                                },
-                            },
-                        },
-                        'source': {
-                            'type': 'array',
-                            'items': {
-                                'properties': {
-                                    'value': {
-                                        'type': 'string',
-                                    },
-                                    'flag': {
-                                        'type': 'string',
-                                        'enum': [
-                                            'should',
-                                            'must',
-                                            'not',
-                                        ],
-                                    },
-                                },
-                            },
-                        },
-                        'tags': {
-                            'type': 'array',
-                            'items': {
-                                'properties': {
-                                    'value': {
-                                        'type': 'string',
-                                    },
-                                    'flag': {
-                                        'type': 'string',
-                                        'enum': [
-                                            'should',
-                                            'must',
-                                            'not',
-                                        ],
-                                    },
-                                },
-                            },
-                        },
-                    },
+                    }
                 },
             ),
             OpenApiParameter(
+                description='Metadata fields that should be aggregated',
                 name='aggregate',
                 type={
                     'type': 'array',
@@ -280,10 +216,12 @@ class Search(RPCView):
                 },
             ),
             OpenApiParameter(
+                description='Random seed',
                 name='random',
                 type=str,
             ),
             OpenApiParameter(
+                description='Maximum number of search results',
                 name='limit',
                 type={
                     'type': 'integer',
@@ -292,12 +230,17 @@ class Search(RPCView):
                 },
             ),
             OpenApiParameter(
+                description='Number of search results to skip',
                 name='offset',
                 type={
                     'type': 'integer',
                     'minimum': 0,
                     'maximum': 10000,
                 },
+            ),
+            OpenApiParameter(
+                name='job_id',
+                type=str,
             ),
         ],
         responses={
@@ -398,15 +341,22 @@ class Search(RPCView):
                 },
             },
         },
-        description='Search metadata and crowd-generated tags of resources.',
+        description='Search metadata and crowd-generated tags of resources.' + \
+            ' For longer lasting search queries a `job_id` is returned,' + \
+            ' which can be used to receive status updates.',
     )
     def post(self, request, format=None):
-        job_id = request.data['params'].get('job_id')
+        if request.data.get('params'):
+            params = request.data['params']
+        else:
+            params = request.query_params
+
+        job_id = params.get('job_id')
 
         if job_id:
             result = self.rpc_check_post(job_id)
         else:
-            result = self.rpc_post(request.data['params'])
+            result = self.rpc_post(params)
 
         if result is None:
             raise APIException('unknown_error')

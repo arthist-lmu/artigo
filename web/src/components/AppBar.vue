@@ -41,6 +41,15 @@
           {{ $t(page)["title"] }}
         </v-btn>
 
+        <v-btn
+          :href="api"
+          target="_blank"
+          small
+          text
+        >
+          {{ $t('api.title') }}
+        </v-btn>
+
         <v-dialog
           v-model="dialog.register"
           max-width="400"
@@ -107,6 +116,7 @@
 <script>
 import i18n from '@/plugins/i18n';
 import router from '@/router/index';
+import { API_LOCATION } from '@/../app.config';
 
 import LoginCard from '@/components/LoginCard.vue';
 import RegisterCard from '@/components/RegisterCard.vue';
@@ -143,6 +153,9 @@ export default {
   computed: {
     locale() {
       return i18n.locale;
+    },
+    api() {
+      return `${API_LOCATION}/schema/redoc`;
     },
   },
   watch: {

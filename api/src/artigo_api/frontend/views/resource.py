@@ -63,56 +63,77 @@ class Resource(RPCView):
                 'type': 'object',
                 'properties': {
                     'id': {
+                        'description': 'Resource identifier',
                         'type': 'string',
                     },
                     'meta': {
+                        'description': 'Metadata',
                         'type': 'array',
                         'items': {
                             'properties': {
                                 'name': {
+                                    'description': 'Name of field',
                                     'type': 'string',
+                                    'enum': [
+                                        'titles',
+                                        'creators',
+                                        'location',
+                                        'institution',
+                                    ],
                                 },
                                 'value_str': {
+                                    'description': 'String value of field',
                                     'type': 'string',
                                 },
                             },
                         },
                     },
                     'tags': {
+                        'description': 'Crowd-generated tags',
                         'type': 'array',
                         'items': {
                             'properties': {
                                 'id': {
+                                    'description': 'Tag identifier',
                                     'type': 'string',
                                 },
                                 'name': {
+                                    'description': 'Name of tag',
                                     'type': 'string',
                                 },
                                 'language': {
+                                    'description': 'Language of tag',
                                     'type': 'string',
                                 },
                                 'count': {
+                                    'description': 'Number of taggings',
                                     'type': 'integer',
                                 },
                             },
                         },
                     },
                     'path': {
+                        'description': 'File path to resource image',
                         'type': 'string',
                     },
                     'source': {
+                        'description': 'Source information',
                         'type': 'object',
                         'properties': {
                             'id': {
+                                'description': 'Source identifier',
                                 'type': 'string',
                             },
                             'name': {
+                                'description': 'Name of source',
                                 'type': 'string',
                             },
                             'url': {
+                                'description': 'URL of source',
                                 'type': 'string',
                             },
                             'is_public': {
+                                'description': 'Publicly visible?',
                                 'type': 'boolean',
                             },
                         },
@@ -120,7 +141,7 @@ class Resource(RPCView):
                 },
             },
         },
-        description='Retrieve metadata and crowd-generated tags of a resource by `id`.',
+        description='Retrieve metadata and crowd-generated tags of a resource.',
     )
     def get(self, request, format=None):
         result = self.rpc_get(request.query_params)

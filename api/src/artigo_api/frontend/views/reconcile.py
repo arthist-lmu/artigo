@@ -3,6 +3,7 @@ import logging
 import traceback
 
 from .utils import RPCView
+from rest_framework import permissions
 from rest_framework.response import Response
 from rest_framework.exceptions import APIException
 from drf_spectacular.utils import extend_schema
@@ -14,6 +15,8 @@ logger = logging.getLogger(__name__)
 
 @extend_schema(methods=['POST'], exclude=True)
 class Reconcile(RPCView):
+    # permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
     def parse_request(self, params):
         grpc_request = index_pb2.ReconcileRequest()
 
@@ -81,7 +84,7 @@ class Reconcile(RPCView):
             logger.error(error)
 
     def post(self, request, format=None):
-        result = self.rpc_post(request.data['params'])
+        result = self.rpc_post(request.data.get('params', {}))
 
         if result is None:
             raise APIException('unknown_error')
