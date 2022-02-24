@@ -37,7 +37,7 @@
         />
 
         <v-text-field
-          v-model="user.password"
+          v-model="user.password1"
           @click:append="showPassword = !showPassword"
           :type="showPassword ? 'text' : 'password'"
           :placeholder="$t('user.fields.password')"
@@ -51,7 +51,7 @@
         />
 
         <v-text-field
-          v-model="user.password_repeat"
+          v-model="user.password2"
           @click:append="showPassword = !showPassword"
           :type="showPassword ? 'text' : 'password'"
           :placeholder="$t('user.fields.password-repeat')"
@@ -106,7 +106,6 @@ export default {
   methods: {
     register() {
       this.$store.dispatch('user/register', this.user);
-      this.close();
       // TODO: go to user-specific page if successful?
     },
     close() {
@@ -121,20 +120,36 @@ export default {
     checkLength(value) {
       if (value) {
         if (value.length < 5) {
-          return this.$t('user.register.rules.min');
+          return this.$tc('user.register.rules.min', 5);
         }
         if (value.length > 75) {
-          return this.$t('user.register.rules.max');
+          return this.$tc('user.register.rules.max', 75);
         }
         return true;
       }
       return this.$t('field.required');
     },
     checkPasswordRepeat(value) {
-      if (value && value === this.user.password) {
+      if (value && value === this.user.password1) {
         return true;
       }
       return this.$t('user.register.rules.password-repeat');
+    },
+  },
+  computed: {
+    status() {
+      const { error, loading } = this.$store.state.utils.status;
+      return !loading && !error;
+    },
+    timestamp() {
+      return this.$store.state.utils.status.timestamp;
+    },
+  },
+  watch: {
+    timestamp() {
+      if (this.status) {
+        this.close();
+      }
     },
   },
 };

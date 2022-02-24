@@ -5,7 +5,7 @@ import traceback
 from rest_framework.views import APIView
 
 
-class Game(APIView):
+class GameView(APIView):
     def get(self, request, format=None):
         resource = None
 

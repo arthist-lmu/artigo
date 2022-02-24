@@ -2,12 +2,13 @@ const utils = {
   namespaced: true,
   state: {
     status: {
-      loading: false,
       error: false,
+      loading: false,
+      timestamp: null,
     },
     message: {
       type: null,
-      detail: null,
+      details: null,
       timestamp: null,
     },
   },
@@ -20,13 +21,14 @@ const utils = {
     },
   },
   mutations: {
-    updateStatus(state, { loading, error }) {
-      state.status.loading = loading;
+    updateStatus(state, { error, loading, timestamp }) {
       state.status.error = error;
+      state.status.loading = loading;
+      state.status.timestamp = timestamp;
     },
-    updateMessage(state, { type, detail, timestamp }) {
+    updateMessage(state, { type, details, timestamp }) {
       state.message.type = type;
-      state.message.detail = detail;
+      state.message.details = details;
       state.message.timestamp = timestamp;
     },
   },

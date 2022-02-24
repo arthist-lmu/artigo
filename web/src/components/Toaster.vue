@@ -4,7 +4,12 @@
     :timeout="timeout"
     :color="color"
   >
-    {{ keyInObj(detail, $t("error")) ? $t("error")[detail] : $t("error.unknown_error") }}
+    <span
+      v-for="detail in details"
+      :key="detail"
+    >
+      {{ keyInObj(detail, $t("error")) ? $t("error")[detail] : $t("error.unknown_error") }}
+    </span>
   </v-snackbar>
 </template>
 
@@ -13,12 +18,12 @@ export default {
   data() {
     return {
       display: false,
-      timeout: 2500,
+      timeout: 5000,
     };
   },
   computed: {
-    detail() {
-      return this.$store.state.utils.message.detail;
+    details() {
+      return this.$store.state.utils.message.details;
     },
     timestamp() {
       return this.$store.state.utils.message.timestamp;

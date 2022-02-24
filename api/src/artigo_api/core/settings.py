@@ -49,8 +49,6 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     'allauth.socialaccount.providers.github',
     'allauth.socialaccount.providers.google',
-    # to see a list of all available urls install django-extensions and run: manage.py show_urls
-    # 'django_extensions',  
 ]
 
 SITE_ID = 1
@@ -253,10 +251,14 @@ ACCOUNT_LOGIN_ON_PASSWORD_RESET = True
 SOCIALACCOUNT_AUTO_SIGNUP = False
 
 SOCIALACCOUNT_PROVIDERS = {
+    'github': {
+        'APP': {
+            'client_id': '123',
+            'secret': '456',
+            'key': ''
+        },
+    },
     'google': {
-        # For each OAuth based provider, either add a ``SocialApp``
-        # (``socialaccount`` app) containing the required client
-        # credentials, or list them here:
         'APP': {
             'client_id': '123',
             'secret': '456',
@@ -285,4 +287,7 @@ SPECTACULAR_SETTINGS = {
         'name': 'GNU General Public License v3.0',
         'url': 'https://github.com/arthist-lmu/artigo/blob/master/LICENSE.md',
     },
+    'PREPROCESSING_HOOKS': [
+        'frontend.utils.urls.preprocessing_hook',
+    ],
 }

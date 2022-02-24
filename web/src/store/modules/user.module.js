@@ -4,45 +4,47 @@ const user = {
   namespaced: true,
   state: {
     data: {},
+    token: null,
     loggedIn: false,
   },
   actions: {
-    get({ commit }, params) {
-      axios.get('/rest-auth/user/', params)
+    get({ commit, state }) {
+      axios.get('/auth/user/', {
+        headers: {
+          'Authorization': `Token ${state.token}`,
+        },
+      })
         .then(({ data }) => {
           commit('updateData', data);
           commit('updateLoggedIn', true);
         });
     },
-    login({ commit }, params) {
-      axios.post('/rest-auth/login/', params)
+    login({ dispatch, commit }, params) {
+      axios.post('/auth/login/', params)
         .then(({ data }) => {
-          commit('updateData', data);
+          commit('updateToken', data);
           commit('updateLoggedIn', true);
+          dispatch('get');
         });
     },
     logout({ commit, state }) {
       const params = state.userData;
-      axios.post('/rest-auth/logout/', params)
+      axios.post('/auth/logout/', params)
         .then(() => {
           commit('updateData', {});
           commit('updateLoggedIn', false);
         });
     },
-    register({ commit }, params) {
-      axios.post('/rest-auth/registration/', params)
-        .then(({ data }) => {
-          commit('updateData', data);
-          commit('updateLoggedIn', true);
-        });
+    register(context, params) {
+      axios.post('/auth/registration/', params);
     },
   },
   mutations: {
-    updateCSRFToken(state, token) {
-      state.csrfToken = token;
-    },
     updateLoggedIn(state, loggedIn) {
       state.loggedIn = loggedIn;
+    },
+    updateToken(state, { key }) {
+      state.token = key;
     },
     updateData(state, data) {
       state.data = data;

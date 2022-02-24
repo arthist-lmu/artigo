@@ -5,6 +5,7 @@ import logging
 import traceback
 
 from .utils import RPCView
+from collections import defaultdict
 from django.core.cache import cache
 from rest_framework.response import Response
 from rest_framework.exceptions import APIException
@@ -17,7 +18,7 @@ from artigo_search.utils import meta_from_proto, tags_from_proto
 logger = logging.getLogger(__name__)
 
 
-class Search(RPCView):
+class SearchView(RPCView):
     def parse_request(self, params):
         grpc_request = index_pb2.SearchRequest()
 
@@ -27,14 +28,14 @@ class Search(RPCView):
             if isinstance(query, str):
                 query = {'all-text': query}
             elif isinstance(query, list):
-                query_dict = {}
+                query_dict = defaultdict(list)
 
                 for q in query:
                     if not isinstance(q, dict):
                         q = {'value': q}
 
                     field = q.get('name', 'all-text')
-                    query_dict[field] = q
+                    query_dict[field].append(q)
 
                 query = query_dict
 
@@ -342,8 +343,8 @@ class Search(RPCView):
             },
         },
         description='Search metadata and crowd-generated tags of resources.' + \
-            ' For longer lasting search queries a `job_id` is returned,' + \
-            ' which can be used to receive status updates.',
+            ' For longer lasting queries a `job_id` is returned, which can' + \
+            ' be used in subsequent queries to receive status updates.',
     )
     def post(self, request, format=None):
         if request.data.get('params'):

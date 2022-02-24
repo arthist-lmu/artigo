@@ -14,7 +14,7 @@ logger = logging.getLogger(__name__)
 
 
 @extend_schema(methods=['POST'], exclude=True)
-class Reconcile(RPCView):
+class ReconcileView(RPCView):
     # permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
     def parse_request(self, params):

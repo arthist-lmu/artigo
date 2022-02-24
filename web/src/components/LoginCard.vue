@@ -19,10 +19,19 @@
     <v-card-text :class="isDialog ? '' : 'pt-0 px-0'">
       <v-form v-model="isFormValid">
         <v-text-field
+          v-model="user.username"
+          :placeholder="$t('user.fields.username')"
+          :rules="[checkLength]"
+          prepend-icon="mdi-account"
+          counter="75"
+          clearable
+        ></v-text-field>
+
+        <v-text-field
           v-model="user.email"
           :placeholder="$t('user.fields.email')"
           :rules="[checkLength]"
-          prepend-icon="mdi-account"
+          prepend-icon="mdi-email"
           counter="75"
           clearable
         ></v-text-field>
@@ -106,7 +115,6 @@ export default {
   methods: {
     login() {
       this.$store.dispatch('user/login', this.user);
-      this.close();
       // TODO: go to user-specific page if successful?
     },
     close() {
@@ -115,19 +123,33 @@ export default {
     checkLength(value) {
       if (value) {
         if (value.length < 5) {
-          return this.$t('user.login.rules.min');
+          return this.$tc('user.login.rules.min', 5);
         }
         if (value.length > 75) {
-          return this.$t('user.login.rules.max');
+          return this.$tc('user.login.rules.max', 75);
         }
         return true;
       }
       return this.$t('field.required');
     },
   },
+  computed: {
+    status() {
+      const { error, loading } = this.$store.state.utils.status;
+      return !loading && !error;
+    },
+    timestamp() {
+      return this.$store.state.utils.status.timestamp;
+    },
+  },
   watch: {
     'dialog.register'(value) {
       if (value) {
+        this.close();
+      }
+    },
+    timestamp() {
+      if (this.status) {
         this.close();
       }
     },

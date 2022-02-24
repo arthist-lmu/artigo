@@ -17,7 +17,7 @@ logger = logging.getLogger(__name__)
 
 
 @extend_schema(methods=['POST'], exclude=True)
-class Resource(RPCView):
+class ResourceView(RPCView):
     def parse_request(self, params):
         grpc_request = index_pb2.GetRequest()
 

@@ -17,7 +17,7 @@ logger = logging.getLogger(__name__)
 
 
 @extend_schema(methods=['GET'], exclude=True)
-class Highscore(APIView):
+class HighscoreView(APIView):
     def count(self, taggings, created=None, limit=10):
         if created is not None:
             taggings = taggings.filter(created__gte=created)

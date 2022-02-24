@@ -41,8 +41,8 @@
     "register": {
       "title": "Register",
       "rules": {
-        "min": "Min. 5 characters.",
-        "max": "Max. 50 characters.",
+        "min": "Min. {n} characters.",
+        "max": "Max. {n} characters.",
         "password-repeat": "Passwords don't match."
       }
     },
@@ -50,8 +50,8 @@
       "title": "Login",
       "text": "Don't have an account?",
       "rules": {
-        "min": "Min. 5 characters.",
-        "max": "Max. 50 characters."
+        "min": "Min. {n} characters.",
+        "max": "Max. {n} characters."
       }
     },
     "logout": {
@@ -195,6 +195,10 @@
   },
   "error": {
     "unknown_error": "An unknown error occurred. Please try again.",
-    "not_authenticated": "You could not be authenticated. If this message continues to appear, contact support."
+    "enter_a_valid_email_address": "Please enter a valid e-mail address.",
+    "unable_to_log_in_with_provided_credentials": "Please check your credentials.",
+    "this_password_is_too_common": "Your password is too common.",
+    "this_password_is_too_short_it_must_contain_at_least_8_characters": "Your password must contain at least 8 characters.",
+    "a_user_is_already_registered_with_this_e-mail_address": "A user is already registered with this e-mail address."
   }
 }
