@@ -12,8 +12,8 @@ Postgres 1.6 GB after inital upload including all media files
 ### Memory
 * 900 MB Opensearch Idle
 * 500 MB Django Idle
-* 250 Postgres
-* 400 other
+* 250 MBPostgres
+* 400 MB other
 
 ----> 4 GB min for production use
 
