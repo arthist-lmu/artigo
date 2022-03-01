@@ -75,6 +75,7 @@ MIDDLEWARE = [
 ALLOWED_HOSTS = [
     '127.0.0.1',
     'localhost',
+    'api.artigo.org'
 ]
 
 CORS_ALLOW_CREDENTIALS = True
