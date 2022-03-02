@@ -84,6 +84,7 @@ CORS_ALLOWED_ORIGINS = [
     'http://localhost',
     'http://localhost:80',
     'http://localhost:8080',
+    'https://' + env('DOMAIN')
 ]
 
 # CSRF_USE_SESSIONS = False
