@@ -75,7 +75,7 @@ MIDDLEWARE = [
 ALLOWED_HOSTS = [
     '127.0.0.1',
     'localhost',
-    env('DOMAIN')
+    env('DOMAIN'),
 ]
 
 CORS_ALLOW_CREDENTIALS = True
@@ -84,6 +84,7 @@ CORS_ALLOWED_ORIGINS = [
     'http://localhost',
     'http://localhost:80',
     'http://localhost:8080',
+    'http://' + env('DOMAIN'),
     'https://' + env('DOMAIN')
 ]
 
@@ -98,6 +99,7 @@ CSRF_TRUSTED_ORIGINS = [
     'http://localhost',
     'http://localhost:80/',
     'http://localhost:8080/',
+    'http://' + env('DOMAIN') + '/',
     'https://' + env('DOMAIN') + '/'
 ]
 
