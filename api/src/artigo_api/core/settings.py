@@ -75,7 +75,7 @@ MIDDLEWARE = [
 ALLOWED_HOSTS = [
     '127.0.0.1',
     'localhost',
-    'api.artigo.org'
+    env('DOMAIN')
 ]
 
 CORS_ALLOW_CREDENTIALS = True
@@ -97,6 +97,7 @@ CSRF_TRUSTED_ORIGINS = [
     'http://localhost',
     'http://localhost:80/',
     'http://localhost:8080/',
+    'https://' + env('DOMAIN') + '/'
 ]
 
 ROOT_URLCONF = 'core.urls'
