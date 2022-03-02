@@ -20,6 +20,7 @@ services:
     volumes:
       - ./opensearch/:/usr/share/opensearch/data
       - ./search/opensearch.yml:/usr/share/opensearch/config/opensearch.yml
+      - ./search/performance_analyzer_enabled.conf:/usr/share/opensearch/data/performance_analyzer_enabled.conf
     ulimits:
       memlock:
         soft: -1
