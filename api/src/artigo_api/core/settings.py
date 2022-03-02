@@ -29,6 +29,7 @@ SECRET_KEY = env('SECRET_KEY')
 DEBUG = env('DEBUG')
 
 FORCE_SCRIPT_NAME = '/'
+API = env('DOMAIN')
 
 INSTALLED_APPS = [
     'django.contrib.admin',
