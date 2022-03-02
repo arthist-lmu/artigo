@@ -95,10 +95,10 @@ CORS_ALLOWED_ORIGINS = [
 # SESSION_COOKIE_SECURE = False
 
 CSRF_TRUSTED_ORIGINS = [
-    'localhost',
-    'localhost:80',
-    'localhost:8080',
-    env('DOMAIN'),
+    'http://localhost',
+    'http://localhost:80',
+    'http://localhost:8080',
+    'https://' + env('DOMAIN')
 ]
 
 ROOT_URLCONF = 'core.urls'
