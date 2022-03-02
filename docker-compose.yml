@@ -7,7 +7,7 @@ services:
 #      - "127.0.0.1:6379:6379"
 
   memcached:
-    image: memcached:1.6.10-buster
+    image: memcached:1
     command: -I 32m
 #    ports:
 #      - "127.0.0.1:11211:11211"
