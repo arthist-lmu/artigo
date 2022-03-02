@@ -81,12 +81,14 @@ sudo docker-compose exec -u postgres db psql -d artigo
 ```
 
 ### Code reloading
-Hot reloading is enabled for `api`. To display changes of `web`, run:
+Hot reloading is enabled for `api`. 
+
+To display changes of `web` (`http://localhost:8080/`), run:
 ```sh
 sudo docker-compose exec web npm run build
 ```
 
-Alternativly, use `serve` to enable a hot reloaded instance on `http://localhost:8080/`:
+Alternativly, use `serve` to enable a hot reloaded instance on `http://localhost:8001/`:
 ```sh
 sudo docker-compose exec web npm run serve
 ```

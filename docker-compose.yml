@@ -3,14 +3,10 @@ version: "3.2"
 services:
   redisai:
     image: redislabs/redisai:edge-cpu-bionic
-#    ports:
-#      - "127.0.0.1:6379:6379"
 
   memcached:
     image: memcached:1
     command: -I 32m
-#    ports:
-#      - "127.0.0.1:11211:11211"
 
   opensearch:
     image: opensearchproject/opensearch:latest
@@ -31,9 +27,6 @@ services:
       nofile:
         soft: 65536
         hard: 65536
-#    ports:
-#      - "127.0.0.1:9200:9200"
-#      - "127.0.0.1:9600:9600"
 
   db:
     image: postgres:14
@@ -43,8 +36,6 @@ services:
       - POSTGRES_DB=artigo
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
-#    ports:
-#      - "127.0.0.1:5432:5432"
 
   search:
     image: artigo/search
@@ -68,8 +59,6 @@ services:
     depends_on:
       - api
       - redisai
-#    ports:
-#      - "127.0.0.1:50051:50051"
 
   api:
     image: artigo/api
@@ -111,6 +100,5 @@ services:
     depends_on:
       - api
     ports:
-      - "80:80"
-      # Only for development
-      - "8080:8080"
+      - "80:8080"
+      - "8080:8001"
