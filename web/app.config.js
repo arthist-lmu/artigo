@@ -1,3 +1,3 @@
 module.exports = {
-  API_LOCATION: 'https://api.artio.org',
+  API_LOCATION: 'https://api.artigo.org',
 };
