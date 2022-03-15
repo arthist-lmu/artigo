@@ -16,8 +16,6 @@
 </template>
 
 <script>
-import i18n from '@/plugins/i18n';
-
 export default {
   props: {
     tags: Array,
@@ -42,7 +40,7 @@ export default {
         } else if (count > 14) {
           size += 6;
         }
-        if (language === i18n.locale) {
+        if (language === this.$i18n.locale) {
           tags.push({ id, name, size });
         }
       });

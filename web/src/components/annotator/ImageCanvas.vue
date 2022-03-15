@@ -7,6 +7,17 @@
       <slot name="placeholder"></slot>
     </template>
 
+    <v-avatar
+      v-if="avatarText"
+      class="ma-4"
+      color="primary"
+      size="44"
+    >
+      <span class="white--text">
+        {{ avatarText }}
+      </span>
+    </v-avatar>
+
     <div class="canvas-container">
       <div v-if="activeTool">
         <PointTool
@@ -42,6 +53,7 @@ export default {
   props: {
     ...VImg.props,
     value: Object,
+    avatarText: String,
   },
   data() {
     return {

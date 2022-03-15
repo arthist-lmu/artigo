@@ -148,8 +148,6 @@
 </template>
 
 <script>
-import i18n from '@/plugins/i18n';
-
 import { VCard } from 'vuetify/lib';
 
 export default {
@@ -186,37 +184,43 @@ export default {
         'institution',
         'source',
       ];
-      this.entry.meta.forEach(({ name, value_str }) => {
-        if (fields.includes(name) && value_str) {
-          metadata[name] = value_str;
+      if (this.keyInObj('meta', this.entry)) {
+        this.entry.meta.forEach(({ name, value_str }) => {
+          if (fields.includes(name) && value_str) {
+            metadata[name] = value_str;
+          }
+        });
+        if (this.entry.source && this.entry.source.id) {
+          metadata.source = this.entry.source.name;
         }
-      });
-      if (this.entry.source && this.entry.source.id) {
-        metadata.source = this.entry.source.name;
       }
       return metadata;
     },
     title() {
       const titles = [];
-      this.entry.meta.forEach(({ name, value_str }) => {
-        if (name === 'titles' && value_str) {
-          titles.push(value_str);
+      if (this.keyInObj('meta', this.entry)) {
+        this.entry.meta.forEach(({ name, value_str }) => {
+          if (name === 'titles' && value_str) {
+            titles.push(value_str);
+          }
+        });
+        if (titles.length > 0) {
+          return titles[0];
         }
-      });
-      if (titles.length > 0) {
-        return titles[0];
       }
       return this.$t('resource.default.title');
     },
     creators() {
       const creators = [];
-      this.entry.meta.forEach(({ name, value_str }) => {
-        if (name === 'creators' && value_str) {
-          creators.push(value_str);
+      if (this.keyInObj('meta', this.entry)) {
+        this.entry.meta.forEach(({ name, value_str }) => {
+          if (name === 'creators' && value_str) {
+            creators.push(value_str);
+          }
+        });
+        if (creators.length > 0) {
+          return creators;
         }
-      });
-      if (creators.length > 0) {
-        return creators;
       }
       return [this.$t('resource.default.creator')];
     },
@@ -226,7 +230,7 @@ export default {
         this.entry.tags.forEach(({
           id, language, name, count,
         }) => {
-          if (language === i18n.locale) {
+          if (language === this.$i18n.locale) {
             tags.push({ id, name, count });
           }
         });

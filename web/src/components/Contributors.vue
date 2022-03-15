@@ -44,6 +44,7 @@ export default {
             { name: 'Martin Bogner' },
             { name: 'Martin Josko', url: 'http://www.pms.ifi.lmu.de/mitarbeiter/martin-josko' },
             { name: 'Dr. Fabian Kneißl' },
+            { name: 'Maximilian Kristen' },
             { name: 'Anke Regner' },
             { name: 'Dr. Clemens Schefels' },
             { name: 'Corina Schemainda' },

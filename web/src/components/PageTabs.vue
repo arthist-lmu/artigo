@@ -80,12 +80,12 @@ export default {
 }
 
 .v-tab--active {
-    background-color: #b8c9e1;
-    color: #fff;
-    border-radius: 4px 4px 0 0;
+  background-color: #b8c9e1;
+  color: #fff !important;
+  border-radius: 4px 4px 0 0;
 }
 
 .v-sheet.v-card {
-    border-radius: 0 0  4px 4px;
+  border-radius: 0 0  4px 4px;
 }
 </style>

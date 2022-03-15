@@ -51,6 +51,7 @@
         </v-btn>
 
         <v-dialog
+          v-if="!isLoggedIn"
           v-model="dialog.register"
           max-width="400"
         >
@@ -60,7 +61,7 @@
               small
               text
             >
-              {{ $t("register.title") }}
+              {{ $t("user.register.title") }}
             </v-btn>
           </template>
 
@@ -71,6 +72,7 @@
         </v-dialog>
 
         <v-dialog
+          v-if="!isLoggedIn"
           v-model="dialog.login"
           max-width="400"
         >
@@ -80,7 +82,7 @@
               small
               text
             >
-              {{ $t("login.title") }}
+              {{ $t("user.login.title") }}
             </v-btn>
           </template>
 
@@ -89,6 +91,15 @@
             :isDialog="true"
           />
         </v-dialog>
+
+        <v-btn
+          v-if="isLoggedIn"
+          @click="logout"
+          small
+          text
+        >
+          {{ $t("user.logout.title") }}
+        </v-btn>
 
         <v-spacer />
 
@@ -100,9 +111,10 @@
             @keyup.enter.native="search"
             :placeholder="$t('search.title')"
             append-outer-icon="mdi-magnify"
+            background-color="white"
             hide-details
             clearable
-            outlined
+            rounded
             dense
             solo
             flat
@@ -114,8 +126,6 @@
 </template>
 
 <script>
-import i18n from '@/plugins/i18n';
-import router from '@/router/index';
 import { API_LOCATION } from '@/../app.config';
 
 import LoginCard from '@/components/LoginCard.vue';
@@ -144,23 +154,30 @@ export default {
       router.push({ name: page });
     },
     change(lang) {
-      i18n.locale = lang;
+      this.$i18n.locale = lang;
     },
     search() {
       this.$store.dispatch('search/post', { 'query': this.query });
     },
+    logout() {
+      this.$store.dispatch('user/logout');
+    },
   },
   computed: {
     locale() {
-      return i18n.locale;
+      return this.$i18n.locale;
     },
     api() {
       return `${API_LOCATION}/schema/redoc`;
     },
+    isLoggedIn() {
+      return this.$store.state.user.loggedIn;
+    },
   },
   watch: {
     locale(lang) {
-      router.push({ params: { lang } });
+      const { query } = this.$route;
+      this.$router.push({ params: { lang }, query });
       document.documentElement.lang = lang;
     },
   },

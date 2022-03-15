@@ -4,7 +4,7 @@
     flat
   >
     <v-card-title v-if="isDialog">
-      {{ $t("register.title") }}
+      {{ $t("user.register.title") }}
 
       <v-btn
         @click="close"
@@ -23,6 +23,7 @@
           :placeholder="$t('user.fields.username')"
           :rules="[checkLength]"
           prepend-icon="mdi-account"
+          tabindex="1"
           counter="75"
           clearable
         />
@@ -32,6 +33,7 @@
           :placeholder="$t('user.fields.email')"
           :rules="[checkLength]"
           prepend-icon="mdi-email"
+          tabindex="2"
           counter="75"
           clearable
         />
@@ -46,6 +48,7 @@
             showPassword ? 'mdi-eye-outline' : 'mdi-eye-off-outline'
           "
           prepend-icon="mdi-lock"
+          tabindex="3"
           counter="75"
           clearable
         />
@@ -60,6 +63,7 @@
             showPassword ? 'mdi-eye-outline' : 'mdi-eye-off-outline'
           "
           prepend-icon="mdi-lock"
+          tabindex="4"
           counter="75"
           clearable
         />
@@ -70,6 +74,7 @@
           :rules="[checkTrue]"
           on-icon="mdi-check-circle-outline"
           off-icon="mdi-checkbox-blank-circle-outline"
+          tabindex="5"
           color="primary"
         />
       </v-form>
@@ -79,6 +84,7 @@
       <v-btn
         @click="register"
         :disabled="!isFormValid"
+        tabindex="6"
         color="accent"
         depressed
         rounded

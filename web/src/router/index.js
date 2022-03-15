@@ -43,14 +43,14 @@ const router = new VueRouter({
         {
           path: 'imprint',
           name: 'imprint',
-          beforeEnter() {
+          beforeEnter: () => {
             window.open(`${instituteUrl}/funktionen/impressum/index.html`, '_blank');
           },
         },
         {
           path: 'privacy-policy',
           name: 'privacy-policy',
-          beforeEnter() {
+          beforeEnter: () => {
             window.open(`${instituteUrl}/funktionen/datenschutz/index.html`, '_blank');
           },
         },
@@ -91,6 +91,12 @@ const router = new VueRouter({
           meta: { title: 'game.title' },
         },
       ],
+    },
+    {
+      path: '/',
+      beforeEnter: (to, from, next) => {
+        next(i18n.locale);
+      },
     },
     {
       path: '*',
