@@ -1,6 +1,7 @@
-import logging
+import os
+import re
 
-logger = logging.getLogger(__name__)
+from importlib import import_module
 
 
 class PluginManager:
@@ -12,6 +13,23 @@ class PluginManager:
 
     def plugins(self):
         return {}
+
+    def find(self, plugin_type, path=None):
+        if path is None:
+            dir_path = os.path.abspath(os.path.dirname(__file__))
+            path = os.path.join(dir_path, plugin_type)
+
+        file_regex = re.compile(r'(.+?)\.py$')
+
+        for file_path in os.listdir(path):
+            match = re.match(file_regex, file_path)
+
+            if match is not None:
+                module_name = f'artigo_search.plugins.{plugin_type}'
+                x = import_module(f'{module_name}.{match.group(1)}')
+
+                if 'register' in dir(x):
+                    x.register(self)
 
     def init_plugins(self, plugins=None, configs=None):
         if plugins is None:

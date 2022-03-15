@@ -33,17 +33,13 @@ def extract_from_jsonl(file_path, media_folder):
     with open(file_path, 'r', encoding='utf-8') as file_obj:
         for line in file_obj:
             entry = json.loads(line)
-
-            if entry.get('hash_id'):
-                entry['id'] = entry['hash_id']
-
             entry['id'] = str(entry['id'])
 
             if not entry.get('meta'):
                 entry['meta'] = {}
 
             for field, value in copy.deepcopy(entry).items():
-                if field not in base_fields:
+                if field not in base_fields and value:
                     entry['meta'][field] = value
 
             entries.append(entry)
@@ -78,10 +74,10 @@ class Client:
     def get(self, params):
         request = index_pb2.GetRequest()
 
-        if isinstance(params['hash_id'], (list, set)):
-            request.ids.extend(map(str, params['hash_id']))
+        if isinstance(params['id'], (list, set)):
+            request.ids.extend(map(str, params['id']))
         else:
-            request.ids.extend([str(params['hash_id'])])
+            request.ids.extend([str(params['id'])])
 
         return self.stub.get(request)
 
@@ -95,6 +91,7 @@ class Client:
 
                 request_image = request.image
                 request_image.id = entry['id']
+                request_image.hash_id = entry['hash_id']
 
                 if entry.get('meta'):
                     for field, values in entry['meta'].items():

@@ -38,6 +38,15 @@ class Backbone:
                                 },
                             },
                         },
+                        'hash_id': {
+                            'type': 'text',
+                            'fields': {
+                                'keyword': {
+                                    'type': 'keyword',
+                                    'ignore_above': 256,
+                                },
+                            },
+                        },
                         'path': {
                             'type': 'text',
                             'fields': {
@@ -159,8 +168,9 @@ class Backbone:
 
         try:
             results = self.client.search(
-                index=self.index, doc_type=self.type,
-                body=body, size=len(ids),
+                index=self.index,
+                body=body,
+                size=len(ids),
             )
 
             for x in results['hits']['hits']:
@@ -188,8 +198,10 @@ class Backbone:
     def search(self, body, limit=100, offset=0):
         try:
             results = self.client.search(
-                index=self.index, doc_type=self.type,
-                body=body, from_=offset, size=limit,
+                index=self.index,
+                body=body,
+                from_=offset,
+                size=limit,
             )
 
             total = results['hits']['total']['value']
@@ -202,8 +214,9 @@ class Backbone:
     def aggregate(self, body):
         try:
             results = self.client.search(
-                index=self.index, doc_type=self.type,
-                body=body, size=0,
+                index=self.index,
+                body=body,
+                size=0,
             )
 
             return results['aggregations']

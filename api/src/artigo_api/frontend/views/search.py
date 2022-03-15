@@ -2,7 +2,6 @@ import grpc
 import hashlib
 import msgpack
 import logging
-import traceback
 
 from .utils import RPCView
 from collections import defaultdict
@@ -112,8 +111,10 @@ class SearchView(RPCView):
                     'id': x.id,
                     'meta': meta_from_proto(x.meta),
                     'tags': tags_from_proto(x.tags),
-                    'path': media_url_to_image(x.id),
                 }
+
+                if x.hash_id:
+                    entry['path'] = media_url_to_image(x.hash_id)
 
                 if x.source.id:
                     entry['source'] = {
@@ -159,8 +160,8 @@ class SearchView(RPCView):
 
         response_cache = cache.get(grpc_request_hash)
 
-        # if response_cache is not None:
-        #     return msgpack.unpackb(response_cache)
+        if response_cache is not None:
+            return msgpack.unpackb(response_cache)
 
         stub = index_pb2_grpc.IndexStub(self.channel)
         response = stub.search(grpc_request)
@@ -229,6 +230,7 @@ class SearchView(RPCView):
                     'minimum': 0,
                     'maximum': 10000,
                 },
+                default=100,
             ),
             OpenApiParameter(
                 description='Number of search results to skip',
@@ -238,6 +240,7 @@ class SearchView(RPCView):
                     'minimum': 0,
                     'maximum': 10000,
                 },
+                default=0,
             ),
             OpenApiParameter(
                 name='job_id',
@@ -342,9 +345,9 @@ class SearchView(RPCView):
                 },
             },
         },
-        description='Search metadata and crowd-generated tags of resources.' + \
-            ' For longer lasting queries a `job_id` is returned, which can' + \
-            ' be used in subsequent queries to receive status updates.',
+        description='Search metadata and crowd-generated tags of resources.' \
+            + ' For longer lasting queries a `job_id` is returned, which can' \
+            + ' be used in subsequent queries to receive status updates.',
     )
     def post(self, request, format=None):
         if request.data.get('params'):

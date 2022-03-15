@@ -15,10 +15,13 @@ class InsertJob:
     @classmethod
     def __call__(cls, entry):
         doc = {
-            'id': entry['id'], 
+            'id': entry['id'],
             'meta': entry['meta'],
             'tags': entry['tags'],
             'source': entry['source'],
         }
+
+        if entry.get('hash_id'):
+            doc['hash_id'] = entry['hash_id']
 
         return 'ok', doc

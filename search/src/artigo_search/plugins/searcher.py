@@ -1,5 +1,6 @@
 import uuid
 import logging
+import faulthandler
 
 from artigo_search import index_pb2
 
@@ -12,6 +13,9 @@ class Searcher:
         self.aggregator = aggregator
 
     def __call__(self, query, limit=100, offset=0):
+        faulthandler.enable()
+        PYTHONFAULTHANDLER = 1
+
         query = self.parse_query(query)
 
         body = self.backbone.build_body(query)
