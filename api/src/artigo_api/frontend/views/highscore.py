@@ -1,8 +1,6 @@
 import logging
 import traceback
 
-from frontend.models import Tagging
-from frontend.serializers import UserTaggingCountSerializer
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
 from django.db.models import Count
@@ -12,22 +10,27 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.exceptions import APIException
 from drf_spectacular.utils import extend_schema
+from frontend.models import Tagging
+from frontend.serializers import UserTaggingCountSerializer
 
 logger = logging.getLogger(__name__)
 
 
 @extend_schema(methods=['GET'], exclude=True)
 class HighscoreView(APIView):
-    def count(self, taggings, created=None, limit=10):
-        if created is not None:
-            taggings = taggings.filter(created__gte=created)
+    def count(self, taggings, created_gte=None, created_lt=None, limit=10):
+        if created_gte is not None:
+            taggings = taggings.filter(created__gte=created_gte)
+
+        if created_lt is not None:
+            taggings = taggings.filter(created__lt=created_lt)
 
         users = taggings.values('user').annotate(
             count_taggings=Count('user'),
             count_gamerounds=Count('gameround', distinct=True),
-        )
-        users = users.order_by('-count_taggings')[:max(1, limit)]
-        users = users.values(
+        ) \
+        .order_by('-count_taggings')[:max(1, limit)] \
+        .values(
             'user__username',
             'count_taggings',
             'count_gamerounds',
@@ -35,30 +38,24 @@ class HighscoreView(APIView):
 
         return UserTaggingCountSerializer(users, many=True).data
 
-    @method_decorator(cache_page(60*60*2))
+    @method_decorator(cache_page(60 * 60 * 2))
     def get(self, request, format=None):
         limit = request.query_params.get('limit', 10)
 
         current = datetime.today().replace(day=1)
         previous = current - relativedelta(months=1)
 
-        data = {}
-
         try:
             taggings = Tagging.objects.exclude(user__username=None)
-            data['alltime'] = self.count(taggings, limit=limit)
 
-            taggings_current = taggings.filter(created__gte=current)
-            data['current'] = self.count(taggings_current, limit=limit)
-
-            taggings_previous = taggings.filter(
-                created__gte=previous,
-                created__lt=current,
-            )
-            data['previous'] = self.count(taggings_previous, limit=limit)
+            data = {
+                'alltime': self.count(taggings, limit=limit),
+                'current': self.count(taggings, current, limit=limit),
+                'previous': self.count(taggings, previous, current, limit),
+            }
 
             return Response(data)
-        except Exception as e:
+        except Exception as error:
             logger.error(traceback.format_exc())
 
-        raise APIException('Highscore could not be processed.')
+        raise APIException('unknown_error')

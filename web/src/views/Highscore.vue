@@ -53,8 +53,18 @@ export default {
     headers() {
       return [
         { text: this.$t('highscore.headers.name'), value: 'name' },
-        { text: this.$t('highscore.headers.count-taggings'), value: 'count_taggings', align: 'end' },
-        { text: this.$t('highscore.headers.count-gamerounds'), value: 'count_gamerounds', align: 'end' },
+        {
+          text: this.$t('highscore.headers.count-taggings'),
+          value: 'count_taggings',
+          align: 'end',
+          width: 200,
+        },
+        {
+          text: this.$t('highscore.headers.count-gamerounds'),
+          value: 'count_gamerounds',
+          align: 'end',
+          width: 200,
+        },
       ];
     },
     data() {
