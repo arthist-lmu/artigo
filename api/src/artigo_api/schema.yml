@@ -106,6 +106,66 @@ paths:
   /game/:
     get:
       operationId: game_retrieve
+      parameters:
+      - in: query
+        name: opponent_type
+        schema:
+          type: string
+          enum:
+          - mean_gameround_opponent
+          - random_gameround_opponent
+        description: Type of each opponent. Opponents are invalid for infinite game
+          rounds (`round_duration=0`).
+      - in: query
+        name: resource_options
+        schema:
+          type: object
+          properties:
+            lt_percentile:
+              type: number
+              default: 1.0
+        description: Resource options
+      - in: query
+        name: resource_type
+        schema:
+          type: string
+          enum:
+          - random_resource
+        description: Type of each resource
+      - in: query
+        name: round_duration
+        schema:
+          type: integer
+          minimum: 0
+          maximum: 3600
+          default: 60
+        description: Duration of each gameround (in seconds). For infinite game rounds,
+          `0` should be passed.
+      - in: query
+        name: rounds
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 100
+          default: 5
+        description: Number of gamerounds
+      - in: query
+        name: score_types
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - annotation_validated_score
+            - opponent_validated_score
+        description: Score types
+      - in: query
+        name: taboo_type
+        schema:
+          type: string
+          enum:
+          - most_annotated_taboo
+        description: Type of taboo annotations
       tags:
       - game
       security:
@@ -370,6 +430,7 @@ paths:
           type: integer
           minimum: 0
           maximum: 10000
+          default: 100
         description: Maximum number of search results
       - in: query
         name: offset
@@ -377,6 +438,7 @@ paths:
           type: integer
           minimum: 0
           maximum: 10000
+          default: 0
         description: Number of search results to skip
       - in: query
         name: query

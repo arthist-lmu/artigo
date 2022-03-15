@@ -88,7 +88,7 @@ To display changes of `web` (`http://localhost:8080/`), run:
 sudo docker-compose exec web npm run build
 ```
 
-Alternativly, use `serve` to enable a hot reloaded instance on `http://localhost:8001/`:
+Alternativly, use `serve` to enable a hot reloaded instance on `http://localhost:8081/`:
 ```sh
 sudo docker-compose exec web npm run serve
 ```
