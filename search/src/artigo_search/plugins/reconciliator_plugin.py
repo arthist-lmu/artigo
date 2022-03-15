@@ -1,18 +1,15 @@
-import os
-import re
 import json
 import logging
 
-from .harvester_plugin import HarvesterPlugin
+from .harvester_helper import HarvesterHelper
 from .manager import PluginManager
 from typing import Generator
-from importlib import import_module
 from urllib.parse import urlencode
 
 logger = logging.getLogger(__name__)
 
 
-class ReconciliatorPlugin(HarvesterPlugin):
+class ReconciliatorPlugin(HarvesterHelper):
     _type = 'reconciliator'
 
     def __init__(self, **kwargs):
@@ -40,7 +37,7 @@ class ReconciliatorPluginManager(PluginManager):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
-        self.find()
+        self.find('reconciliator')
         self.plugin_list = self.init_plugins()
 
     @classmethod
@@ -54,23 +51,6 @@ class ReconciliatorPluginManager(PluginManager):
 
     def plugins(self):
         return self._reconciliator_plugins
-
-    def find(self, path=None):
-        if path is None:
-            dir_path = os.path.abspath(os.path.dirname(__file__))
-            path = os.path.join(dir_path, 'reconciliator')
-
-        file_regex = re.compile(r'(.+?)\.py$')
-
-        for file_path in os.listdir(path):
-            match = re.match(file_regex, file_path)
-
-            if match is not None:
-                module_name = 'artigo_search.plugins.reconciliator.{}'
-                x = import_module(module_name.format(match.group(1)))
-
-                if 'register' in dir(x):
-                    x.register(self)
 
     def run(self, queries, size=100):
         results = []

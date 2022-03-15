@@ -4,9 +4,11 @@ import traceback
 
 from .utils import RPCView
 from rest_framework import permissions
+from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.exceptions import APIException
 from drf_spectacular.utils import extend_schema
+from frontend.models import Creator, Resource
 
 from artigo_search import index_pb2, index_pb2_grpc
 
@@ -15,8 +17,6 @@ logger = logging.getLogger(__name__)
 
 @extend_schema(methods=['POST'], exclude=True)
 class ReconcileView(RPCView):
-    # permission_classes = [permissions.IsAuthenticatedOrReadOnly]
-
     def parse_request(self, params):
         grpc_request = index_pb2.ReconcileRequest()
 
@@ -66,8 +66,8 @@ class ReconcileView(RPCView):
                     'entries': [],
                 }
 
-                if x.term.id:
-                    values['id'] = x.term.id
+                if x.term.ids:
+                    values['ids'] = set(x.term.ids)
 
                 for entry in x.entries:
                     values['entries'].append({
@@ -84,9 +84,66 @@ class ReconcileView(RPCView):
             logger.error(error)
 
     def post(self, request, format=None):
-        result = self.rpc_post(request.data.get('params', {}))
+        if not request.user.is_authenticated:
+            raise APIException('not_authenticated')
+
+        result = self.rpc_post(request.data['params'])
 
         if result is None:
             raise APIException('unknown_error')
         
         return Response(result)
+
+
+@extend_schema(methods=['POST'], exclude=True)
+class ReconcileAddView(APIView):
+    def post(self, request, format=None):
+        if not request.user.is_authenticated:
+            raise APIException('not_authenticated')
+
+        params = request.data['params']
+
+        try:
+            if params.get('type') == 'creator':
+                if params.get('service') == 'Wikidata':
+                    creator_ids = Resource.objects \
+                        .filter(id__in=params['ids']) \
+                        .values('creators__id')
+
+                    Creator.objects.filter(id__in=creator_ids) \
+                        .update(wikidata_id=params['entry_id'])
+            elif params.get('type') == 'resource':
+                if params.get('service') == 'Wikidata':
+                    Resource.objects.filter(id__in=params['ids']) \
+                        .update(wikidata_id=params['entry_id'])
+        except Exception as error:
+            raise APIException('unknown_error')
+
+        return Response()
+
+
+@extend_schema(methods=['POST'], exclude=True)
+class ReconcileRemoveView(APIView):
+    def post(self, request, format=None):
+        if not request.user.is_authenticated:
+            raise APIException('not_authenticated')
+
+        params = request.data['params']
+
+        try:
+            if params.get('type') == 'creator':
+                if params.get('service') == 'Wikidata':
+                    creator_ids = Resource.objects \
+                        .filter(id__in=params['ids']) \
+                        .values('creators__id')
+
+                    Creator.objects.filter(id__in=creator_ids) \
+                        .update(wikidata_id='')
+            elif params.get('type') == 'resource':
+                if params.get('service') == 'Wikidata':
+                    Resource.objects.filter(id__in=params['ids']) \
+                        .update(wikidata_id='')
+        except Exception as error:
+            raise APIException('unknown_error')
+
+        return Response()

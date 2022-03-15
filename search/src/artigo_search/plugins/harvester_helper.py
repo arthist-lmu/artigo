@@ -8,7 +8,7 @@ from aiohttp import ClientSession
 logger = logging.getLogger(__name__)
 
 
-class HarvesterPlugin(Plugin):
+class HarvesterHelper(Plugin):
     def __init__(self, config=None, name=None):
         super().__init__(config, name)
 

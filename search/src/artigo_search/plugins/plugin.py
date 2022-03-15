@@ -1,4 +1,4 @@
-from artigo_search.utils import convert_name
+from .utils import convert_name
 
 
 class Plugin:

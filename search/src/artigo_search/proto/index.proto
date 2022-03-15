@@ -160,16 +160,22 @@ message AggregateResult {
   repeated ValueField entries = 2;
 }
 
-message ReconcileTerm {
+message ReconcileRequestTerm {
   string id = 1;
   string name = 2;
   string type = 3;
 }
 
 message ReconcileRequest {
-  repeated ReconcileTerm terms = 1;
+  repeated ReconcileRequestTerm terms = 1;
   int32 size = 2;
   string lang = 3;
+}
+
+message ReconcileResultTerm {
+  repeated string ids = 1;
+  string name = 2;
+  string type = 3;
 }
 
 message ReconcileEntry {
@@ -180,7 +186,7 @@ message ReconcileEntry {
 }
 
 message ReconcileResult {
-  ReconcileTerm term = 1;
+  ReconcileResultTerm term = 1;
   repeated ReconcileEntry entries = 2;
   string service = 3;
 }
@@ -191,9 +197,10 @@ message ReconcileReply {
 
 message Image {
   string id = 1;
-  repeated ValueField meta = 2;
-  Source source = 3;
-  repeated Tag tags = 4;
+  string hash_id = 2;
+  repeated ValueField meta = 3;
+  Source source = 4;
+  repeated Tag tags = 5;
 }
 
 message InsertRequest {

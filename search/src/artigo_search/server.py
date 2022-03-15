@@ -11,8 +11,13 @@ from . import index_pb2, index_pb2_grpc
 from .plugins import *
 from .database import *
 from .jobs import InsertJob
-from .utils import meta_to_proto, tags_to_proto
-from .utils import meta_from_proto, tags_from_proto, read_chunk
+from .utils import (
+    meta_to_proto,
+    meta_from_proto,
+    tags_to_proto,
+    tags_from_proto,
+    read_chunk,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -35,6 +40,9 @@ def search(args):
         for e in search_results.get('entries', []):
             entry = result.entries.add()
             entry.id = e['id']
+
+            if e.get('hash_id'):
+                entry.hash_id = e['hash_id']
 
             if e.get('meta'):
                 meta_to_proto(entry.meta, e['meta'])
@@ -69,7 +77,7 @@ def init_plugins(config):
     reconciliator = ReconciliatorPluginManager(
         configs=config.get('reconciliators', [])
     )
-    reconciliator.find()
+    reconciliator.find('reconciliator')
 
     data = {
         'reconciliator': reconciliator,
@@ -113,16 +121,19 @@ class Commune(index_pb2_grpc.IndexServicer):
         return index_pb2.StatusReply(status='error')
 
     def get(self, request, context):
-        logger.info('[Server] Get')
-
         json_obj = MessageToDict(request)
         results = index_pb2.GetReply()
+
+        logger.info(f'[Server] Get: {json_obj}')
 
         backbone = Backbone(config=self.config.get('opensearch', {}))
 
         for x in backbone.get(ids=json_obj['ids']):
             entry = results.entries.add()
             entry.id = x['id']
+
+            if x.get('hash_id'):
+                entry.hash_id = x['hash_id']
 
             if x.get('meta'):
                 meta_to_proto(entry.meta, x['meta'])
@@ -141,21 +152,25 @@ class Commune(index_pb2_grpc.IndexServicer):
     def insert(self, request, context):
         def translate(cache, request):
             for x in request:
-                source = {}
-
-                if x.image.source.id:
-                    source['id'] = x.image.source.id
-                    source['name'] = x.image.source.name
-                    source['url'] = x.image.source.url
-                    source['is_public'] = x.image.source.is_public
-
-                yield {
+                entry = {
                     'id': x.image.id,
                     'meta': meta_from_proto(x.image.meta),
                     'tags': tags_from_proto(x.image.tags),
-                    'source': source,
                     'cache': cache[x.image.id],
                 }
+
+                if x.image.hash_id:
+                    entry['hash_id'] = x.image.hash_id
+
+                if x.image.source.id:
+                    entry['source'] = {
+                        'id': x.image.source.id,
+                        'name': x.image.source.name,
+                        'url': x.image.source.url,
+                        'is_public': x.image.source.is_public,
+                    }
+
+                yield entry
 
         backbone = Backbone(config=self.config.get('opensearch', {}))
         cache_config = self.config.get('cache', {'cache_dir': None})
@@ -213,10 +228,10 @@ class Commune(index_pb2_grpc.IndexServicer):
         return index_pb2.DeleteReply(status=status)
 
     def search(self, request, context):
-        logger.info('[Server] Search')
-
         json_obj = MessageToDict(request)
         job_id = uuid.uuid4().hex
+
+        logger.info(f'[Server] Search: {json_obj}')
         
         variable = {
             'id': job_id,
@@ -268,10 +283,10 @@ class Commune(index_pb2_grpc.IndexServicer):
         return index_pb2.ListSearchResultReply()
 
     def reconcile(self, request, context):
-        logger.info('[Server] Reconcile')
-
         json_obj = MessageToDict(request)
         result = index_pb2.ReconcileReply()
+
+        logger.info(f'[Server] Reconcile: {json_obj}')
 
         reconciliator = self.managers.get('reconciliator')
         size = 5 if request.size <= 0 else request.size
@@ -282,8 +297,8 @@ class Commune(index_pb2_grpc.IndexServicer):
             reconciliation.term.type = x['type']
             reconciliation.service = x['service']
 
-            if x.get('id'):
-                reconciliation.term.id = x['id']
+            if x.get('ids'):
+                reconciliation.term.ids.extend(x['ids'])
 
             for e in x['entries']:
                 entry = reconciliation.entries.add()
@@ -324,6 +339,7 @@ class Server:
         try:
             while True:
                 n_jobs = len(self.commune.futures)
+                logger.info(f'[Server] Number of jobs: {n_jobs}')
                 time.sleep(10)
         except KeyboardInterrupt:
             self.server.stop(0)

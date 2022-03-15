@@ -123,18 +123,33 @@ export default {
     };
   },
   methods: {
-    add(entryId, { name }) {
-      // TODO: send update request to Django backend
+    add(entryId, {
+      ids, type, name, service,
+    }) {
+      const params = {
+        ids,
+        type,
+        service,
+        entry_id: entryId,
+      };
+      this.$store.dispatch('reconcile/add', params);
       Vue.set(this.isSubmitted, name, entryId);
     },
-    remove({ name }) {
-      // TODO: send update request to Django backend
+    remove({
+      ids, type, name, service,
+    }) {
+      const params = {
+        ids,
+        type,
+        service,
+      };
+      this.$store.dispatch('reconcile/remove', params);
       Vue.delete(this.isSubmitted, name);
     },
   },
   computed: {
     reconciliations() {
-      return this.$store.state.reconcile.data.reconciliations || [];
+      return this.$store.state.reconcile.data.reconciliations;
     },
   },
   watch: {

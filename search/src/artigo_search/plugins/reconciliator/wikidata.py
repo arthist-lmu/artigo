@@ -3,6 +3,7 @@ import logging
 
 from urllib import parse
 from itertools import islice
+from collections import defaultdict
 from artigo_search.plugins import (
     ReconciliatorPlugin,
     ReconciliatorPluginManager,
@@ -28,6 +29,8 @@ class WikidataReconciliator(ReconciliatorPlugin):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
+        self.mapper = defaultdict(set)
+
         self.endpoint = self.config['endpoint']
         self.params = self.config['params']
         self.lang = self.config['lang']
@@ -51,6 +54,9 @@ class WikidataReconciliator(ReconciliatorPlugin):
 
         for term in query['terms']:
             key = f'{term["type"]}:{term["name"]}'
+
+            if term.get('id'):
+                self.mapper[key].add(term['id'])
 
             if term['type'] == 'creator':
                 term['type'] = self.creator_type
@@ -84,11 +90,14 @@ class WikidataReconciliator(ReconciliatorPlugin):
 
         for key, x in json.loads(response).items():
             values = {
-                'name': key.split(':', 1)[-1],
+                'name': key.split(':', 1)[1],
                 'type': key.split(':', 1)[0],
                 'service': 'Wikidata',
                 'entries': [],
             }
+
+            if self.mapper.get(key):
+                values['ids'] = self.mapper[key]
 
             for result in x['result']:
                 values['entries'].append({

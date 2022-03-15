@@ -1,47 +1,49 @@
 <template>
-  <v-btn
-    v-if="type"
-    @click="reconcile(type)"
-    :title="$t('reconcile.title')"
-    class="ml-1 mr-n2"
-    color="primary"
-    icon
-  >
-    <v-icon>mdi-wiper</v-icon>
-  </v-btn>
+  <span v-if="isLoggedIn">
+    <v-btn
+      v-if="type"
+      @click="reconcile(type)"
+      :title="$t('reconcile.title')"
+      class="ml-1 mr-n2"
+      color="primary"
+      icon
+    >
+      <v-icon>mdi-wiper</v-icon>
+    </v-btn>
 
-  <v-menu
-    v-else
-    open-on-hover
-    offset-y
-  >
-    <template v-slot:activator="{ on, attrs }">
-      <v-btn
-        :title="$t('reconcile.title')"
-        v-bind="attrs"
-        v-on="on"
-        class="ml-1 mr-n2"
-        color="primary"
-        icon
-      >
-        <v-icon>mdi-wiper</v-icon>
-      </v-btn>
-    </template>
+    <v-menu
+      v-else
+      open-on-hover
+      offset-y
+    >
+      <template v-slot:activator="{ on, attrs }">
+        <v-btn
+          :title="$t('reconcile.title')"
+          v-bind="attrs"
+          v-on="on"
+          class="ml-1 mr-n2"
+          color="primary"
+          icon
+        >
+          <v-icon>mdi-wiper</v-icon>
+        </v-btn>
+      </template>
 
-    <v-list>
-      <v-list-item @click="reconcile('resource')">
-        <v-list-item-title>
-          {{ $t('reconcile.fields.resource') }}
-        </v-list-item-title>
-      </v-list-item>
+      <v-list>
+        <v-list-item @click="reconcile('resource')">
+          <v-list-item-title>
+            {{ $t('reconcile.fields.resource') }}
+          </v-list-item-title>
+        </v-list-item>
 
-      <v-list-item @click="reconcile('creator')">
-        <v-list-item-title>
-          {{ $t('reconcile.fields.creator') }}
-        </v-list-item-title>
-      </v-list-item>
-    </v-list>
-  </v-menu>
+        <v-list-item @click="reconcile('creator')">
+          <v-list-item-title>
+            {{ $t('reconcile.fields.creator') }}
+          </v-list-item-title>
+        </v-list-item>
+      </v-list>
+    </v-menu>
+  </span>
 </template>
 
 <script>
@@ -98,6 +100,11 @@ export default {
         return creators[0];
       }
       return this.$t('resource.default.creator');
+    },
+  },
+  computed: {
+    isLoggedIn() {
+      return this.$store.state.user.loggedIn;
     },
   },
 };

@@ -43,7 +43,7 @@
 
         <ReconcileButton
           :entries="pageEntries"
-          class="ml-4"
+          class="ml-3"
         />
       </v-col>
     </v-alert>

@@ -9,7 +9,7 @@ import ResourceCard from '@/components/ResourceCard.vue';
 
 export default {
   methods: {
-    getData(id) {
+    get(id) {
       this.$store.dispatch('resource/get', { id });
     },
   },
@@ -23,11 +23,11 @@ export default {
   },
   watch: {
     '$route.params.id'(id) {
-      this.getData(id);
+      this.get(id);
     },
   },
   created() {
-    this.getData(this.$route.params.id);
+    this.get(this.$route.params.id);
   },
   components: {
     ResourceCard,

@@ -1,16 +1,10 @@
-import re
-import logging
-
-logger = logging.getLogger(__name__)
-
-
 def dict_from_proto(proto):
     result = {}
 
     for x in proto:
         field = x.WhichOneof('value')
 
-        if field == 'string_val':
+        if field == 'string_val' and x.string_val:
             result.update({x.key: x.string_val})
         elif field == 'int_val':
             result.update({x.key: x.int_val})
@@ -29,7 +23,7 @@ def meta_to_proto(proto, data):
             field.int_val = d['value_int']
         elif d.get('value_float') is not None:
             field.float_val = d['value_float']
-        elif d.get('value_str') is not None:
+        elif d.get('value_str'):
             field.string_val = d['value_str']
 
     return proto
@@ -41,7 +35,7 @@ def meta_from_proto(proto):
     for x in proto:
         field = x.WhichOneof('value')
 
-        if field == 'string_val':
+        if field == 'string_val' and x.string_val:
             result.append({
             	'name': x.key,
             	'value_str': x.string_val,
@@ -98,9 +92,3 @@ def read_chunk(iterator, chunksize=64):
             return chunk
 
     return chunk
-
-
-def convert_name(name):
-    x = re.sub('(.)([A-Z][a-z]+)', r'\1_\2', name)
-
-    return re.sub('([a-z0-9])([A-Z])', r'\1_\2', x).lower()
