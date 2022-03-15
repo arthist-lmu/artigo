@@ -68,7 +68,9 @@ class Create:
 
             for row in data:
                 obj = self.convert(dict(zip(columns, row)))
-                if obj: processed_rows.append(obj)
+
+                if obj is not None:
+                    processed_rows.append(obj)
 
                 if len(processed_rows) > 5000:
                     self.obj.objects.bulk_create(processed_rows, **args)
@@ -161,8 +163,30 @@ class CreateGametype(Create):
         return self.obj(
             id = toInt(row.get('id')),
             name = row.get('name'),
-            rounds = toInt(row.get('rounds')),
-            round_duration = toInt(row.get('round_duration')),
+        )
+
+
+class CreateOpponentType(Create):
+    def __init__(self, folder_path):
+        self.file_path = os.path.join(folder_path, 'opponent_type.csv')
+        self.obj = OpponentType
+
+    def convert(self, row):
+        return self.obj(
+            id = toInt(row.get('id')),
+            name = row.get('name'),
+        )
+
+
+class CreateTabooType(Create):
+    def __init__(self, folder_path):
+        self.file_path = os.path.join(folder_path, 'taboo_type.csv')
+        self.obj = TabooType
+
+    def convert(self, row):
+        return self.obj(
+            id = toInt(row.get('id')),
+            name = row.get('name'),
         )
 
 
@@ -177,6 +201,8 @@ class CreateGamesession(Create):
             gametype_id = toInt(row.get('gametype_id')),
             created = toDatetime(row.get('created')),
             user_id = toInt(row.get('user_id')),
+            rounds = toInt(row.get('rounds')),
+            round_duration = toInt(row.get('round_duration')),
         )
 
 
@@ -190,8 +216,11 @@ class CreateGameround(Create):
             id = toInt(row.get('id')),
             user_id = toInt(row.get('user_id')),
             gamesession_id = toInt(row.get('gamesession_id')),
+            resource_id=toInt(row.get('resource_id')),
             created = toDatetime(row.get('created')),
             score = toScore(row.get('score')),
+            opponent_type_id=toInt(row.get('opponent_type_id')),
+            taboo_type_id=toInt(row.get('taboo_type_id'))
         )
 
 
@@ -267,6 +296,8 @@ class Command(BaseCommand):
                 CreateResource(options['input']).process()
                 CreateTitle(options['input']).process()
                 CreateGametype(options['input']).process()
+                CreateOpponentType(options['input']).process()
+                CreateTabooType(options['input']).process()
                 CreateGamesession(options['input']).process()
                 CreateGameround(options['input']).process()
                 CreateTag(options['input']).process()

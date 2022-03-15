@@ -42,9 +42,14 @@ def main():
         gametype = gametype[['id', 'name', 'rounds', 'roundduration']]
         gametype = gametype.rename(columns={'roundduration': 'round_duration'})
 
+        gametype_fst = gametype.rename(columns={'id': 'gametype_id'})
+        gametype = gametype[['id', 'name']]
+
         gamesession = pd.read_csv(os.path.join(args.input, 'gamesession.csv'), **csv_args)
         gamesession = gamesession[gamesession.gametype_id.isin(gametype.id)]
         gamesession = gamesession[['id', 'gametype_id']]
+
+        gamesession = pd.merge(gamesession, gametype_fst, on='gametype_id')
 
         if args.n_sessions > 0:
             gamesession = gamesession.head(args.n_sessions)
@@ -53,6 +58,7 @@ def main():
         gameround = gameround[gameround.gamesession_id.isin(gamesession.id)]
         gameround = gameround[['id', 'person_id', 'gamesession_id', 'startdate', 'score']]
         gameround = gameround.rename(columns={'person_id': 'user_id', 'startdate': 'created'})
+        gameround['opponent_type_id'] = 'RandomGameRoundOpponent'
 
         gameround_fst = gameround.groupby(['gamesession_id'])
         gameround_fst = gameround_fst.agg({'created': np.min, 'user_id': np.min})
@@ -65,6 +71,13 @@ def main():
         tagging = tagging[tagging.gameround_id.isin(gameround.id)]
         tagging = tagging.rename(columns={'person_id': 'user_id'})
 
+        tagging_fst = tagging.groupby(['gameround_id'])
+        tagging_fst = tagging_fst.agg({'resource_id': np.min})
+        tagging_fst = tagging_fst.reset_index(drop=False)
+        tagging_fst = tagging_fst.rename(columns={'gameround_id': 'id'})
+
+        gameround = pd.merge(gameround, tagging_fst, on='id')
+
         tag = pd.read_csv(os.path.join(args.input, 'tag.csv'), **csv_args)
         tag = tag[tag.id.isin(tagging.tag_id)]
         tag = tag[['id', 'name', 'language']]
@@ -74,7 +87,7 @@ def main():
         resource = resource[['id', 'artist_id', 'source_id', 'datecreated', 'location', 'institution', 'origin', 'enabled', 'path']]
         resource = resource.rename(columns={'artist_id': 'creator_id', 'datecreated': 'created'})
 
-        if os.path.isdir(args.image_input):
+        if args.image_input and os.path.isdir(args.image_input):
             images = pd.DataFrame({'path': os.listdir(args.image_input)})
             images['hash_id'] = np.vectorize(get_hex)(images['path'])
             resource = pd.merge(resource, images, on='path', how='left')

@@ -1,8 +1,12 @@
+import logging
+
+from itertools import groupby
 from frontend.models import *
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
 from dj_rest_auth.serializers import UserDetailsSerializer
 
+logger = logging.getLogger(__name__)
 UserModel = get_user_model()
 
 
@@ -131,3 +135,51 @@ class UserTaggingCountSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
         fields = ('name', 'count_taggings', 'count_gamerounds')
+
+
+class GenericTagListSerializer(serializers.ListSerializer):
+    def to_representation(self, data):
+        data = super().to_representation(data)
+        groups = groupby(data, key=lambda x: x['resource_id'])
+
+        return [
+            {
+                'resource_id': key,
+                'tags': [self.to_dict(x) for x in group],
+            }
+            for key, group in groups
+        ]
+
+    @staticmethod
+    def to_dict(values):
+        values = dict(values)
+        values.pop('resource_id', None)
+
+        return values
+
+
+class OpponentSerializer(serializers.ModelSerializer):
+    resource_id = serializers.ReadOnlyField()
+    id = serializers.ReadOnlyField(source='tag_id')
+    name = serializers.ReadOnlyField(source='tag__name')
+    created_after = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Tagging
+        fields = ('resource_id', 'id', 'name', 'created_after')
+        list_serializer_class = GenericTagListSerializer
+
+    def get_created_after(self, obj):
+        return obj['created_after'].total_seconds()
+
+
+class TabooSerializer(serializers.ModelSerializer):
+    resource_id = serializers.ReadOnlyField()
+    id = serializers.ReadOnlyField(source='tag_id')
+    name = serializers.ReadOnlyField(source='tag__name')
+
+    class Meta:
+        model = Tagging
+        fields = ('resource_id', 'id', 'name')
+        list_serializer_class = GenericTagListSerializer
+

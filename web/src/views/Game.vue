@@ -1,14 +1,15 @@
 <template>
   <v-card flat>
     <v-card-text>
-      <div v-if="secondsLeft >= 0">
+      <div v-if="seconds >= 0">
         <v-progress-linear :value="progress" />
       </div>
 
       <ImageCanvas
+        v-if="entry"
         :src="entry.path"
-        v-on:load="loaded"
-        v-on:error="onError"
+        @load="loaded"
+        @error="onError"
         class="my-4 grey lighten-2"
         height="70vh"
         contain
@@ -18,9 +19,11 @@
         <v-row>
           <v-col cols="8">
             <v-text-field
-              v-model="tagging"
-              ref="tagging"
-              placeholder="Describe what you see"
+              v-model="tag"
+              ref="tag"
+              @keyup.enter.native="post"
+              :placeholder="$t('game.fields')[gameType].placeholder"
+              tabindex="1"
               hide-details
               single-line
               clearable
@@ -29,24 +32,24 @@
 
           <v-col cols="4">
             <v-btn
-              @click="postTag"
+              @click="post"
               class="mr-2"
               color="primary"
               width="calc(50% - 4px)"
               depressed
               rounded
             >
-              Enter
+              {{ $t("game.fields.basic.enter") }}
             </v-btn>
 
             <v-btn
-              @click="reload"
+              @click="nextRound"
               color="accent"
               width="calc(50% - 4px)"
               depressed
               rounded
             >
-              Skip
+              {{ $t("game.fields.basic.skip") }}
             </v-btn>
           </v-col>
         </v-row>
@@ -59,60 +62,111 @@
 export default {
   data() {
     return {
+      tag: null,
       timer: null,
-      tagging: null,
-      timeLimit: 30,
-      secondsLeft: this.timeLimit,
+      seconds: 0,
+      rounds: 5,
+      roundDuration: 60,
     };
   },
   methods: {
-    reload() {
-      const random = this.getHash(new Date());
-      const params = { random, limit: 1, sourceView: true };
-      this.$store.dispatch('search/post', params).then(() => {
-        clearInterval(this.timer);
-        this.$refs.tagging.focus();
+    get() {
+      const params = {
+        rounds: this.rounds,
+        round_duration: this.roundDuration,
+        opponent_type: 'random_gameround_opponent',
+        lt_percentile: 0.75,
+        score_types: [
+          'annotations_validated_score',
+          'opponent_validated_score',
+        ],
+        language: this.$i18n.locale,
+      };
+      if (this.gameType === 'taboo') {
+        params.taboo_type = 'most_annotated_taboo';
+        params.taboo_max_tags = 7;
+      } else if (this.gameType === 'tag-a-tag') {
+        // TODO
+      }
+      this.$store.dispatch('game/get', params).then(() => {
+        this.tag = null;
       });
     },
+    post() {
+      if (this.tag.length) {
+        const params = {
+          tag_name: this.tag,
+          resource_id: this.entry.resource_id,
+          language: this.$i18n.locale,
+        };
+        this.$store.dispatch('game/post', params).then(() => {
+          this.tag = null;
+          this.$refs.tag.focus();
+        });
+      }
+    },
     loaded() {
-      this.secondsLeft = this.timeLimit;
+      this.seconds = 0;
+      clearInterval(this.timer);
       this.timer = setInterval(() => {
-        this.secondsLeft -= 1;
-        if (this.secondsLeft === 0) {
-          this.reload();
+        if (this.seconds === this.roundDuration) {
+          this.nextRound();
+        } else {
+          this.seconds += 1;
         }
       }, 1000);
     },
     onError() {
-      this.reload();
+      this.nextRound();
     },
-    update(values) {
-      console.log(values);
-    },
-    postTag() {
-      this.$store.dispatch('resource/post', {
-        imgID: this.entry.path,
-        tag: 'beautiful',
-      });
+    nextRound() {
+      this.$store.dispatch('game/get', {});
     },
   },
   computed: {
     entry() {
-      const { entries } = this.$store.state.search.data;
-      return entries[0] || {};
+      return this.$store.state.game.entry;
     },
     progress() {
-      return 100 - (100 / this.timeLimit) * this.secondsLeft;
+      return (this.seconds / this.roundDuration) * 100;
+    },
+    gameType() {
+      return this.$route.query.type || 'default';
+    },
+    status() {
+      const { error, loading } = this.$store.state.utils.status;
+      return !loading && error;
+    },
+  },
+  watch: {
+    entry() {
+      this.$refs.tag.focus();
+    },
+    status(value) {
+      if (value) {
+        clearInterval(this.timer);
+      }
+    },
+    seconds(value) {
+      this.$store.dispatch('game/setSeconds', value);
+    },
+    '$route.params.lang'() {
+      this.get();
+    },
+    '$route.query.type'() {
+      this.get();
     },
   },
   beforeDestroy() {
     clearInterval(this.timer);
   },
-  mounted() {
-    this.$refs.tagging.focus();
+  beforeRouteUpdate() {
+    this.get();
   },
-  created() {
-    this.reload();
+  mounted() {
+    this.$nextTick(() => {
+      this.get();
+    });
   },
   components: {
     ImageCanvas: () => import('@/components/annotator/ImageCanvas.vue'),

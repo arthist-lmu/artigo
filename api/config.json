@@ -1,0 +1,34 @@
+{
+    "resources": [
+        {
+            "type": "RandomResource",
+            "disabled": false
+        }
+    ],
+    "opponents": [
+        {
+            "type": "MeanGameroundOpponent",
+            "disabled": false
+        },
+        {
+            "type": "RandomGameroundOpponent",
+            "disabled": false
+        }
+    ],
+    "taboos": [
+        {
+            "type": "MostAnnotatedTaboo",
+            "disabled": false
+        }
+    ],
+    "scores": [
+        {
+            "type": "AnnotationValidatedScore",
+            "disabled": false
+        },
+        {
+            "type": "OpponentValidatedScore",
+            "disabled": false
+        }
+    ]
+}

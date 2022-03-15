@@ -5,6 +5,7 @@ import logging
 
 from random import randint
 from typing import Optional, Tuple
+from django.conf import settings
 
 logger = logging.getLogger(__name__)
 
@@ -22,8 +23,10 @@ class ExponentialBackoff(SleepingPolicy):
         self.multiplier = multiplier
 
     def sleep(self, try_i: int):
-        sleep_range = min(self.init_backoff *
-                          self.multiplier ** try_i, self.max_backoff)
+        sleep_range = min(
+            self.init_backoff * self.multiplier ** try_i,
+            self.max_backoff,
+        )
         sleep_ms = randint(0, sleep_range)
 
         logger.debug(f'Sleeping for {sleep_ms}')
@@ -31,10 +34,14 @@ class ExponentialBackoff(SleepingPolicy):
 
 
 class RetryOnRpcErrorClientInterceptor(
-    grpc.UnaryUnaryClientInterceptor, grpc.StreamUnaryClientInterceptor
+    grpc.UnaryUnaryClientInterceptor,
+    grpc.StreamUnaryClientInterceptor,
 ):
     def __init__(
-        self, *, max_attempts: int, sleeping_policy: SleepingPolicy,
+        self,
+        *,
+        max_attempts: int,
+        sleeping_policy: SleepingPolicy,
         status_for_retry: Optional[Tuple[grpc.StatusCode]] = None,
     ):
         self.max_attempts = max_attempts
@@ -61,3 +68,30 @@ class RetryOnRpcErrorClientInterceptor(
 
     def intercept_stream_unary(self, continuation, client_call_details, request_iterator):
         return self._intercept_call(continuation, client_call_details, request_iterator)
+
+
+def interceptors():
+    return (
+        RetryOnRpcErrorClientInterceptor(
+            max_attempts=4,
+            sleeping_policy=ExponentialBackoff(
+                init_backoff_ms=100,
+                max_backoff_ms=1600,
+                multiplier=2,
+            ),
+            status_for_retry=(grpc.StatusCode.UNAVAILABLE,),
+        ),
+    )
+
+
+def channel():
+    return grpc.intercept_channel(
+        grpc.insecure_channel(
+            f'{settings.GRPC_HOST}:{settings.GRPC_PORT}',
+            options=[
+                ('grpc.max_send_message_length', 50 * 1024 * 1024),
+                ('grpc.max_receive_message_length', 50 * 1024 * 1024),
+            ],
+        ),
+        *interceptors(),
+    )

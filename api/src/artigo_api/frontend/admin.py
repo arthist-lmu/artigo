@@ -46,14 +46,39 @@ class GametypeAdmin(CustomModelAdmin):
     pass
 
 
+@admin.register(OpponentType)
+class OpponentTypeAdmin(CustomModelAdmin):
+    pass
+
+
+@admin.register(TabooType)
+class TabooTypeAdmin(CustomModelAdmin):
+    pass
+
+
+@admin.register(ScoreType)
+class ScoreTypeAdmin(CustomModelAdmin):
+    pass
+
+
 @admin.register(Gamesession)
 class GamesessionAdmin(CustomModelAdmin):
     pass
 
 
 @admin.register(Gameround)
-class GameroundAdmin(CustomModelAdmin):
-    pass
+class GameroundAdmin(admin.ModelAdmin):
+    fields = [f.name for f in Gameround._meta.fields]
+    list_display = fields + ['score_type']
+
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        qs = qs.prefetch_related('score_types')
+
+        return qs
+
+    def score_type(self, obj):
+        return list(obj.score_types.all())
 
 
 @admin.register(Tag)
@@ -63,4 +88,14 @@ class TagAdmin(CustomModelAdmin):
 
 @admin.register(Tagging)
 class TaggingAdmin(CustomModelAdmin):
+    pass
+
+
+@admin.register(OpponentTagging)
+class OpponentTaggingAdmin(CustomModelAdmin):
+    pass
+
+
+@admin.register(TabooTagging)
+class TabooTaggingAdmin(CustomModelAdmin):
     pass

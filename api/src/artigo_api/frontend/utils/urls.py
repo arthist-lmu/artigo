@@ -9,10 +9,9 @@ def media_url_to_image(x):
 def preprocessing_hook(endpoints, **kwargs):
     def in_excluded(path):
         for exclude_path in exclude_paths:
-            if path.startswith(exclude_path):
-                return True
-
-            if path.startswith(f'/{exclude_path}'):
+            if path.startswith(
+                (exclude_path, f'/{exclude_path}')
+            ):
                 return True
 
         return False
@@ -20,8 +19,7 @@ def preprocessing_hook(endpoints, **kwargs):
     endpoints_to_include = []
     exclude_paths = ['rest-auth']
 
-    for endpoint in endpoints:
-        if not in_excluded(endpoint[0]):
-            endpoints_to_include.append(endpoint)
-
-    return endpoints_to_include
+    return [
+        endpoint for endpoint in endpoints
+        if not in_excluded(endpoint[0])
+    ]
