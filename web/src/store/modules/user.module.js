@@ -28,10 +28,14 @@ const user = {
         });
     },
     logout({ commit, state }) {
-      const params = state.userData;
-      axios.post('/auth/logout/', params)
+      axios.get('/auth/logout/', {
+        headers: {
+          'Authorization': `Token ${state.token}`,
+        },
+      })
         .then(() => {
           commit('updateData', {});
+          commit('updateToken', {});
           commit('updateLoggedIn', false);
         });
     },

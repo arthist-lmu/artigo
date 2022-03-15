@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
+import Cookies from 'js-cookie';
 import createPersistedState from 'vuex-persistedstate';
 import modules from './modules';
 
@@ -11,19 +12,15 @@ export default new Vuex.Store({
   plugins: [
     createPersistedState({
       paths: [
+        'user.token',
         'settings.display',
       ],
-      getState(key, storage) {
-        let value = storage.getItem(key);
-        try {
-          value = JSON.parse(value);
-        } catch (error) {
-          return undefined;
-        }
-        if (value && Object.keys(value).length) {
-          return value;
-        }
-        return undefined;
+      storage: {
+        getItem: (key) => Cookies.get(key),
+        setItem: (key, value) => {
+          Cookies.set(key, value, { expires: 3, secure: false });
+        },
+        removeItem: (key) => Cookies.remove(key),
       },
     }),
   ],

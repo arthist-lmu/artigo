@@ -44,18 +44,24 @@
         "min": "Min. {n} Zeichen.",
         "max": "Max. {n} Zeichen.",
         "password-repeat": "Passwörter stimmen nicht überein."
-      }
+      },
+      "texts": [
+
+      ]
     },
     "login": {
-      "title": "Anmelden",
+      "title": "Login",
       "text": "Noch kein Benutzerkonto?",
       "rules": {
         "min": "Min. {n} Zeichen.",
         "max": "Max. {n} Zeichen."
-      }
+      },
+      "texts": [
+
+      ]
     },
     "logout": {
-      "title": "Abmelden"
+      "title": "Logout"
     }
   },
   "field": {
@@ -69,18 +75,6 @@
   },
   "api": {
     "title": "API"
-  },
-  "login": {
-    "title": "Login",
-    "texts": [
-
-    ]
-  },
-  "register": {
-    "title": "Registrieren",
-    "texts": [
-
-    ]
   },
   "search": {
     "title": "Suche",
@@ -102,7 +96,7 @@
       "creator": "Künstler:innen abgleichen",
       "resource": "Titel abgleichen",
       "results": "{n} Einträge für|{n} Eintrag für|{n} Einträge für",
-      "no-results": "Für Ihre Suchanfrage wurden leider keine Einträge bei Drittanbietern gefunden."
+      "no-results": "Für Deine Suchanfrage wurden leider keine Einträge bei Drittanbietern gefunden."
     }
   },
   "about": {
@@ -111,14 +105,13 @@
       {
         "header": "Ziele von ARTigo",
         "content": [
-          "Die Kunstgeschichte arbeitet mit den originalen Kunstwerken, häufig aber auch mit Reproduktionen davon. Diese Reproduktionen werden heute in umfangreichen elektronischen Repositorien vorgehalten und können leicht in die Millionen gehen. Was machen wir, um diese Reproduktionen wiederzufinden, und zwar möglichst nach den unterschiedlichsten Kritereien geordnet? Manchmal wollen wir Bilder finden, die einen spezifischen Inhalt oder eine spezifische Form haben. Da die Möglichkeiten, über den Computer direkt auf die Reproduktion zuzugreifen, noch sehr beschränkt sind, vergeben wir Schlagworte, sogenannte Metadaten. Das ist ein sehr zeitraubendes Geschäft und kann am besten von einer großen Anzahl von Mitarbeiter/innen übernommen werden. Um diesen Beitrag bitten wir Sie mit diesem Spiel.",
-          "Aber wir wollen nicht nur etwas von Ihnen, sondern bieten Ihnen auch etwas: Unterhaltung einerseits, aber auch Belehrung, denn Sie werden eine Menge über die Werke der Künstler lernen, die wir Ihnen hier vorführen. Und Sie werden dann mit den von Ihnen gelieferten Beschreibungen auch selbst arbeiten können."
+          "Die Kunstgeschichte arbeitet mit den originalen Kunstwerken, häufig aber auch mit Reproduktionen davon. Diese Reproduktionen werden heute in umfangreichen elektronischen Repositorien vorgehalten und können leicht in die Millionen gehen. Was machen wir, um diese Reproduktionen wiederzufinden, und zwar möglichst nach den unterschiedlichsten Kritereien geordnet? Manchmal wollen wir Bilder finden, die einen spezifischen Inhalt oder eine spezifische Form haben. Da die Möglichkeiten, über den Computer direkt auf die Reproduktion zuzugreifen, noch sehr beschränkt sind, vergeben wir Schlagwörter, sogenannte Metadaten. Das ist ein sehr zeitraubendes Geschäft und kann am besten von einer großen Anzahl von Mitarbeiter:innen übernommen werden. Um diesen Beitrag bitten wir Dich mit diesem Spiel. Aber wir wollen nicht nur etwas von Dir, sondern bieten auch etwas: Unterhaltung einerseits, aber auch Belehrung, denn Du wirst eine Menge über die Werke der Künstler:innen lernen, die wir hier vorführen. Und Du wirst dann mit den von Dir gelieferten Beschreibungen auch selbst arbeiten können."
         ]
       },
       {
         "header": "Bilderbestand",
         "content": [
-          "Der zugrundeliegende Bilderbestand entstammt der <a href='https://www.kunstgeschichte.uni-muenchen.de/ifk/einrichtungen/bildarchiv/index.html' target='_blank'>Diathek des Instituts für Kunstgeschichte</a> der LMU München. <a href='' target='_blank'>Hier</a> können Sie übrigens exklusiv mit dem Bestand der <a href='http://www.kunsthalle-karlsruhe.de/' target='_blank'>Kunsthalle Karlsruhe</a> spielen, deren Mitarbeiter uns besonders gute Reproduktionen aus dem herausragenden Bestand ihres Museums zur Verfügung gestellt haben."
+          "Der zugrundeliegende Bilderbestand entstammt der <a href='https://www.kunstgeschichte.uni-muenchen.de/ifk/einrichtungen/bildarchiv/index.html' target='_blank'>Diathek des Instituts für Kunstgeschichte</a> der LMU München."
         ]
       },
       {
@@ -130,9 +123,7 @@
       {
         "header": "Versionsgeschichte",
         "content": [
-          "Diese Version von ARTigo basiert auf einem führend von Dr. Gerhard Schön von der <a href='http://www.itg.uni-muenchen.de/' target='_blank'>IT-Gruppe Geisteswissenschaften</a> entwickelten Spiel.",
-          "Die Idee für dieses Projekt stammt von Prof. Dr. Hubertus Kohle nach einem Gespräch mit Prof. Dr. François Bry über „Games with a Purpose“.",
-          "Weiterhin danken wir <a href='http://www.cs.cmu.edu/~biglou/' target='_blank'>Luis von Ahn</a>, der uns mit seinem <a href='https://en.wikipedia.org/wiki/ESP_game' target='_blank'>ESP Game</a> auf die Idee zu diesem Spiel gebracht hat. Über das Spielprinzip erfahren Sie Faszinierendes in seinem Vortrag über <a href='https://youtu.be/tx082gDwGcM' target='_blank'>Human Computation</a>, gehalten bei Google als „TechTalk“ am 26. Juli 2006."
+          "Diese Version von ARTigo basiert auf einem führend von Dr. Gerhard Schön von der <a href='http://www.itg.uni-muenchen.de/' target='_blank'>IT-Gruppe Geisteswissenschaften</a> entwickelten Spiel. Die Idee für dieses Projekt stammt von Prof. Dr. Hubertus Kohle nach einem Gespräch mit Prof. Dr. François Bry über „Games with a Purpose“. Weiterhin danken wir <a href='http://www.cs.cmu.edu/~biglou/' target='_blank'>Luis von Ahn</a>, der uns mit seinem <a href='https://en.wikipedia.org/wiki/ESP_game' target='_blank'>ESP Game</a> auf die Idee zu diesem Spiel gebracht hat. Über das Spielprinzip erfährst Du Faszinierendes in seinem Vortrag über <a href='https://youtu.be/tx082gDwGcM' target='_blank'>Human Computation</a>, gehalten bei Google als „TechTalk“ am 26. Juli 2006."
         ]
       }
     ]
@@ -150,9 +141,9 @@
   "highscore": {
     "title": "Bestenliste",
     "fields": {
-      "alltime": "Beste Spieler aller Zeiten",
-      "current": "Beste Spieler im laufenden Monat",
-      "previous": "Beste Spieler im letzten Monat"
+      "alltime": "Beste Spieler:innen aller Zeiten",
+      "current": "Beste Spieler:innen im laufenden Monat",
+      "previous": "Beste Spieler:innen im letzten Monat"
     },
     "headers": {
       "name": "Name",
@@ -166,16 +157,26 @@
   "game": {
     "title": "Spiele",
     "fields": {
+      "basic": {
+        "enter": "Eingeben",
+        "skip": "Auslassen",
+        "rounds": "Runde {i} von {total}",
+        "tags": "Vergebene Schlagwörter",
+        "own-tags": "Du",
+        "opponent-tags": "Mitspieler:in",
+        "score": "Punkte"
+      },
       "default": {
         "title": "ARTigo-Spiel",
+        "placeholder": "Beschreibe z. B., was Du siehst",
         "texts": [
           {
             "content": [
-              "ARTigo ist ein Online-Spiel mit dem Ziel, Kunstwerke mit Schlagworten zu versehen. Ihnen und einem Mitspieler wird gleichzeitig dasselbe Kunstwerk gezeigt. Das Spiel besteht nun darin, das Kunstwerk möglichst treffend mit Schlagworten zu beschreiben. Schlagworte können beschreiben, was das Kunstwerk darstellt, aber auch Stilrichtung, Qualität oder Gefühle ausdrücken, die es wiedergibt. Pro Kunstwerk stehen Ihnen 60 Sekunden zur Verfügung. Punkte bekommen Sie für Schlagworte, die Ihr Mitspieler auch eingibt oder andere Spieler in früheren Runden eingegeben haben. Je mehr Schlagworte pro Kunstwerk übereinstimmen, desto mehr Punkte können Sie in insgesamt fünf Runden erspielen. Jedes eingegebene Schlagwort wird gespeichert und verbessert die Suche nach Kunstwerken. Relevant für die Suche aber sind nur Schlagworte, die mindestens zweimal für ein Kunstwerk vergeben wurden, also blau markiert sind.",
-              "Links neben dem Kunstwerk sehen Sie, welche Schlagworte Sie bereits eingegeben haben. Manche Schlagworte werden nach Punkten farbig hervorgehoben:",
-              "<ul><li>Schwarze Schlagworte wurden bisher bei diesem Kunstwerk noch nicht eingegeben. Sie erhalten keine Punkte.</li><li>Dunkelblaue Schlagworte hat Ihr Mitspieler in dieser Runde eingegeben. Sie erhalten beide 25 Punkte.</li><li>Hellblaue Schlagworte sind in einem früheren Spiel für das Kunstwerk eingegeben worden. Sie erhalten 5 Punkte.</li></ul>",
-              "Beim Tabu-Spiel werden zusätzlich einige Tabuwörter angezeigt, die nicht zur Beschreibung des Kunstwerks verwendet werden können, da sie bereits verifiziert wurden.",
-              "Nach fünf Runden können Sie die gespielten Kunstwerke mit Zusatzinformationen betrachten. Angezeigt werden Titel, Künstler, Ort und Datierung.",
+              "ARTigo ist ein Online-Spiel mit dem Ziel, Kunstwerke mit Schlagworten zu versehen. Dir und einem:r Mitspieler:in wird gleichzeitig dasselbe Kunstwerk gezeigt. Das Spiel besteht nun darin, das Kunstwerk möglichst treffend mit Schlagwörtern zu beschreiben. Schlagwörter können beschreiben, was das Kunstwerk darstellt, aber auch Stilrichtung, Qualität oder Gefühle ausdrücken, die es wiedergibt. Pro Kunstwerk stehen Dir 60 Sekunden zur Verfügung. Punkte bekommst Du für Schlagwörter, die Dein:e Mitspieler:in auch eingibt oder andere Spieler:innen in früheren Runden eingegeben haben. Je mehr Schlagwörter pro Kunstwerk übereinstimmen, desto mehr Punkte kannst Du in insgesamt fünf Runden erspielen. Jedes eingegebene Schlagwort wird gespeichert und verbessert die Suche nach Kunstwerken. Relevant für die Suche aber sind nur Schlagwörter, die mindestens zweimal für ein Kunstwerk vergeben wurden, also blau markiert sind.",
+              "Links neben dem Kunstwerk siehst Du, welche Schlagwörter Du bereits eingegeben hast. Manche Schlagwörter werden nach Punkten farbig hervorgehoben:",
+              "<ul><li>Schwarze Schlagwörter wurden bisher bei diesem Kunstwerk noch nicht eingegeben. Du erhältst keine Punkte.</li><li>Dunkelblaue Schlagwörter hat Dein Mitspieler in dieser Runde eingegeben. Ihr erhaltet beide 25 Punkte.</li><li>Hellblaue Schlagwörter sind in einem früheren Spiel für das Kunstwerk eingegeben worden. Du erhältst 5 Punkte.</li></ul>",
+              "Beim Taboo-Spiel werden zusätzlich einige Tabuwörter angezeigt, die nicht zur Beschreibung des Kunstwerks verwendet werden können, da sie bereits verifiziert wurden.",
+              "Nach fünf Runden kannst Du die gespielten Kunstwerke mit Zusatzinformationen betrachten. Angezeigt werden Titel, Künstler, Ort und Datierung.",
               "<iframe width='560' height='315' src='https://www.youtube.com/embed/cHMuTDtgFCU' title='YouTube video player' frameborder='0' allowfullscreen></iframe>"
             ]
           }
@@ -183,6 +184,8 @@
       },
       "taboo": {
         "title": "ARTigo-Taboo",
+        "placeholder": "Beschreibe z. B., was Du siehst",
+        "tags": "Tabuwörter",
         "texts": [
 
         ]
@@ -196,11 +199,13 @@
     }
   },
   "error": {
-    "unknown_error": "Ein unbekannter Fehler ist aufgetreten. Bitte versuchen Sie es erneut.",
-    "enter_a_valid_email_address": "Bitte geben Sie eine gültige E-Mail-Adresse ein.",
-    "unable_to_log_in_with_provided_credentials": "Bitte überprüfen Sie Ihre Zugangsdaten.",
-    "this_password_is_too_common": "Ihr Passwort ist zu unsicher.",
-    "this_password_is_too_short_it_must_contain_at_least_8_characters": "Ihr Passwort muss mindestens 8 Zeichen enthalten.",
-    "a_user_is_already_registered_with_this_e-mail_address": "Ein:e Benutzer:in ist bereits mit dieser E-Mail-Adresse registriert."
+    "unknown_error": "Ein unbekannter Fehler ist aufgetreten. Bitte versuche es erneut.",
+    "enter_a_valid_email_address": "Bitte gib eine gültige E-Mail-Adresse ein.",
+    "unable_to_log_in_with_provided_credentials": "Bitte überprüfe Deine Zugangsdaten.",
+    "this_password_is_too_common": "Dein Passwort ist zu unsicher.",
+    "this_password_is_too_short_it_must_contain_at_least_8_characters": "Dein Passwort muss mindestens 8 Zeichen enthalten.",
+    "a_user_is_already_registered_with_this_e-mail_address": "Ein:e Benutzer:in ist bereits mit dieser E-Mail-Adresse registriert.",
+    "not_authenticated": "Bitte melde dich an, um fortzufahren.",
+    "invalid_token": "Bitte melde dich an, um fortzufahren."
   }
 }

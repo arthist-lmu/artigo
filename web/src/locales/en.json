@@ -44,7 +44,10 @@
         "min": "Min. {n} characters.",
         "max": "Max. {n} characters.",
         "password-repeat": "Passwords don't match."
-      }
+      },
+      "texts": [
+
+      ]
     },
     "login": {
       "title": "Login",
@@ -52,7 +55,10 @@
       "rules": {
         "min": "Min. {n} characters.",
         "max": "Max. {n} characters."
-      }
+      },
+      "texts": [
+
+      ]
     },
     "logout": {
       "title": "Logout"
@@ -69,18 +75,6 @@
   },
   "api": {
       "title": "API"
-  },
-  "login": {
-    "title": "Login",
-    "texts": [
-
-    ]
-  },
-  "register": {
-    "title": "Register",
-    "texts": [
-
-    ]
   },
   "search": {
     "title": "Search",
@@ -129,9 +123,7 @@
       {
         "header": "Version history",
         "content": [
-          "This version of ARTigo is based on a game foremost developed by Dr. Gerhard Schön from the <a href='http://www.itg.uni-muenchen.de/' target='_blank'>IT-Group Humanities</a>.",
-          "Prof. Dr. Hubertus Kohle had the idea for this project. He was inspired by Prof. Dr. François Bry during a conversation about “Games with a Purpose”.",
-          "Furthermore, we would like to thank <a href='http://www.cs.cmu.edu/~biglou/' target='_blank'>Luis von Ahn</a> who lead us to this game idea with his <a href='https://en.wikipedia.org/wiki/ESP_game' target='_blank'>ESP Game</a>. You can learn more about the principles of the game in his talk about <a href='https://youtu.be/tx082gDwGcM' target='_blank'>Human Computation</a> given at Google as “TechTalk” on 26th of July 2006."
+          "This version of ARTigo is based on a game foremost developed by Dr. Gerhard Schön from the <a href='http://www.itg.uni-muenchen.de/' target='_blank'>IT-Group Humanities</a>. Prof. Dr. Hubertus Kohle had the idea for this project. He was inspired by Prof. Dr. François Bry during a conversation about “Games with a Purpose”. Furthermore, we would like to thank <a href='http://www.cs.cmu.edu/~biglou/' target='_blank'>Luis von Ahn</a> who lead us to this game idea with his <a href='https://en.wikipedia.org/wiki/ESP_game' target='_blank'>ESP Game</a>. You can learn more about the principles of the game in his talk about <a href='https://youtu.be/tx082gDwGcM' target='_blank'>Human Computation</a> given at Google as “TechTalk” on 26th of July 2006."
         ]
       }
     ]
@@ -165,8 +157,18 @@
   "game": {
     "title": "Games",
     "fields": {
+      "basic": {
+        "enter": "Enter",
+        "skip": "Skip",
+        "rounds": "Round {i} of {total}",
+        "tags": "Assigned tags",
+        "own-tags": "You",
+        "opponent-tags": "Fellow player",
+        "score": "Score"
+      },
       "default": {
         "title": "ARTigo Game",
+        "placeholder": "For example, describe what you see",
         "texts": [
           {
             "content": [
@@ -181,6 +183,8 @@
       },
       "taboo": {
         "title": "ARTigo Taboo",
+        "placeholder": "For example, describe what you see",
+        "tags": "Taboo tags",
         "texts": [
 
         ]
@@ -199,6 +203,8 @@
     "unable_to_log_in_with_provided_credentials": "Please check your credentials.",
     "this_password_is_too_common": "Your password is too common.",
     "this_password_is_too_short_it_must_contain_at_least_8_characters": "Your password must contain at least 8 characters.",
-    "a_user_is_already_registered_with_this_e-mail_address": "A user is already registered with this e-mail address."
+    "a_user_is_already_registered_with_this_e-mail_address": "A user is already registered with this e-mail address.",
+    "not_authenticated": "Please login to proceed.",
+    "invalid_token": "Please login to proceed."
   }
 }

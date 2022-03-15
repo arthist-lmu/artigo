@@ -2,6 +2,10 @@
   text-transform: capitalize;
 }
 
+.uppercase {
+  text-transform: uppercase;
+}
+
 .disabled {
 	display: none;
 }

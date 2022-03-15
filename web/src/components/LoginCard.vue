@@ -4,7 +4,7 @@
     flat
   >
     <v-card-title v-if="isDialog">
-      {{ $t("login.title") }}
+      {{ $t("user.login.title") }}
 
       <v-btn
         @click="close"
@@ -23,18 +23,20 @@
           :placeholder="$t('user.fields.username')"
           :rules="[checkLength]"
           prepend-icon="mdi-account"
+          tabindex="1"
           counter="75"
           clearable
-        ></v-text-field>
+        />
 
         <v-text-field
           v-model="user.email"
           :placeholder="$t('user.fields.email')"
           :rules="[checkLength]"
           prepend-icon="mdi-email"
+          tabindex="2"
           counter="75"
           clearable
-        ></v-text-field>
+        />
 
         <v-text-field
           v-model="user.password"
@@ -46,9 +48,10 @@
             showPassword ? 'mdi-eye-outline' : 'mdi-eye-off-outline'
           "
           prepend-icon="mdi-lock"
+          tabindex="3"
           counter="75"
           clearable
-        ></v-text-field>
+        />
       </v-form>
     </v-card-text>
 
@@ -56,6 +59,7 @@
       <v-btn
         @click="login"
         :disabled="!isFormValid"
+        tabindex="4"
         color="accent"
         depressed
         rounded
@@ -80,7 +84,7 @@
               small
               text
             >
-              {{ $t("register.title") }}
+              {{ $t("user.register.title") }}
             </v-btn>
           </template>
 
@@ -122,8 +126,8 @@ export default {
     },
     checkLength(value) {
       if (value) {
-        if (value.length < 5) {
-          return this.$tc('user.login.rules.min', 5);
+        if (value.length < 4) {
+          return this.$tc('user.login.rules.min', 4);
         }
         if (value.length > 75) {
           return this.$tc('user.login.rules.max', 75);

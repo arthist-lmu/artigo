@@ -10,8 +10,8 @@ export default {
     items() {
       return [
         {
-          title: this.$t('login.title'),
-          texts: this.$t('login.texts'),
+          title: this.$t('user.login.title'),
+          texts: this.$t('user.login.texts'),
         },
       ];
     },
