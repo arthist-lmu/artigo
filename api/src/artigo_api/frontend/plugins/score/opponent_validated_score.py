@@ -23,23 +23,23 @@ class OpponentValidatedScore(ScorePlugin):
 
         self.point_value = self.config['point_value']
 
-    def __call__(self, tag_names, gameround, params):
+    def __call__(self, tags, gameround, params):
         valid_tags = OpponentTagging.objects.filter(
                 gameround=gameround,
-                tag__name__iregex=f"({'|'.join(tag_names)})",
+                tag__name__iregex=f"({'|'.join(tags)})",
                 tag__language=params.get('language', 'de'),
             ) \
             .values_list('tag__name', flat=True)
 
-        valid_tags = [x.lower() for x in valid_tags]
+        valid_tags = set(x.lower() for x in valid_tags)
 
         result = []
 
-        for tag_name in tag_names:
-            is_valid = tag_name in valid_tags
+        for tag in tags:
+            is_valid = tag in valid_tags
 
             result.append({
-                'name': tag_name,
+                'name': tag,
                 'score': is_valid * self.point_value,
             })
 

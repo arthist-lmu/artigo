@@ -95,7 +95,7 @@ export default {
     post() {
       if (this.tag.length) {
         const params = {
-          tag_name: this.tag,
+          tag: this.tag,
           resource_id: this.entry.resource_id,
           language: this.$i18n.locale,
         };
@@ -161,6 +161,7 @@ export default {
     clearInterval(this.timer);
   },
   beforeRouteUpdate() {
+    // TODO: this does not work
     this.get();
   },
   mounted() {

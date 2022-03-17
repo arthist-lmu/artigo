@@ -3,12 +3,9 @@ import logging
 import traceback
 
 from collections import defaultdict
-from datetime import timedelta
-from django.db.models import F, Q
-from django.forms.models import model_to_dict
+from django.db.models import Count, F
 from django.core.cache import cache
 from django.core.exceptions import ObjectDoesNotExist
-from django.utils import timezone
 from frontend.utils import to_int, to_float, channel, media_url_to_image
 from frontend.models import *
 
@@ -33,12 +30,22 @@ class GameController:
 
     def __call__(self, params, user):
         if len(params) == 0:
-            # TODO: more checks if multiple gamesessions could be valid
+            complete_gamesessions = Gameround.objects.filter(user=user) \
+                .values('gamesession') \
+                .annotate(count_gamerounds=Count('gamesession')) \
+                .filter(count_gamerounds=F('gamesession__rounds')) \
+                .values('gamesession')
+
             gamesession = Gamesession.objects.filter(user=user) \
-                .latest('created')
-        elif params.get('gamesession_id'):
+                .exclude(gamesession__in=complete_gamesessions)
+
+            if gamesession.count() > 1:
+                return {'type': 'error', 'message': 'multiple_valid_gamesessions'}
+
+            gamesession = gamesession.latest('created')
+        elif params.get('session_id'):
             try:
-                gamesession = Gamesession.objects.get(id=params['gamesession_id'])
+                gamesession = Gamesession.objects.get(id=params['session_id'])
             except ObjectDoesNotExist:
                 return {'type': 'error', 'message': 'invalid_gamesession'}
         else:
@@ -52,17 +59,16 @@ class GameController:
         if data is None:
             return {'type': 'error', 'message': 'outdated_gamesession'}
 
-        gamerounds = Gameround.objects.filter(gamesession=gamesession).count()
-
-        if gamerounds == gamesession.rounds:
+        if len(data['game']) == 0:
             cache.delete(f'gamesession_{gamesession.id}')
 
             return {'type': 'error', 'message': 'finished_gamesession'}
 
         try:
-            gameround_data = list(data['game'].values())[gamerounds]
+            gameround_data = list(data['game'].values())[0]
 
             gameround = Gameround(
+                user=user,
                 gamesession=gamesession,
                 resource_id=gameround_data['resource_id'],
             )
@@ -123,13 +129,17 @@ class GameController:
 
             return {'type': 'error', 'message': 'unknown_error'}
 
+        data['game'].pop(gameround.resource_id)
+        cache.set(f'gamesession_{gamesession.id}', data)
+
         logger.info(f'[Game Controller] Gameround: {gameround_data}')
 
         return {
             'type': 'ok',
-            'round_id': gamerounds + 1,
+            'session_id': gamesession.id,
             'rounds': gamesession.rounds,
-            'gameround': gameround_data,
+            'round_id': gamesession.rounds - len(data['game']),
+            'data': gameround_data,
         }
 
     def create_game(self, params, user):
@@ -207,10 +217,10 @@ class GameController:
             gametype.save()
 
             gamesession = Gamesession(
-                rounds=query['resource_options']['rounds'],
-                round_duration=query['game_options']['round_duration'],
                 user=user,
                 gametype=gametype,
+                rounds=query['resource_options']['rounds'],
+                round_duration=query['game_options']['round_duration'],
             )
             gamesession.save()
         except Exception as error:
@@ -268,7 +278,6 @@ class GameController:
                 taboo_type = 'MostAnnotatedTaboo'
 
         score_types = set(['AnnotationValidatedScore'])
-        score_options = {}
 
         if query.getlist('score_types[]'):
             if 'annotation_validated_score' in query['score_types[]']:
@@ -286,7 +295,6 @@ class GameController:
             'taboo_type': taboo_type,
             'taboo_options': taboo_options,
             'score_types': list(score_types),
-            'score_options': score_options,
         }
 
         return result
@@ -354,135 +362,3 @@ class GameController:
         params = {'ids': map(str, resource_ids)}
 
         return rpc_get(params)
-
-
-class TagController:
-    def __init__(
-        self,
-        score_plugin_manager=None,
-    ):
-        super().__init__()
-
-        self.score_plugin_manager = score_plugin_manager
-
-    def __call__(self, params, user):
-        try:
-            gameround = Gameround.objects.filter(resource_id=params['resource_id']) \
-                .filter(
-                    Q (gamesession__round_duration=0) | Q(
-                        created__gte=timezone.now() - timedelta(seconds=5) \
-                            - timedelta(seconds=1) * F('gamesession__round_duration')
-                    )
-                )
-
-            if gameround.count() > 1:
-                gameround = gameround.filter(gamesession_id=params['gamesession_id'])
-
-            gameround = gameround.latest('created')
-        except ObjectDoesNotExist:
-            return {'type': 'error', 'message': 'outdated_gameround'}
-        except Exception as error:
-            logger.error(traceback.format_exc())
-
-            return {'type': 'error', 'message': 'invalid_resource'}
-
-        data = cache.get(f'gamesession_{gameround.gamesession.id}')
-
-        if data is None:
-            return {'type': 'error', 'message': 'outdated_gamesession'}
-
-        try:
-            gameround_data = data['game'][str(gameround.resource.id)]
-        except:
-            return {'type': 'error', 'message': 'invalid_resource'}
-
-        query = self.parse_query(params)
-        logger.info(f'[Game Controller] Query: {query}')
-
-        result = {}
-
-        if data['query'].get('score_types'):
-            try:
-                result['tags'] = list(
-                    self.score_plugin_manager.run(
-                        params.get('tag_name'),
-                        gameround,
-                        query['game_options'],
-                        data['query']['score_types'],
-                    ),
-                )
-            except Exception as error:
-                logger.error(traceback.format_exc())
-
-                return {'type': 'error', 'message': 'invalid_scores'}
-
-        if gameround_data.get('taboo_tags'):
-            taboo_tags = set(x['name'].lower() for x in gameround_data['taboo_tags'])
-
-            for tag in result['tags']:
-                if tag['name'].lower() in taboo_tags:
-                    tag['valid'] = False
-                    tag['score'] = 0
-
-        if result.get('tags'):
-            invalid_tags = Tagging.objects.filter(
-                    gameround=gameround,
-                    resource=gameround.resource,
-                ) \
-                .values_list('tag__name', flat=True)
-
-            invalid_tags = set(x.lower() for x in invalid_tags)
-
-            bulk_list = []
-
-            for tag in result['tags']:
-                if tag['name'] in invalid_tags:
-                    tag['valid'] = False
-                    tag['score'] = 0
-
-                if not tag.get('valid', True):
-                    continue
-
-                tag['valid'] = True
-
-                tagging = Tagging(
-                    user=user,
-                    gameround=gameround,
-                    resource=gameround.resource,
-                    score=tag['score'],
-                    created=timezone.now(),
-                )
-
-                tag_obj = Tag.objects.filter(
-                    name__iexact=tag['name'],
-                    language=query['game_options']['language'],
-                ).first()
-
-                if tag_obj is None:
-                    tag_obj = Tag.objects.create(
-                        name=tag['name'],
-                        language=query['game_options']['language'],
-                    )
-
-                tagging.tag = tag_obj
-                bulk_list.append(tagging)
-
-            Tagging.objects.bulk_create(bulk_list)
-
-        return {
-            'type': 'ok',
-            'tags': result.get('tags', []),
-        }
-
-    @staticmethod
-    def parse_query(query):
-        game_options = {
-            'resource_id': query.get('resource_id'),
-            'language': query.get('language', 'de'),
-        }
-
-        result = {
-            'game_options': game_options,
-        }
-
-        return result

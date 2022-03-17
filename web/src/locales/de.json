@@ -64,6 +64,13 @@
       "title": "Logout"
     }
   },
+  "language": {
+    "title": "Sprache",
+    "fields": {
+      "en": "Englisch",
+      "de": "Deutsch"
+    }
+  },
   "field": {
     "required": "Dies ist ein Pflichtfeld."
   },

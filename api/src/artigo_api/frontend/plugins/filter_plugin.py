@@ -1,14 +1,13 @@
 import logging
 
-from collections import defaultdict
 from .plugin import Plugin
 from .manager import PluginManager
 
 logger = logging.getLogger(__name__)
 
 
-class ScorePlugin(Plugin):
-    _type = 'score'
+class FilterPlugin(Plugin):
+    _type = 'filter'
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -17,26 +16,26 @@ class ScorePlugin(Plugin):
         return self.call(tags, gameround, params)
 
 
-class ScorePluginManager(PluginManager):
-    _score_plugins = {}
+class FilterPluginManager(PluginManager):
+    _filter_plugins = {}
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
-        self.find('score')
+        self.find('filter')
         self.plugin_list = self.init_plugins()
 
     @classmethod
     def export(cls, name):
         def export_helper(plugin):
-            cls._score_plugins[name] = plugin
+            cls._filter_plugins[name] = plugin
 
             return plugin
 
         return export_helper
 
     def plugins(self):
-        return self._score_plugins
+        return self._filter_plugins
 
     def run(self, tags, gameround, params, plugins=None, configs=None):
         plugin_list = self.init_plugins(plugins, configs)
@@ -45,13 +44,14 @@ class ScorePluginManager(PluginManager):
             tags = [tags]
 
         tags = [x.lower() for x in tags]
-        results = defaultdict(int)
+        results = dict.fromkeys(tags, True)
 
         for plugin in plugin_list:
             for entry in plugin['plugin'](tags, gameround, params):
                 if isinstance(entry, dict):
-                    results[entry['name']] += entry['score']
+                    if not entry.get('valid', True):
+                        results[entry['name']] = False
 
-        results = [{'name': k, 'score': v} for k, v in results.items()]
+        results = [k for k, v in results.items() if v]
 
         return results

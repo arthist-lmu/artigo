@@ -1,32 +1,11 @@
 <template>
   <v-app-bar
-    height="114"
+    height="100"
     clipped-left
     flat
     app
   >
-    <v-container
-      class="pt-0"
-      fluid
-    >
-      <v-row
-        class="mb-2"
-        align="center"
-        no-gutters
-      >
-        <v-btn
-          v-for="lang in langs"
-          :key="lang"
-          @click="change(lang)"
-          class="lang"
-          :color="lang === locale ? 'primary' : 'transparent'"
-          depressed
-          small
-        >
-          {{ lang }}
-        </v-btn>
-      </v-row>
-
+    <v-container fluid>
       <v-row
         align="center"
         no-gutters
@@ -101,6 +80,8 @@
           {{ $t("user.logout.title") }}
         </v-btn>
 
+        <UserAccount />
+
         <v-spacer />
 
         <v-col cols="2">
@@ -128,9 +109,6 @@
 <script>
 import { API_LOCATION } from '@/../app.config';
 
-import LoginCard from '@/components/LoginCard.vue';
-import RegisterCard from '@/components/RegisterCard.vue';
-
 export default {
   data() {
     return {
@@ -142,19 +120,12 @@ export default {
         register: false,
         login: false,
       },
-      langs: [
-        'en',
-        'de',
-      ],
       query: null,
     };
   },
   methods: {
     goTo(page) {
-      router.push({ name: page });
-    },
-    change(lang) {
-      this.$i18n.locale = lang;
+      this.$router.push({ name: page });
     },
     search() {
       this.$store.dispatch('search/post', { 'query': this.query });
@@ -164,9 +135,6 @@ export default {
     },
   },
   computed: {
-    locale() {
-      return this.$i18n.locale;
-    },
     api() {
       return `${API_LOCATION}/schema/redoc`;
     },
@@ -174,19 +142,10 @@ export default {
       return this.$store.state.user.loggedIn;
     },
   },
-  watch: {
-    locale(lang) {
-      const { query } = this.$route;
-      this.$router.push({ params: { lang }, query });
-      document.documentElement.lang = lang;
-    },
-  },
-  created() {
-    document.documentElement.lang = this.locale;
-  },
   components: {
-    LoginCard,
-    RegisterCard,
+    LoginCard: () => import('@/components/LoginCard.vue'),
+    RegisterCard: () => import('@/components/RegisterCard.vue'),
+    UserAccount: () => import('@/components/UserAccount.vue'),
   },
 };
 </script>

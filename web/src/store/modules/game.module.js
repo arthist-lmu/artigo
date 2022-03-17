@@ -7,11 +7,15 @@ const game = {
     entry: {},
     rounds: 5,
     roundId: 1,
+    sessionId: null,
     seconds: 0,
   },
   actions: {
     get({ commit, rootState, state }, params) {
       if (state.roundId !== state.rounds) {
+        if (Object.keys(params).length === 0) {
+          params = { session_id: state.sessionId };
+        }
         axios.get('/game/', {
           params,
           headers: {
@@ -38,17 +42,18 @@ const game = {
     },
   },
   mutations: {
-    updateData(state, { round_id, rounds, gameround }) {
-      state.roundId = round_id;
+    updateData(state, {
+      session_id, rounds, round_id, data,
+    }) {
+      state.sessionId = session_id;
       state.rounds = rounds;
-      state.entry = gameround;
+      state.roundId = round_id;
+      state.entry = data;
       state.tags = [];
     },
     updateTags(state, { tags }) {
       tags.forEach((tag) => {
-        if (tag.valid) {
-          state.tags.push(tag);
-        }
+        state.tags.push(tag);
       });
     },
     updateSeconds(state, seconds) {

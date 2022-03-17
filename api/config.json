@@ -21,6 +21,16 @@
             "disabled": false
         }
     ],
+    "filters": [
+        {
+            "type": "AlreadyAnnotatedFilter",
+            "disabled": false
+        },
+        {
+            "type": "TabooFilter",
+            "disabled": false
+        }
+    ],
     "scores": [
         {
             "type": "AnnotationValidatedScore",

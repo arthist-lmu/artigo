@@ -119,6 +119,7 @@ class GameView(APIView):
         plugins = cache.get('plugins', {})
 
         tag_controller = TagController(
+            filter_plugin_manager=plugins.get('filter'),
             score_plugin_manager=plugins.get('score'),
         )
 

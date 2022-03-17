@@ -1,70 +1,128 @@
 <template>
-  <v-list class="account">
-    <v-list-item>
-      <v-list-item-content class="justify-center pa-10">
-        <div class="mx-auto text-center">
-          <v-avatar color="secondary">
-            <span class="white--text text-h5">{{ initials }}</span>
-          </v-avatar>
+  <v-menu
+    min-width="225"
+    max-width="225"
+    :close-on-content-click="false"
+    offset-y
+    bottom
+  >
+    <template v-slot:activator="{ attrs, on: menu }">
+      <v-btn
+        v-bind="attrs"
+        v-on="menu"
+        icon
+      >
+        <v-icon color="primary">
+          mdi-account-cog
+        </v-icon>
+      </v-btn>
+    </template>
 
-          <h3 class="mt-5">{{ data.username }}</h3>
+    <v-list
+      class="py-0"
+      dense
+    >
+      <v-list-item v-if="isLoggedIn">
+        <v-list-item-content class="justify-center px-4 py-6">
+          <div class="mx-auto text-center">
+            <v-avatar color="primary">
+              <span class="white--text text-h5">
+                {{ initials }}
+              </span>
+            </v-avatar>
 
-          <p class="text-caption clip mt-2 mb-0" style="max-width: 170px">
-            {{ data.email }}
-          </p>
+            <p class="text-caption mt-2 mb-0">
+              {{ data.email }}
+            </p>
 
-          <p class="text-caption mb-0">
-            <i>{{ joined }}</i>
-          </p>
-        </div>
+            <p class="text-caption mb-0">
+              <i>{{ joined }}</i>
+            </p>
+          </div>
+        </v-list-item-content>
+      </v-list-item>
 
-        <div class="v-btn--absolute v-btn--right v-btn--top">
-          <v-btn
-            @click="logout"
-            :title="$t('user.logout.title')"
-            class="mr-n2 mt-n3"
-            icon
+      <v-divider v-if="isLoggedIn" />
+
+      <v-menu offset-x>
+        <template v-slot:activator="{ attrs, on: submenu }">
+          <v-list-item
+            v-bind="attrs"
+            v-on="submenu"
           >
-            <v-icon>mdi-logout-variant</v-icon>
-          </v-btn>
-        </div>
-      </v-list-item-content>
-    </v-list-item>
-  </v-list>
+            <v-list-item-content>
+              {{ $t("language.title") }}
+            </v-list-item-content>
+
+            <v-list-item-action>
+              <v-icon>
+                mdi-chevron-right
+              </v-icon>
+            </v-list-item-action>
+          </v-list-item>
+        </template>
+
+        <v-list
+          class="py-0"
+          dense
+        >
+          <v-list-item
+            v-for="lang in langs"
+            :key="lang"
+            @click="changeLang(lang)"
+          >
+            <v-list-item-avatar size="32">
+              <v-icon
+                v-if="lang === locale"
+                class="mr-2"
+              >
+                mdi-check
+              </v-icon>
+            </v-list-item-avatar>
+
+            <v-list-item-content>
+              {{ $t("language.fields")[lang] }}
+            </v-list-item-content>
+          </v-list-item>
+        </v-list>
+      </v-menu>
+    </v-list>
+  </v-menu>
 </template>
 
 <script>
 export default {
+  data() {
+    return {
+      langs: [
+        'en',
+        'de',
+      ],
+    };
+  },
   methods: {
-    logout() {
-      this.$store.dispatch('user/logout');
+    changeLang(lang) {
+      this.$i18n.locale = lang;
     },
   },
   computed: {
+    locale() {
+      return this.$i18n.locale;
+    },
     data() {
       return this.$store.state.user.data;
     },
-    nDays() {
-      const diff = new Date() - new Date(this.data.date_joined);
-      return Math.round(diff / (1000 * 60 * 60 * 24));
-    },
     joined() {
-      return this.$tc('user.menu.joined', this.nDays);
+      const diff = new Date() - new Date(this.data.date_joined);
+      const nDays = Math.round(diff / (1000 * 60 * 60 * 24));
+      return this.$tc('user.menu.joined', nDays);
     },
     initials() {
-      return 'test';
-      // return this.data.username.slice(0, 2);
+      return this.data.username.slice(0, 2);
+    },
+    isLoggedIn() {
+      return this.$store.state.user.loggedIn;
     },
   },
 };
 </script>
-
-<style>
-.account .v-list-item__content {
-  letter-spacing: 0.0892857143em;
-}
-
-.account .v-btn:not(.accent) {
-  justify-content: center !important;
-}
-</style>

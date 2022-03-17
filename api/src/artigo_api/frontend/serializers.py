@@ -14,14 +14,11 @@ class CustomUserDetailsSerializer(UserDetailsSerializer):
     class Meta:
         extra_fields = []
 
-        if hasattr(UserModel, 'EMAIL_FIELD'):
-            extra_fields.append(UserModel.EMAIL_FIELD)
+        if hasattr(UserModel, 'email'):
+            extra_fields.append('email')
 
-        if hasattr(UserModel, 'USERNAME_FIELD'):
-            extra_fields.append(UserModel.USERNAME_FIELD)
-
-        if hasattr(UserModel, 'is_superuser'):
-            extra_fields.append('is_superuser')
+        if hasattr(UserModel, 'username'):
+            extra_fields.append('username')
 
         if hasattr(UserModel, 'first_name'):
             extra_fields.append('first_name')
@@ -31,6 +28,9 @@ class CustomUserDetailsSerializer(UserDetailsSerializer):
 
         if hasattr(UserModel, 'date_joined'):
             extra_fields.append('date_joined')
+
+        if hasattr(UserModel, 'is_superuser'):
+            extra_fields.append('is_superuser')
 
         model = UserModel
         fields = ('pk', *extra_fields)

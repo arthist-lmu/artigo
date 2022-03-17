@@ -14,3 +14,7 @@ from .score_plugin import (
     ScorePlugin,
     ScorePluginManager,
 )
+from .filter_plugin import (
+    FilterPlugin,
+    FilterPluginManager,
+)

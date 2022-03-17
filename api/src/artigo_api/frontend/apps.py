@@ -28,31 +28,37 @@ def read_config(file_path):
 
 
 def init_plugins(config):
-    resource = ResourcePluginManager(
+    _resource = ResourcePluginManager(
         configs=config.get('resources', []),
     )
-    resource.find('resource')
+    _resource.find('resource')
 
-    opponent = OpponentPluginManager(
+    _opponent = OpponentPluginManager(
         configs=config.get('opponents', []),
     )
-    opponent.find('opponent')
+    _opponent.find('opponent')
 
-    taboo = TabooPluginManager(
+    _taboo = TabooPluginManager(
         configs=config.get('taboos', []),
     )
-    taboo.find('taboo')
+    _taboo.find('taboo')
 
-    score = ScorePluginManager(
+    _filter = FilterPluginManager(
+        configs=config.get('filters', []),
+    )
+    _filter.find('filter')
+
+    _score = ScorePluginManager(
         configs=config.get('scores', []),
     )
-    score.find('score')
+    _score.find('score')
 
     data = {
-        'resource': resource,
-        'opponent': opponent,
-        'taboo': taboo,
-        'score': score,
+        'resource': _resource,
+        'opponent': _opponent,
+        'taboo': _taboo,
+        'filter': _filter,
+        'score': _score,
     }
 
     return data
