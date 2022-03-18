@@ -1,13 +1,18 @@
 import axios from '@/plugins/axios';
 
-const resource = {
+const session = {
   namespaced: true,
   state: {
     data: {},
   },
   actions: {
-    get({ commit }, params) {
-      axios.get('/resource/', { params })
+    get({ commit, rootState }, params) {
+      axios.get('/session/', {
+        params,
+        headers: {
+          'Authorization': `Token ${rootState.user.token}`,
+        },
+      })
         .then(({ data }) => {
           commit('updateData', data);
         });
@@ -20,4 +25,4 @@ const resource = {
   },
 };
 
-export default resource;
+export default session;

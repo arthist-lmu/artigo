@@ -120,7 +120,12 @@ export default {
       this.nextRound();
     },
     nextRound() {
-      this.$store.dispatch('game/get', {});
+      if (this.isFinished) {
+        const { sessionId: id } = this.$store.state.game;
+        this.$router.push({ name: 'session', params: { id } });
+      } else {
+        this.$store.dispatch('game/get', {});
+      }
     },
   },
   computed: {
@@ -129,6 +134,10 @@ export default {
     },
     progress() {
       return (this.seconds / this.roundDuration) * 100;
+    },
+    isFinished() {
+      const { roundId, rounds } = this.$store.state.game;
+      return roundId === rounds;
     },
     gameType() {
       return this.$route.query.type || 'default';

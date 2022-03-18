@@ -183,3 +183,13 @@ class TabooSerializer(serializers.ModelSerializer):
         fields = ('resource_id', 'id', 'name')
         list_serializer_class = GenericTagListSerializer
 
+
+class SessionSerializer(serializers.ModelSerializer):
+    resource_id = serializers.ReadOnlyField()
+    count = serializers.ReadOnlyField(source='count_tags')
+    score = serializers.ReadOnlyField(source='sum_score')
+
+    class Meta:
+        model = Tagging
+        fields = ('resource_id', 'count', 'score')
+        list_serializer_class = GenericTagListSerializer

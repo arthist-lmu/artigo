@@ -2,7 +2,7 @@ import grpc
 import logging
 import traceback
 
-from .utils import RPCView
+from .utils import ResourceViewHelper
 from rest_framework.response import Response
 from rest_framework.exceptions import (
     APIException,
@@ -19,44 +19,7 @@ logger = logging.getLogger(__name__)
 
 
 @extend_schema(methods=['POST'], exclude=True)
-class ResourceView(RPCView):
-    def parse_request(self, params):
-        grpc_request = index_pb2.GetRequest()
-
-        if params.get('id'):
-            grpc_request.ids.extend([params['id']])
-
-        return grpc_request
-
-    def rpc_get(self, params):
-        grpc_request = self.parse_request(params)
-        stub = index_pb2_grpc.IndexStub(self.channel)
-
-        try:
-            response = stub.get(grpc_request)
-
-            for x in response.entries:
-                entry = {
-                    'id': x.id,
-                    'meta': meta_from_proto(x.meta),
-                    'tags': tags_from_proto(x.tags),
-                }
-
-                if x.hash_id:
-                    entry['path'] = media_url_to_image(x.hash_id)
-
-                if x.source.id:
-                    entry['source'] = {
-                        'id': x.source.id,
-                        'name': x.source.name,
-                        'url': x.source.url,
-                        'is_public': x.source.is_public,
-                    }
-
-                return entry
-        except grpc.RpcError as error:
-            pass
-
+class ResourceView(ResourceViewHelper):
     @extend_schema(
         parameters=[
             OpenApiParameter(
@@ -157,7 +120,7 @@ class ResourceView(RPCView):
         if not params.get('id'):
             raise ParseError('resource_id_required')
 
-        result = self.rpc_get(params)
+        result = self.rpc_get(params, multiple=False)
 
         if result is None:
             raise NotFound('unknown_resource')

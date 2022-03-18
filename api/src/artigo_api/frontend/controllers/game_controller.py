@@ -6,11 +6,9 @@ from collections import defaultdict
 from django.db.models import Count, F
 from django.core.cache import cache
 from django.core.exceptions import ObjectDoesNotExist
-from frontend.utils import to_int, to_float, channel, media_url_to_image
 from frontend.models import *
-
-from artigo_search import index_pb2, index_pb2_grpc
-from artigo_search.utils import meta_from_proto
+from frontend.utils import to_int, to_float
+from frontend.views.utils import ResourceViewHelper
 
 logger = logging.getLogger(__name__)
 
@@ -300,7 +298,7 @@ class GameController:
         return result
 
     def merge_to_game(self, result, resource_ids):
-        resources = self.get_resources(resource_ids)
+        resources = ResourceView()(resource_ids)
 
         game = defaultdict(dict)
 
@@ -318,47 +316,9 @@ class GameController:
 
         return dict(game)
 
-    @staticmethod
-    def get_resources(resource_ids):
-        def parse_request(params):
-            grpc_request = index_pb2.GetRequest()
 
-            if params.get('ids'):
-                grpc_request.ids.extend(params['ids'])
-
-            return grpc_request
-
-        def rpc_get(params):
-            grpc_request = parse_request(params)
-            stub = index_pb2_grpc.IndexStub(channel())
-
-            try:
-                response = stub.get(grpc_request)
-
-                entries = {}
-
-                for x in response.entries:
-                    entry = {
-                        'resource_id': x.id,
-                        'meta': meta_from_proto(x.meta),
-                    }
-
-                    if x.hash_id:
-                        entry['path'] = media_url_to_image(x.hash_id)
-
-                    if x.source.id:
-                        entry['source'] = {
-                            'name': x.source.name,
-                            'url': x.source.url,
-                            'is_public': x.source.is_public,
-                        }
-
-                    entries[x.id] = entry
-
-                return entries
-            except grpc.RpcError as error:
-                return {}
-
+class ResourceView(ResourceViewHelper):
+    def __call__(self, resource_ids):
         params = {'ids': map(str, resource_ids)}
 
-        return rpc_get(params)
+        return self.rpc_get(params)

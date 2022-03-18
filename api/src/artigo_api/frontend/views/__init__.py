@@ -15,4 +15,5 @@ from .reconcile import (
     ReconcileRemoveView,
 )
 from .game import GameView
+from .session import SessionView
 from .highscore import HighscoreView

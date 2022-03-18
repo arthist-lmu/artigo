@@ -85,6 +85,12 @@ const router = new VueRouter({
           meta: { title: 'search.title' },
         },
         {
+          path: 'game/:id/',
+          name: 'session',
+          component: () => import('@/views/Session.vue'),
+          meta: { title: 'game.title' },
+        },
+        {
           path: 'game',
           name: 'game',
           component: () => import('@/views/Game.vue'),

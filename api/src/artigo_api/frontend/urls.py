@@ -15,6 +15,7 @@ urlpatterns = [
     path('reconcile/add/', views.ReconcileAddView.as_view(), name='reconcile_add'),
     path('reconcile/remove/', views.ReconcileRemoveView.as_view(), name='reconcile_remove'),
     path('game/', views.GameView.as_view(), name='game'),
+    path('session/', views.SessionView.as_view(), name='session'),
     path('highscore/', views.HighscoreView.as_view(), name='highscore'),
     path('schema/', SpectacularAPIView.as_view(), name='schema'),
     path('schema/swagger-ui/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),

@@ -26,15 +26,15 @@ class HighscoreView(APIView):
             taggings = taggings.filter(created__lt=created_lt)
 
         users = taggings.values('user').annotate(
-            count_taggings=Count('user'),
-            count_gamerounds=Count('gameround', distinct=True),
-        ) \
-        .order_by('-count_taggings')[:max(1, limit)] \
-        .values(
-            'user__username',
-            'count_taggings',
-            'count_gamerounds',
-        )
+                count_taggings=Count('user'),
+                count_gamerounds=Count('gameround', distinct=True),
+            ) \
+            .order_by('-count_taggings')[:max(1, limit)] \
+            .values(
+                'user__username',
+                'count_taggings',
+                'count_gamerounds',
+            )
 
         return UserTaggingCountSerializer(users, many=True).data
 

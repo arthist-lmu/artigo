@@ -5,8 +5,6 @@
 </template>
 
 <script>
-import ResourceCard from '@/components/ResourceCard.vue';
-
 export default {
   methods: {
     get(id) {
@@ -30,7 +28,7 @@ export default {
     this.get(this.$route.params.id);
   },
   components: {
-    ResourceCard,
+    ResourceCard: () => import('@/components/ResourceCard.vue'),
   },
 };
 </script>

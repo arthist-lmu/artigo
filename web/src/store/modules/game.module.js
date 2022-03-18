@@ -12,20 +12,18 @@ const game = {
   },
   actions: {
     get({ commit, rootState, state }, params) {
-      if (state.roundId !== state.rounds) {
-        if (Object.keys(params).length === 0) {
-          params = { session_id: state.sessionId };
-        }
-        axios.get('/game/', {
-          params,
-          headers: {
-            'Authorization': `Token ${rootState.user.token}`,
-          },
-        })
-          .then(({ data }) => {
-            commit('updateData', data);
-          });
+      if (Object.keys(params).length === 0) {
+        params = { session_id: state.sessionId };
       }
+      axios.get('/game/', {
+        params,
+        headers: {
+          'Authorization': `Token ${rootState.user.token}`,
+        },
+      })
+        .then(({ data }) => {
+          commit('updateData', data);
+        });
     },
     post({ commit, rootState }, params) {
       axios.post('/game/', { params }, {
