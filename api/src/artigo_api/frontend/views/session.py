@@ -33,7 +33,7 @@ class SessionView(APIView):
                 user=request.user,
             )
 
-        if gamerounds.count() == 0:
+        if not gamerounds.exists():
             raise NotFound('unknown_gamesession')
 
         taggings = Tagging.objects.filter(gameround__in=gamerounds) \

@@ -59,10 +59,8 @@ class SearchView(RPCView):
                         term = grpc_request.terms.add()
                         term.text.query = q['value']
 
-                        if field == 'tags':
-                            term.text.field = 'tags.name'
-                        elif field == 'source':
-                            term.text.field = 'source.name'
+                        if field in ['tags', 'source']:
+                            term.text.field = field
                         elif field in ['all-text', '']:
                             term.text.field = 'all-text'
                         else:

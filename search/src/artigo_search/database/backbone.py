@@ -18,12 +18,13 @@ class Backbone:
 
         self.client = OpenSearch(
             [{'host': self.host, 'port': self.port}],
-            http_compress=True, ssl_show_warn=False,
-            use_ssl=False, ssl_assert_hostname=False, 
+            http_compress=True,
+            ssl_show_warn=False,
+            use_ssl=False,
+            ssl_assert_hostname=False, 
         )
 
         self.index = config.get('index', 'artigo')
-        self.type = config.get('type', '_doc')
 
         if not self.client.indices.exists(index=self.index):
             body = {
@@ -189,7 +190,10 @@ class Backbone:
     def delete(self, indices):
         for index in indices:
             try:
-                self.client.indices.delete(index=index, ignore=[400])
+                self.client.indices.delete(
+                    index=index,
+                    ignore=[400],
+                )
             except exceptions.NotFoundError:
                 return 'error'
 
@@ -197,62 +201,106 @@ class Backbone:
 
     def search(self, body, limit=100, offset=0):
         try:
-            results = self.client.search(
+            result = self.client.search(
                 index=self.index,
                 body=body,
                 from_=offset,
                 size=limit,
-            )
+            )['hits']
 
-            total = results['hits']['total']['value']
-            hits = [x['_source'] for x in results['hits']['hits']]
-
-            return {'total': total, 'entries': hits}
+            return {
+                'total': result['total']['value'],
+                'entries': [x['_source'] for x in result['hits']],
+            }
         except exceptions.NotFoundError:
             return {'total': 0, 'entries': []}
 
     def aggregate(self, body):
+        def traverse(tree):
+            for k, values in tree.items():
+                if k == 'buckets':
+                    for v in values:
+                        yield {
+                            'name': v['key'],
+                            'value': v['doc_count'],
+                        }
+                elif isinstance(values, dict):
+                    yield from traverse(values)
+
         try:
-            results = self.client.search(
+            result = self.client.search(
                 index=self.index,
                 body=body,
                 size=0,
-            )
+            )['aggregations']
 
-            return results['aggregations']
+            return list(traverse(result))
         except exceptions.NotFoundError:
             return []
 
     @staticmethod
     def build_body(query):
-        terms = {'must': [], 'should': [], 'must_not': []}
+        terms = {
+            'must': [],
+            'should': [],
+            'must_not': [],
+        }
 
         for x in query.get('text_search', []):
             term = None
 
             if x.get('field', 'all-text') == 'all-text':
-                term = Q('multi_match', fields=['all_text'], query=x['query'])
+                term = Q(
+                    'multi_match',
+                    fields=['all_text'],
+                    query=x['query'],
+                )
             else:
                 field_path = [y for y in x['field'].split('.') if y]
 
                 if len(field_path) == 1:
                     if field_path[0] == 'meta':
-                        term = Q('multi_match', fields=['all_meta'], query=x['query'])
+                        term = Q(
+                            'multi_match',
+                            fields=['all_meta'],
+                            query=x['query'],
+                        )
+                    elif field_path[0] == 'tags':
+                        term = Q(
+                            'nested',
+                            path='tags',
+                            query=Q(
+                                'bool',
+                                must=[
+                                    Q('match', tags__name=x['query']),
+                                    Q('range', tags__count={'gte': 2}),
+                                ],
+                            ),
+                        )
+                    elif field_path[0] == 'source':
+                        term = Q(
+                            'nested',
+                            path='source',
+                            query=Q(
+                                'bool',
+                                must=[
+                                    Q('match', source__name=x['query']),
+                                ],
+                            ),
+                        )
                 elif len(field_path) == 2:
                     if field_path[0] == 'meta':
-                        term = Q('nested', path='meta', query=Q('bool', must=[
-                            Q('match', meta__name=field_path[1]),
-                            Q('match', meta__value_str=x['query']),
-                        ]))
-                    elif field_path[0] == 'tags':
-                        term = Q('nested', path='tags', query=Q('bool', must=[
-                            Q('match', tags__name=x['query']),
-                            Q('range', tags__count={'gte': 2}),
-                        ]))
-                    elif field_path[0] == 'source':
-                        term = Q('nested', path='source', query=Q('bool', must=[
-                            Q('match', source__name=x['query']),
-                        ]))
+                        term = Q(
+                            'nested',
+                            path='meta',
+                            query=Q(
+                                'bool',
+                                must=[
+                                    Q('match', meta__name=field_path[1]),
+                                    Q('match', meta__value_str=x['query']),
+                                ],
+                            ),
+                        )
 
             if term is None:
                 continue
@@ -278,15 +326,27 @@ class Backbone:
                 if len(field_path) == 2:
                     if field_path[0] == 'meta':
                         if x['relation'] == 'eq':
-                            value_match = Q('term', meta__value_int=x['query'])
+                            value_match = Q(
+                                'term',
+                                meta__value_int=x['query'],
+                            )
                         else:
-                            query = {x['relation']: x['query']}
-                            value_match = Q('range', meta__value_int=query)
+                            value_match = Q(
+                                'range',
+                                meta__value_int={x['relation']: x['query']},
+                            )
 
-                        term = Q('nested', path='meta', query=Q('bool', must=[
-                            Q('match', meta__name=field_path[1]),
-                            value_match,
-                        ]))
+                        term = Q(
+                            'nested',
+                            path='meta',
+                            query=Q(
+                                'bool',
+                                must=[
+                                    Q('match', meta__name=field_path[1]),
+                                    value_match,
+                                ],
+                            ),
+                        )
 
             if term is None:
                 continue
@@ -306,7 +366,12 @@ class Backbone:
                 seed = query.get('seed', uuid.uuid4().hex)
                 functions = [{'random_score': {'seed': seed}}]
 
-                terms['should'].append(Q('function_score', functions=functions))
+                terms['should'].append(
+                    Q(
+                        'function_score',
+                        functions=functions,
+                    )
+                )
 
         logger.info(f'[Server] Query {terms}')
 

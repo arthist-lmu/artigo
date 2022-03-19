@@ -3,6 +3,8 @@ import logging
 from opensearchpy import OpenSearch
 from opensearch_dsl import Q
 
+logger = logging.getLogger(__name__)
+
 
 class Aggregator:
     def __init__(self, backbone):
@@ -12,83 +14,55 @@ class Aggregator:
         aggregations = []
 
         for field in fields:
-            field_path = [y for y in x['field'].split('.') if y]
+            field_path = [y for y in field.split('.') if y]
+            body = self.build_body(query, *field_path, size=size)
 
-            if field_path[0] not in ['meta', 'tags']:
-                continue
-
-            if len(field_path) == 1:
-                body = self.build_body(query, field_path[0], size=size)
-                entries = list(self.get_entries(body, field_path[0]))
-            elif len(field_path) == 2:
-                body = self.build_body(query, *field_path, size=size)
-                entries = list(self.get_entries(body, field_path[0]))
-            else:
-                continue
-
-            if entries and len(entries) > 0:
-                aggregations.append({'field': field, 'entries': entries})
+            aggregations.append({
+                'field': field,
+                'entries': self.backbone.aggregate(body),
+            })
 
         return aggregations
 
-    def get_entries(self, body, nested_field):
-        results = self.backbone.aggregate(body)[f'{nested_field}_nested']
-
-        if results.get(f'{nested_field}_name_filter'):
-            results = results[f'{nested_field}_name_filter']
-
-        for x in results[f'{nested_field}_name_filter_aggr']['buckets']:
-            yield {'name': x['key'], 'value': x['doc_count']}
-
     @staticmethod
-    def build_body(query, nested_field, field=None, size=5):
-        # TODO: transform to DSL
+    def build_body(query, field, subfield=None, size=5):
+        value = 'name' if subfield is None else 'value_str'
 
-        if field is not None:
-            body = {
+        aggs = {
+            'aggs': {
+                f'{field}_aggr': {
+                    'terms': {
+                        'size': size,
+                        'field': f'{field}.{value}.keyword',
+                    },
+                },
+            },
+        }
+
+        if subfield is not None:
+            aggs = {
                 'aggs': {
-                    f'{nested_field}_nested': {
-                        'nested': {
-                            'path': f'{nested_field}',
-                        },
-                        'aggs': {
-                            f'{nested_field}_name_filter': {
-                                'filter': {
-                                    'term': {
-                                        f'{nested_field}.name': field,
-                                    },
-                                },
-                                'aggs': {
-                                    f'{nested_field}_name_filter_aggr': {
-                                        'terms': {
-                                            'size': size,
-                                            'field': f'{nested_field}.value_str.keyword',
-                                        },
-                                    },
-                                },
+                    f'{field}_filter': {
+                        'filter': {
+                            'term': {
+                                f'{field}.name': subfield,
                             },
                         },
+                        **aggs,
                     },
                 },
             }
-        else:
-            body = {
-                'aggs': {
-                    f'{nested_field}_nested': {
-                        'nested': {
-                            'path': f'{nested_field}',
-                        },
-                        'aggs': {
-                            f'{nested_field}_name_filter_aggr': {
-                                'terms': {
-                                    'size': size,
-                                    'field': f'{nested_field}.value_str.keyword',
-                                },
-                            },
-                        },
+
+        body = {
+            'aggs': {
+                f'{field}': {
+                    'nested': {
+                        'path': field,
                     },
+                    **aggs,
                 },
-            }
+            },
+        }
 
         if query is not None:
             body['query'] = query
