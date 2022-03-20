@@ -76,6 +76,9 @@ services:
       - type: bind
         source: ./api/
         target: /api
+      - type: bind
+        source: ./api/config.json
+        target: /config.json
     working_dir: /api/src/artigo_api
     environment:
       - POETRY_VIRTUALENVS_CREATE=False

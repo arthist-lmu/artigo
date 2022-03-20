@@ -29,7 +29,11 @@ SECRET_KEY = env('SECRET_KEY')
 DEBUG = env('DEBUG')
 
 FORCE_SCRIPT_NAME = '/'
-API = env('DOMAIN')
+
+try:
+    API = env('DOMAIN')
+except:
+    API = 'http://localhost:8000'
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -76,17 +80,14 @@ MIDDLEWARE = [
 ALLOWED_HOSTS = [
     '127.0.0.1',
     'localhost',
-    env('DOMAIN'),
 ]
 
 CORS_ALLOW_CREDENTIALS = True
 
 CORS_ALLOWED_ORIGINS = [
     'http://localhost',
-    'http://localhost:80',
     'http://localhost:8080',
-    'https://' + env('DOMAIN'),
-    'https://' + env('FRONTEND_DOMAIN')
+    'http://localhost:8081',
 ]
 
 # CSRF_USE_SESSIONS = False
@@ -98,10 +99,19 @@ CORS_ALLOWED_ORIGINS = [
 
 CSRF_TRUSTED_ORIGINS = [
     'http://localhost',
-    'http://localhost:80',
     'http://localhost:8080',
-    'https://' + env('DOMAIN')
+    'http://localhost:8081',
 ]
+
+try:
+    ALLOWED_HOSTS.append(env('DOMAIN'))
+    CORS_ALLOWED_ORIGINS.extend([
+        f'https://{env("DOMAIN")}',
+        f'https://{env("FRONTEND_DOMAIN")}',
+    ])
+    CSRF_TRUSTED_ORIGINS.append(f'https://{env("DOMAIN")}')
+except:
+    pass
 
 ROOT_URLCONF = 'core.urls'
 
@@ -167,8 +177,9 @@ LOGGING = {
     'disable_existing_loggers': False,
     'formatters': {
         'simple': {
-            'format': '{levelname} [{asctime}] {message}',
+            'format': '{asctime} {levelname}: {message}',
             'style': '{',
+            'datefmt': '%d-%m-%Y %H:%M:%S',
         },
     },
     'handlers': {
@@ -216,8 +227,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 TEST_RUNNER = 'core.runner.PytestTestRunner'
 
 # Celery configuration
-CELERY_BROKER_URL = f'redis://{env("REDIS_HOST")}:{env("REDIS_PORT")}'
-CELERY_RESULT_BACKEND = f'redis://{env("REDIS_HOST")}:{env("REDIS_PORT")}'
+CELERY_BROKER_URL = f'redis://{env("REDIS_HOST")}:{env("REDIS_PORT")}/1'
+CELERY_RESULT_BACKEND = f'redis://{env("REDIS_HOST")}:{env("REDIS_PORT")}/2'
 CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TASK_SERIALIZER = 'json'
