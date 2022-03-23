@@ -2,40 +2,33 @@ import uuid
 import logging
 import faulthandler
 
+from collections import defaultdict
+from opensearch_dsl import Search, Q
 from artigo_search import index_pb2
 
 logger = logging.getLogger(__name__)
 
 
 class Searcher:
-    def __init__(self, backbone, aggregator=None):
+    def __init__(self, backbone):
         self.backbone = backbone
-        self.aggregator = aggregator
 
     def __call__(self, query, limit=100, offset=0):
         faulthandler.enable()
         PYTHONFAULTHANDLER = 1
 
+        result = {}
+
         query = self.parse_query(query)
+        body = self.build_body(query, True)
 
-        body = self.backbone.build_body(query)
-        result = self.backbone.search(body, limit, offset)
+        if limit > 0:
+            result = self.backbone.search(body, limit, offset)
 
-        if self.aggregator and query.get('aggregate'):
-            if query['aggregate'].get('use_query', False):
-                aggregations = self.aggregator(
-                    query=body,
-                    fields=query['aggregate']['fields'],
-                    size=query['aggregate']['size'],
-                )
-            else:
-                aggregations = self.aggregator(
-                    query=None,
-                    fields=query['aggregate']['fields'],
-                    size=query['aggregate']['size'],
-                )
-
-            result['aggregations'] = aggregations
+        if query.get('aggregate'):
+            result['aggregations'] = self.backbone.aggregate(
+                body, **query['aggregate'], limit=0, offset=0,
+            )
 
         return result
 
@@ -124,9 +117,161 @@ class Searcher:
 
         if len(query.aggregate.fields) and query.aggregate.size > 0:
             result['aggregate'] = {
+                'use_query': query.aggregate.use_query,
                 'fields': list(query.aggregate.fields),
                 'size': query.aggregate.size,
-                'use_query': query.aggregate.use_query,
+                'significant': query.aggregate.significant,
             }
 
         return result
+
+    @staticmethod
+    def build_body(query, convert=True):
+        terms = defaultdict(list)
+
+        for x in query.get('text_search', []):
+            term = None
+
+            if x.get('field', 'all-text') == 'all-text':
+                term = Q(
+                    'multi_match',
+                    fields=['all_text'],
+                    query=x['query'],
+                )
+            else:
+                field_path = [y for y in x['field'].split('.') if y]
+
+                if len(field_path) == 1:
+                    if field_path[0] == 'meta':
+                        term = Q(
+                            'multi_match',
+                            fields=['all_metadata'],
+                            query=x['query'],
+                        )
+                    elif field_path[0] == 'tags':
+                        term = Q(
+                            'nested',
+                            path='tags',
+                            query=Q(
+                                'bool',
+                                must=[
+                                    Q('match', tags__name=x['query']),
+                                    Q('range', tags__count={'gte': 1}),
+                                ],
+                            ),
+                        )
+                    elif field_path[0] == 'source':
+                        term = Q(
+                            'nested',
+                            path='source',
+                            query=Q(
+                                'bool',
+                                must=[
+                                    Q('match', source__name=x['query']),
+                                ],
+                            ),
+                        )
+                elif len(field_path) == 2:
+                    if field_path[0] == 'meta':
+                        term = Q(
+                            'nested',
+                            path='metadata',
+                            query=Q(
+                                'bool',
+                                must=[
+                                    Q('match', metadata__name=field_path[1]),
+                                    Q('match', metadata__value_str=x['query']),
+                                ],
+                            ),
+                        )
+
+            if term is None:
+                continue
+
+            if x.get('flag'):
+                if x['flag'] == 'must':
+                    terms['must'].append(term)
+                elif x['flag'] == 'should':
+                    terms['should'].append(term)
+                else:
+                    terms['must_not'].append(term)
+            else:
+                terms['should'].append(term)
+
+        for x in query.get('range_search', []):
+            term = None
+
+            if not x.get('field'):
+                continue
+            else:
+                field_path = [y for y in x['field'].split('.') if y]
+
+                if len(field_path) == 2:
+                    if field_path[0] == 'meta':
+                        if x['relation'] == 'eq':
+                            value_match = Q(
+                                'term',
+                                metadata__value_int=x['query'],
+                            )
+                        else:
+                            value_match = Q(
+                                'range',
+                                metadata__value_int={x['relation']: x['query']},
+                            )
+
+                        term = Q(
+                            'nested',
+                            path='metadata',
+                            query=Q(
+                                'bool',
+                                must=[
+                                    Q('match', metadata__name=field_path[1]),
+                                    value_match,
+                                ],
+                            ),
+                        )
+
+            if term is None:
+                continue
+
+            if x.get('flag'):
+                if x['flag'] == 'must':
+                    terms['must'].append(term)
+                elif x['flag'] == 'should':
+                    terms['should'].append(term)
+                else:
+                    terms['must_not'].append(term)
+            else:
+                terms['should'].append(term)
+
+        if query.get('sorting'):
+            if query['sorting'].lower() == 'random':
+                seed = query.get('seed', uuid.uuid4().hex)
+
+                terms['should'].append(
+                    Q(
+                        'function_score',
+                        functions=[{
+                            'random_score': {
+                                'field': 'path.keyword',
+                                'seed': seed,
+                            },
+                        }],
+                    )
+                )
+
+        logger.info(f'[Server] Query {terms}')
+
+        search = Search().query(
+            Q(
+                'bool',
+                must=terms.get('must', []),
+                should=terms.get('should', []),
+                must_not=terms.get('must_not', []),
+            ),
+        )
+
+        if convert:
+            return search.to_dict()
+
+        return search

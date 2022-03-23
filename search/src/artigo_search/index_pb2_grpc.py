@@ -36,7 +36,7 @@ class IndexStub(object):
                 )
         self.aggregate = channel.unary_unary(
                 '/artigo.search.Index/aggregate',
-                request_serializer=index__pb2.AggregateRequest.SerializeToString,
+                request_serializer=index__pb2.SearchRequest.SerializeToString,
                 response_deserializer=index__pb2.AggregateReply.FromString,
                 )
         self.reconcile = channel.unary_unary(
@@ -132,7 +132,7 @@ def add_IndexServicer_to_server(servicer, server):
             ),
             'aggregate': grpc.unary_unary_rpc_method_handler(
                     servicer.aggregate,
-                    request_deserializer=index__pb2.AggregateRequest.FromString,
+                    request_deserializer=index__pb2.SearchRequest.FromString,
                     response_serializer=index__pb2.AggregateReply.SerializeToString,
             ),
             'reconcile': grpc.unary_unary_rpc_method_handler(
@@ -240,7 +240,7 @@ class Index(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/artigo.search.Index/aggregate',
-            index__pb2.AggregateRequest.SerializeToString,
+            index__pb2.SearchRequest.SerializeToString,
             index__pb2.AggregateReply.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

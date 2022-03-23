@@ -1,5 +1,6 @@
 import logging
 
+from collections import defaultdict
 from .plugin import Plugin
 from .manager import PluginManager
 
@@ -40,18 +41,9 @@ class FilterPluginManager(PluginManager):
     def run(self, tags, gameround, params, plugins=None, configs=None):
         plugin_list = self.init_plugins(plugins, configs)
 
-        if not isinstance(tags, (list, set)):
-            tags = [tags]
-
-        tags = [x.lower() for x in tags]
-        results = dict.fromkeys(tags, True)
-
         for plugin in plugin_list:
-            for entry in plugin['plugin'](tags, gameround, params):
-                if isinstance(entry, dict):
-                    if not entry.get('valid', True):
-                        results[entry['name']] = False
+            for entry in plugin['plugin'](tags.keys(), gameround, params):
+                if not entry.get('valid', True):
+                    tags[entry['name']]['valid'] = False
 
-        results = [k for k, v in results.items() if v]
-
-        return results
+        return tags

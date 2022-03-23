@@ -2,7 +2,6 @@ import grpc
 import logging
 import traceback
 
-from .utils import ResourceViewHelper
 from rest_framework.response import Response
 from rest_framework.exceptions import (
     APIException,
@@ -11,6 +10,7 @@ from rest_framework.exceptions import (
 )
 from drf_spectacular.utils import extend_schema, OpenApiParameter
 from frontend.utils import media_url_to_image
+from .utils import ResourceViewHelper
 
 from artigo_search import index_pb2, index_pb2_grpc
 from artigo_search.utils import meta_from_proto, tags_from_proto

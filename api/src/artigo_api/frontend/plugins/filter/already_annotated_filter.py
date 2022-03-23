@@ -33,5 +33,5 @@ class AlreadyAnnotatedFilter(FilterPlugin):
                 'name': tag,
                 'valid': tag not in invalid_tags,
             })
-
+            
         return result

@@ -1,9 +1,14 @@
-import uuid
 import logging
 
-from opensearchpy import OpenSearch, exceptions
 from opensearchpy.helpers import bulk
-from opensearch_dsl import Search, Q
+from opensearch_dsl import (
+    connections,
+    Search,
+    Index,
+    Q,
+    A,
+)
+from .models import Resource
 
 logger = logging.getLogger(__name__)
 
@@ -16,372 +21,158 @@ class Backbone:
         self.host = config.get('host', 'localhost')
         self.port = config.get('port', 9200)
 
-        self.client = OpenSearch(
-            [{'host': self.host, 'port': self.port}],
+        connections.create_connection(
+            hosts=[f'{self.host}:{self.port}'],
             http_compress=True,
             ssl_show_warn=False,
             use_ssl=False,
             ssl_assert_hostname=False, 
         )
 
+        self.client = connections.get_connection()
         self.index = config.get('index', 'artigo')
 
-        if not self.client.indices.exists(index=self.index):
-            body = {
-                'mappings': {
-                    'properties': {
-                        'id': {
-                            'type': 'text',
-                            'fields': {
-                                'keyword': {
-                                    'type': 'keyword',
-                                    'ignore_above': 256,
-                                },
-                            },
-                        },
-                        'hash_id': {
-                            'type': 'text',
-                            'fields': {
-                                'keyword': {
-                                    'type': 'keyword',
-                                    'ignore_above': 256,
-                                },
-                            },
-                        },
-                        'path': {
-                            'type': 'text',
-                            'fields': {
-                                'keyword': {
-                                    'type': 'keyword',
-                                    'ignore_above': 256,
-                                },
-                            },
-                        },
-                        'meta': {
-                            'type': 'nested',
-                            'properties': {
-                                'name': {
-                                    'type': 'text',
-                                    'fields': {
-                                        'keyword': {
-                                            'type': 'keyword',
-                                            'ignore_above': 256,
-                                        },
-                                    },
-                                },
-                                'value_str': {
-                                    'type': 'text',
-                                    'fields': {
-                                        'keyword': {
-                                            'type': 'keyword',
-                                            'ignore_above': 256,
-                                        }
-                                    },
-                                    'copy_to': ['all_text', 'all_meta'],
-                                },
-                                'value_int': {
-                                    'type': 'long',
-                                },
-                                'value_float': {
-                                    'type': 'float',
-                                },
-                            },
-                        },
-                        'tags': {
-                            'type': 'nested',
-                            'properties': {
-                                'id': {
-                                    'type': 'text',
-                                    'fields': {
-                                        'keyword': {
-                                            'type': 'keyword',
-                                            'ignore_above': 256,
-                                        },
-                                    },
-                                },
-                                'name': {
-                                    'type': 'text',
-                                    'fields': {
-                                        'keyword': {
-                                            'type': 'keyword',
-                                            'ignore_above': 256,
-                                        }
-                                    },
-                                    'copy_to': ['all_text'],
-                                },
-                                'count': {
-                                    'type': 'long',
-                                }
-                            }
-                        },
-                        'source': {
-                            'type': 'nested',
-                            'properties': {
-                                'id': {
-                                    'type': 'text',
-                                    'fields': {
-                                        'keyword': {
-                                            'type': 'keyword',
-                                            'ignore_above': 256,
-                                        },
-                                    },
-                                },
-                                'name': {
-                                    'type': 'text',
-                                    'fields': {
-                                        'keyword': {
-                                            'type': 'keyword',
-                                            'ignore_above': 256,
-                                        },
-                                    },
-                                },
-                                'url': {
-                                    'type': 'text',
-                                    'fields': {
-                                        'keyword': {
-                                            'type': 'keyword',
-                                            'ignore_above': 256,
-                                        },
-                                    },
-                                },
-                                'is_public': {
-                                    'type': 'boolean',
-                                },
-                            },
-                        },
-                        'all_text': {
-                            'type': 'text',
-                        },
-                        'all_meta': {
-                            'type': 'text',
-                        },
-                    },
-                },
-            }
+        index = Index(self.index)
 
-            self.client.indices.create(index=self.index, body=body)
+        if not index.exists():
+            index.aliases(default={})
+            index.document(Resource)
+            index.create()
 
     def status(self):
         return 'ok' if self.client.ping() else 'error'
 
     def get(self, ids):
-        body = {'query': {'ids': {'values': ids}}}
+        result = Resource.mget(ids, index=self.index)
 
-        try:
-            results = self.client.search(
-                index=self.index,
-                body=body,
-                size=len(ids),
-            )
-
-            for x in results['hits']['hits']:
-                yield x['_source']
-        except exceptions.NotFoundError:
-            return []
+        return self.convert(result)
 
     def insert(self, generator):
-        def add_fields(generator):
+        def resources(generator):
             for x in generator:
-                logger.info(f"Insert: {x['id']} into {self.index}")
-                yield {'_id': x['id'], '_index': self.index, **x}
+                resource = Resource()
+                resource.meta.id = x['id']
+                resource.add_collection(x['source'])
 
-        bulk(client=self.client, actions=add_fields(generator))
+                if x.get('hash_id'):
+                    resource.hash_id = x['hash_id']
+
+                for meta in x.get('meta', []):
+                    resource.add_metadata(meta)
+
+                for tag in x.get('tags', []):
+                    resource.add_tag(tag)
+
+                result = resource.to_dict(True)
+                    
+                yield {'_index': self.index, **result}
+
+        bulk(self.client, actions=resources(generator))
 
     def delete(self, indices):
-        for index in indices:
-            try:
-                self.client.indices.delete(
-                    index=index,
-                    ignore=[400],
-                )
-            except exceptions.NotFoundError:
-                return 'error'
+        for name in indices:
+            index = Index(name)
+
+            if index.exists():
+                index.delete()
 
         return 'ok'
 
     def search(self, body, limit=100, offset=0):
-        try:
-            result = self.client.search(
-                index=self.index,
-                body=body,
-                from_=offset,
-                size=limit,
-            )['hits']
+        result = Search.from_dict(body) \
+            .extra(from_=offset, size=limit) \
+            .execute()
 
-            return {
-                'total': result['total']['value'],
-                'entries': [x['_source'] for x in result['hits']],
-            }
-        except exceptions.NotFoundError:
-            return {'total': 0, 'entries': []}
+        return {
+            'total': result.hits.total.value,
+            'entries': self.convert(result.hits),
+        }
 
-    def aggregate(self, body):
+    def aggregate(self, body, **kwargs):
         def traverse(tree):
             for k, values in tree.items():
                 if k == 'buckets':
                     for v in values:
-                        yield {
+                        yield  {
                             'name': v['key'],
                             'value': v['doc_count'],
                         }
                 elif isinstance(values, dict):
                     yield from traverse(values)
 
-        try:
-            result = self.client.search(
-                index=self.index,
-                body=body,
-                size=0,
-            )['aggregations']
+        results = []
 
-            return list(traverse(result))
-        except exceptions.NotFoundError:
-            return []
+        for field in kwargs.get('fields', []):
+            field_path = [y for y in field.split('.', 1) if y]
+
+            if kwargs.get('significant'):
+                terms = 'significant_terms'
+            else:
+                terms = 'terms'
+
+            search = Search.from_dict(body) \
+                .extra(
+                    from_=kwargs.get('offset', 0),
+                    size=kwargs.get('limit', 0),
+                )
+
+            if len(field_path) == 1:
+                search.aggs \
+                    .bucket(
+                        field_path[0],
+                        'nested',
+                        path=field_path[0],
+                    ) \
+                    .bucket(
+                        f'{field_path[0]}_{terms}',
+                        terms,
+                        field=f'{field_path[0]}.name.keyword',
+                        size=kwargs.get('size', 10),
+                        min_doc_count=2,
+                    )
+            elif len(field_path) == 2:
+                search.aggs \
+                    .bucket(
+                        field_path[0],
+                        'nested',
+                        path=field_path[0],
+                    ) \
+                    .bucket(
+                        f'{field_path[0]}_filter',
+                        A(
+                            'filter',
+                            filter=Q(
+                                'term',
+                                **{f'{field_path[0]}.name': field_path[1]},
+                            )
+                        )
+                    ) \
+                    .bucket(
+                        f'{field_path[0]}_{terms}',
+                        terms,
+                        field=f'{field_path[0]}.value_str.keyword',
+                        size=kwargs.get('size', 10),
+                        min_doc_count=1,
+                    )
+            else:
+                continue
+
+            result = search.execute().to_dict()
+
+            results.append({
+                'field': field,
+                'entries': list(traverse(result)),
+            })
+
+        return results
 
     @staticmethod
-    def build_body(query):
-        terms = {
-            'must': [],
-            'should': [],
-            'must_not': [],
-        }
+    def convert(hits):
+        def loop(hits):
+            for x in hits:
+                result = x.to_dict()
+                result['meta'] = x.meta.to_dict()
 
-        for x in query.get('text_search', []):
-            term = None
+                yield result
 
-            if x.get('field', 'all-text') == 'all-text':
-                term = Q(
-                    'multi_match',
-                    fields=['all_text'],
-                    query=x['query'],
-                )
-            else:
-                field_path = [y for y in x['field'].split('.') if y]
-
-                if len(field_path) == 1:
-                    if field_path[0] == 'meta':
-                        term = Q(
-                            'multi_match',
-                            fields=['all_meta'],
-                            query=x['query'],
-                        )
-                    elif field_path[0] == 'tags':
-                        term = Q(
-                            'nested',
-                            path='tags',
-                            query=Q(
-                                'bool',
-                                must=[
-                                    Q('match', tags__name=x['query']),
-                                    Q('range', tags__count={'gte': 2}),
-                                ],
-                            ),
-                        )
-                    elif field_path[0] == 'source':
-                        term = Q(
-                            'nested',
-                            path='source',
-                            query=Q(
-                                'bool',
-                                must=[
-                                    Q('match', source__name=x['query']),
-                                ],
-                            ),
-                        )
-                elif len(field_path) == 2:
-                    if field_path[0] == 'meta':
-                        term = Q(
-                            'nested',
-                            path='meta',
-                            query=Q(
-                                'bool',
-                                must=[
-                                    Q('match', meta__name=field_path[1]),
-                                    Q('match', meta__value_str=x['query']),
-                                ],
-                            ),
-                        )
-
-            if term is None:
-                continue
-
-            if x.get('flag'):
-                if x['flag'] == 'must':
-                    terms['must'].append(term)
-                elif x['flag'] == 'should':
-                    terms['should'].append(term)
-                else:
-                    terms['must_not'].append(term)
-            else:
-                terms['should'].append(term)
-
-        for x in query.get('range_search', []):
-            term = None
-
-            if not x.get('field'):
-                continue
-            else:
-                field_path = [y for y in x['field'].split('.') if y]
-
-                if len(field_path) == 2:
-                    if field_path[0] == 'meta':
-                        if x['relation'] == 'eq':
-                            value_match = Q(
-                                'term',
-                                meta__value_int=x['query'],
-                            )
-                        else:
-                            value_match = Q(
-                                'range',
-                                meta__value_int={x['relation']: x['query']},
-                            )
-
-                        term = Q(
-                            'nested',
-                            path='meta',
-                            query=Q(
-                                'bool',
-                                must=[
-                                    Q('match', meta__name=field_path[1]),
-                                    value_match,
-                                ],
-                            ),
-                        )
-
-            if term is None:
-                continue
-
-            if x.get('flag'):
-                if x['flag'] == 'must':
-                    terms['must'].append(term)
-                elif x['flag'] == 'should':
-                    terms['should'].append(term)
-                else:
-                    terms['must_not'].append(term)
-            else:
-                terms['should'].append(term)
-
-        if query.get('sorting'):
-            if query['sorting'].lower() == 'random':
-                seed = query.get('seed', uuid.uuid4().hex)
-                functions = [{'random_score': {'seed': seed}}]
-
-                terms['should'].append(
-                    Q(
-                        'function_score',
-                        functions=functions,
-                    )
-                )
-
-        logger.info(f'[Server] Query {terms}')
-
-        search = Search().query(
-            Q(
-                'bool',
-                must=terms['must'],
-                should=terms['should'],
-                must_not=terms['must_not'],
-            )
-        )
-
-        return search.to_dict()
+        return list(loop(hits))

@@ -6,7 +6,7 @@ import logging
 import traceback
 
 from concurrent import futures
-from google.protobuf.json_format import MessageToJson, MessageToDict, ParseDict
+from google.protobuf.json_format import MessageToDict, ParseDict
 from . import index_pb2, index_pb2_grpc
 from .plugins import *
 from .database import *
@@ -24,39 +24,38 @@ logger = logging.getLogger(__name__)
 
 def search(args):
     try:
-        query = ParseDict(args['query'], index_pb2.SearchRequest())
-        backbone = Backbone(args['config'].get('opensearch', {}))
+        searcher = Searcher(Backbone(args['config'].get('opensearch')))
 
-        limit = args['query'].get('limit', 100)
-        offset = args['query'].get('offset', 0)
-
-        searcher = Searcher(backbone, aggregator=Aggregator(backbone))
-        search_results = searcher(query, limit=limit, offset=offset)
+        results = searcher(
+            ParseDict(args['query'], index_pb2.SearchRequest()),
+            limit=args['query'].get('limit', 100),
+            offset=args['query'].get('offset', 0),
+        )
 
         result = index_pb2.ListSearchResultReply()
-        result.total = search_results.get('total', 0)
-        result.offset = offset
+        result.total = results['total']
+        result.offset = args['query'].get('offset', 0)
 
-        for e in search_results.get('entries', []):
+        for e in results.get('entries', []):
             entry = result.entries.add()
-            entry.id = e['id']
+            entry.id = e['meta']['id']
 
             if e.get('hash_id'):
                 entry.hash_id = e['hash_id']
 
-            if e.get('meta'):
-                meta_to_proto(entry.meta, e['meta'])
+            if e.get('metadata'):
+                meta_to_proto(entry.meta, e['metadata'])
 
             if e.get('tags'):
                 tags_to_proto(entry.tags, e['tags'])
 
-            if e.get('source'):
-                entry.source.id = e['source']['id']
-                entry.source.name = e['source']['name']
-                entry.source.url = e['source']['url']
-                entry.source.is_public = e['source']['is_public']
+            if e.get('collection'):
+                entry.source.id = e['collection']['id']
+                entry.source.name = e['collection']['name']
+                entry.source.url = e['collection']['url']
+                entry.source.is_public = e['collection']['is_public']
 
-        for a in search_results.get('aggregations', []):
+        for a in results.get('aggregations', []):
             aggregation = result.aggregations.add()
             aggregation.field = a['field']
 
@@ -67,21 +66,20 @@ def search(args):
 
         return MessageToDict(result)
     except Exception as error:
-        logger.error(f'[Server] Search: {repr(error)}')
         logger.error(traceback.format_exc())
 
     return None
 
 
 def init_plugins(config):
-    reconciliator = ReconciliatorPluginManager(
-        configs=config.get('reconciliators', [])
-    )
-    reconciliator.find('reconciliator')
-
     data = {
-        'reconciliator': reconciliator,
+        'reconciliator': ReconciliatorPluginManager(
+            configs=config.get('reconciliators', []),
+        ),
     }
+
+    for key, manager in data.items():
+        manager.find(key)
 
     return data
 
@@ -130,22 +128,22 @@ class Commune(index_pb2_grpc.IndexServicer):
 
         for x in backbone.get(ids=json_obj['ids']):
             entry = results.entries.add()
-            entry.id = x['id']
+            entry.id = x['meta']['id']
 
             if x.get('hash_id'):
                 entry.hash_id = x['hash_id']
 
-            if x.get('meta'):
-                meta_to_proto(entry.meta, x['meta'])
+            if x.get('metadata'):
+                meta_to_proto(entry.meta, x['metadata'])
 
             if x.get('tags'):
                 tags_to_proto(entry.tags, x['tags'])
 
-            if x.get('source'):
-                entry.source.id = x['source']['id']
-                entry.source.name = x['source']['name']
-                entry.source.url = x['source']['url']
-                entry.source.is_public = x['source']['is_public']
+            if x.get('collection'):
+                entry.source.id = x['collection']['id']
+                entry.source.name = x['collection']['name']
+                entry.source.url = x['collection']['url']
+                entry.source.is_public = x['collection']['is_public']
 
         return results
 
@@ -187,7 +185,7 @@ class Commune(index_pb2_grpc.IndexServicer):
 
                 results = self.insert_process_pool.map(InsertJob(), chunk, chunksize=64)
 
-                for i, (status, entry) in enumerate(results):
+                for status, entry in results:
                     if status != 'ok':
                         logger.error(f"[Server] Insert: {entry['id']}")
                         yield index_pb2.InsertReply(status='error', id=entry['id'])
@@ -208,6 +206,8 @@ class Commune(index_pb2_grpc.IndexServicer):
                             except KeyboardInterrupt:
                                 raise
                             except Exception as error:
+                                logger.error(traceback.format_exc())
+
                                 try_count -= 1
                                 time.sleep(1)
 
@@ -281,6 +281,26 @@ class Commune(index_pb2_grpc.IndexServicer):
         context.set_details('Unknown job')
 
         return index_pb2.ListSearchResultReply()
+
+    def aggregate(self, request, context):
+        json_obj = MessageToDict(request)
+        result = index_pb2.AggregateReply()
+
+        logger.info(f'[Server] Aggregate: {json_obj}')
+
+        searcher = Searcher(Backbone(self.config.get('opensearch')))
+        results = searcher(request, limit=0, offset=0)
+
+        for a in results.get('aggregations', []):
+            aggregation = result.aggregations.add()
+            aggregation.field = a['field']
+
+            for e in a['entries']:
+                value_field = aggregation.entries.add()
+                value_field.key = e['name']
+                value_field.int_val = e['value']
+
+        return result
 
     def reconcile(self, request, context):
         json_obj = MessageToDict(request)

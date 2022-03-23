@@ -3,13 +3,13 @@ import hashlib
 import msgpack
 import logging
 
-from .utils import RPCView
 from collections import defaultdict
 from django.core.cache import cache
 from rest_framework.response import Response
 from rest_framework.exceptions import APIException
 from drf_spectacular.utils import extend_schema, OpenApiParameter
-from frontend.utils import media_url_to_image
+from frontend.utils import media_url_to_image, channel
+from .utils import RPCView
 
 from artigo_search import index_pb2, index_pb2_grpc
 from artigo_search.utils import meta_from_proto, tags_from_proto
@@ -73,9 +73,19 @@ class SearchView(RPCView):
                         else:
                             term.text.flag = index_pb2.TextSearchTerm.SHOULD
 
-        for field in params.get('aggregate', []):
-            grpc_request.aggregate.fields.extend([field])
-            grpc_request.aggregate.size = 250
+        if params.get('aggregate'):
+            aggregate = params['aggregate']
+
+            for field in aggregate.get('fields', []):
+                grpc_request.aggregate.fields.extend([field])
+
+            if isinstance(aggregate.get('size'), int):
+                grpc_request.aggregate.size = aggregate['size']
+            else:
+                grpc_request.aggregate.size = 250
+
+            grpc_request.aggregate.use_query = aggregate.get('use_query', True)
+            grpc_request.aggregate.significant = aggregate.get('significant', False)
 
         if params.get('random'):
             grpc_request.sorting = index_pb2.SearchRequest.SORTING_RANDOM
@@ -96,17 +106,17 @@ class SearchView(RPCView):
         return grpc_request
 
     def rpc_check_post(self, job_id):
+        grpc_request = index_pb2.ListSearchResultRequest(id=job_id)
         stub = index_pb2_grpc.IndexStub(self.channel)
-        request = index_pb2.ListSearchResultRequest(id=job_id)
 
         try:
-            response = stub.list_search_result(request)
+            response = stub.list_search_result(grpc_request)
 
             entries = []
 
             for x in response.entries:
                 entry = {
-                    'id': x.id,
+                    'resource_id': x.id,
                     'meta': meta_from_proto(x.meta),
                     'tags': tags_from_proto(x.tags),
                 }
@@ -206,12 +216,20 @@ class SearchView(RPCView):
                 },
             ),
             OpenApiParameter(
-                description='Metadata fields that should be aggregated',
+                description='Aggregation options',
                 name='aggregate',
                 type={
-                    'type': 'array',
-                    'items': {
-                        'type': 'string',
+                    'type': 'object',
+                    'properties': {
+                        'fields': {
+                            'description': 'Metadata fields that should be aggregated',
+                            'type': 'array',
+                        },
+                        'size': {
+                            'description': 'Maximum number of aggregation results',
+                            'type': 'integer',
+                            'default': 250,
+                        },
                     },
                 },
             ),

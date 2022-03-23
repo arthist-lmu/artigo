@@ -19,12 +19,14 @@ class GameController:
         resource_plugin_manager=None,
         opponent_plugin_manager=None,
         taboo_plugin_manager=None,
+        suggester_plugin_manager=None,
     ):
         super().__init__()
 
         self.resource_plugin_manager = resource_plugin_manager
         self.opponent_plugin_manager = opponent_plugin_manager
         self.taboo_plugin_manager = taboo_plugin_manager
+        self.suggester_plugin_manager = suggester_plugin_manager
 
     def __call__(self, params, user):
         if len(params) == 0:
@@ -81,7 +83,6 @@ class GameController:
             if data['query']['taboo_type'] is not None:
                 taboo_type, _ = TabooType.objects \
                     .get_or_create(name=data['query']['taboo_type'])
-                taboo_type.save()
 
                 gameround.taboo_type = taboo_type
 
@@ -116,10 +117,15 @@ class GameController:
 
                 TabooTagging.objects.bulk_create(bulk_list)
 
-            for score_type_name in data['query']['score_types']:
+            for name in data['query']['suggester_types']:
+                suggester_type, _ = SuggesterType.objects \
+                    .get_or_create(name=name)
+
+                gameround.suggester_types.add(suggester_type)
+
+            for name in data['query']['score_types']:
                 score_type, _ = ScoreType.objects \
-                    .get_or_create(name=score_type_name)
-                score_type.save()
+                    .get_or_create(name=name)
 
                 gameround.score_types.add(score_type)
         except Exception as error:
@@ -207,12 +213,20 @@ class GameController:
 
                 return {'type': 'error', 'message': 'invalid_taboos'}
 
+            if len(query['suggester_types']) > 0:
+                result['taboo'] = list(
+                    self.suggester_plugin_manager.run(
+                        result['taboo'],
+                        query['game_options'],
+                        query['suggester_types'],
+                    ),
+                )
+
         game = self.merge_to_game(result, resource_ids)
         # logger.info(f'[Game Controller] Game: {game}')
 
         try:
             gametype, _ = Gametype.objects.get_or_create(name='Tagging')
-            gametype.save()
 
             gamesession = Gamesession(
                 user=user,
@@ -275,13 +289,19 @@ class GameController:
             if query['taboo_type'] == 'most_annotated_taboo':
                 taboo_type = 'MostAnnotatedTaboo'
 
-        score_types = set(['AnnotationValidatedScore'])
+        suggester_types = set()
+
+        if query.getlist('suggester_types[]'):
+            if 'cooccurrence_suggester' in query['suggester_types[]']:
+                suggester_types.add('CooccurrenceSuggester')
+
+        score_types = set()
 
         if query.getlist('score_types[]'):
-            if 'annotation_validated_score' in query['score_types[]']:
+            if 'annotation_validated_score' in query.getlist('score_types[]'):
                 score_types.add('AnnotationValidatedScore')
 
-            if 'opponent_validated_score' in query['score_types[]']:
+            if 'opponent_validated_score' in query.getlist('score_types[]'):
                 score_types.add('OpponentValidatedScore')
 
         result = {
@@ -292,6 +312,7 @@ class GameController:
             'opponent_options': opponent_options,
             'taboo_type': taboo_type,
             'taboo_options': taboo_options,
+            'suggester_types': list(suggester_types),
             'score_types': list(score_types),
         }
 

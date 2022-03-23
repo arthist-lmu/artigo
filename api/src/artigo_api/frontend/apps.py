@@ -28,37 +28,28 @@ def read_config(file_path):
 
 
 def init_plugins(config):
-    _resource = ResourcePluginManager(
-        configs=config.get('resources', []),
-    )
-    _resource.find('resource')
-
-    _opponent = OpponentPluginManager(
-        configs=config.get('opponents', []),
-    )
-    _opponent.find('opponent')
-
-    _taboo = TabooPluginManager(
-        configs=config.get('taboos', []),
-    )
-    _taboo.find('taboo')
-
-    _filter = FilterPluginManager(
-        configs=config.get('filters', []),
-    )
-    _filter.find('filter')
-
-    _score = ScorePluginManager(
-        configs=config.get('scores', []),
-    )
-    _score.find('score')
-
     data = {
-        'resource': _resource,
-        'opponent': _opponent,
-        'taboo': _taboo,
-        'filter': _filter,
-        'score': _score,
+        'resource': ResourcePluginManager(
+            configs=config.get('resources', []),
+        ),
+        'opponent': OpponentPluginManager(
+            configs=config.get('opponents', []),
+        ),
+        'taboo': TabooPluginManager(
+            configs=config.get('taboos', []),
+        ),
+        'suggester': SuggesterPluginManager(
+            configs=config.get('suggesters', []),
+        ),
+        'filter': FilterPluginManager(
+            configs=config.get('filters', []),
+        ),
+        'score': ScorePluginManager(
+            configs=config.get('scores', []),
+        ),
     }
+
+    for key, manager in data.items():
+        manager.find(key)
 
     return data

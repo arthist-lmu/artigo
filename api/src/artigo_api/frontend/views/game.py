@@ -44,19 +44,19 @@ class GameView(APIView):
                     'random_resource',
                 ],
             ),
-            OpenApiParameter(
-                description='Resource options',
-                name='resource_options',
-                type={
-                    'type': 'object',
-                    'properties': {
-                        'lt_percentile': {
-                            'type': 'number',
-                            'default': 1.0,
-                        },
-                    },
-                },
-            ),
+            # OpenApiParameter(
+            #     description='Resource options',
+            #     name='resource_options',
+            #     type={
+            #         'type': 'object',
+            #         'properties': {
+            #             'lt_percentile': {
+            #                 'type': 'number',
+            #                 'default': 1.0,
+            #             },
+            #         },
+            #     },
+            # ),
             OpenApiParameter(
                 description='Type of each opponent. Opponents are invalid' \
                     + ' for infinite game rounds (`round_duration=0`).',
@@ -76,6 +76,19 @@ class GameView(APIView):
                 ],
             ),
             OpenApiParameter(
+                description='Suggester types',
+                name='suggester_types',
+                type={
+                    'type': 'array',
+                    'items': {
+                        'type': 'string',
+                        'enum': [
+                            'cooccurrence_suggester',
+                        ],
+                    },
+                },
+            ),
+            OpenApiParameter(
                 description='Score types',
                 name='score_types',
                 type={
@@ -90,6 +103,9 @@ class GameView(APIView):
                 },
             ),
         ],
+        description='Create games. The first valid game round is automatically' \
+            + ' returned when a new game is created. All further rounds can be' \
+            + ' obtained by passing the respective `session_id`.',
     )
     def get(self, request, format=None):
         if not request.user.is_authenticated:
@@ -101,6 +117,7 @@ class GameView(APIView):
             resource_plugin_manager=plugins.get('resource'),
             opponent_plugin_manager=plugins.get('opponent'),
             taboo_plugin_manager=plugins.get('taboo'),
+            suggester_plugin_manager=plugins.get('suggester'),
         )
 
         result = game_controller(request.query_params, request.user)

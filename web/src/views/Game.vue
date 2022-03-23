@@ -77,7 +77,7 @@ export default {
         opponent_type: 'random_gameround_opponent',
         lt_percentile: 0.75,
         score_types: [
-          'annotations_validated_score',
+          'annotation_validated_score',
           'opponent_validated_score',
         ],
         language: this.$i18n.locale,
@@ -86,7 +86,11 @@ export default {
         params.taboo_type = 'most_annotated_taboo';
         params.taboo_max_tags = 7;
       } else if (this.gameType === 'tag-a-tag') {
-        // TODO
+        params.taboo_type = 'most_annotated_taboo';
+        params.taboo_max_tags = 1;
+        params.suggester_types = [
+          'cooccurrence_suggester',
+        ];
       }
       this.$store.dispatch('game/get', params).then(() => {
         this.tag = null;

@@ -75,11 +75,13 @@ export default {
   },
   computed: {
     entries() {
-      const { entries } = this.$store.state.search.data;
-      return entries || [];
+      return this.$store.state.search.data.entries;
     },
     title() {
-      return this.capitalize(this.entries[0].source.name);
+      if (this.entries.length) {
+        return this.capitalize(this.entries[0].source.name);
+      }
+      return '';
     },
     pageEntries() {
       const firstEntry = (this.page - 1) * this.perPage;

@@ -1,6 +1,5 @@
 import logging
 
-from collections import defaultdict
 from .plugin import Plugin
 from .manager import PluginManager
 
@@ -41,17 +40,11 @@ class ScorePluginManager(PluginManager):
     def run(self, tags, gameround, params, plugins=None, configs=None):
         plugin_list = self.init_plugins(plugins, configs)
 
-        if not isinstance(tags, (list, set)):
-            tags = [tags]
-
-        tags = [x.lower() for x in tags]
-        results = defaultdict(int)
-
         for plugin in plugin_list:
-            for entry in plugin['plugin'](tags, gameround, params):
-                if isinstance(entry, dict):
-                    results[entry['name']] += entry['score']
+            for entry in plugin['plugin'](tags.keys(), gameround, params):
+                if 'score' not in tags[entry['name']]:
+                    tags[entry['name']]['score'] = 0
+                    
+                tags[entry['name']]['score'] += entry['score']
 
-        results = [{'name': k, 'score': v} for k, v in results.items()]
-
-        return results
+        return tags

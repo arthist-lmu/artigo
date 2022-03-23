@@ -219,8 +219,8 @@ class CreateGameround(Create):
             resource_id=toInt(row.get('resource_id')),
             created = toDatetime(row.get('created')),
             score = toScore(row.get('score')),
-            opponent_type_id=toInt(row.get('opponent_type_id')),
-            taboo_type_id=toInt(row.get('taboo_type_id'))
+            # opponent_type_id=toInt(row.get('opponent_type_id')),
+            # taboo_type_id=toInt(row.get('taboo_type_id'))
         )
 
 
@@ -296,8 +296,8 @@ class Command(BaseCommand):
                 CreateResource(options['input']).process()
                 CreateTitle(options['input']).process()
                 CreateGametype(options['input']).process()
-                CreateOpponentType(options['input']).process()
-                CreateTabooType(options['input']).process()
+                # CreateOpponentType(options['input']).process()
+                # CreateTabooType(options['input']).process()
                 CreateGamesession(options['input']).process()
                 CreateGameround(options['input']).process()
                 CreateTag(options['input']).process()

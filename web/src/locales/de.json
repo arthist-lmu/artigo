@@ -171,6 +171,7 @@
         "tags": "Vergebene Schlagwörter",
         "own-tags": "Du",
         "opponent-tags": "Mitspieler:in",
+        "suggestions": "Vorschläge",
         "score": "Punkte"
       },
       "default": {
@@ -199,6 +200,7 @@
       },
       "tag-a-tag": {
         "title": "Tag a Tag",
+        "placeholder": "Beschreibe die Tabuwörter genauer",
         "texts": [
 
         ]

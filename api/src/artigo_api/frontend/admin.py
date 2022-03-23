@@ -24,8 +24,8 @@ class ResourceAdmin(admin.ModelAdmin):
     list_display = ['id', 'creator', 'title'] + fields[1:]
 
     def get_queryset(self, request):
-        qs = super().get_queryset(request)
-        qs = qs.prefetch_related('creators', 'titles')
+        qs = super().get_queryset(request) \
+            .prefetch_related('creators', 'titles')
 
         return qs
 
@@ -56,6 +56,11 @@ class TabooTypeAdmin(CustomModelAdmin):
     pass
 
 
+@admin.register(SuggesterType)
+class SuggesterTypeAdmin(CustomModelAdmin):
+    pass
+
+
 @admin.register(ScoreType)
 class ScoreTypeAdmin(CustomModelAdmin):
     pass
@@ -69,13 +74,17 @@ class GamesessionAdmin(CustomModelAdmin):
 @admin.register(Gameround)
 class GameroundAdmin(admin.ModelAdmin):
     fields = [f.name for f in Gameround._meta.fields]
-    list_display = fields + ['score_type']
+    list_display = fields + ['suggester_type', 'score_type']
 
     def get_queryset(self, request):
-        qs = super().get_queryset(request)
-        qs = qs.prefetch_related('score_types')
+        qs = super().get_queryset(request) \
+            .prefetch_related('suggester_types') \
+            .prefetch_related('score_types')
 
         return qs
+
+    def suggester_type(self, obj):
+        return list(obj.suggester_types.all())
 
     def score_type(self, obj):
         return list(obj.score_types.all())

@@ -137,7 +137,7 @@ class UserTaggingCountSerializer(serializers.ModelSerializer):
         fields = ('name', 'count_taggings', 'count_gamerounds')
 
 
-class GenericTagListSerializer(serializers.ListSerializer):
+class ResourceTagListSerializer(serializers.ListSerializer):
     def to_representation(self, data):
         data = super().to_representation(data)
         groups = groupby(data, key=lambda x: x['resource_id'])
@@ -167,7 +167,7 @@ class OpponentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tagging
         fields = ('resource_id', 'id', 'name', 'created_after')
-        list_serializer_class = GenericTagListSerializer
+        list_serializer_class = ResourceTagListSerializer
 
     def get_created_after(self, obj):
         return obj['created_after'].total_seconds()
@@ -181,7 +181,7 @@ class TabooSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tagging
         fields = ('resource_id', 'id', 'name')
-        list_serializer_class = GenericTagListSerializer
+        list_serializer_class = ResourceTagListSerializer
 
 
 class SessionSerializer(serializers.ModelSerializer):
@@ -192,4 +192,4 @@ class SessionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tagging
         fields = ('resource_id', 'count', 'score')
-        list_serializer_class = GenericTagListSerializer
+        list_serializer_class = ResourceTagListSerializer

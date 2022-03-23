@@ -10,6 +10,10 @@ from .taboo_plugin import (
     TabooPlugin,
     TabooPluginManager,
 )
+from .suggester_plugin import (
+    SuggesterPlugin,
+    SuggesterPluginManager,
+)
 from .score_plugin import (
     ScorePlugin,
     ScorePluginManager,

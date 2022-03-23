@@ -16,7 +16,7 @@ service Index {
   rpc search(SearchRequest)
     returns (SearchReply) {}
 
-  rpc aggregate(AggregateRequest)
+  rpc aggregate(SearchRequest)
     returns (AggregateReply) {}
 
   rpc reconcile(ReconcileRequest)
@@ -146,18 +146,19 @@ message Tag {
 }
 
 message AggregateRequest {
-  repeated string fields = 1;
-  int32 size = 2;
-  bool use_query = 3;
-}
-
-message AggregateReply {
-  repeated ValueField field = 1;
+  bool use_query = 1;
+  repeated string fields = 2;
+  int32 size = 3;
+  bool significant = 4;
 }
 
 message AggregateResult {
   string field = 1;
   repeated ValueField entries = 2;
+}
+
+message AggregateReply {
+  repeated AggregateResult aggregations = 1;
 }
 
 message ReconcileRequestTerm {

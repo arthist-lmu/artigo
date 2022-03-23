@@ -21,6 +21,12 @@
             "disabled": false
         }
     ],
+    "suggesters": [
+        {
+            "type": "CooccurrenceSuggester",
+            "disabled": false
+        }
+    ],
     "filters": [
         {
             "type": "AlreadyAnnotatedFilter",

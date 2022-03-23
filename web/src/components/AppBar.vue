@@ -84,7 +84,7 @@
 
         <v-spacer />
 
-        <v-col cols="2">
+        <v-col cols="3">
           <v-combobox
             v-model="query"
             id="search"

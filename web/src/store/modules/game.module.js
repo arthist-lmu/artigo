@@ -51,7 +51,9 @@ const game = {
     },
     updateTags(state, { tags }) {
       tags.forEach((tag) => {
-        state.tags.push(tag);
+        if (tag.valid) {
+          state.tags.push(tag);
+        }
       });
     },
     updateSeconds(state, seconds) {

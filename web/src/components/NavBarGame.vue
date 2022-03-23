@@ -34,14 +34,60 @@
       >
         <v-list-item-content>
           <v-row class="ma-0">
-            <v-chip
+            <span
               v-for="tag in tabooTags"
               :key="tag.name"
               :title="tag.name"
               class="mr-1 mb-1 uppercase"
+            >
+              <v-chip
+                v-if="selected"
+                @click="selectTag(tag)"
+                :color="selected === tag ? 'primary' : ''"
+                small
+              >
+                {{ tag.name }}
+              </v-chip>
+              <v-chip
+                v-else
+                small
+              >
+                {{ tag.name }}
+              </v-chip>
+            </span>
+          </v-row>
+        </v-list-item-content>
+      </v-list-item>
+    </v-list>
+
+    <v-list
+      v-if="selected && selected.suggest.length"
+      class="pb-0"
+      subheader
+      dense
+      flat
+    >
+      <v-subheader
+        class="pl-1"
+        inset
+      >
+        {{ $t("game.fields.basic.suggestions") }}
+      </v-subheader>
+
+      <v-list-item
+        dense
+      >
+        <v-list-item-content>
+          <v-row class="ma-0">
+            <v-chip
+              v-for="tag in selected.suggest"
+              :key="tag"
+              @click="post(tag)"
+              :title="tag"
+              class="mr-1 mb-1 uppercase"
               small
             >
-              {{ tag.name }}
+              {{ tag }}
             </v-chip>
           </v-row>
         </v-list-item-content>
@@ -147,6 +193,24 @@
 
 <script>
 export default {
+  data() {
+    return {
+      selected: null,
+    };
+  },
+  methods: {
+    post(tag) {
+      const params = {
+        tag,
+        resource_id: this.entry.resource_id,
+        language: this.$i18n.locale,
+      };
+      this.$store.dispatch('game/post', params);
+    },
+    selectTag(tag) {
+      this.selected = tag;
+    },
+  },
   computed: {
     entry() {
       return this.$store.state.game.entry;
@@ -181,6 +245,18 @@ export default {
     },
     seconds() {
       return this.$store.state.game.seconds;
+    },
+    gameType() {
+      return this.$route.query.type || 'default';
+    },
+  },
+  watch: {
+    tabooTags(values) {
+      if (this.gameType === 'tag-a-tag') {
+        [this.selected] = values;
+      } else {
+        this.selected = null;
+      }
     },
   },
 };

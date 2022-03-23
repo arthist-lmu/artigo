@@ -171,6 +171,7 @@
         "tags": "Assigned tags",
         "own-tags": "You",
         "opponent-tags": "Fellow player",
+        "suggestions": "Suggestions",
         "score": "Score"
       },
       "default": {
@@ -198,6 +199,7 @@
       },
       "tag-a-tag": {
         "title": "Tag a Tag",
+        "placeholder": "Describe the taboo words in more detail",
         "texts": [
 
         ]

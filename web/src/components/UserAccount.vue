@@ -118,7 +118,10 @@ export default {
       return this.$tc('user.menu.joined', nDays);
     },
     initials() {
-      return this.data.username.slice(0, 2);
+      if (this.keyInObj('username', this.data)) {
+        return this.data.username.slice(0, 2);
+      }
+      return '';
     },
     isLoggedIn() {
       return this.$store.state.user.loggedIn;

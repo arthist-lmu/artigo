@@ -80,6 +80,12 @@ class Resource(models.Model):
 
     objects = ResourceManager()
 
+    @property
+    def tags(self):
+        tags = self.taggings.values('tag').annotate(count=Count('tag'))
+
+        return tags.values('tag_id', 'tag__name', 'tag__language', 'count')
+
 
 class Gametype(models.Model):
     name = models.CharField(max_length=256, unique=True)
@@ -97,6 +103,13 @@ class OpponentType(models.Model):
 
 
 class TabooType(models.Model):
+    name = models.CharField(max_length=256, unique=True)
+
+    def __str__(self):
+        return self.name
+
+
+class SuggesterType(models.Model):
     name = models.CharField(max_length=256, unique=True)
 
     def __str__(self):
@@ -154,6 +167,7 @@ class Gameround(models.Model):
         null=True,
         blank=True,
     )
+    suggester_types = models.ManyToManyField(SuggesterType)
     score_types = models.ManyToManyField(ScoreType)
 
     def save(self, *args, **kwargs):
@@ -174,8 +188,13 @@ class Tag(models.Model):
 class Tagging(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, null=True)
     gameround = models.ForeignKey(Gameround, on_delete=models.CASCADE)
-    resource = models.ForeignKey(Resource, on_delete=models.CASCADE)
+    resource = models.ForeignKey(
+        Resource,
+        on_delete=models.CASCADE,
+        related_name='taggings',
+    )
     tag = models.ForeignKey(Tag, on_delete=models.CASCADE)
+    suggested = models.BooleanField(default=False)
     created = models.DateTimeField(editable=False)
     score = models.PositiveIntegerField(default=0)
 

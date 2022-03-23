@@ -1,6 +1,7 @@
 import logging
 import traceback
 
+from collections import defaultdict
 from datetime import timedelta
 from django.db.models import F, Q
 from django.forms.models import model_to_dict
@@ -54,13 +55,16 @@ class TagController:
 
         if params.get('tag'):
             if isinstance(params['tag'], str):
-                result['tags'] = [params['tag']]
-            elif isinstance(params['tag'], (list, set)):
-                result['tags'] = list(params['tag'])
+                params['tag'] = [params['tag']]
+
+            result['tags'] = defaultdict(dict)
+
+            for tag in params['tag']:
+                result['tags'][tag.lower()]['valid'] = True
 
         if query.get('filter_types'):
             try:
-                result['tags'] = list(
+                result['tags'] = dict(
                     self.filter_plugin_manager.run(
                         result['tags'],
                         gameround,
@@ -75,7 +79,7 @@ class TagController:
 
         if query.get('score_types'):
             try:
-                result['tags'] = list(
+                result['tags'] = dict(
                     self.score_plugin_manager.run(
                         result['tags'],
                         gameround,
@@ -89,22 +93,27 @@ class TagController:
                 return {'type': 'error', 'message': 'invalid_scores'}
 
         if result.get('tags'):
+            result['tags'] = [
+                {'name': name, **values}
+                for name, values in result['tags'].items()
+            ]
+
             bulk_list = []
 
             for tag in result['tags']:
-                if isinstance(tag, str):
-                    tag = {
-                        'name': tag,
-                        'score': 0,
-                    }
+                if not tag.get('valid'):
+                    continue
 
                 tagging = Tagging(
                     user=user,
                     gameround=gameround,
                     resource=gameround.resource,
-                    score=tag['score'],
                     created=timezone.now(),
+                    suggested=tag.get('suggested', False),
                 )
+
+                if tag.get('score'):
+                    tagging.score = tag['score']
 
                 tag_obj = Tag.objects.filter(
                     name__iexact=tag['name'],
