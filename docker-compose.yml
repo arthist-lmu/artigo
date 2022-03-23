@@ -20,7 +20,7 @@ services:
     volumes:
       - ./opensearch/:/usr/share/opensearch/data
       - ./search/opensearch.yml:/usr/share/opensearch/config/opensearch.yml
-      - ./search/performance_analyzer_enabled.conf:/usr/share/opensearch/data/performance_analyzer_enabled.conf
+    #      - ./search/performance_analyzer_enabled.conf:/usr/share/opensearch/data/performance_analyzer_enabled.conf:ro
     ulimits:
       memlock:
         soft: -1
@@ -91,7 +91,7 @@ services:
       - ./api/src/artigo_api/.env
     ports:
       - "8000:8000"
-    
+
   web:
     image: artigo/web
     build:
