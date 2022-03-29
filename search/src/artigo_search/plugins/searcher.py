@@ -253,7 +253,7 @@ class Searcher:
                         'function_score',
                         functions=[{
                             'random_score': {
-                                'field': 'path.keyword',
+                                'field': '_seq_no',
                                 'seed': seed,
                             },
                         }],

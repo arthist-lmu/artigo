@@ -25,9 +25,9 @@ const user = {
             'Authorization': `Token ${state.token}`,
           },
         })
-        .then(({ data }) => {
-          commit('updateToken', data);
-        });
+          .then(({ data }) => {
+            commit('updateToken', data);
+          });
       } else {
         axios.post('/auth/login/', params)
           .then(({ data }) => {
