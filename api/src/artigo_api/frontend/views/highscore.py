@@ -10,7 +10,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.exceptions import APIException
 from drf_spectacular.utils import extend_schema
-from frontend.models import Tagging
+from frontend.models import UserTagging
 from frontend.serializers import UserTaggingCountSerializer
 
 logger = logging.getLogger(__name__)
@@ -46,7 +46,7 @@ class HighscoreView(APIView):
         previous = current - relativedelta(months=1)
 
         try:
-            taggings = Tagging.objects.exclude(user__username=None)
+            taggings = UserTagging.objects.exclude(user__username=None)
 
             data = {
                 'alltime': self.count(taggings, limit=limit),

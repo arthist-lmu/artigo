@@ -1,7 +1,7 @@
 import logging
 
 from django.db.models import Count
-from frontend.models import Tagging
+from frontend.models import UserTagging
 from frontend.plugins import (
     TabooPlugin,
     TabooPluginManager,
@@ -25,7 +25,7 @@ class MostAnnotatedTaboo(TabooPlugin):
         self.max_tags = self.config['max_tags']
 
     def __call__(self, resource_ids, params):
-        taggings = Tagging.objects.filter(
+        taggings = UserTagging.objects.filter(
                 resource_id__in=resource_ids,
                 tag__language=params.get('language', 'de'),
             ) \

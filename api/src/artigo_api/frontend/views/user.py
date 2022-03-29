@@ -1,6 +1,9 @@
+import uuid
 import logging
 import traceback
 
+from rest_framework import status
+from rest_framework.response import Response
 from drf_spectacular.utils import extend_schema
 from dj_rest_auth.views import (
     LoginView,
@@ -11,7 +14,17 @@ from dj_rest_auth.views import (
     PasswordChangeView,
 )
 from dj_rest_auth.registration.views import RegisterView
-from frontend.serializers import CustomUserDetailsSerializer
+from frontend.serializers import (
+    CustomUserDetailsSerializer,
+    CustomRegisterSerializer,
+)
+from frontend.models import (
+    CustomUser,
+    Gamesession,
+    Gameround,
+    UserTagging,
+)
+
 
 logger = logging.getLogger(__name__)
 
@@ -20,6 +33,28 @@ class CustomLoginView(LoginView):
     '''
     Login user.
     '''
+
+    def post(self, request, *args, **kwargs):
+        self.request = request
+        self.serializer = self.get_serializer(data=self.request.data)
+        self.serializer.is_valid(raise_exception=True)
+
+        previous_user = request.user
+        self.login()
+        current_user = request.user
+
+        if previous_user is not None:
+            Gamesession.objects.filter(user=previous_user) \
+                .update(user=current_user)
+            Gameround.objects.filter(user=previous_user) \
+                .update(user=current_user)
+            UserTagging.objects.filter(user=previous_user) \
+                .update(user=current_user)
+
+            CustomUser.objects.filter(id=previous_user.id) \
+                .delete()
+
+        return self.get_response()
 
 
 @extend_schema(methods=['GET'], exclude=True)
@@ -33,6 +68,37 @@ class CustomRegisterView(RegisterView):
     '''
     Register user.
     '''
+
+    serializer_class = CustomRegisterSerializer
+
+    def create(self, request, *args, **kwargs):
+        if request.data.get('is_anonymous'):
+            username = uuid.uuid4().hex[:15]
+
+            request.data['username'] = username
+            request.data['email'] = f'{username}@artigo.org'
+            request.data['password1'] = uuid.uuid4().hex
+            request.data['password2'] = request.data['password1']
+
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        data = self.get_response_data(user)
+
+        if data:
+            response = Response(
+                data,
+                status=status.HTTP_201_CREATED,
+                headers=headers,
+            )
+        else:
+            response = Response(
+                status=status.HTTP_204_NO_CONTENT,
+                headers=headers,
+            )
+
+        return response
 
 
 @extend_schema(methods=['GET', 'PUT', 'PATCH'], exclude=True)

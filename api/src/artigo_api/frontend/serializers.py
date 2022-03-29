@@ -5,36 +5,75 @@ from frontend.models import *
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
 from dj_rest_auth.serializers import UserDetailsSerializer
+from dj_rest_auth.registration.serializers import RegisterSerializer
+
+try:
+    from allauth.account.adapter import get_adapter
+    from allauth.account.utils import setup_user_email
+except ImportError:
+    raise ImportError('allauth needs to be added to INSTALLED_APPS.')
+
+UserModel = get_user_model()
 
 logger = logging.getLogger(__name__)
-UserModel = get_user_model()
 
 
 class CustomUserDetailsSerializer(UserDetailsSerializer):
     class Meta:
-        extra_fields = []
+        fields = []
 
         if hasattr(UserModel, 'email'):
-            extra_fields.append('email')
+            fields.append('email')
 
         if hasattr(UserModel, 'username'):
-            extra_fields.append('username')
+            fields.append('username')
 
         if hasattr(UserModel, 'first_name'):
-            extra_fields.append('first_name')
+            fields.append('first_name')
 
         if hasattr(UserModel, 'last_name'):
-            extra_fields.append('last_name')
+            fields.append('last_name')
 
         if hasattr(UserModel, 'date_joined'):
-            extra_fields.append('date_joined')
+            fields.append('date_joined')
 
         if hasattr(UserModel, 'is_superuser'):
-            extra_fields.append('is_superuser')
+            fields.append('is_superuser')
+
+        if hasattr(UserModel, 'is_anonymous'):
+            fields.append('is_anonymous')
 
         model = UserModel
-        fields = ('pk', *extra_fields)
+        fields = ('id', *fields)
         read_only_fields = ('email',)
+
+
+class CustomRegisterSerializer(RegisterSerializer):
+    def save(self, request):
+        adapter = get_adapter()
+        user = adapter.new_user(request)
+        self.cleaned_data = self.get_cleaned_data()
+        user = adapter.save_user(request, user, self, commit=False)
+
+        if request.data.get('is_staff'):
+            user.is_staff = True
+
+        if request.data.get('is_anonymous'):
+            user.is_anonymous = True
+
+        if self.cleaned_data.get('password1'):
+            try:
+                adapter.clean_password(self.cleaned_data['password1'], user=user)
+            except DjangoValidationError as exc:
+                raise serializers.ValidationError(
+                    detail=serializers.as_serializer_error(exc)
+                )
+
+        user.save()
+        self.custom_signup(request, user)
+        setup_user_email(request, user, [])
+
+        return user
 
 
 class SourceSerializer(serializers.ModelSerializer):
@@ -93,7 +132,7 @@ class TaggingSerializer(serializers.ModelSerializer):
     tag = TagSerializer(read_only=True)
 
     class Meta:
-        model = Tagging
+        model = UserTagging
         fields = ('id', 'tag')
 
 
@@ -104,7 +143,7 @@ class TagCountSerializer(serializers.ModelSerializer):
     count = serializers.IntegerField()
 
     class Meta:
-        model = Tagging
+        model = UserTagging
         fields = ('id', 'name', 'language', 'count')
 
     def to_representation(self, data):
@@ -165,7 +204,7 @@ class OpponentSerializer(serializers.ModelSerializer):
     created_after = serializers.SerializerMethodField()
 
     class Meta:
-        model = Tagging
+        model = UserTagging
         fields = ('resource_id', 'id', 'name', 'created_after')
         list_serializer_class = ResourceTagListSerializer
 
@@ -179,7 +218,7 @@ class TabooSerializer(serializers.ModelSerializer):
     name = serializers.ReadOnlyField(source='tag__name')
 
     class Meta:
-        model = Tagging
+        model = UserTagging
         fields = ('resource_id', 'id', 'name')
         list_serializer_class = ResourceTagListSerializer
 
@@ -190,6 +229,6 @@ class SessionSerializer(serializers.ModelSerializer):
     score = serializers.ReadOnlyField(source='sum_score')
 
     class Meta:
-        model = Tagging
+        model = UserTagging
         fields = ('resource_id', 'count', 'score')
         list_serializer_class = ResourceTagListSerializer

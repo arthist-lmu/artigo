@@ -2,7 +2,7 @@ import logging
 
 from datetime import timedelta
 from django.db.models import Count, OuterRef, Subquery, F, Avg
-from frontend.models import Tagging
+from frontend.models import UserTagging
 from frontend.plugins import (
     OpponentPlugin,
     OpponentPluginManager,
@@ -24,7 +24,7 @@ class MeanGameroundOpponent(OpponentPlugin):
         # TODO: filter by game_type (taboo etc.)
         round_duration = params.get('round_duration', 0)
 
-        taggings = Tagging.objects.filter(
+        taggings = UserTagging.objects.filter(
                 resource_id__in=resource_ids,
                 gameround__gamesession__round_duration__gte=round_duration,
                 tag__language=params.get('language', 'de'),

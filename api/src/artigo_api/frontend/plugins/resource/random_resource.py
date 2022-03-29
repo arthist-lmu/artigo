@@ -6,7 +6,7 @@ from dateutil.relativedelta import relativedelta
 from django.db.models import Count
 from django.core.cache import cache
 from django.utils.timezone import make_aware
-from frontend.models import Tagging
+from frontend.models import UserTagging
 from frontend.functions import Percentile
 from frontend.plugins import (
     ResourcePlugin,
@@ -44,7 +44,7 @@ class RandomResource(ResourcePlugin):
         resources = cache.get(self.cache['name'])
 
         if resources is None:
-            resources = Tagging.objects.values('resource') \
+            resources = UserTagging.objects.values('resource') \
                 .annotate(
                     count_tags=Count('tag', distinct=True),
                     count_taggings=Count('tag'),
@@ -67,7 +67,7 @@ class RandomResource(ResourcePlugin):
             max_last_played = make_aware(datetime.today()) \
                 - relativedelta(days=self.max_last_played)
 
-            user_resources = Tagging.objects.filter(user_id=params['user_id']) \
+            user_resources = UserTagging.objects.filter(user_id=params['user_id']) \
                 .filter(created__gt=max_last_played) \
                 .values('resource')
 

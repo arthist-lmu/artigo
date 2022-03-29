@@ -1,5 +1,5 @@
 <template>
-  <span v-if="isLoggedIn">
+  <span v-if="!isAnonymous">
     <v-btn
       v-if="type"
       @click="reconcile(type)"
@@ -103,8 +103,8 @@ export default {
     },
   },
   computed: {
-    isLoggedIn() {
-      return this.$store.state.user.loggedIn;
+    isAnonymous() {
+      return this.$store.state.user.isAnonymous;
     },
   },
 };

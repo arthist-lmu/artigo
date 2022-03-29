@@ -1,6 +1,6 @@
 import logging
 
-from frontend.models import Tagging
+from frontend.models import UserTagging
 from frontend.plugins import (
     FilterPlugin,
     FilterPluginManager,
@@ -18,7 +18,7 @@ class AlreadyAnnotatedFilter(FilterPlugin):
         super().__init__(**kwargs)
 
     def __call__(self, tags, gameround, params):
-        invalid_tags = Tagging.objects.filter(
+        invalid_tags = UserTagging.objects.filter(
                 gameround=gameround,
                 resource=gameround.resource,
             ) \

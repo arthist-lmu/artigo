@@ -30,7 +30,7 @@
         </v-btn>
 
         <v-dialog
-          v-if="!isLoggedIn"
+          v-if="isAnonymous"
           v-model="dialog.register"
           max-width="400"
         >
@@ -51,7 +51,7 @@
         </v-dialog>
 
         <v-dialog
-          v-if="!isLoggedIn"
+          v-if="isAnonymous"
           v-model="dialog.login"
           max-width="400"
         >
@@ -72,7 +72,7 @@
         </v-dialog>
 
         <v-btn
-          v-if="isLoggedIn"
+          v-if="!isAnonymous"
           @click="logout"
           small
           text
@@ -138,8 +138,8 @@ export default {
     api() {
       return `${API_LOCATION}/schema/redoc`;
     },
-    isLoggedIn() {
-      return this.$store.state.user.loggedIn;
+    isAnonymous() {
+      return this.$store.state.user.isAnonymous;
     },
   },
   components: {
