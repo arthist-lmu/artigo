@@ -160,16 +160,11 @@ class Searcher:
                                 ],
                             ),
                         )
-                    elif field_path[0] == 'source':
+                    elif field_path[0] == 'collection':
                         term = Q(
-                            'nested',
-                            path='source',
-                            query=Q(
-                                'bool',
-                                must=[
-                                    Q('match', source__name=x['query']),
-                                ],
-                            ),
+                            'multi_match',
+                            fields=['collection.name'],
+                            query=x['query'],
                         )
                 elif len(field_path) == 2:
                     if field_path[0] == 'meta':

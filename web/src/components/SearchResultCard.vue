@@ -214,7 +214,7 @@ export default {
         }
       });
       if (titles.length > 0) {
-        return titles;
+        return new Set(titles);
       }
       return [this.$t('resource.default.title')];
     },
@@ -226,7 +226,7 @@ export default {
         }
       });
       if (creators.length > 0) {
-        return creators;
+        return new Set(creators);
       }
       return [this.$t('resource.default.creator')];
     },
