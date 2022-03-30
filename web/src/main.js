@@ -9,8 +9,23 @@ import '@/styles/custom.css';
 
 Vue.mixin(mixins);
 const ARTigo = Vue.extend({
-  created() {
-    this.$store.dispatch('user/get');
+  computed: {
+    token() {
+      return this.$store.state.user.token;
+    },
+  },
+  watch: {
+    token: {
+      handler(token) {
+        if (token) {
+          this.$store.dispatch('user/get');
+        } else {
+          const params = { is_anonymous: true };
+          this.$store.dispatch('user/register', params);
+        }
+      },
+      immediate: true,
+    },
   },
 });
 

@@ -24,6 +24,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     is_active = models.BooleanField(default=True)
     is_uploader = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
+    is_anonymous = models.BooleanField(default=False)
     date_joined = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(auto_now=True)
     first_name = models.CharField(max_length=256)
@@ -87,40 +88,33 @@ class Resource(models.Model):
         return tags.values('tag_id', 'tag__name', 'tag__language', 'count')
 
 
-class Gametype(models.Model):
+class GeneralType(models.Model):
     name = models.CharField(max_length=256, unique=True)
+
+    class Meta:
+        abstract = True
+
+    def __str__(self):
+        return self.name
+
+class Gametype(GeneralType):
     enabled = models.BooleanField(default=True)
 
-    def __str__(self):
-        return self.name
+
+class OpponentType(GeneralType):
+    pass
 
 
-class OpponentType(models.Model):
-    name = models.CharField(max_length=256, unique=True)
-
-    def __str__(self):
-        return self.name
+class TabooType(GeneralType):
+    pass
 
 
-class TabooType(models.Model):
-    name = models.CharField(max_length=256, unique=True)
-
-    def __str__(self):
-        return self.name
+class SuggesterType(GeneralType):
+    pass
 
 
-class SuggesterType(models.Model):
-    name = models.CharField(max_length=256, unique=True)
-
-    def __str__(self):
-        return self.name
-
-
-class ScoreType(models.Model):
-    name = models.CharField(max_length=256, unique=True)
-
-    def __str__(self):
-        return self.name
+class ScoreType(GeneralType):
+    pass
 
 
 class Gamesession(models.Model):
@@ -185,15 +179,21 @@ class Tag(models.Model):
         return self.name
 
 
-class Tagging(models.Model):
-    user = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, null=True)
+class GeneralTagging(models.Model):
     gameround = models.ForeignKey(Gameround, on_delete=models.CASCADE)
+    tag = models.ForeignKey(Tag, on_delete=models.CASCADE)
+
+    class Meta:
+        abstract = True
+
+
+class UserTagging(GeneralTagging):
+    user = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, null=True)
     resource = models.ForeignKey(
         Resource,
         on_delete=models.CASCADE,
         related_name='taggings',
     )
-    tag = models.ForeignKey(Tag, on_delete=models.CASCADE)
     suggested = models.BooleanField(default=False)
     created = models.DateTimeField(editable=False)
     score = models.PositiveIntegerField(default=0)
@@ -205,10 +205,8 @@ class Tagging(models.Model):
         return super().save(*args, **kwargs)    
 
 
-class OpponentTagging(models.Model):
-    gameround = models.ForeignKey(Gameround, on_delete=models.CASCADE)
+class OpponentTagging(GeneralTagging):
     resource = models.ForeignKey(Resource, on_delete=models.CASCADE)
-    tag = models.ForeignKey(Tag, on_delete=models.CASCADE)
     created_after = models.FloatField(
         default=0,
         validators=[
@@ -217,7 +215,5 @@ class OpponentTagging(models.Model):
     )
 
 
-class TabooTagging(models.Model):
-    gameround = models.ForeignKey(Gameround, on_delete=models.CASCADE)
+class TabooTagging(GeneralTagging):
     resource = models.ForeignKey(Resource, on_delete=models.CASCADE)
-    tag = models.ForeignKey(Tag, on_delete=models.CASCADE)

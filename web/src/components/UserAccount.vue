@@ -22,7 +22,7 @@
       class="py-0"
       dense
     >
-      <v-list-item v-if="isLoggedIn">
+      <v-list-item v-if="!isAnonymous">
         <v-list-item-content class="justify-center px-4 py-6">
           <div class="mx-auto text-center">
             <v-avatar color="primary">
@@ -42,7 +42,7 @@
         </v-list-item-content>
       </v-list-item>
 
-      <v-divider v-if="isLoggedIn" />
+      <v-divider v-if="!isAnonymous" />
 
       <v-menu offset-x>
         <template v-slot:activator="{ attrs, on: submenu }">
@@ -123,8 +123,8 @@ export default {
       }
       return '';
     },
-    isLoggedIn() {
-      return this.$store.state.user.loggedIn;
+    isAnonymous() {
+      return this.$store.state.user.isAnonymous;
     },
   },
 };

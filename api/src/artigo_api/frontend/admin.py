@@ -8,6 +8,11 @@ class CustomModelAdmin(admin.ModelAdmin):
         super().__init__(model, admin_site)
 
 
+@admin.register(CustomUser)
+class UserAdmin(CustomModelAdmin):
+    pass
+
+    
 @admin.register(Source)
 class SourceAdmin(CustomModelAdmin):
     pass
@@ -95,8 +100,8 @@ class TagAdmin(CustomModelAdmin):
     pass
 
 
-@admin.register(Tagging)
-class TaggingAdmin(CustomModelAdmin):
+@admin.register(UserTagging)
+class UserTaggingAdmin(CustomModelAdmin):
     pass
 
 

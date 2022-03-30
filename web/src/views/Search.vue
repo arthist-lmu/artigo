@@ -7,6 +7,7 @@
         <div style="width: 290px;">
           <v-select
             v-model="perPage"
+            @change="postOffset"
             :items="perPageItems"
             class="ml-4"
             hide-details
@@ -99,6 +100,20 @@ export default {
       page: 1,
     };
   },
+  methods: {
+    postOffset() {
+      const lastEntry = this.entries.length + this.offset;
+      const withLastEntry = this.total === lastEntry;
+      if (
+        ((this.page * this.perPage > lastEntry) && !withLastEntry)
+        || (this.page * this.perPage <= this.offset)
+      ) {
+        const offset = (this.page - 1) * this.perPage;
+        this.$store.dispatch('search/post', { offset, sourceView: true });
+      }
+      window.scrollTo(0, 0);
+    },
+  },
   computed: {
     total() {
       return this.$store.state.search.data.total;
@@ -134,17 +149,8 @@ export default {
         this.page = 1;
       }
     },
-    page(value) {
-      const lastEntry = this.entries.length + this.offset;
-      const withLastEntry = this.total === lastEntry;
-      if (
-        ((value * this.perPage > lastEntry) && !withLastEntry)
-        || (value * this.perPage <= this.offset)
-      ) {
-        const offset = (value - 1) * this.perPage;
-        this.$store.dispatch('search/post', { offset, sourceView: true });
-      }
-      window.scrollTo(0, 0);
+    page() {
+      this.postOffset();
     },
     display: {
       handler({ tags, metadata }) {

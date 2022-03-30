@@ -5,7 +5,7 @@ const user = {
   state: {
     data: {},
     token: null,
-    loggedIn: false,
+    isAnonymous: true,
   },
   actions: {
     get({ commit, state }) {
@@ -16,19 +16,27 @@ const user = {
       })
         .then(({ data }) => {
           commit('updateData', data);
-          commit('updateLoggedIn', true);
         });
     },
-    login({ dispatch, commit }, params) {
-      axios.post('/auth/login/', params)
-        .then(({ data }) => {
-          commit('updateToken', data);
-          commit('updateLoggedIn', true);
-          dispatch('get');
-        });
+    login({ commit, state }, params) {
+      if (state.token) {
+        axios.post('/auth/login/', params, {
+          headers: {
+            'Authorization': `Token ${state.token}`,
+          },
+        })
+          .then(({ data }) => {
+            commit('updateToken', data);
+          });
+      } else {
+        axios.post('/auth/login/', params)
+          .then(({ data }) => {
+            commit('updateToken', data);
+          });
+      }
     },
     logout({ commit, state }) {
-      axios.get('/auth/logout/', {
+      axios.post('/auth/logout/', {
         headers: {
           'Authorization': `Token ${state.token}`,
         },
@@ -36,22 +44,24 @@ const user = {
         .then(() => {
           commit('updateData', {});
           commit('updateToken', {});
-          commit('updateLoggedIn', false);
         });
     },
-    register(context, params) {
-      axios.post('/auth/registration/', params);
+    register({ commit }, params) {
+      axios.post('/auth/registration/', params)
+        .then(({ data }) => {
+          commit('updateToken', data);
+        });
     },
   },
   mutations: {
-    updateLoggedIn(state, loggedIn) {
-      state.loggedIn = loggedIn;
-    },
     updateToken(state, { key }) {
+      console.log(key);
       state.token = key;
     },
     updateData(state, data) {
       state.data = data;
+      state.isAnonymous = data.is_anonymous;
+      delete state.data.is_anonymous;
     },
   },
 };

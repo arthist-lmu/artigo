@@ -1,7 +1,7 @@
 import logging
 
 from django.db.models import Count
-from frontend.models import Tagging
+from frontend.models import UserTagging
 from frontend.plugins import (
     ScorePlugin,
     ScorePluginManager,
@@ -26,7 +26,7 @@ class AnnotationValidatedScore(ScorePlugin):
         self.min_taggings = self.config['min_taggings']
 
     def __call__(self, tags, gameround, params):
-        valid_tags = Tagging.objects.filter(
+        valid_tags = UserTagging.objects.filter(
                 resource_id=params.get('resource_id'),
                 tag__name__iregex=f"({'|'.join(tags)})",
                 tag__language=params.get('language', 'de'),

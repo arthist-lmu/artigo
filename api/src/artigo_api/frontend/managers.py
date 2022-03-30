@@ -1,8 +1,11 @@
 import random
+import logging
 
 from django.db import models
 from django.db.models import Count
 from django.contrib.auth.models import BaseUserManager
+
+logger = logging.getLogger(__name__)
 
 
 class CustomUserManager(BaseUserManager):
@@ -58,8 +61,9 @@ class CustomUserManager(BaseUserManager):
 
 class ResourceManager(models.Manager):
     def get_queryset(self):
-        qs = super().get_queryset().select_related('source')
-        qs = qs.prefetch_related('creators', 'titles')
+        qs = super().get_queryset() \
+            .select_related('source') \
+            .prefetch_related('creators', 'titles')
 
         return qs
 

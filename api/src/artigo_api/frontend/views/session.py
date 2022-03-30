@@ -10,7 +10,7 @@ from rest_framework.exceptions import (
     NotFound,
 )
 from drf_spectacular.utils import extend_schema
-from frontend.models import Gameround, Tagging
+from frontend.models import Gameround, UserTagging
 from frontend.serializers import SessionSerializer
 from .utils import ResourceViewHelper
 
@@ -36,7 +36,7 @@ class SessionView(APIView):
         if not gamerounds.exists():
             raise NotFound('unknown_gamesession')
 
-        taggings = Tagging.objects.filter(gameround__in=gamerounds) \
+        taggings = UserTagging.objects.filter(gameround__in=gamerounds) \
             .values('resource') \
             .annotate(
                 count_tags=Count('tag'),

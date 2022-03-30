@@ -16,6 +16,13 @@ from artigo_search.utils import meta_from_proto, tags_from_proto
 
 logger = logging.getLogger(__name__)
 
+MAPPER = {
+    'tags': 'tags',
+    'source': 'collection',
+    '': 'all-text',
+    'all-text': 'all-text',
+}
+
 
 class SearchView(RPCView):
     def parse_request(self, params):
@@ -59,10 +66,8 @@ class SearchView(RPCView):
                         term = grpc_request.terms.add()
                         term.text.query = q['value']
 
-                        if field in ['tags', 'source']:
-                            term.text.field = field
-                        elif field in ['all-text', '']:
-                            term.text.field = 'all-text'
+                        if MAPPER.get(field):
+                            term.text.field = MAPPER[field]
                         else:
                             term.text.field = f'meta.{field}'
 
