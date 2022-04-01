@@ -782,7 +782,7 @@ test = ["pytest (>=4.0.1,<5.0.0)", "pytest-cov (>=2.6.0,<3.0.0)", "pytest-runner
 
 [[package]]
 name = "pymemcache"
-version = "3.5.1"
+version = "3.5.2"
 description = "A comprehensive, fast, pure Python memcached client"
 category = "main"
 optional = false
@@ -1067,7 +1067,7 @@ testing = ["pytest (>=6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytest-
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "adf61041e968803a5e2f547a5c289ce0f643c3953f88dca6ff20d52561bcc2ed"
+content-hash = "e68fd643ad10be1ff707dd49dbfb594aee9a8ea846853678ba3eb8ec92401b3a"
 
 [metadata.files]
 amqp = [
@@ -1702,8 +1702,8 @@ pyjwt = [
     {file = "PyJWT-1.7.1.tar.gz", hash = "sha256:8d59a976fb773f3e6a39c85636357c4f0e242707394cadadd9814f5cbaa20e96"},
 ]
 pymemcache = [
-    {file = "pymemcache-3.5.1-py2.py3-none-any.whl", hash = "sha256:91ca2afe0eff777d5f4c848affee5e469384a680a29bd6968186db940c7f56b7"},
-    {file = "pymemcache-3.5.1.tar.gz", hash = "sha256:c072a17366188294fd012a37fcb4d238e6dd27b96679982b11681c8baab6de59"},
+    {file = "pymemcache-3.5.2-py2.py3-none-any.whl", hash = "sha256:3fca0215845d7b2ecd5f4c627fcf4ce2345a703a897b7e116380115b5a197be2"},
+    {file = "pymemcache-3.5.2.tar.gz", hash = "sha256:8923ab59840f0d5338f1c52dba229fa835545b91c3c2f691c118e678d0fb974e"},
 ]
 pyparsing = [
     {file = "pyparsing-3.0.7-py3-none-any.whl", hash = "sha256:a6c06a88f252e6c322f65faf8f418b16213b51bdfaece0524c1c1bc30c63c484"},
