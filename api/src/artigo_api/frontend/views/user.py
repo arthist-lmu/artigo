@@ -43,13 +43,15 @@ class CustomLoginView(LoginView):
         self.login()
         current_user = request.user
 
-        if previous_user is not None:
-            Gamesession.objects.filter(user=previous_user) \
-                .update(user=current_user)
-            Gameround.objects.filter(user=previous_user) \
-                .update(user=current_user)
-            UserTagging.objects.filter(user=previous_user) \
-                .update(user=current_user)
+        if previous_user is not None and previous_user.is_anonymous:
+            for x in previous_user._meta.related_objects:
+                if x.related_model._meta.app_label == 'frontend':
+                    try:
+                        x.related_model.objects \
+                            .filter(user=previous_user) \
+                            .update(user=current_user)
+                    except Exception as error:
+                        logger.info(error)
 
             CustomUser.objects.filter(id=previous_user.id) \
                 .delete()
@@ -73,15 +75,22 @@ class CustomRegisterView(RegisterView):
 
     def create(self, request, *args, **kwargs):
         if request.data.get('is_anonymous'):
-            username = uuid.uuid4().hex[:15]
+            is_valid = False
 
-            request.data['username'] = username
-            request.data['email'] = f'{username}@artigo.org'
-            request.data['password1'] = uuid.uuid4().hex
-            request.data['password2'] = request.data['password1']
+            while not is_valid:
+                request = self.create_anonymous(request)
 
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
+                try:
+                    serializer = self.get_serializer(data=request.data)
+                    serializer.is_valid(raise_exception=True)
+
+                    is_valid = True
+                except:
+                    pass
+        else:
+            serializer = self.get_serializer(data=request.data)
+            serializer.is_valid(raise_exception=True)
+
         user = self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
         data = self.get_response_data(user)
@@ -99,6 +108,16 @@ class CustomRegisterView(RegisterView):
             )
 
         return response
+
+    def create_anonymous(self, request):
+        username = uuid.uuid4().hex[:15]
+
+        request.data['username'] = username
+        request.data['email'] = f'{username}@artigo.org'
+        request.data['password1'] = uuid.uuid4().hex
+        request.data['password2'] = request.data['password1']
+
+        return request
 
 
 @extend_schema(methods=['GET', 'PUT', 'PATCH'], exclude=True)

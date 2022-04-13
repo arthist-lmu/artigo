@@ -104,7 +104,7 @@ class TagController:
                 if not tag.get('valid'):
                     continue
 
-                tagging = Tagging(
+                tagging = UserTagging(
                     user=user,
                     gameround=gameround,
                     resource=gameround.resource,
@@ -129,7 +129,7 @@ class TagController:
                 tagging.tag = tag_obj
                 bulk_list.append(tagging)
 
-            Tagging.objects.bulk_create(bulk_list)
+            UserTagging.objects.bulk_create(bulk_list)
 
         return {'type': 'ok', **result}
 
