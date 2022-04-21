@@ -4,6 +4,7 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update --fix-missing -y
 RUN DEBIAN_FRONTEND=noninteractive apt-get upgrade -y
 RUN DEBIAN_FRONTEND=noninteractive apt-get install python3-pip npm libpq-dev -y
 
+RUN pip install pip --upgrade
 RUN pip install poetry
 RUN pip install pytest pytest-cov
 
