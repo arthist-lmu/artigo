@@ -1,5 +1,6 @@
 FROM python:3.8
 
+RUN pip install pip --upgrade
 RUN pip install poetry
 RUN pip install pytest pytest-cov
 

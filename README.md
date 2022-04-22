@@ -52,7 +52,6 @@ sudo docker-compose exec web npm install
 
 And apply necessary Django operations:
 ```sh
-sudo docker-compose exec api python3 manage.py migrate auth
 sudo docker-compose exec api python3 manage.py migrate
 ```
 
