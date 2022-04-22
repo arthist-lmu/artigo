@@ -196,13 +196,21 @@ class CreateGamesession(Create):
         self.obj = Gamesession
 
     def convert(self, row):
+        import_rounds = 5
+        if toInt(row.get('rounds')) != None:
+            import_rounds = toInt(row.get('rounds'))
+        
+        import_round_duration = 60
+        if toInt(row.get('rounds')) != None:
+            import_rounds = toInt(row.get('rounds'))
+
         return self.obj(
             id = toInt(row.get('id')),
             gametype_id = toInt(row.get('gametype_id')),
             created = toDatetime(row.get('created')),
             user_id = toInt(row.get('user_id')),
-            rounds = toInt(row.get('rounds')),
-            round_duration = toInt(row.get('round_duration')),
+            rounds = import_rounds,
+            round_duration = import_round_duration,
         )
 
 
@@ -240,7 +248,7 @@ class CreateTag(Create):
 class CreateTagging(Create):
     def __init__(self, folder_path):
         self.file_path = os.path.join(folder_path, 'tagging.csv')
-        self.obj = Tagging
+        self.obj = UserTagging
 
     def convert(self, row):
         return self.obj(
