@@ -4,8 +4,11 @@ import VueI18n from 'vue-i18n';
 Vue.use(VueI18n);
 
 function loadLocaleMessages() {
-  const locales = require.context('../locales', true,
-    /[A-Za-z0-9-_,\s]+\.json$/i);
+  const locales = require.context(
+    '../locales',
+    true,
+    /[A-Za-z0-9-_,\s]+\.json$/i,
+  );
   const messages = {};
   locales.keys().forEach((key) => {
     const matched = key.match(/([A-Za-z0-9-_]+)\./i);
@@ -32,8 +35,11 @@ function getBrowserLocale(options = {}) {
 }
 
 function supportedLocalesInclude(locale) {
-  const locales = require.context('../locales', true,
-    /[A-Za-z0-9-_,\s]+\.json$/i);
+  const locales = require.context(
+    '../locales',
+    true,
+    /[A-Za-z0-9-_,\s]+\.json$/i,
+  );
   const locale_list = locales.keys();
   for (let i = 0; i < locale_list.length; i += 1) {
     const lang = locale_list[i].split('/')[1].split('.')[0];

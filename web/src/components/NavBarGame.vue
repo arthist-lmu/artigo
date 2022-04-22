@@ -238,9 +238,7 @@ export default {
       return this.entry.taboo_tags;
     },
     opponentTagCount() {
-      const tags = this.opponentTags.filter((tag) => {
-        return tag.created_after <= this.seconds;
-      });
+      const tags = this.opponentTags.filter((tag) => tag.created_after <= this.seconds);
       return tags.length;
     },
     seconds() {
