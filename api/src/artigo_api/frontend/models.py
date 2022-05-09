@@ -146,7 +146,7 @@ class Gamesession(models.Model):
 class Gameround(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, null=True)
     gamesession = models.ForeignKey(Gamesession, on_delete=models.CASCADE)
-    resource = models.ForeignKey(Resource, on_delete=models.CASCADE, null=True)
+    resource = models.ForeignKey(Resource, on_delete=models.CASCADE)
     created = models.DateTimeField(editable=False)
     score = models.PositiveIntegerField(default=0)
     opponent_type = models.ForeignKey(
