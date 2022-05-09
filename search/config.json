@@ -19,5 +19,11 @@
             "type": "WikidataReconciliator",
             "disabled": false
         }
+    ],
+    "downloaders": [
+        {
+            "type": "WikidataDownloader",
+            "disabled": false
+        }
     ]
 }

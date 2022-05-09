@@ -26,7 +26,7 @@ def request_insert():
 
             yield request
 
-    channel = grpc.insecure_channel('localhost:50051')
+    channel = grpc.insecure_channel('search:50051')
     stub = index_pb2_grpc.IndexStub(channel)
 
     return stub.insert(entries())

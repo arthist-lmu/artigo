@@ -18,8 +18,10 @@ class InsertJob:
             'id': entry['id'],
             'meta': entry['meta'],
             'tags': entry['tags'],
-            'source': entry['source'],
         }
+
+        if entry.get('source'):
+            doc['source'] = entry['source']
 
         if entry.get('hash_id'):
             doc['hash_id'] = entry['hash_id']

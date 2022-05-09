@@ -52,10 +52,16 @@ class ReconciliatorPluginManager(PluginManager):
     def plugins(self):
         return self._reconciliator_plugins
 
-    def run(self, queries, size=100):
+    def run(self, queries, size=100, plugins=None, configs=None):
+        plugin_list = self.init_plugins(plugins, configs)
+
+        if len(plugin_list) > 1:
+            logger.error('Only one reconciliator plugin is permitted.')
+            raise ValueError
+
         results = []
 
-        for plugin in self.plugin_list:
+        for plugin in plugin_list:
             for entry in plugin['plugin'](queries, size=size):
                 results.append(entry)
 

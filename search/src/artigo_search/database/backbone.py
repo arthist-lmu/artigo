@@ -18,7 +18,7 @@ class Backbone:
         if config is None:
             config = {}
 
-        self.host = config.get('host', 'localhost')
+        self.host = config.get('host', 'opensearch')
         self.port = config.get('port', 9200)
 
         connections.create_connection(
@@ -52,7 +52,9 @@ class Backbone:
             for x in generator:
                 resource = Resource()
                 resource.meta.id = x['id']
-                resource.add_collection(x['source'])
+
+                if x.get('source'):
+                    resource.add_collection(x['source'])
 
                 if x.get('hash_id'):
                     resource.hash_id = x['hash_id']

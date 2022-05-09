@@ -43,9 +43,9 @@ class WikidataReconciliator(ReconciliatorPlugin):
         endpoint = self.endpoint.format(lang)
 
         query = self.parse_query(query, size)
-        urls = self.parse_url(endpoint, query)
+        urls = list(self.parse_url(endpoint, query))
 
-        for _, entries in self.harvest(list(urls)):
+        for _, entries in self.harvest(urls):
             for entry in entries:
                 yield entry
 
