@@ -14,7 +14,7 @@ logger = logging.getLogger(__name__)
 
 class Command(BaseCommand):
     def add_arguments(self, parser):
-        parser.add_argument('-f', '--format', choices=['jsonl'])
+        parser.add_argument('-f', '--format', choices=['jsonl'], default='jsonl')
         parser.add_argument('-o', '--output', type=str, default='/dump')
 
     def handle(self, *args, **options):
