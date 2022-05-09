@@ -1,7 +1,16 @@
 <template>
-  <div class="logo" @click="reset" style="cursor: pointer">
+  <div
+    class="logo"
+    @click="reset"
+    @keyDown="handleReset"
+    style="cursor: pointer"
+  >
     <h1>404 Not found</h1>
-    <img src="/assets/images/logo.svg" />
+
+    <img
+      src="/assets/images/logo.svg"
+      alt=""
+    />
   </div>
 </template>
 
@@ -10,6 +19,11 @@ export default {
   methods: {
     reset() {
       this.$router.push('/');
+    },
+    handleReset(evt) {
+      if (evt.keyCode === 13) {
+        reset();
+      }
     },
   },
 };

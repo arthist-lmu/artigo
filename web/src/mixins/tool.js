@@ -10,8 +10,7 @@ export default {
       type: String,
       required: true,
     },
-    scale: {
-      type: Object,
+    bounds: {
       required: true,
     },
   },
@@ -46,10 +45,14 @@ export default {
         height = 0;
       }
       if (relative) {
-        x /= this.scale.width;
-        y /= this.scale.height;
-        width /= this.scale.width;
-        height /= this.scale.height;
+        const {
+          xMin, width: imgWidth,
+          yMin, height: imgHeight,
+        } = this.bounds;
+        x = (x - xMin) / imgWidth;
+        y = (y - yMin) / imgHeight;
+        width /= imgWidth;
+        height /= imgHeight;
       }
       this.roi = {
         x, y, width, height,

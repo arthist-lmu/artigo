@@ -46,8 +46,7 @@ export default {
     },
   },
   created() {
-    const today = (new Date()).setHours(0, 0, 0, 0);
-    const random = this.getHash(today);
+    const random = (new Date()).setHours(0, 0, 0, 0);
     const params = { random, limit: 1, sourceView: true };
     this.$store.dispatch('search/post', params);
   },

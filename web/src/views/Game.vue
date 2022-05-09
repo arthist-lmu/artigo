@@ -23,7 +23,7 @@
               ref="tag"
               @keyup.enter.native="post"
               :placeholder="$t('game.fields')[gameType].placeholder"
-              tabindex="1"
+              tabindex="0"
               hide-details
               single-line
               clearable

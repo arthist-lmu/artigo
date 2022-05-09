@@ -1,5 +1,3 @@
-import crypto from 'crypto';
-
 export default {
   methods: {
     keyInObj(key, obj) {
@@ -16,8 +14,7 @@ export default {
       return str && `${str.charAt(0).toUpperCase()}${str.slice(1)}`;
     },
     getHash(x) {
-      const md5 = crypto.createHash('md5');
-      return md5.update(JSON.stringify(x)).digest('hex');
+      // TODO
     },
     getHeight(selector, padding = true) {
       const main = document.querySelector(selector);

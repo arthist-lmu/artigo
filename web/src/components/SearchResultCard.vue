@@ -73,6 +73,7 @@
               >
                 <span
                   @click="search(title, 'titles')"
+                  @keyDown="handleSearch"
                   style="cursor: pointer;"
                   class="clip"
                 >
@@ -110,6 +111,7 @@
               >
                 <span
                   @click="search(creators, 'creators')"
+                  @keyDown="handleSearch"
                   class="clip"
                   style="cursor: pointer;"
                 >
@@ -174,6 +176,9 @@ export default {
     search(value, field) {
       const query = { [field]: value };
       this.$store.dispatch('search/post', { query });
+    },
+    handleSearch(evt) {
+
     },
     onError() {
       this.$emit('input', true);

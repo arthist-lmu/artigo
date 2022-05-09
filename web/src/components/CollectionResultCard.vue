@@ -1,7 +1,8 @@
 <template>
   <div
     class="grid-item"
-    @click="showModal = true;"
+    @click="setShowModal"
+    @keyDown="setShowModal"
   >
     <v-dialog
       v-model="showModal"
@@ -69,6 +70,9 @@ export default {
     search(value, field) {
       const query = { [field]: value };
       this.$store.dispatch('search/post', { query });
+    },
+    setShowModal() {
+      this.showModal = true;
     },
     onError() {
       this.$emit('input', true);

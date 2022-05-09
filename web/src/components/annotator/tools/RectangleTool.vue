@@ -17,36 +17,48 @@ export default {
   },
   methods: {
     createPoint({ x, y }) {
-      if (x < 0) {
-        x = 0;
-      } else if (x > this.scale.width) {
-        x = this.scale.width;
+      const {
+        xMin, xMax, yMin, yMax,
+      } = this.bounds;
+      if (x < xMin) {
+        x = xMin;
+      } else if (x > xMax) {
+        x = xMax;
       }
-      if (y < 0) {
-        y = 0;
-      } else if (y > this.scale.height) {
-        y = this.scale.height;
+      if (y < yMin) {
+        y = yMin;
+      } else if (y > yMax) {
+        y = yMax;
       }
       return new paper.Point(x, y);
     },
-    onMouseDown({ point }) {
-      this.remove();
-      this.rectangle[0] = this.createPoint(point);
-      this.rectangle[1] = null;
+    onMouseDown({ event, point }) {
+      if (!event.ctrlKey) {
+        this.remove();
+        this.rectangle[0] = this.createPoint(point);
+        this.rectangle[1] = null;
+      }
     },
-    onMouseDrag({ point }) {
-      this.remove();
-      this.rectangle[1] = this.createPoint(point);
-      this.path = new paper.Path.Rectangle({
-        from: this.rectangle[0],
-        to: this.rectangle[1],
-        fillColor: this.color.stroke,
-        selected: true,
-      });
+    onMouseDrag({ event, point, downPoint }) {
+      if (event.ctrlKey) {
+        const offset = point.subtract(downPoint);
+        this.$emit('setOffset', offset);
+      } else {
+        this.remove();
+        this.rectangle[1] = this.createPoint(point);
+        this.path = new paper.Path.Rectangle({
+          from: this.rectangle[0],
+          to: this.rectangle[1],
+          fillColor: this.color.stroke,
+          selected: true,
+        });
+      }
     },
-    onMouseUp() {
-      this.set(this.path.strokeBounds, true);
-      this.$emit('export', this.roi);
+    onMouseUp({ event }) {
+      if (!event.ctrlKey) {
+        this.set(this.path.strokeBounds, true);
+        this.$emit('export', this.roi);
+      }
     },
   },
 };

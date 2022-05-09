@@ -1,4 +1,5 @@
 import Vue from 'vue';
+import VueTouch from 'vue-touch';
 import i18n from '@/plugins/i18n';
 import vuetify from '@/plugins/vuetify';
 import App from '@/App.vue';
@@ -8,6 +9,8 @@ import mixins from '@/mixins';
 import '@/styles/custom.css';
 
 Vue.mixin(mixins);
+Vue.use(VueTouch, { name: 'v-touch' });
+
 const ARTigo = Vue.extend({
   computed: {
     token() {

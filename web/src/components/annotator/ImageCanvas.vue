@@ -1,7 +1,9 @@
 <template>
   <v-img
+    class="image-wrapper"
     v-bind="computedProps"
     v-on:load="loaded"
+    alt=""
   >
     <template v-slot:placeholder>
       <slot name="placeholder"></slot>
@@ -18,28 +20,43 @@
       </span>
     </v-avatar>
 
-    <div class="canvas-container">
+    <div
+      class="canvas-container"
+      @wheel.prevent="onWheel"
+    >
       <div v-if="activeTool">
+        <SelectTool
+          v-model="activeTool"
+          :bounds="bounds"
+          @setOffset="setOffset"
+        />
+
         <PointTool
           v-model="activeTool"
-          :scale="scale"
+          :bounds="bounds"
+          @setOffset="setOffset"
           @export="update"
         />
 
         <BrushTool
           v-model="activeTool"
-          :scale="scale"
+          :bounds="bounds"
+          @setOffset="setOffset"
           @export="update"
         />
 
         <RectangleTool
           v-model="activeTool"
-          :scale="scale"
+          :bounds="bounds"
+          @setOffset="setOffset"
           @export="update"
         />
       </div>
 
-      <canvas ref="canvas" />
+      <canvas
+        ref="canvas"
+        resize
+      />
     </div>
   </v-img>
 </template>
@@ -58,8 +75,13 @@ export default {
   data() {
     return {
       ...VImg.data,
-      activeTool: '',
-      scale: {
+      activeTool: 'Select',
+      zoom: 0.2,
+      bounds: {
+        xMin: 0,
+        xMax: 0,
+        yMin: 0,
+        yMax: 0,
         width: 0,
         height: 0,
       },
@@ -70,44 +92,58 @@ export default {
     };
   },
   methods: {
-    getScale(image) {
-      const { naturalHeight, naturalWidth } = image;
-      const scaleHeight = this.client.height / naturalHeight;
-      const scaleWidth = this.client.width / naturalWidth;
-      const scale = Math.min(scaleHeight, scaleWidth);
-      return {
-        height: naturalHeight * scale,
-        width: naturalWidth * scale,
-      };
-    },
     loaded(src) {
-      const image = new Image();
-      image.onload = () => {
-        /* istanbul ignore if */
-        if (image.decode) {
-          image.decode();
-        } else {
-          this.onLoad();
-        }
-      };
-      image.src = src;
+      const raster = new paper.Raster(src);
       this.$nextTick(() => {
-        this.client.height = this.$el.clientHeight;
-        this.client.width = this.$el.clientWidth;
-        const { width, height } = this.getScale(image);
-        if (width > 0 && height > 0) {
-          this.scale.width = width;
-          this.scale.height = height;
-          this.scope.view.viewSize.width = width;
-          this.scope.view.viewSize.height = height;
-        }
+        const { width, height } = raster.bounds;
+        const scale = Math.min(
+          this.scope.view.bounds.width / width,
+          this.scope.view.bounds.height / height,
+        );
+        raster.scale(scale, scale);
+        raster.position = this.scope.view.center;
+        this.bounds = {
+          xMin: raster.bounds.x,
+          xMax: raster.bounds.x + width * scale,
+          yMin: raster.bounds.y,
+          yMax: raster.bounds.y + height * scale,
+          width: width * scale,
+          height: height * scale,
+        };
       });
     },
     update(values) {
-      console.log(this.activeTool, values);
+      console.log(this.activeTool, { ...values });
     },
-    reset(scope) {
-      scope.project.activeLayer.removeChildren();
+    reset() {
+      this.scope.project.activeLayer.removeChildren();
+    },
+    changeZoom(delta, position) {
+      const { center, zoom: oldZoom } = this.scope.view;
+      const factor = 1 + this.zoom;
+      const newZoom = delta < 0 ? oldZoom * factor : oldZoom / factor;
+      const beta = oldZoom / newZoom;
+      const x = position.subtract(center).multiply(beta);
+      const offset = position.subtract(x).subtract(center);
+      return { newZoom, offset };
+    },
+    onWheel({ offsetX, offsetY, deltaY }) {
+      const position = this.scope.view.viewToProject(
+        new paper.Point(offsetX, offsetY),
+      );
+      const { newZoom, offset } = this.changeZoom(deltaY, position);
+      if (newZoom < 10 && newZoom > 0.5) {
+        this.scope.view.zoom = newZoom;
+        this.setOffset(offset, false);
+      }
+    },
+    setOffset(offset, subtract = true) {
+      if (subtract) {
+        offset = this.scope.view.center.subtract(offset);
+      } else {
+        offset = this.scope.view.center.add(offset);
+      }
+      this.scope.view.center = offset;
     },
   },
   computed: {
@@ -117,22 +153,37 @@ export default {
   },
   watch: {
     src() {
-      this.reset(this.scope);
+      this.reset();
     },
   },
   mounted() {
-    this.scope = new paper.PaperScope();
     this.scope.setup(this.$refs.canvas);
+    this.scope.activate();
+  },
+  created() {
+    this.scope = new paper.PaperScope();
   },
   components: {
     PointTool: () => import('@/components/annotator/tools/PointTool.vue'),
     BrushTool: () => import('@/components/annotator/tools/BrushTool.vue'),
+    SelectTool: () => import('@/components/annotator/tools/SelectTool.vue'),
     RectangleTool: () => import('@/components/annotator/tools/RectangleTool.vue'),
   },
 };
 </script>
 
+<style>
+.v-image.image-wrapper .v-image__image {
+  display: none;
+}
+</style>
+
 <style scoped>
+canvas[resize] {
+  width: 100%;
+  height: 100%;
+}
+
 .canvas-container {
   height: 100%;
   display: flex;

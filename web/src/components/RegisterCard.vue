@@ -23,7 +23,7 @@
           :placeholder="$t('user.fields.username')"
           :rules="[checkLength]"
           prepend-icon="mdi-account"
-          tabindex="1"
+          tabindex="0"
           counter="75"
           clearable
         />
@@ -33,7 +33,7 @@
           :placeholder="$t('user.fields.email')"
           :rules="[checkLength]"
           prepend-icon="mdi-email"
-          tabindex="2"
+          tabindex="0"
           counter="75"
           clearable
         />
@@ -48,7 +48,7 @@
             showPassword ? 'mdi-eye-outline' : 'mdi-eye-off-outline'
           "
           prepend-icon="mdi-lock"
-          tabindex="3"
+          tabindex="0"
           counter="75"
           clearable
         />
@@ -63,7 +63,7 @@
             showPassword ? 'mdi-eye-outline' : 'mdi-eye-off-outline'
           "
           prepend-icon="mdi-lock"
-          tabindex="4"
+          tabindex="0"
           counter="75"
           clearable
         />
@@ -74,7 +74,7 @@
           :rules="[checkTrue]"
           on-icon="mdi-check-circle-outline"
           off-icon="mdi-checkbox-blank-circle-outline"
-          tabindex="5"
+          tabindex="0"
           color="primary"
         />
       </v-form>
@@ -84,7 +84,7 @@
       <v-btn
         @click="register"
         :disabled="!isFormValid"
-        tabindex="6"
+        tabindex="0"
         color="accent"
         depressed
         rounded

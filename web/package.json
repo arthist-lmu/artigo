@@ -10,13 +10,14 @@
   "dependencies": {
     "@mdi/font": "^6.5.95",
     "axios": "^0.26.0",
-    "js-cookie": "^3.0.1",
     "core-js": "^3.19.3",
+    "js-cookie": "^3.0.1",
     "paper": "0.12.15",
     "validator": "^13.7.0",
     "vue": "^2.6.11",
     "vue-i18n": "^8.26.7",
     "vue-router": "^3.5.3",
+    "vue-touch": "^2.0.0-beta.4",
     "vuetify": "^2.6.1",
     "vuex": "^3.6.2",
     "vuex-persistedstate": "^4.1.0",
@@ -54,6 +55,7 @@
       "parser": "@babel/eslint-parser"
     },
     "rules": {
+      "vue/multi-word-component-names": "off",
       "vue/no-unused-vars": "off",
       "no-param-reassign": "off",
       "object-shorthand": "off",
