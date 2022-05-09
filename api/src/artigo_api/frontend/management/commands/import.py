@@ -1,5 +1,6 @@
 import os
 import csv
+import pytz
 
 from frontend.models import *
 from datetime import datetime
@@ -7,6 +8,7 @@ from django.utils import timezone
 from django.core.management import BaseCommand, CommandError
 from django.core.validators import URLValidator
 from django.core.exceptions import ValidationError
+from artigo_api import logger
 
 
 def toInt(x):
@@ -52,7 +54,7 @@ def toDatetime(x):
         if '.' not in x: x += '.0'
         frt = '%Y-%m-%d %H:%M:%S.%f'
 
-        return datetime.strptime(x, frt)
+        return datetime.strptime(x, frt).replace(tzinfo=pytz.timezone(settings.TIME_ZONE))
 
     return timezone.now()
 
@@ -196,21 +198,21 @@ class CreateGamesession(Create):
         self.obj = Gamesession
 
     def convert(self, row):
-        import_rounds = 5
-        if toInt(row.get('rounds')) != None:
-            import_rounds = toInt(row.get('rounds'))
+#        import_rounds = 5
+#        if toInt(row.get('rounds')) != None:
+#            import_rounds = toInt(row.get('rounds'))
         
-        import_round_duration = 60
-        if toInt(row.get('rounds')) != None:
-            import_rounds = toInt(row.get('rounds'))
+#        import_round_duration = 60
+#        if toInt(row.get('rounds')) != None:
+#            import_rounds = toInt(row.get('rounds'))
 
         return self.obj(
             id = toInt(row.get('id')),
             gametype_id = toInt(row.get('gametype_id')),
             created = toDatetime(row.get('created')),
             user_id = toInt(row.get('user_id')),
-            rounds = import_rounds,
-            round_duration = import_round_duration,
+            rounds = toInt(row.get('rounds')),
+            round_duration = toInt(row.get('round_duration')),
         )
 
 
@@ -290,7 +292,7 @@ class CreateResourceCreator(Create):
 
 class Command(BaseCommand):
     def add_arguments(self, parser):
-        parser.add_argument('-f', '--format', choices=['csv'])
+        parser.add_argument('-f', '--format', choices=['csv'], default='csv')
         parser.add_argument('--input', type=str, default='/dump')
 
     def handle(self, *args, **options):
@@ -298,20 +300,31 @@ class Command(BaseCommand):
 
         if os.path.isdir(options['input']):
             if options['format'] == 'csv':
+                logger.info("Import Users")
                 CreateUser(options['input']).process()
+                logger.info("Import Source")
                 CreateSource(options['input']).process()
+                logger.info("Import Creator")
                 CreateCreator(options['input']).process()
+                logger.info("Import Resource")
                 CreateResource(options['input']).process()
+                logger.info("Import Title")
                 CreateTitle(options['input']).process()
+                logger.info("Import Gametype")
                 CreateGametype(options['input']).process()
                 # CreateOpponentType(options['input']).process()
                 # CreateTabooType(options['input']).process()
+                logger.info("Import Gamesession")
                 CreateGamesession(options['input']).process()
+                logger.info("Import Gameround")
                 CreateGameround(options['input']).process()
+                logger.info("Import Tag")
                 CreateTag(options['input']).process()
+                logger.info("Import Tagging")
                 CreateTagging(options['input']).process()
-
+                logger.info("Import ResourceTitle")
                 CreateResourceTitle(options['input']).process()
+                logger.info("Import ResourceCreator")
                 CreateResourceCreator(options['input']).process()
         else:
             raise CommandError('Input is not a directory.')
