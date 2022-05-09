@@ -64,10 +64,17 @@ sudo docker-compose exec api python3 manage.py loaddata sites.json
 ## Miscellaneous
 
 ### Data import and export
-To import data, `.csv` files must be stored in the `./dump` and corresponding `.jpg` files in the `./media` folder. The following command must be executed while the application is running:
+When exporting from the legacy ARTigo instance use the conversion script on the dump folder first.
+
+```
+sudo docker-compose exec api python3 frontend/management/commands/convert_csv.py --input /dump --output /dump --image_input /media --image_output /media
+```
+
+To import data, `.csv` files should be stored in the `./dump` and corresponding `.jpg` files in the `./media` folder. The following command must be executed while the application is running:
 ```sh
 sudo docker-compose exec api python3 manage.py import --format csv --input /dump
 ```
+While importing, please note that in comparison to earlier ARTigo, unique e-mails ARE enforced, and double accounts will not be created. Check user.csv for these errors. Importing the full data set can take a signigicant amount of time. (~26 min)
 
 To export data, execute the following command:
 ```sh
