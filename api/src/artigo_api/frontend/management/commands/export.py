@@ -16,25 +16,28 @@ class Command(BaseCommand):
     def add_arguments(self, parser):
         parser.add_argument('-f', '--format', choices=['jsonl'], default='jsonl')
         parser.add_argument('-o', '--output', type=str, default='/dump')
+        parser.add_argument('--size', type=int, default=1000)
 
     def handle(self, *args, **options):
         start_time = timezone.now()
 
         if os.path.isdir(options['output']):
-            if options['format'] == 'jsonl':
-                qs = Resource.objects.prefetch_related('taggings')
-                qs = ResourceWithTaggingsSerializer(qs.all(), many=True)
+            qs = Resource.objects.prefetch_related('taggings')
 
-                dump_time = timezone.now().strftime('%Y%m%d%H%M%S')
-                file_path = f"{options['output']}/os-dump_{dump_time}.jsonl"
+            dump_time = timezone.now().strftime('%Y%m%d%H%M%S')
+            file_path = f"{options['output']}/dump_{dump_time}.{options['format']}"
 
-                try:
-                    with open(file_path, 'w', encoding='utf-8') as file_obj:
-                        for resource in qs.data:
-                            file_obj.write(json.dumps(resource) + '\n')
-                except Exception as error:
-                    logger.error(traceback.format_exc())
-                    os.remove(file_path)
+            with open(file_path, 'w', encoding='utf-8') as file_obj:
+                for i in range(0, qs.count(), options['size']):
+                    chunk = qs.all()[i:(i + options['size'])]
+                    chunk = ResourceWithTaggingsSerializer(chunk, many=True)
+
+                    if options['format'] == 'jsonl':
+                        try:
+                            for resource in chunk.data:
+                                file_obj.write(f"{json.dumps(resource)}\n")
+                        except Exception as error:
+                            logger.error(traceback.format_exc())
         else:
             raise CommandError('Output is not a directory.')
 
