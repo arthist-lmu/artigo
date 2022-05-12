@@ -14,7 +14,12 @@ def get_hex(x, prefix='artigo'):
     return uuid.uuid3(NS, f'{prefix}_{x}').hex
 
 
+def create_map(x):
+    return {k: v + 1 for v, k in enumerate(x)}
+
+
 def get_path(x, folder):
+    if x and not isinstance(x, str): x = str(x)
     folder = os.path.join(folder, f'{x[0:2]}/{x[2:4]}')
     if not os.path.exists(folder): os.makedirs(folder)
 
@@ -23,11 +28,11 @@ def get_path(x, folder):
 
 def parse_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--input', required=True, type=str, help='input folder')
-    parser.add_argument('--output', required=True, type=str, help='output folder')
-    parser.add_argument('--image_input', type=str, help='image input folder')
-    parser.add_argument('--image_output', type=str, help='image output folder')
-    parser.add_argument('--n_sessions', default=-1, type=int, help='number of sessions')
+    parser.add_argument('--input', required=True, type=str, help='Input folder')
+    parser.add_argument('--output', required=True, type=str, help='Output folder')
+    parser.add_argument('--image_input', type=str, help='Image input folder')
+    parser.add_argument('--image_output', type=str, help='Image output folder')
+    parser.add_argument('--n_sessions', default=-1, type=int, help='Number of sessions')
 
     return parser.parse_args()
 
@@ -38,6 +43,7 @@ def main():
 
     if os.path.isdir(args.input):
         gametype = pd.read_csv(os.path.join(args.input, 'gametype.csv'), **csv_args)
+        # TODO: add Taboo
         gametype = gametype[gametype.name.isin(['imageLabeler'])]
         gametype = gametype[['id', 'name', 'rounds', 'roundduration']]
         gametype = gametype.rename(columns={'roundduration': 'round_duration'})
@@ -87,7 +93,10 @@ def main():
         resource = resource[['id', 'artist_id', 'source_id', 'datecreated', 'location', 'institution', 'origin', 'enabled', 'path']]
         resource = resource.rename(columns={'artist_id': 'creator_id', 'datecreated': 'created'})
 
-        if args.image_input and os.path.isdir(args.image_input):
+        if args.image_input:
+            if not os.path.isdir(args.image_input):
+                raise ValueError('Image input folder is not a directory.')  
+
             images = pd.DataFrame({'path': os.listdir(args.image_input)})
             images['hash_id'] = np.vectorize(get_hex)(images['path'])
             resource = pd.merge(resource, images, on='path', how='left')
@@ -99,10 +108,11 @@ def main():
                         path_to = get_path(row.hash_id, args.image_output)
 
                         shutil.copy(path_from, path_to)
-                    except Exception as e:
-                        pass
+                    except Exception as error:
+                        print(f'Skipping {row.path} with error: {error}.')
 
-        # TODO: add created_start, created_end (use unstruwwel)
+        resource['created_start'] = resource.created.str.extract('([0-9]{4})', expand=False)
+        resource['created_end'] = resource['created_start']
 
         title = pd.read_csv(os.path.join(args.input, 'title.csv'), **csv_args)
         title = title[title.resource_id.isin(resource.id)]
@@ -117,9 +127,11 @@ def main():
         person = pd.read_csv(os.path.join(args.input, 'person.csv'), **csv_args)
 
         user = person[person.id.isin(tagging.user_id)]
-        user = user.dropna(axis=0, subset=['username', 'email'])
+        user = user[~user.duplicated(['email']) | (user['email'].isnull())]
+        registered_user = user.dropna(axis=0, subset=['username', 'email'])
         user = user[['id', 'username', 'email', 'password', 'forename', 'surname', 'registration']]
         user = user.rename(columns={'forename': 'first_name', 'surname': 'last_name', 'registration': 'date_joined'})
+        user['is_anonymous'] = user.id.isin(registered_user.id)
 
         gamesession.loc[~gamesession.user_id.isin(user.id), 'user_id'] = np.nan
         gameround.loc[~gameround.user_id.isin(user.id), 'user_id'] = np.nan
@@ -136,6 +148,42 @@ def main():
 
         resource.loc[~resource.creator_id.isin(creator.id), 'creator_id'] = np.nan
 
+        # create indexes with continuous identifiers
+        user_id_map = create_map(user['id'])
+        source_id_map = create_map(source['id'])
+        creator_id_map = create_map(creator['id'])
+        resource_id_map = create_map(resource['id'])
+        title_id_map = create_map(title['id'])
+        gametype_id_map = create_map(gametype['id'])
+        gamesession_id_map = create_map(gamesession['id'])
+        gameround_id_map = create_map(gameround['id'])
+        tag_id_map = create_map(tag['id'])
+        tagging_id_map = create_map(tagging['id'])
+
+        user['id'] = user['id'].map(user_id_map)
+        source['id'] = source['id'].map(source_id_map)
+        creator['id'] = creator['id'].map(creator_id_map)
+        resource['id'] = resource['id'].map(resource_id_map)
+        resource['creator_id'] = resource['creator_id'].map(creator_id_map)
+        resource['source_id'] = resource['source_id'].map(source_id_map)
+        title['id'] = title['id'].map(title_id_map)
+        title['resource_id'] = title['resource_id'].map(resource_id_map)
+        gametype['id'] = gametype['id'].map(gametype_id_map)
+        gamesession['id'] = gamesession['id'].map(gamesession_id_map)
+        gamesession['gametype_id'] = gamesession['gametype_id'].map(gametype_id_map)
+        gamesession['user_id'] = gamesession['user_id'].map(user_id_map)
+        gameround['id'] = gameround['id'].map(gameround_id_map)
+        gameround['user_id'] = gameround['user_id'].map(user_id_map)
+        gameround['gamesession_id'] = gameround['gamesession_id'].map(gamesession_id_map)
+        gameround['resource_id'] = gameround['resource_id'].map(resource_id_map)
+        tag['id'] = tag['id'].map(tag_id_map)
+        tagging['id'] = tagging['id'].map(tagging_id_map)
+        tagging['user_id'] = tagging['user_id'].map(user_id_map)
+        tagging['gameround_id'] = tagging['gameround_id'].map(gameround_id_map)
+        tagging['resource_id'] = tagging['resource_id'].map(resource_id_map)
+        tagging['tag_id'] = tagging['tag_id'].map(tag_id_map)
+
+        # write converted files to output directory
         if not os.path.exists(args.output):
             os.makedirs(args.output)
 

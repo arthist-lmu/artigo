@@ -25,7 +25,7 @@ class Command(BaseCommand):
             qs = Resource.objects.prefetch_related('taggings')
 
             dump_time = timezone.now().strftime('%Y%m%d%H%M%S')
-            file_path = f"{options['output']}/dump_{dump_time}.{options['format']}"
+            file_path = f"{options['output']}/os-dump_{dump_time}.{options['format']}"
 
             with open(file_path, 'w', encoding='utf-8') as file_obj:
                 for i in range(0, qs.count(), options['size']):

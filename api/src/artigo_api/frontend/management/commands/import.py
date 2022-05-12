@@ -1,14 +1,17 @@
 import os
 import csv
 import pytz
+import uuid
 
 from frontend.models import *
 from datetime import datetime
+from django.db import connection
+from django.apps import apps
 from django.utils import timezone
 from django.core.management import BaseCommand, CommandError
+from django.core.management.color import no_style
 from django.core.validators import URLValidator
 from django.core.exceptions import ValidationError
-from artigo_api import logger
 
 
 def toInt(x):
@@ -75,11 +78,17 @@ class Create:
                     processed_rows.append(obj)
 
                 if len(processed_rows) > 5000:
-                    self.obj.objects.bulk_create(processed_rows, **args)
+                    try:
+                        self.obj.objects.bulk_create(processed_rows, **args)
+                    except Exception as error:
+                        print(error)
                     processed_rows = []
 
             if processed_rows:
-                self.obj.objects.bulk_create(processed_rows, **args)
+                try:
+                    self.obj.objects.bulk_create(processed_rows, **args)
+                except Exception as error:
+                        print(error)
 
 
 class CreateUser(Create):
@@ -88,6 +97,15 @@ class CreateUser(Create):
         self.obj = CustomUser
 
     def convert(self, row):
+        if not row.get('username'):
+            row['username'] = uuid.uuid4().hex[:15]
+
+        if not row.get('email'):
+            row['email'] = f"{row['username']}@artigo.org"
+
+        if not row.get('password'):
+            row['password'] = uuid.uuid4().hex
+
         return self.obj(
             id = toInt(row.get('id')),
             username = row.get('username'),
@@ -96,6 +114,7 @@ class CreateUser(Create):
             first_name = row.get('first_name'),
             last_name = row.get('last_name'),
             date_joined = toDatetime(row.get('date_joined')),
+            is_anonymous = row.get('is_anonymous', False),
         )
 
 
@@ -134,8 +153,8 @@ class CreateResource(Create):
             id = toInt(row.get('id')),
             hash_id = row.get('hash_id'),
             source_id = toInt(row.get('source_id')),
-            created_start = row.get('created_start'),
-            created_end = row.get('created_end'),
+            created_start = toInt(row.get('created_start')),
+            created_end = toInt(row.get('created_end')),
             location = row.get('location'),
             institution = row.get('institution'),
             origin = toURL(row.get('origin')),
@@ -198,14 +217,6 @@ class CreateGamesession(Create):
         self.obj = Gamesession
 
     def convert(self, row):
-#        import_rounds = 5
-#        if toInt(row.get('rounds')) != None:
-#            import_rounds = toInt(row.get('rounds'))
-        
-#        import_round_duration = 60
-#        if toInt(row.get('rounds')) != None:
-#            import_rounds = toInt(row.get('rounds'))
-
         return self.obj(
             id = toInt(row.get('id')),
             gametype_id = toInt(row.get('gametype_id')),
@@ -300,31 +311,31 @@ class Command(BaseCommand):
 
         if os.path.isdir(options['input']):
             if options['format'] == 'csv':
-                logger.info("Import Users")
+                self.stdout.write('Import User')
                 CreateUser(options['input']).process()
-                logger.info("Import Source")
+                self.stdout.write('Import Source')
                 CreateSource(options['input']).process()
-                logger.info("Import Creator")
+                self.stdout.write('Import Creator')
                 CreateCreator(options['input']).process()
-                logger.info("Import Resource")
+                self.stdout.write('Import Resource')
                 CreateResource(options['input']).process()
-                logger.info("Import Title")
+                self.stdout.write('Import Title')
                 CreateTitle(options['input']).process()
-                logger.info("Import Gametype")
+                self.stdout.write('Import Gametype')
                 CreateGametype(options['input']).process()
                 # CreateOpponentType(options['input']).process()
                 # CreateTabooType(options['input']).process()
-                logger.info("Import Gamesession")
+                self.stdout.write('Import Gamesession')
                 CreateGamesession(options['input']).process()
-                logger.info("Import Gameround")
+                self.stdout.write('Import Gameround')
                 CreateGameround(options['input']).process()
-                logger.info("Import Tag")
+                self.stdout.write('Import Tag')
                 CreateTag(options['input']).process()
-                logger.info("Import Tagging")
+                self.stdout.write('Import Tagging')
                 CreateTagging(options['input']).process()
-                logger.info("Import ResourceTitle")
+                self.stdout.write('Import ResourceTitle')
                 CreateResourceTitle(options['input']).process()
-                logger.info("Import ResourceCreator")
+                self.stdout.write('Import ResourceCreator')
                 CreateResourceCreator(options['input']).process()
         else:
             raise CommandError('Input is not a directory.')
@@ -334,3 +345,13 @@ class Command(BaseCommand):
 
         txt = f'Import took {duration.total_seconds()} seconds.'
         self.stdout.write(self.style.SUCCESS(txt))
+
+        configs = [apps.get_app_config(x) for x in ['frontend']]
+        models = [list(config.get_models()) for config in configs]
+
+        with connection.cursor() as cursor:
+            for model in models:
+                for sql in connection.ops.sequence_reset_sql(no_style(), model):
+                    cursor.execute(sql)
+
+        self.stdout.write(self.style.SUCCESS('Successfully reset AutoFields.'))
