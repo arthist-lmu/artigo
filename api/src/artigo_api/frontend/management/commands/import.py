@@ -13,6 +13,9 @@ from django.core.management.color import no_style
 from django.core.validators import URLValidator
 from django.core.exceptions import ValidationError
 
+DATE_FORMAT = '%Y-%m-%d %H:%M:%S.%f'
+TZINFO = pytz.timezone(settings.TIME_ZONE)
+
 
 def toInt(x):
     if isinstance(x, str):
@@ -54,10 +57,9 @@ def toURL(x):
 
 def toDatetime(x):
     if x:
-        if '.' not in x: x += '.0'
-        frt = '%Y-%m-%d %H:%M:%S.%f'
+        if '.' not in x: x += '.0'  # convert to proper date format
 
-        return datetime.strptime(x, frt).replace(tzinfo=pytz.timezone(settings.TIME_ZONE))
+        return datetime.strptime(x, DATE_FORMAT).replace(tzinfo=TZINFO)
 
     return timezone.now()
 
@@ -114,7 +116,7 @@ class CreateUser(Create):
             first_name = row.get('first_name'),
             last_name = row.get('last_name'),
             date_joined = toDatetime(row.get('date_joined')),
-            is_anonymous = row.get('is_anonymous', False),
+            is_anonymous = row.get('is_anonymous') == 'True',
         )
 
 

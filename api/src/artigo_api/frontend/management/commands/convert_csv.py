@@ -131,16 +131,16 @@ def main():
         registered_user = user.dropna(axis=0, subset=['username', 'email'])
         user = user[['id', 'username', 'email', 'password', 'forename', 'surname', 'registration']]
         user = user.rename(columns={'forename': 'first_name', 'surname': 'last_name', 'registration': 'date_joined'})
-        user['is_anonymous'] = user.id.isin(registered_user.id)
+        user.insert(loc=0, column='is_anonymous', value=~user.id.isin(registered_user.id))
 
         gamesession.loc[~gamesession.user_id.isin(user.id), 'user_id'] = np.nan
         gameround.loc[~gameround.user_id.isin(user.id), 'user_id'] = np.nan
         tagging.loc[~tagging.user_id.isin(user.id), 'user_id'] = np.nan
 
         creator = person[person.id.isin(resource.creator_id)]
-        creator.fillna('', inplace=True)
-        creator['name'] = creator.forename + ' ' + creator.surname
-        creator.name = creator.name.str.strip()
+        creator = creator.fillna('')
+        creator.insert(loc=0, column='name', value=creator.forename + ' ' + creator.surname)
+        creator = creator.assign(name=creator.name.str.strip())
         creator = creator.replace(r'^\s*$', np.nan, regex=True)
         creator = creator.dropna(axis=0, subset=['name'])
         creator = creator[['id', 'name']]
