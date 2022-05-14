@@ -195,6 +195,7 @@ class UserTagging(GeneralTagging):
         related_name='taggings',
     )
     suggested = models.BooleanField(default=False)
+    uploaded = models.BooleanField(default=False)
     created = models.DateTimeField(editable=False)
     score = models.PositiveIntegerField(default=0)
 

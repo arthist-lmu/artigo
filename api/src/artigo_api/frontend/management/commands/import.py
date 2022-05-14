@@ -1,8 +1,11 @@
 import os
 import csv
+import sys
 import pytz
 import uuid
+import hashlib
 
+from tqdm import tqdm
 from frontend.models import *
 from datetime import datetime
 from django.db import connection
@@ -73,7 +76,7 @@ class Create:
             processed_rows = []
             columns = next(data)
 
-            for row in data:
+            for row in tqdm(data, f'Import {self.name}', file=sys.stdout):
                 obj = self.convert(dict(zip(columns, row)))
 
                 if obj is not None:
@@ -84,6 +87,7 @@ class Create:
                         self.obj.objects.bulk_create(processed_rows, **args)
                     except Exception as error:
                         print(error)
+
                     processed_rows = []
 
             if processed_rows:
@@ -94,6 +98,8 @@ class Create:
 
 
 class CreateUser(Create):
+    name = 'User'
+
     def __init__(self, folder_path):
         self.file_path = os.path.join(folder_path, 'user.csv')
         self.obj = CustomUser
@@ -106,7 +112,8 @@ class CreateUser(Create):
             row['email'] = f"{row['username']}@artigo.org"
 
         if not row.get('password'):
-            row['password'] = uuid.uuid4().hex
+            password = uuid.uuid4().hex.encode('utf-8')
+            row['password'] = hashlib.sha256(password).hexdigest()
 
         return self.obj(
             id = toInt(row.get('id')),
@@ -121,6 +128,8 @@ class CreateUser(Create):
 
 
 class CreateSource(Create):
+    name = 'Source'
+
     def __init__(self, folder_path):
         self.file_path = os.path.join(folder_path, 'source.csv')
         self.obj = Source
@@ -134,6 +143,8 @@ class CreateSource(Create):
 
 
 class CreateCreator(Create):
+    name = 'Creator'
+
     def __init__(self, folder_path):
         self.file_path = os.path.join(folder_path, 'creator.csv')
         self.obj = Creator
@@ -146,6 +157,8 @@ class CreateCreator(Create):
 
 
 class CreateResource(Create):
+    name = 'Resource'
+
     def __init__(self, folder_path):
         self.file_path = os.path.join(folder_path, 'resource.csv')
         self.obj = Resource
@@ -165,6 +178,8 @@ class CreateResource(Create):
 
 
 class CreateTitle(Create):
+    name = 'Title'
+
     def __init__(self, folder_path):
         self.file_path = os.path.join(folder_path, 'title.csv')
         self.obj = Title
@@ -178,6 +193,8 @@ class CreateTitle(Create):
 
         
 class CreateGametype(Create):
+    name = 'Gametype'
+
     def __init__(self, folder_path):
         self.file_path = os.path.join(folder_path, 'gametype.csv')
         self.obj = Gametype
@@ -190,6 +207,8 @@ class CreateGametype(Create):
 
 
 class CreateOpponentType(Create):
+    name = 'Opponent type'
+
     def __init__(self, folder_path):
         self.file_path = os.path.join(folder_path, 'opponent_type.csv')
         self.obj = OpponentType
@@ -202,6 +221,8 @@ class CreateOpponentType(Create):
 
 
 class CreateTabooType(Create):
+    name = 'Taboo type'
+
     def __init__(self, folder_path):
         self.file_path = os.path.join(folder_path, 'taboo_type.csv')
         self.obj = TabooType
@@ -214,6 +235,8 @@ class CreateTabooType(Create):
 
 
 class CreateGamesession(Create):
+    name = 'Gamesession'
+
     def __init__(self, folder_path):
         self.file_path = os.path.join(folder_path, 'gamesession.csv')
         self.obj = Gamesession
@@ -230,6 +253,8 @@ class CreateGamesession(Create):
 
 
 class CreateGameround(Create):
+    name = 'Gameround'
+
     def __init__(self, folder_path):
         self.file_path = os.path.join(folder_path, 'gameround.csv')
         self.obj = Gameround
@@ -248,6 +273,8 @@ class CreateGameround(Create):
 
 
 class CreateTag(Create):
+    name = 'Tag'
+
     def __init__(self, folder_path):
         self.file_path = os.path.join(folder_path, 'tag.csv')
         self.obj = Tag
@@ -261,6 +288,8 @@ class CreateTag(Create):
 
 
 class CreateTagging(Create):
+    name = 'Tagging'
+
     def __init__(self, folder_path):
         self.file_path = os.path.join(folder_path, 'tagging.csv')
         self.obj = UserTagging
@@ -273,11 +302,14 @@ class CreateTagging(Create):
             gameround_id = toInt(row.get('gameround_id')),
             resource_id = toInt(row.get('resource_id')),
             tag_id = toInt(row.get('tag_id')),
+            uploaded = not row.get('created'),
             score = toScore(row.get('score')),
         )
 
 
 class CreateResourceTitle(Create):
+    name = 'Resource title'
+
     def __init__(self, folder_path):
         self.file_path = os.path.join(folder_path, 'title.csv')
         self.obj = Resource.titles.through
@@ -291,6 +323,8 @@ class CreateResourceTitle(Create):
 
 
 class CreateResourceCreator(Create):
+    name = 'Resource creator'
+
     def __init__(self, folder_path):
         self.file_path = os.path.join(folder_path, 'resource.csv')
         self.obj = Resource.creators.through
@@ -313,31 +347,19 @@ class Command(BaseCommand):
 
         if os.path.isdir(options['input']):
             if options['format'] == 'csv':
-                self.stdout.write('Import User')
                 CreateUser(options['input']).process()
-                self.stdout.write('Import Source')
                 CreateSource(options['input']).process()
-                self.stdout.write('Import Creator')
                 CreateCreator(options['input']).process()
-                self.stdout.write('Import Resource')
                 CreateResource(options['input']).process()
-                self.stdout.write('Import Title')
                 CreateTitle(options['input']).process()
-                self.stdout.write('Import Gametype')
                 CreateGametype(options['input']).process()
                 # CreateOpponentType(options['input']).process()
                 # CreateTabooType(options['input']).process()
-                self.stdout.write('Import Gamesession')
                 CreateGamesession(options['input']).process()
-                self.stdout.write('Import Gameround')
                 CreateGameround(options['input']).process()
-                self.stdout.write('Import Tag')
                 CreateTag(options['input']).process()
-                self.stdout.write('Import Tagging')
                 CreateTagging(options['input']).process()
-                self.stdout.write('Import ResourceTitle')
                 CreateResourceTitle(options['input']).process()
-                self.stdout.write('Import ResourceCreator')
                 CreateResourceCreator(options['input']).process()
         else:
             raise CommandError('Input is not a directory.')

@@ -46,7 +46,10 @@ class HighscoreView(APIView):
         previous = current - relativedelta(months=1)
 
         try:
-            taggings = UserTagging.objects.exclude(user__username=None)
+            taggings = UserTagging.objects.filter(
+                user__is_anonymous=False,
+                uploaded=False,
+            )
 
             data = {
                 'alltime': self.count(taggings, limit=limit),
