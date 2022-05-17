@@ -12,8 +12,8 @@ from frontend.serializers import OpponentSerializer
 logger = logging.getLogger(__name__)
 
 
-@OpponentPluginManager.export('RandomGameroundOpponent')
-class RandomGameroundOpponent(OpponentPlugin):
+@OpponentPluginManager.export('RandomGameroundTaggingOpponent')
+class RandomGameroundTaggingOpponent(OpponentPlugin):
     default_config = {
         'min_tags': 5,
     }

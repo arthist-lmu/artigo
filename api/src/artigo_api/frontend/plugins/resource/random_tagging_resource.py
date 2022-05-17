@@ -16,8 +16,8 @@ from frontend.plugins import (
 logger = logging.getLogger(__name__)
 
 
-@ResourcePluginManager.export('RandomResource')
-class RandomResource(ResourcePlugin):
+@ResourcePluginManager.export('RandomTaggingResource')
+class RandomTaggingResource(ResourcePlugin):
     default_config = {
         'rounds': 5,
         'min_tags': 5,

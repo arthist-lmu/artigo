@@ -97,7 +97,8 @@ class GeneralType(models.Model):
     def __str__(self):
         return self.name
 
-class Gametype(GeneralType):
+
+class GameType(GeneralType):
     enabled = models.BooleanField(default=True)
 
 
@@ -119,7 +120,7 @@ class ScoreType(GeneralType):
 
 class Gamesession(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, null=True)
-    gametype = models.ForeignKey(Gametype, on_delete=models.CASCADE)
+    game_type = models.ForeignKey(GameType, on_delete=models.CASCADE)
     created = models.DateTimeField(editable=False)
     rounds = models.PositiveIntegerField(
         default=5,
@@ -217,4 +218,72 @@ class OpponentTagging(GeneralTagging):
 
 
 class TabooTagging(GeneralTagging):
+    resource = models.ForeignKey(Resource, on_delete=models.CASCADE)
+
+
+class GeneralROI(models.Model):
+    gameround = models.ForeignKey(Gameround, on_delete=models.CASCADE)
+    x = models.FloatField(
+        default=0,
+        validators=[
+            MinValueValidator(0),
+            MaxValueValidator(1),
+        ],
+    )
+    y = models.FloatField(
+        default=0,
+        validators=[
+            MinValueValidator(0),
+            MaxValueValidator(1),
+        ],
+    )
+    width = models.FloatField(
+        default=0,
+        validators=[
+            MinValueValidator(0),
+            MaxValueValidator(1),
+        ],
+    )
+    height = models.FloatField(
+        default=0,
+        validators=[
+            MinValueValidator(0),
+            MaxValueValidator(1),
+        ],
+    )
+
+    class Meta:
+        abstract = True
+
+
+class UserROI(GeneralROI):
+    user = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, null=True)
+    resource = models.ForeignKey(
+        Resource,
+        on_delete=models.CASCADE,
+        related_name='rois',
+    )
+    suggested = models.BooleanField(default=False)
+    uploaded = models.BooleanField(default=False)
+    created = models.DateTimeField(editable=False)
+    score = models.PositiveIntegerField(default=0)
+
+    def save(self, *args, **kwargs):
+        if not self.id:
+            self.created = timezone.now()
+
+        return super().save(*args, **kwargs)    
+
+
+class OpponentROI(GeneralROI):
+    resource = models.ForeignKey(Resource, on_delete=models.CASCADE)
+    created_after = models.FloatField(
+        default=0,
+        validators=[
+            MinValueValidator(0),
+        ],
+    )
+
+
+class TabooROI(GeneralROI):
     resource = models.ForeignKey(Resource, on_delete=models.CASCADE)

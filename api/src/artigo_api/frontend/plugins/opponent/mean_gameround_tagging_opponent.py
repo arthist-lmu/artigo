@@ -12,8 +12,8 @@ from frontend.serializers import OpponentSerializer
 logger = logging.getLogger(__name__)
 
 
-@OpponentPluginManager.export('MeanGameroundOpponent')
-class MeanGameroundOpponent(OpponentPlugin):
+@OpponentPluginManager.export('MeanGameroundTaggingOpponent')
+class MeanGameroundTaggingOpponent(OpponentPlugin):
     default_config = {}
     default_version = '0.1'
 

@@ -1,2 +1,3 @@
 from .tag_controller import TagController
-from .game_controller import GameController
+from .game_roi_controller import GameROIController
+from .game_tagging_controller import GameTaggingController

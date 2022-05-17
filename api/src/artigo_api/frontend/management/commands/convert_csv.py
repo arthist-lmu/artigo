@@ -42,20 +42,22 @@ def main():
     csv_args = {'na_values': '\\N', 'low_memory': False}
 
     if os.path.isdir(args.input):
-        gametype = pd.read_csv(os.path.join(args.input, 'gametype.csv'), **csv_args)
-        # TODO: add Taboo
-        gametype = gametype[gametype.name.isin(['imageLabeler'])]
-        gametype = gametype[['id', 'name', 'rounds', 'roundduration']]
-        gametype = gametype.rename(columns={'roundduration': 'round_duration'})
+        game_type = pd.read_csv(os.path.join(args.input, 'gametype.csv'), **csv_args)
+        game_type = game_type[game_type.name.isin(['imageLabeler', 'tabooImageLabeler'])]
+        taboo_game_type = game_type[game_type.name.isin(['tabooImageLabeler'])]
+        game_type = game_type[['id', 'rounds', 'roundduration']]
+        game_type = game_type.rename(columns={'roundduration': 'round_duration'})
 
-        gametype_fst = gametype.rename(columns={'id': 'gametype_id'})
-        gametype = gametype[['id', 'name']]
+        game_type_fst = game_type.rename(columns={'id': 'game_type_id'})
 
         gamesession = pd.read_csv(os.path.join(args.input, 'gamesession.csv'), **csv_args)
-        gamesession = gamesession[gamesession.gametype_id.isin(gametype.id)]
+        gamesession = gamesession[gamesession.gametype_id.isin(game_type.id)]
+        taboo_gamesession = gamesession[gamesession.gametype_id.isin(taboo_game_type.id)]
         gamesession = gamesession[['id', 'gametype_id']]
+        gamesession = gamesession.rename(columns={'gametype_id': 'game_type_id'})
 
-        gamesession = pd.merge(gamesession, gametype_fst, on='gametype_id')
+        gamesession = pd.merge(gamesession, game_type_fst, on='game_type_id')
+        gamesession.insert(loc=0, column='game_type', value='Tagging')
 
         if args.n_sessions > 0:
             gamesession = gamesession.head(args.n_sessions)
@@ -64,7 +66,8 @@ def main():
         gameround = gameround[gameround.gamesession_id.isin(gamesession.id)]
         gameround = gameround[['id', 'person_id', 'gamesession_id', 'startdate', 'score']]
         gameround = gameround.rename(columns={'person_id': 'user_id', 'startdate': 'created'})
-        gameround['opponent_type_id'] = 'RandomGameRoundOpponent'
+        gameround['opponent_type'] = 'RandomGameroundTaggingOpponent'
+        gameround.loc[gameround.gamesession_id.isin(taboo_gamesession.id), 'taboo_type'] = 'MostAnnotatedTaboo'
 
         gameround_fst = gameround.groupby(['gamesession_id'])
         gameround_fst = gameround_fst.agg({'created': np.min, 'user_id': np.min})
@@ -95,7 +98,7 @@ def main():
 
         if args.image_input:
             if not os.path.isdir(args.image_input):
-                raise ValueError('Image input folder is not a directory.')  
+                raise ValueError('Image input folder is not a directory.')
 
             images = pd.DataFrame({'path': os.listdir(args.image_input)})
             images['hash_id'] = np.vectorize(get_hex)(images['path'])
@@ -110,6 +113,8 @@ def main():
                         shutil.copy(path_from, path_to)
                     except Exception as error:
                         print(f'Skipping {row.path} with error: {error}.')
+            else:
+                raise ValueError('Image output folder is not a directory.')
 
         resource['created_start'] = resource.created.str.extract('([0-9]{4})', expand=False)
         resource['created_end'] = resource['created_start']
@@ -154,7 +159,6 @@ def main():
         creator_id_map = create_map(creator['id'])
         resource_id_map = create_map(resource['id'])
         title_id_map = create_map(title['id'])
-        gametype_id_map = create_map(gametype['id'])
         gamesession_id_map = create_map(gamesession['id'])
         gameround_id_map = create_map(gameround['id'])
         tag_id_map = create_map(tag['id'])
@@ -168,9 +172,7 @@ def main():
         resource['source_id'] = resource['source_id'].map(source_id_map)
         title['id'] = title['id'].map(title_id_map)
         title['resource_id'] = title['resource_id'].map(resource_id_map)
-        gametype['id'] = gametype['id'].map(gametype_id_map)
         gamesession['id'] = gamesession['id'].map(gamesession_id_map)
-        gamesession['gametype_id'] = gamesession['gametype_id'].map(gametype_id_map)
         gamesession['user_id'] = gamesession['user_id'].map(user_id_map)
         gameround['id'] = gameround['id'].map(gameround_id_map)
         gameround['user_id'] = gameround['user_id'].map(user_id_map)
@@ -192,7 +194,6 @@ def main():
         creator.to_csv(os.path.join(args.output, 'creator.csv'), index=False)
         resource.to_csv(os.path.join(args.output, 'resource.csv'), index=False)
         title.to_csv(os.path.join(args.output, 'title.csv'), index=False)
-        gametype.to_csv(os.path.join(args.output, 'gametype.csv'), index=False)
         gamesession.to_csv(os.path.join(args.output, 'gamesession.csv'), index=False)
         gameround.to_csv(os.path.join(args.output, 'gameround.csv'), index=False)
         tag.to_csv(os.path.join(args.output, 'tag.csv'), index=False)

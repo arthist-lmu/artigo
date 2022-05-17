@@ -7,7 +7,11 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.exceptions import APIException
 from drf_spectacular.utils import extend_schema, OpenApiParameter
-from frontend.controllers import GameController, TagController
+from frontend.controllers import (
+    GameTaggingController,
+    GameROIController,
+    TagController,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -112,15 +116,26 @@ class GameView(APIView):
             raise APIException('not_authenticated')
 
         plugins = cache.get('plugins', {})
+        params = request.query_params
 
-        game_controller = GameController(
-            resource_plugin_manager=plugins.get('resource'),
-            opponent_plugin_manager=plugins.get('opponent'),
-            taboo_plugin_manager=plugins.get('taboo'),
-            suggester_plugin_manager=plugins.get('suggester'),
-        )
+        game_type = params.get('game_type', 'tagging')
 
-        result = game_controller(request.query_params, request.user)
+        if game_type == 'tagging':
+            game_controller = GameTaggingController(
+                resource_plugin_manager=plugins.get('resource'),
+                opponent_plugin_manager=plugins.get('opponent'),
+                taboo_plugin_manager=plugins.get('taboo'),
+                suggester_plugin_manager=plugins.get('suggester'),
+            )
+        elif game_type == 'roi':
+            game_controller = GameROIController(
+                resource_plugin_manager=plugins.get('resource'),
+                opponent_plugin_manager=plugins.get('opponent'),
+            )
+        else:
+            raise APIException('unknown_game_type')
+
+        result = game_controller(params, request.user)
 
         if result.get('type', 'error') == 'error':
             message = result.get('message', 'unknown_error')
@@ -134,13 +149,15 @@ class GameView(APIView):
             raise APIException('not_authenticated')
 
         plugins = cache.get('plugins', {})
+        params = request.data['params']
 
+        # TODO: select correct controller
         tag_controller = TagController(
             filter_plugin_manager=plugins.get('filter'),
             score_plugin_manager=plugins.get('score'),
         )
 
-        result = tag_controller(request.data['params'], request.user)
+        result = tag_controller(params, request.user)
 
         if result.get('type', 'error') == 'error':
             message = result.get('message', 'unknown_error')

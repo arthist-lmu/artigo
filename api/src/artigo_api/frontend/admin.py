@@ -46,8 +46,8 @@ class TitleAdmin(CustomModelAdmin):
     pass
 
 
-@admin.register(Gametype)
-class GametypeAdmin(CustomModelAdmin):
+@admin.register(GameType)
+class GameTypeAdmin(CustomModelAdmin):
     pass
 
 
@@ -112,4 +112,19 @@ class OpponentTaggingAdmin(CustomModelAdmin):
 
 @admin.register(TabooTagging)
 class TabooTaggingAdmin(CustomModelAdmin):
+    pass
+
+
+@admin.register(UserROI)
+class UserROIAdmin(CustomModelAdmin):
+    pass
+
+
+@admin.register(OpponentROI)
+class OpponentROIAdmin(CustomModelAdmin):
+    pass
+
+
+@admin.register(TabooROI)
+class TabooROIAdmin(CustomModelAdmin):
     pass

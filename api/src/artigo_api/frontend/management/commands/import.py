@@ -16,6 +16,8 @@ from django.core.management.color import no_style
 from django.core.validators import URLValidator
 from django.core.exceptions import ValidationError
 
+OBJ_MAPPING = {}
+
 DATE_FORMAT = '%Y-%m-%d %H:%M:%S.%f'
 TZINFO = pytz.timezone(settings.TIME_ZONE)
 
@@ -71,30 +73,33 @@ class Create:
     def process(self):
         args = {'ignore_conflicts': True}
 
-        with open(self.file_path, 'r') as csv_file:
-            data = csv.reader(csv_file)
-            processed_rows = []
-            columns = next(data)
+        if os.path.exists(self.file_path):
+            with open(self.file_path, 'r') as csv_file:
+                data = csv.reader(csv_file)
+                processed_rows = []
+                columns = next(data)
 
-            for row in tqdm(data, f'Import {self.name}', file=sys.stdout):
-                obj = self.convert(dict(zip(columns, row)))
+                for row in tqdm(data, f'Import {self.name}', file=sys.stdout):
+                    obj = self.convert(dict(zip(columns, row)))
 
-                if obj is not None:
-                    processed_rows.append(obj)
+                    if obj is not None:
+                        processed_rows.append(obj)
 
-                if len(processed_rows) > 5000:
+                    if len(processed_rows) > 5000:
+                        try:
+                            self.obj.objects.bulk_create(processed_rows, **args)
+                        except Exception as error:
+                            print(error)
+
+                        processed_rows = []
+
+                if processed_rows:
                     try:
                         self.obj.objects.bulk_create(processed_rows, **args)
                     except Exception as error:
                         print(error)
-
-                    processed_rows = []
-
-            if processed_rows:
-                try:
-                    self.obj.objects.bulk_create(processed_rows, **args)
-                except Exception as error:
-                        print(error)
+        else:
+            sys.stdout(f'{self.file_path} does not exist.')
 
 
 class CreateUser(Create):
@@ -191,48 +196,6 @@ class CreateTitle(Create):
             language = row.get('language'),
         )
 
-        
-class CreateGametype(Create):
-    name = 'Gametype'
-
-    def __init__(self, folder_path):
-        self.file_path = os.path.join(folder_path, 'gametype.csv')
-        self.obj = Gametype
-
-    def convert(self, row):
-        return self.obj(
-            id = toInt(row.get('id')),
-            name = row.get('name'),
-        )
-
-
-class CreateOpponentType(Create):
-    name = 'Opponent type'
-
-    def __init__(self, folder_path):
-        self.file_path = os.path.join(folder_path, 'opponent_type.csv')
-        self.obj = OpponentType
-
-    def convert(self, row):
-        return self.obj(
-            id = toInt(row.get('id')),
-            name = row.get('name'),
-        )
-
-
-class CreateTabooType(Create):
-    name = 'Taboo type'
-
-    def __init__(self, folder_path):
-        self.file_path = os.path.join(folder_path, 'taboo_type.csv')
-        self.obj = TabooType
-
-    def convert(self, row):
-        return self.obj(
-            id = toInt(row.get('id')),
-            name = row.get('name'),
-        )
-
 
 class CreateGamesession(Create):
     name = 'Gamesession'
@@ -242,14 +205,24 @@ class CreateGamesession(Create):
         self.obj = Gamesession
 
     def convert(self, row):
-        return self.obj(
+        obj = self.obj(
             id = toInt(row.get('id')),
-            gametype_id = toInt(row.get('gametype_id')),
+            game_type = row.get('game_type'),
             created = toDatetime(row.get('created')),
             user_id = toInt(row.get('user_id')),
             rounds = toInt(row.get('rounds')),
             round_duration = toInt(row.get('round_duration')),
         )
+
+        if row.get('game_type'):
+            if not row['game_type'] in OBJ_MAPPING:
+                OBJ_MAPPING[row['game_type']], _ = GameType.objects \
+                    .get_or_create(name=row['game_type'])
+                OBJ_MAPPING[row['game_type']].save()
+
+            obj.game_type = OBJ_MAPPING[row['game_type']]
+
+        return obj
 
 
 class CreateGameround(Create):
@@ -260,16 +233,32 @@ class CreateGameround(Create):
         self.obj = Gameround
 
     def convert(self, row):
-        return self.obj(
+        obj = self.obj(
             id = toInt(row.get('id')),
             user_id = toInt(row.get('user_id')),
             gamesession_id = toInt(row.get('gamesession_id')),
-            resource_id=toInt(row.get('resource_id')),
+            resource_id = toInt(row.get('resource_id')),
             created = toDatetime(row.get('created')),
             score = toScore(row.get('score')),
-            # opponent_type_id=toInt(row.get('opponent_type_id')),
-            # taboo_type_id=toInt(row.get('taboo_type_id'))
         )
+
+        if row.get('opponent_type'):
+            if not row['opponent_type'] in OBJ_MAPPING:
+                OBJ_MAPPING[row['opponent_type']], _ = OpponentType.objects \
+                    .get_or_create(name=row['opponent_type'])
+                OBJ_MAPPING[row['opponent_type']].save()
+
+            obj.opponent_type = OBJ_MAPPING[row['opponent_type']]
+
+        if row.get('taboo_type'):
+            if not row['taboo_type'] in OBJ_MAPPING:
+                OBJ_MAPPING[row['taboo_type']], _ = TabooType.objects \
+                    .get_or_create(name=row['taboo_type'])
+                OBJ_MAPPING[row['taboo_type']].save()
+
+            obj.taboo_type = OBJ_MAPPING[row['taboo_type']]
+
+        return obj
 
 
 class CreateTag(Create):
@@ -352,9 +341,6 @@ class Command(BaseCommand):
                 CreateCreator(options['input']).process()
                 CreateResource(options['input']).process()
                 CreateTitle(options['input']).process()
-                CreateGametype(options['input']).process()
-                # CreateOpponentType(options['input']).process()
-                # CreateTabooType(options['input']).process()
                 CreateGamesession(options['input']).process()
                 CreateGameround(options['input']).process()
                 CreateTag(options['input']).process()

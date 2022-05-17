@@ -7,7 +7,6 @@ from django.db.models import Count, F
 from django.core.cache import cache
 from django.core.exceptions import ObjectDoesNotExist
 from frontend.models import *
-from frontend.utils import to_int, to_float
 from frontend.views.utils import ResourceViewHelper
 
 logger = logging.getLogger(__name__)
@@ -49,7 +48,7 @@ class GameController:
             except ObjectDoesNotExist:
                 return {'type': 'error', 'message': 'invalid_gamesession'}
         else:
-            result = self.create_game(params, user)
+            result = self.create_gamesession(params, user)
             if result['type'] == 'error': return result
 
             gamesession = result['gamesession']
@@ -65,69 +64,12 @@ class GameController:
             return {'type': 'error', 'message': 'finished_gamesession'}
 
         try:
-            gameround_data = list(data['game'].values())[0]
-
-            gameround = Gameround(
-                user=user,
+            gameround = self.create_gameround(
+                query=data['query'],
+                data=list(data['game'].values())[0],
                 gamesession=gamesession,
-                resource_id=gameround_data['resource_id'],
+                user=user,
             )
-
-            if data['query']['opponent_type'] is not None:
-                opponent_type, _ = OpponentType.objects \
-                    .get_or_create(name=data['query']['opponent_type'])
-                opponent_type.save()
-
-                gameround.opponent_type = opponent_type
-
-            if data['query']['taboo_type'] is not None:
-                taboo_type, _ = TabooType.objects \
-                    .get_or_create(name=data['query']['taboo_type'])
-
-                gameround.taboo_type = taboo_type
-
-            gameround.save()
-
-            if gameround_data.get('opponent_tags'):
-                bulk_list = []
-
-                for tag in gameround_data['opponent_tags']:
-                    bulk_list.append(
-                        OpponentTagging(
-                            gameround=gameround,
-                            resource=gameround.resource,
-                            tag_id=tag.pop('id'),
-                            created_after=tag['created_after'],
-                        )
-                    )
-
-                OpponentTagging.objects.bulk_create(bulk_list)
-
-            if gameround_data.get('taboo_tags'):
-                bulk_list = []
-
-                for tag in gameround_data['taboo_tags']:
-                    bulk_list.append(
-                        TabooTagging(
-                            gameround=gameround,
-                            resource=gameround.resource,
-                            tag_id=tag.pop('id'),
-                        )
-                    )
-
-                TabooTagging.objects.bulk_create(bulk_list)
-
-            for name in data['query']['suggester_types']:
-                suggester_type, _ = SuggesterType.objects \
-                    .get_or_create(name=name)
-
-                gameround.suggester_types.add(suggester_type)
-
-            for name in data['query']['score_types']:
-                score_type, _ = ScoreType.objects \
-                    .get_or_create(name=name)
-
-                gameround.score_types.add(score_type)
         except Exception as error:
             logger.error(traceback.format_exc())
 
@@ -136,17 +78,15 @@ class GameController:
         data['game'].pop(gameround.resource_id)
         cache.set(f'gamesession_{gamesession.id}', data)
 
-        logger.info(f'[Game Controller] Gameround: {gameround_data}')
-
         return {
             'type': 'ok',
             'session_id': gamesession.id,
             'rounds': gamesession.rounds,
             'round_id': gamesession.rounds - len(data['game']),
-            'data': gameround_data,
+            'data': list(data['game'].values())[0],
         }
 
-    def create_game(self, params, user):
+    def create_gamesession(self, params, user):
         query = self.parse_query(params)
         logger.info(f'[Game Controller] Query: {query}')
 
@@ -173,7 +113,7 @@ class GameController:
 
         result = {}
 
-        if query['opponent_type'] is not None:
+        if query.get('opponent_type') is not None:
             try:
                 result['opponent'] = list(
                     self.opponent_plugin_manager.run(
@@ -193,7 +133,7 @@ class GameController:
 
                 return {'type': 'error', 'message': 'invalid_opponents'}
 
-        if query['taboo_type'] is not None:
+        if query.get('taboo_type') is not None:
             try:
                 result['taboo'] = list(
                     self.taboo_plugin_manager.run(
@@ -213,7 +153,7 @@ class GameController:
 
                 return {'type': 'error', 'message': 'invalid_taboos'}
 
-            if len(query['suggester_types']) > 0:
+            if len(query.get('suggester_types', [])) > 0:
                 result['taboo'] = list(
                     self.suggester_plugin_manager.run(
                         result['taboo'],
@@ -226,11 +166,13 @@ class GameController:
         # logger.info(f'[Game Controller] Game: {game}')
 
         try:
-            gametype, _ = Gametype.objects.get_or_create(name='Tagging')
+            game_type, _ = GameType.objects \
+                .get_or_create(name=query['game_type'])
+            game_type.save()
 
             gamesession = Gamesession(
                 user=user,
-                gametype=gametype,
+                game_type=game_type,
                 rounds=query['resource_options']['rounds'],
                 round_duration=query['game_options']['round_duration'],
             )
@@ -251,72 +193,18 @@ class GameController:
             timeout=timeout,
         )
 
-        return {'type': 'ok', 'gamesession': gamesession}
+        return {
+            'type': 'ok',
+            'gamesession': gamesession,
+        }
+
+    @staticmethod
+    def create_gameround(query, data, gamesession, user):
+        pass
 
     @staticmethod
     def parse_query(query):
-        game_options = {
-            'language': query.get('language', 'de'),
-            'round_duration': to_int(query.get('round_duration'), 60),
-        }
-
-        resource_type = 'RandomResource'
-        resource_options = {
-            'rounds': to_int(query.get('rounds'), 5),
-            'lt_percentile': to_float(query.get('lt_percentile'), 1.0),
-            'max_last_played': to_int(query.get('max_last_played'), 6 * 30),
-        }
-
-        if query.get('resource_type'):
-            if query['resource_type'] == 'random_resource':
-                resource_type = 'RandomResource'
-
-        opponent_type = None
-        opponent_options = {}
-
-        if query.get('opponent_type'):
-            if query['opponent_type'] == 'mean_gameround_opponent':
-                opponent_type = 'MeanGameroundOpponent'
-            elif query['opponent_type'] == 'random_gameround_opponent':
-                opponent_type = 'RandomGameroundOpponent'
-
-        taboo_type = None
-        taboo_options = {
-            'max_tags': to_int(query.get('taboo_max_tags'), 5)
-        }
-
-        if query.get('taboo_type'):
-            if query['taboo_type'] == 'most_annotated_taboo':
-                taboo_type = 'MostAnnotatedTaboo'
-
-        suggester_types = set()
-
-        if query.getlist('suggester_types[]'):
-            if 'cooccurrence_suggester' in query['suggester_types[]']:
-                suggester_types.add('CooccurrenceSuggester')
-
-        score_types = set()
-
-        if query.getlist('score_types[]'):
-            if 'annotation_validated_score' in query.getlist('score_types[]'):
-                score_types.add('AnnotationValidatedScore')
-
-            if 'opponent_validated_score' in query.getlist('score_types[]'):
-                score_types.add('OpponentValidatedScore')
-
-        result = {
-            'game_options': game_options,
-            'resource_type': resource_type,
-            'resource_options': resource_options,
-            'opponent_type': opponent_type,
-            'opponent_options': opponent_options,
-            'taboo_type': taboo_type,
-            'taboo_options': taboo_options,
-            'suggester_types': list(suggester_types),
-            'score_types': list(score_types),
-        }
-
-        return result
+        pass
 
     def merge_to_game(self, result, resource_ids):
         resources = ResourceView()(resource_ids)

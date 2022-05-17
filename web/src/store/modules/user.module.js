@@ -55,7 +55,6 @@ const user = {
   },
   mutations: {
     updateToken(state, { key }) {
-      console.log(key);
       state.token = key;
     },
     updateData(state, data) {

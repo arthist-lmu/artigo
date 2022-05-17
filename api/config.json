@@ -1,17 +1,29 @@
 {
     "resources": [
         {
-            "type": "RandomResource",
+            "type": "RandomTaggingResource",
+            "disabled": false
+        },
+        {
+            "type": "RandomROIResource",
             "disabled": false
         }
     ],
     "opponents": [
         {
-            "type": "MeanGameroundOpponent",
+            "type": "MeanGameroundTaggingOpponent",
             "disabled": false
         },
         {
-            "type": "RandomGameroundOpponent",
+            "type": "RandomGameroundTaggingOpponent",
+            "disabled": false
+        },
+        {
+            "type": "MeanGameroundROIOpponent",
+            "disabled": false
+        },
+        {
+            "type": "RandomGameroundROIOpponent",
             "disabled": false
         }
     ],
