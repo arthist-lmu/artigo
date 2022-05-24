@@ -15,7 +15,6 @@ celery = "^5.0.5"
 redisai = "^1.0.1"
 pytest = "^7.1.1"
 pytest-cov = "^3.0.0"
-pytest-django = "^4.4.0"
 
 [tool.poetry.dev-dependencies]
 black = "^22.1"
