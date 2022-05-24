@@ -9,7 +9,6 @@
 !/dump/.gitkeep
 .idea/
 celerybeat-schedule.db
-media/
 package-lock.json
 node_modules/
 jsconfig.json
