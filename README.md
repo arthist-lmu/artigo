@@ -1,21 +1,20 @@
 # ARTigo
 
-
 ## Installation
 At a later point there will be a docker container provided here.
 
 ## Hosting Requirements
 
 ### Disk size
-Postgres 1.6 GB after inital upload including all media files
+Postgres 1.6 GB after initial upload including all media files
 
 ### Memory
 * 900 MB Opensearch Idle
 * 500 MB Django Idle
-* 250 MBPostgres
+* 250 MB Postgres
 * 400 MB other
 
-----> 4 GB min for production use
+→ 4 GB min for production use
 
 ## Development setup
 
@@ -26,6 +25,7 @@ Postgres 1.6 GB after inital upload including all media files
 
 ### Configuration Files
 Copy the content of `.env.example` files to `.env` files in the same location and customize the settings.
+For your local development setup configure app.config.js to use the local API endpoint.
 
 ### Setup process
 Create the `poetry.lock` file if it does not exist (preferably do this in a virtual environment):
@@ -55,11 +55,10 @@ And apply necessary Django operations:
 sudo docker-compose exec api python3 manage.py migrate
 ```
 
-Import fixtures (i.e., inital data):
+Import fixtures (i.e., initial data):
 ```sh
 sudo docker-compose exec api python3 manage.py loaddata sites.json
 ```
-
 
 ## Miscellaneous
 
@@ -94,7 +93,7 @@ To display changes of `web` (`http://localhost:8080/`), run:
 sudo docker-compose exec web npm run build
 ```
 
-Alternativly, use `serve` to enable a hot reloaded instance on `http://localhost:8081/`:
+Alternatively, use `serve` to enable a hot reloaded instance on `http://localhost:8081/`:
 ```sh
 sudo docker-compose exec web npm run serve
 ```
@@ -125,14 +124,6 @@ sudo docker-compose exec api pytest --verbose
 ```
 
 Coverage reports are stored in the `./api/src/artigo_api/htmlcov` folder.
-
-
-## Known issues
-
-On some systems, the `api` container starts before `db`. To fix this, restart `api`:
-```sh
-sudo docker-compose restart api
-```
 
 
 ## Contributing
