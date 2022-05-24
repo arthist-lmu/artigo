@@ -9,7 +9,7 @@ At a later point there will be a docker container provided here.
 Postgres 1.6 GB after initial upload including all media files
 
 ### Memory
-* 900 MB Opensearch Idle
+* 900 MB OpenSearch Idle
 * 500 MB Django Idle
 * 250 MB Postgres
 * 400 MB other
@@ -28,11 +28,6 @@ Copy the content of `.env.example` files to `.env` files in the same location an
 For your local development setup configure app.config.js to use the local API endpoint.
 
 ### Setup process
-Create the `poetry.lock` file if it does not exist (preferably do this in a virtual environment):
-```sh
-cd api
-poetry install --no-root
-```
 
 To ensure that the data is retained, local folders must be filled with data for migration:
 ```sh
