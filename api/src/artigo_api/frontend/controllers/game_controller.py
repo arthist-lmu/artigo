@@ -63,10 +63,12 @@ class GameController:
 
             return {'type': 'error', 'message': 'finished_gamesession'}
 
+        gameround_data = list(data['game'].values())[0]
+
         try:
             gameround = self.create_gameround(
                 query=data['query'],
-                data=list(data['game'].values())[0],
+                data=gameround_data,
                 gamesession=gamesession,
                 user=user,
             )
@@ -83,7 +85,7 @@ class GameController:
             'session_id': gamesession.id,
             'rounds': gamesession.rounds,
             'round_id': gamesession.rounds - len(data['game']),
-            'data': list(data['game'].values())[0],
+            'data': gameround_data,
         }
 
     def create_gamesession(self, params, user):

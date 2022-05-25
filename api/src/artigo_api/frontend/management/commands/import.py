@@ -207,7 +207,6 @@ class CreateGamesession(Create):
     def convert(self, row):
         obj = self.obj(
             id = toInt(row.get('id')),
-            game_type = row.get('game_type'),
             created = toDatetime(row.get('created')),
             user_id = toInt(row.get('user_id')),
             rounds = toInt(row.get('rounds')),
