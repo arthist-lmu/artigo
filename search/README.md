@@ -14,6 +14,10 @@ Change line `import index_pb2 as index__pb2` to `from . import index_pb2 as inde
 ```sh
 sudo sysctl -w vm.max_map_count=262144
 ```
+Or to make this permanent:
+```
+sudo sh -c "echo \"sys.vm.max_map_count=262144\" >> /etc/sysctl.conf"
+```
 
 ### Data import
 To import data, `.jsonl` files must be stored in the `./dump` folder. Only the latest file is processed. The following command must be executed while the application is running:
