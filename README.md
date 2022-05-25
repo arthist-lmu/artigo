@@ -55,6 +55,8 @@ Import fixtures (i.e., initial data):
 sudo docker-compose exec api python3 manage.py loaddata sites.json
 ```
 
+Next: Follow the setup for the search container here ./search/README.md
+
 ## Miscellaneous
 
 ### Data import and export
@@ -68,7 +70,8 @@ To import data, `.csv` files should be stored in the `./dump` and corresponding 
 ```sh
 sudo docker-compose exec api python3 manage.py import --format csv --input /dump
 ```
-While importing, please note that in comparison to earlier ARTigo, unique e-mails ARE enforced, and double accounts will not be created. Check user.csv for these errors. Importing the full data set can take a significant amount of time. (~26 min)
+While importing, please note that in comparison to earlier ARTigo, unique e-mails ARE enforced, and double accounts will not be created. 
+Check user.csv for these errors. Importing the full data set can take a significant amount of time. (~26 min)
 
 To export data, execute the following command:
 ```sh
@@ -123,4 +126,6 @@ Coverage reports are stored in the `./api/src/artigo_api/htmlcov` folder.
 
 ## Contributing
 
-Please report issues, feature requests, and questions to the [GitHub issue tracker](https://github.com/arthist-lmu/artigo/issues). We have a [Contributor Code of Conduct](https://github.com/arthist-lmu/artigo/blob/master/CODE_OF_CONDUCT.md). By participating in ARTigo you agree to abide by its terms.
+Please report issues, feature requests, and questions to the [GitHub issue tracker](https://github.com/arthist-lmu/artigo/issues). 
+We have a [Contributor Code of Conduct](https://github.com/arthist-lmu/artigo/blob/master/CODE_OF_CONDUCT.md). 
+By participating in ARTigo you agree to abide by its terms.
