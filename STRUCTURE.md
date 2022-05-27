@@ -31,5 +31,9 @@ The data-only part of the API follows REST principles, while the GWAP part mostl
 This container starts an Apache web server that uses the generated [Vue.js](https://vuejs.org/) files to act as a web client. For visual appeal it has the [vuetify](https://vuetifyjs.com/) UI-framework installed, in addition to [vue-router](https://router.vuejs.org/) for routing. It uses [Axios](https://axios-http.com/) to communicate with the backend. For performance reasons [webpack](https://webpack.js.org/) is used to bundle modules.
 
 
+# Monitoring
+https://blog.roberthallam.org/2021/11/setting-up-a-tig-telegraf-influxdb-grafana-stack-on-docker/
+TIG: Telegraf, InfluxDB, Grafana
+
 # Authentication
 To enable SAML Auth with LMU-Services see [here](https://doku.lrz.de/pages/viewpage.action?pageId=56919067)

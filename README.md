@@ -60,10 +60,10 @@ Next: Follow the setup for the search container here ./search/README.md
 ## Miscellaneous
 
 ### Data import and export
-When exporting from the legacy ARTigo instance use the conversion script on the dump folder first.
+When exporting from the legacy ARTigo instance use the conversion script on the dump folder first (Requires numpy  and pandas).
 
 ```
-sudo docker-compose exec api python3 frontend/management/commands/convert_csv.py --input /dump --output /dump --image_input /media --image_output /media
+python3 api/src/artigo_api/frontend/management/commands/convert_csv.py --input dump_input --output dump --image_input media_input/Images --image_output media
 ```
 
 To import data, `.csv` files should be stored in the `./dump` and corresponding `.jpg` files in the `./media` folder. The following command must be executed while the application is running:
