@@ -13,7 +13,7 @@ RUN cd /api; poetry export -f requirements.txt --output requirements.txt --witho
 RUN cd /api; pip install -r requirements.txt
 
 COPY /search/pyproject.toml /search/poetry.lock /search/
-RUN cd /search; poetry export -f requirements.txt --output requirements.txt
+RUN cd /search; poetry export -f requirements.txt --output requirements.txt  --without-hashes
 RUN cd /search; pip install -r requirements.txt
 
 COPY /api /api/
