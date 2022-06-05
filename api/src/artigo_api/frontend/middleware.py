@@ -10,6 +10,9 @@ logger = logging.getLogger(__name__)
 
 
 class QueryPrintMiddleware(object):
+    lexer = lexers.MySqlLexer()
+    lexer.add_filter(SqlFilter())
+
     def __init__(self, get_response):
         self.get_response = get_response
 
@@ -30,16 +33,9 @@ class QueryPrintMiddleware(object):
 
                 total_time += float(query_time)
 
-            logger.debug(f'{n_queries} queries in {total_time}s.')
+                logger.debug(highlight(query['sql'], self.lexer, Formatter()))
+                logger.debug(f'Query took {float(query_time)}s.')
 
-            if n_queries > 0:
-                self.print_queries(request, queries)
+            logger.debug(f'{n_queries} queries took {total_time}s.')
 
         return response
-
-    def print_queries(self, request, queries):
-        lexer = lexers.MySqlLexer()
-        lexer.add_filter(SqlFilter())
-
-        for query in queries:
-            logger.debug(highlight(query['sql'], lexer, Formatter()))
