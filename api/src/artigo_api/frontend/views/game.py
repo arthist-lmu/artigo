@@ -1,16 +1,12 @@
-import json
 import logging
-import traceback
 
-from django.core.cache import cache
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.exceptions import APIException
 from drf_spectacular.utils import extend_schema, OpenApiParameter
 from frontend.controllers import (
-    GameTaggingController,
-    GameROIController,
-    TagController,
+    game_controller_switch,
+    input_controller_switch,
 )
 
 logger = logging.getLogger(__name__)
@@ -20,25 +16,24 @@ class GameView(APIView):
     @extend_schema(
         parameters=[
             OpenApiParameter(
-                description='Number of gamerounds',
-                name='rounds',
-                type={
-                    'type': 'integer',
-                    'minimum': 1,
-                    'maximum': 100,
-                },
-                default=5,
+                description='Type of game',
+                name='game_type',
+                type=str,
+                enum=[
+                    'tagging',
+                    'roi',
+                ],
+                default='tagging',
             ),
             OpenApiParameter(
                 description='Duration of each gameround (in seconds).' \
                     + ' For infinite game rounds, `0` should be passed.',
-                name='round_duration',
+                name='game_round_duration',
                 type={
                     'type': 'integer',
                     'minimum': 0,
                     'maximum': 60 * 60,
                 },
-                default=60,
             ),
             OpenApiParameter(
                 description='Type of each resource',
@@ -48,19 +43,16 @@ class GameView(APIView):
                     'random_resource',
                 ],
             ),
-            # OpenApiParameter(
-            #     description='Resource options',
-            #     name='resource_options',
-            #     type={
-            #         'type': 'object',
-            #         'properties': {
-            #             'lt_percentile': {
-            #                 'type': 'number',
-            #                 'default': 1.0,
-            #             },
-            #         },
-            #     },
-            # ),
+            OpenApiParameter(
+                description='Number of resources. This corresponds to the' \
+                    + ' number of gamerounds to be played.',
+                name='resource_rounds',
+                type={
+                    'type': 'integer',
+                    'minimum': 1,
+                    'maximum': 100,
+                },
+            ),
             OpenApiParameter(
                 description='Type of each opponent. Opponents are invalid' \
                     + ' for infinite game rounds (`round_duration=0`).',
@@ -80,8 +72,8 @@ class GameView(APIView):
                 ],
             ),
             OpenApiParameter(
-                description='Suggester types',
-                name='suggester_types',
+                description='Suggester type',
+                name='suggester_type',
                 type={
                     'type': 'array',
                     'items': {
@@ -93,8 +85,8 @@ class GameView(APIView):
                 },
             ),
             OpenApiParameter(
-                description='Score types',
-                name='score_types',
+                description='Score type',
+                name='score_type',
                 type={
                     'type': 'array',
                     'items': {
@@ -115,27 +107,7 @@ class GameView(APIView):
         if not request.user.is_authenticated:
             raise APIException('not_authenticated')
 
-        plugins = cache.get('plugins', {})
-        params = request.query_params
-
-        game_type = params.get('game_type', 'tagging')
-
-        if game_type == 'tagging':
-            game_controller = GameTaggingController(
-                resource_plugin_manager=plugins.get('resource'),
-                opponent_plugin_manager=plugins.get('opponent'),
-                taboo_plugin_manager=plugins.get('taboo'),
-                suggester_plugin_manager=plugins.get('suggester'),
-            )
-        elif game_type == 'roi':
-            game_controller = GameROIController(
-                resource_plugin_manager=plugins.get('resource'),
-                opponent_plugin_manager=plugins.get('opponent'),
-            )
-        else:
-            raise APIException('unknown_game_type')
-
-        result = game_controller(params, request.user)
+        result = game_controller_switch(request)
 
         if result.get('type', 'error') == 'error':
             message = result.get('message', 'unknown_error')
@@ -148,16 +120,7 @@ class GameView(APIView):
         if not request.user.is_authenticated:
             raise APIException('not_authenticated')
 
-        plugins = cache.get('plugins', {})
-        params = request.data['params']
-
-        # TODO: select correct controller
-        tag_controller = TagController(
-            filter_plugin_manager=plugins.get('filter'),
-            score_plugin_manager=plugins.get('score'),
-        )
-
-        result = tag_controller(params, request.user)
+        result = input_controller_switch(request)
 
         if result.get('type', 'error') == 'error':
             message = result.get('message', 'unknown_error')

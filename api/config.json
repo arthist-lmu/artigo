@@ -1,62 +1,98 @@
 {
     "resources": [
         {
+            "name": "random_resource",
             "type": "RandomTaggingResource",
-            "disabled": false
+            "game_types": ["tagging"],
+            "disabled": false,
+            "default": true
         },
         {
+            "name": "random_resource",
             "type": "RandomROIResource",
-            "disabled": false
+            "game_types": ["roi"],
+            "disabled": false,
+            "default": true
         }
     ],
     "opponents": [
         {
+            "name": "mean_gameround_opponent",
             "type": "MeanGameroundTaggingOpponent",
-            "disabled": false
+            "game_types": ["tagging"],
+            "disabled": false,
+            "default": false
         },
         {
+            "name": "random_gameround_opponent",
             "type": "RandomGameroundTaggingOpponent",
-            "disabled": false
+            "game_types": ["tagging"],
+            "disabled": false,
+            "default": true
         },
         {
+            "name": "mean_gameround_opponent",
             "type": "MeanGameroundROIOpponent",
-            "disabled": false
+            "game_types": ["roi"],
+            "disabled": false,
+            "default": false
         },
         {
+            "name": "random_gameround_opponent",
             "type": "RandomGameroundROIOpponent",
-            "disabled": false
+            "game_types": ["roi"],
+            "disabled": false,
+            "default": true
         }
     ],
     "taboos": [
         {
+            "name": "most_annotated_taboo",
             "type": "MostAnnotatedTaboo",
-            "disabled": false
+            "game_types": ["tagging"],
+            "disabled": false,
+            "default": false
         }
     ],
     "suggesters": [
         {
+            "name": "cooccurrence_suggester",
             "type": "CooccurrenceSuggester",
-            "disabled": false
+            "game_types": ["tagging"],
+            "disabled": false,
+            "default": false
         }
     ],
     "filters": [
         {
+            "name": "already_annotated_filter",
             "type": "AlreadyAnnotatedFilter",
-            "disabled": false
+            "game_types": ["tagging"],
+            "disabled": false,
+            "default": true
         },
         {
+            "name": "taboo_filter",
             "type": "TabooFilter",
-            "disabled": false
+            "game_types": ["tagging"],
+            "disabled": false,
+            "default": false
         }
     ],
     "scores": [
         {
+            "name": "annotation_validated_score",
             "type": "AnnotationValidatedScore",
-            "disabled": false
+            "game_types": ["tagging"],
+            "disabled": false,
+            "default": false
         },
         {
+            "name": "opponent_validated_score",
             "type": "OpponentValidatedScore",
-            "disabled": false
+            "game_types": ["tagging"],
+            "disabled": false,
+            "default": false
         }
     ]
 }

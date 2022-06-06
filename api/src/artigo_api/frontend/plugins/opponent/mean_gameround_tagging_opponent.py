@@ -39,6 +39,8 @@ class MeanGameroundTaggingOpponent(OpponentPlugin):
             .annotate(n=F('count_taggings') / F('count_gamerounds')) \
             .values('resource_id', 'n')
 
+        limits = {x['resource_id']: x['n'] for x in limits}
+
         taggings = taggings.values('resource', 'tag') \
             .annotate(
                 count_taggings=Count('tag'),
@@ -58,8 +60,11 @@ class MeanGameroundTaggingOpponent(OpponentPlugin):
                 'created_after',
             )
 
-        limits = {x['resource_id']: x['n'] for x in limits}
-        opponents = OpponentSerializer(taggings, many=True).data
+        opponents = OpponentSerializer(
+            taggings,
+            many=True,
+            context={'ids': resource_ids}
+        ).data
 
         for opponent in opponents:
             limit = limits[opponent['resource_id']]

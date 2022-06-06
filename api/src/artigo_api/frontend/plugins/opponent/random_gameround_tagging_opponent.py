@@ -1,7 +1,7 @@
 import logging
 
 from datetime import timedelta
-from django.db.models import Count, OuterRef, Subquery, F
+from django.db.models import Count, F
 from frontend.models import UserTagging
 from frontend.plugins import (
     OpponentPlugin,
@@ -30,7 +30,7 @@ class RandomGameroundTaggingOpponent(OpponentPlugin):
         round_duration = params.get('round_duration', 0)
 
         gamerounds = UserTagging.objects.filter(
-                resource=OuterRef('resource'),
+                resource_id__in=resource_ids,
                 gameround__gamesession__round_duration__gte=round_duration,
                 tag__language=params.get('language', 'de'),
             ) \
@@ -38,10 +38,25 @@ class RandomGameroundTaggingOpponent(OpponentPlugin):
             .annotate(count_tags=Count('tag', distinct=True)) \
             .filter(count_tags__gte=self.min_tags) \
             .order_by('?') \
-            .values('gameround')[:1]
+            .values(
+                'gameround_id',
+                'resource_id',
+            )
 
-        taggings = UserTagging.objects.filter(resource_id__in=resource_ids) \
-            .filter(gameround__in=Subquery(gamerounds)) \
+        # filter one random gameround per resource
+        # for performance reasons without subqueries
+
+        gameround_ids = {}
+
+        for x in gamerounds:
+            gameround_ids[x['resource_id']] = x['gameround_id']
+
+            if len(gameround_ids) == len(resource_ids):
+                break
+
+        gameround_ids = gameround_ids.values()
+
+        taggings = UserTagging.objects.filter(gameround_id__in=gameround_ids) \
             .annotate(created_after=F('created') - F('gameround__created')) \
             .filter(created_after__lt=timedelta(seconds=round_duration)) \
             .order_by('resource', 'created_after') \
@@ -52,4 +67,10 @@ class RandomGameroundTaggingOpponent(OpponentPlugin):
                 'created_after',
             )
 
-        return OpponentSerializer(taggings, many=True).data
+        opponents = OpponentSerializer(
+            taggings,
+            many=True,
+            context={'ids': resource_ids}
+        ).data
+
+        return opponents

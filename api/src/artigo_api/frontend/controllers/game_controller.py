@@ -1,4 +1,3 @@
-import grpc
 import logging
 import traceback
 
@@ -7,6 +6,7 @@ from django.db.models import Count, F
 from django.core.cache import cache
 from django.core.exceptions import ObjectDoesNotExist
 from frontend.models import *
+from frontend.utils import to_type, is_in
 from frontend.views.utils import ResourceViewHelper
 
 logger = logging.getLogger(__name__)
@@ -19,6 +19,7 @@ class GameController:
         opponent_plugin_manager=None,
         taboo_plugin_manager=None,
         suggester_plugin_manager=None,
+        score_plugin_manager=None,
     ):
         super().__init__()
 
@@ -26,6 +27,7 @@ class GameController:
         self.opponent_plugin_manager = opponent_plugin_manager
         self.taboo_plugin_manager = taboo_plugin_manager
         self.suggester_plugin_manager = suggester_plugin_manager
+        self.score_plugin_manager = score_plugin_manager
 
     def __call__(self, params, user):
         if len(params) == 0:
@@ -96,14 +98,15 @@ class GameController:
             resource_ids = list(
                 self.resource_plugin_manager.run(
                     {'user_id': user.id},
-                    [query['resource_type']],
+                    query['resource_type'],
                     configs=[
                         {
-                            'type': query['resource_type'],
+                            'type': resource_type,
                             'params': query['resource_options'],
-                        },
+                        }
+                        for resource_type in query['resource_type']
                     ],
-                ),
+                )
             )
         except Exception as error:
             logger.error(traceback.format_exc())
@@ -121,14 +124,15 @@ class GameController:
                     self.opponent_plugin_manager.run(
                         resource_ids,
                         query['game_options'],
-                        [query['opponent_type']],
+                        query['opponent_type'],
                         configs=[
                             {
-                                'type': query['opponent_type'],
+                                'type': opponent_type,
                                 'params': query['opponent_options'],
-                            },
+                            }
+                            for opponent_type in query['opponent_type']
                         ],
-                    ),
+                    )
                 )
             except Exception as error:
                 logger.error(traceback.format_exc())
@@ -141,27 +145,28 @@ class GameController:
                     self.taboo_plugin_manager.run(
                         resource_ids,
                         query['game_options'],
-                        [query['taboo_type']],
+                        query['taboo_type'],
                         configs=[
                             {
-                                'type': query['taboo_type'],
+                                'type': taboo_type,
                                 'params': query['taboo_options'],
-                            },
+                            }
+                            for taboo_type in query['taboo_type']
                         ],
-                    ),
+                    )
                 )
             except Exception as error:
                 logger.error(traceback.format_exc())
 
                 return {'type': 'error', 'message': 'invalid_taboos'}
 
-            if len(query.get('suggester_types', [])) > 0:
+            if len(query.get('suggester_type', [])) > 0:
                 result['taboo'] = list(
                     self.suggester_plugin_manager.run(
                         result['taboo'],
                         query['game_options'],
-                        query['suggester_types'],
-                    ),
+                        query['suggester_type'],
+                    )
                 )
 
         game = self.merge_to_game(result, resource_ids)
@@ -175,7 +180,7 @@ class GameController:
             gamesession = Gamesession(
                 user=user,
                 game_type=game_type,
-                rounds=query['resource_options']['rounds'],
+                rounds=len(game),
                 round_duration=query['game_options']['round_duration'],
             )
             gamesession.save()
@@ -200,25 +205,70 @@ class GameController:
             'gamesession': gamesession,
         }
 
-    @staticmethod
-    def create_gameround(query, data, gamesession, user):
-        pass
+    def parse_query(self, query):
+        result = defaultdict(list)
 
-    @staticmethod
-    def parse_query(query):
-        pass
+        result['game_type'] = query.get('game_type', 'tagging')
+        result['game_options'] = {}
+
+        for key, value in query.items():
+            if key.startswith('game_'):
+                key = key.strip().split('_', 1)[-1]
+
+                if not key in ['type', 'type[]']:
+                    result['game_options'][key] = to_type(value)
+
+        plugins = {
+            'resource': self.resource_plugin_manager,
+            'opponent': self.opponent_plugin_manager,
+            'taboo': self.taboo_plugin_manager,
+            'suggester': self.suggester_plugin_manager,
+            'score': self.score_plugin_manager,
+        }
+
+        for plugin_name, plugin_manager in plugins.items():
+            plugin_type = f'{plugin_name}_type'
+            plugin_options = f'{plugin_name}_options'
+
+            if plugin_manager:
+                for plugin in plugin_manager.plugin_list:
+                    config = plugin.get('config', {})
+
+                    if is_in(result['game_type'], config['game_types']):
+                        values = query.get(plugin_type)
+
+                        if values is None:
+                            values = query.getlist(f'{plugin_type}[]')
+                            
+                        if values:
+                            if is_in(config['name'], values):
+                                result[plugin_type].append(config['type'])
+                        elif config.get('default', False):
+                            result[plugin_type].append(config['type'])
+
+            if result.get(plugin_type):
+                result[plugin_options] = {}
+
+                for key, value in query.items():
+                    if key.startswith(f'{plugin_name}_'):
+                        key = key.strip().split('_', 1)[-1]
+
+                        if not key in ['type', 'type[]']:
+                            result[plugin_options][key] = to_type(value)
+
+        return dict(result)
 
     def merge_to_game(self, result, resource_ids):
-        resources = ResourceView()(resource_ids)
-
         game = defaultdict(dict)
+
+        resources = ResourceView()(resource_ids)
 
         for key, values in result.items():
             for value in values:
-                resource_id = str(value.pop('resource_id', ''))
-
-                if len(resource_id) == 0:
+                if value.get('resource_id') is None:
                     continue
+
+                resource_id = str(value.pop('resource_id'))
 
                 for field, v in value.items():
                     game[resource_id][f'{key}_{field}'] = v

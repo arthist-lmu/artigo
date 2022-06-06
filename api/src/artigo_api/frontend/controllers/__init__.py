@@ -1,3 +1,2 @@
-from .tag_controller import TagController
-from .game_roi_controller import GameROIController
-from .game_tagging_controller import GameTaggingController
+from .game_controller_switch import switch as game_controller_switch
+from .input_controller_switch import switch as input_controller_switch
