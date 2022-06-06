@@ -44,14 +44,14 @@ const router = new VueRouter({
           path: 'imprint',
           name: 'imprint',
           beforeEnter: () => {
-            window.open(`${instituteUrl}/funktionen/impressum/index.html`, '_blank');
+            window.open(`${instituteUrl}/funktionen/impressum`, '_blank');
           },
         },
         {
           path: 'privacy-policy',
           name: 'privacy-policy',
           beforeEnter: () => {
-            window.open(`${instituteUrl}/funktionen/datenschutz/index.html`, '_blank');
+            window.open(`${instituteUrl}/funktionen/datenschutz`, '_blank');
           },
         },
         {

@@ -72,13 +72,8 @@ const search = {
           });
         }
       }
-      if (router.currentRoute.path.endsWith('/search')) {
-        const href = `?${urlParams.toString()}`;
-        window.history.pushState({}, null, href);
-      } else {
-        const query = Object.fromEntries(urlParams);
-        router.push({ name: 'search', query });
-      }
+      const query = Object.fromEntries(urlParams);
+      router.push({ name: 'search', query });
     },
   },
   mutations: {

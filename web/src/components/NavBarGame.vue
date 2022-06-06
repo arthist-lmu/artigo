@@ -250,7 +250,7 @@ export default {
   },
   watch: {
     tabooTags(values) {
-      if (this.gameType === 'tag-a-tag') {
+      if (this.gameType === 'tag-a-tag' && values) {
         [this.selected] = values;
       } else {
         this.selected = null;

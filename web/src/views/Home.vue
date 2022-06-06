@@ -1,27 +1,14 @@
 <template>
   <v-card flat>
     <v-card-text>
-      <v-dialog
-        v-model="showModal"
-        max-width="750"
-      >
-        <template v-slot:activator="{ on, attrs }">
-          <v-img
-            :src="entry.path"
-            class="grey lighten-2"
-            max-height="70vh"
-            v-bind="attrs"
-            v-on="on"
-            style="cursor: pointer;"
-            contain
-          />
-        </template>
-
-        <ResourceCard
-          :entry="entry"
-          :showImage="false"
-        />
-      </v-dialog>
+      <v-img
+        :src="entry.path"
+        @click="showDialog"
+        class="grey lighten-2"
+        max-height="70vh"
+        style="cursor: pointer;"
+        contain
+      />
     </v-card-text>
   </v-card>
 </template>
@@ -32,6 +19,11 @@ export default {
     return {
       showModal: false,
     };
+  },
+  methods: {
+    showDialog() {
+      this.$store.commit('resource/updateData', this.entry);
+    },
   },
   computed: {
     entry() {
@@ -49,9 +41,6 @@ export default {
     const random = (new Date()).setHours(0, 0, 0, 0);
     const params = { random, limit: 1, sourceView: true };
     this.$store.dispatch('search/post', params);
-  },
-  components: {
-    ResourceCard: () => import('@/components/ResourceCard.vue'),
   },
 };
 </script>

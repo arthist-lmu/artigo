@@ -4,6 +4,8 @@
     <AppBar />
     <Loader />
     <Toaster />
+
+    <ResourceDialog />
     <ReconcileDialog />
 
     <v-main class="mx-6 mb-6">
@@ -13,12 +15,6 @@
 </template>
 
 <script>
-import AppBar from '@/components/AppBar.vue';
-import NavBar from '@/components/NavBar.vue';
-import Loader from '@/components/Loader.vue';
-import Toaster from '@/components/Toaster.vue';
-import ReconcileDialog from '@/components/ReconcileDialog.vue';
-
 export default {
   computed: {
     locale() {
@@ -36,11 +32,12 @@ export default {
     document.documentElement.lang = this.locale;
   },
   components: {
-    NavBar,
-    AppBar,
-    Loader,
-    Toaster,
-    ReconcileDialog,
+    NavBar: () => import('@/components/NavBar.vue'),
+    AppBar: () => import('@/components/AppBar.vue'),
+    Loader: () => import('@/components/Loader.vue'),
+    Toaster: () => import('@/components/Toaster.vue'),
+    ResourceDialog: () => import('@/components/ResourceDialog.vue'),
+    ReconcileDialog: () => import('@/components/ReconcileDialog.vue'),
   },
 };
 </script>

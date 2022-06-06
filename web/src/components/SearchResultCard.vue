@@ -16,34 +16,24 @@
         </v-col>
 
         <v-col :cols="cols.image">
-          <v-dialog
-            v-model="showModal"
-            max-width="750"
+          <v-img
+            :src="entry.path"
+            @click="showDialog"
+            max-height="250"
+            v-on:error="onError"
+            style="cursor: pointer;"
+            contain
           >
-            <template v-slot:activator="{ on, attrs }">
-              <v-img
-                :src="entry.path"
-                max-height="250"
-                v-bind="attrs"
-                v-on="on"
-                v-on:error="onError"
-                style="cursor: pointer;"
-                contain
+            <template v-slot:placeholder>
+              <v-row
+                class="fill-height ma-0"
+                justify="center"
+                align="center"
               >
-                <template v-slot:placeholder>
-                  <v-row
-                    class="fill-height ma-0"
-                    justify="center"
-                    align="center"
-                  >
-                    <v-progress-circular indeterminate />
-                  </v-row>
-                </template>
-              </v-img>
+                <v-progress-circular indeterminate />
+              </v-row>
             </template>
-
-            <ResourceCard :entry="entry" />
-          </v-dialog>
+          </v-img>
         </v-col>
 
         <v-col
@@ -183,6 +173,9 @@ export default {
     onError() {
       this.$emit('input', true);
     },
+    showDialog() {
+      this.$store.commit('resource/updateData', this.entry);
+    },
   },
   computed: {
     cols() {
@@ -244,7 +237,6 @@ export default {
   },
   components: {
     TagCloud: () => import('@/components/TagCloud.vue'),
-    ResourceCard: () => import('@/components/ResourceCard.vue'),
     ReconcileButton: () => import('@/components/ReconcileButton.vue'),
   },
 };

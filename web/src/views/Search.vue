@@ -61,7 +61,7 @@
 
     <v-row
       v-if="entries.length > 0"
-      class="v-card v-card--flat v-sheet theme--light"
+      class="v-card v-card--flat v-sheet d-flex theme--light"
       no-gutters
     >
       <v-col
