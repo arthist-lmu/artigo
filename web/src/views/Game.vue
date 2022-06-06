@@ -72,11 +72,11 @@ export default {
   methods: {
     get() {
       const params = {
-        rounds: this.rounds,
-        round_duration: this.roundDuration,
-        opponent_type: 'random_gameround_opponent',
-        lt_percentile: 0.75,
-        score_types: [
+        game_type: 'tagging',
+        game_round_duration: this.roundDuration,
+        resource_rounds: this.rounds,
+        // resource_percentile: 0.75,
+        score_type: [
           'annotation_validated_score',
           'opponent_validated_score',
         ],
@@ -88,7 +88,7 @@ export default {
       } else if (this.gameType === 'tag-a-tag') {
         params.taboo_type = 'most_annotated_taboo';
         params.taboo_max_tags = 1;
-        params.suggester_types = [
+        params.suggester_type = [
           'cooccurrence_suggester',
         ];
       }
