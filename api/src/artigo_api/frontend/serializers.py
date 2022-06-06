@@ -179,14 +179,21 @@ class UserTaggingCountSerializer(serializers.ModelSerializer):
 class ResourceTagListSerializer(serializers.ListSerializer):
     def to_representation(self, data):
         data = super().to_representation(data)
+
         groups = groupby(data, key=lambda x: x['resource_id'])
+        groups = dict((k, list(group)) for k, group in groups)
+
+        resource_ids = self.context.get('ids', groups.keys())
 
         return [
             {
-                'resource_id': key,
-                'tags': [self.to_dict(x) for x in group],
+                'resource_id': resource_id,
+                'tags': [
+                    self.to_dict(x)
+                    for x in groups.get(resource_id, [])
+                ],
             }
-            for key, group in groups
+            for resource_id in resource_ids
         ]
 
     @staticmethod

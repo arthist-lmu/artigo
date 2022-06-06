@@ -81,6 +81,9 @@ class Backbone:
         return 'ok'
 
     def search(self, body, limit=100, offset=0):
+        limit = min(limit, 10000)
+        offset = min(offset, 10000 - limit)
+        
         result = Search.from_dict(body) \
             .extra(from_=offset, size=limit) \
             .execute()

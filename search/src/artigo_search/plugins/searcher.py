@@ -255,6 +255,14 @@ class Searcher:
                     )
                 )
 
+        if not query.get('aggregate', {}).get('significant'):
+            terms['must'].append(
+                Q(
+                    'exists',
+                    field='hash_id',
+                )
+            )
+
         logger.info(f'[Server] Query {terms}')
 
         search = Search().query(
@@ -263,7 +271,7 @@ class Searcher:
                 must=terms.get('must', []),
                 should=terms.get('should', []),
                 must_not=terms.get('must_not', []),
-            ),
+            )
         )
 
         if convert:
