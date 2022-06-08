@@ -12,9 +12,22 @@ Vue.mixin(mixins);
 Vue.use(VueTouch, { name: 'v-touch' });
 
 const ARTigo = Vue.extend({
+  methods: {
+    registerAnonymous() {
+      const params = { is_anonymous: true };
+      this.$store.dispatch('user/register', params);
+    },
+  },
   computed: {
     token() {
       return this.$store.state.user.token;
+    },
+    invalidToken() {
+      const { details } = this.$store.state.utils.message;
+      if (this.isArray(details)) {
+        return details.includes('invalid_token');
+      }
+      return false;
     },
   },
   watch: {
@@ -23,11 +36,15 @@ const ARTigo = Vue.extend({
         if (token) {
           this.$store.dispatch('user/get');
         } else {
-          const params = { is_anonymous: true };
-          this.$store.dispatch('user/register', params);
+          this.registerAnonymous();
         }
       },
       immediate: true,
+    },
+    invalidToken(value) {
+      if (value) {
+        this.registerAnonymous();
+      }
     },
   },
 });
