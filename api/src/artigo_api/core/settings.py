@@ -238,6 +238,10 @@ CELERY_BEAT_SCHEDULE = {
         'task': 'core.tasks.export_jsonl',
         'schedule': timedelta(hours=12),
     },
+    'renew_cache': {
+        'task': 'frontend.tasks.renew_cache',
+        'schedule': timedelta(hours=1),
+    },
 }
 
 # Custom user model

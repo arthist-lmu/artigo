@@ -19,10 +19,11 @@ def name(func=None):
 def resource_count(**kwargs):
     values = cache.get(kwargs['name'])
 
-    if values is None:
+    if values is None or kwargs.get('renew'):
         values = Resource.objects.latest('id').id
 
-        cache.set(kwargs['name'], values, 60 * 60 * 24)
+        timeout = kwargs.get('timeout', 60 * 60 * 24)
+        cache.set(kwargs['name'], values, timeout)
 
     return values
 
@@ -31,7 +32,7 @@ def resource_count(**kwargs):
 def resource_tagging_count(**kwargs):
     values = cache.get(kwargs['name'])
 
-    if values is None:
+    if values is None or kwargs.get('renew'):
         values = UserTagging.objects.values('resource') \
             .exclude(resource__hash_id__exact='') \
             .annotate(
@@ -39,7 +40,8 @@ def resource_tagging_count(**kwargs):
                 count_taggings=Count('tag'),
             )
 
-        cache.set(kwargs['name'], values, 60 * 60 * 24)
+        timeout = kwargs.get('timeout', 60 * 60 * 24)
+        cache.set(kwargs['name'], values, timeout)
 
     return values
 
@@ -48,7 +50,7 @@ def resource_tagging_count(**kwargs):
 def resource_roi_count(**kwargs):
     values = cache.get(kwargs['name'])
 
-    if values is None:
+    if values is None or kwargs.get('renew'):
         values = UserROI.objects.values('resource') \
             .exclude(resource__hash_id__exact='') \
             .annotate(
@@ -56,6 +58,7 @@ def resource_roi_count(**kwargs):
                 count_rois=Count('tag'),
             )
 
-        cache.set(kwargs['name'], values, 60 * 60 * 24)
+        timeout = kwargs.get('timeout', 60 * 60 * 24)
+        cache.set(kwargs['name'], values, timeout)
 
     return values
