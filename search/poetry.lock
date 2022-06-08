@@ -414,14 +414,14 @@ python-versions = ">=3.8"
 
 [[package]]
 name = "opensearch-dsl"
-version = "1.0.0"
+version = "2.0.1"
 description = "Python client for OpenSearch"
 category = "main"
 optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
 
 [package.dependencies]
-opensearch-py = ">=1.0.0"
+opensearch-py = ">=2.0.0"
 python-dateutil = "*"
 six = "*"
 
@@ -732,7 +732,7 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "dbc212ce9b06b442b4eb4b357a8cb9cc5e70aeadaf4f837b4ef14916f938a65b"
+content-hash = "e7dfba2ebee9af4fc77c65eb5b786e5ceb9bb9fafc1ee1635f126ebb13c6512c"
 
 [metadata.files]
 aiohttp = [
@@ -1271,8 +1271,8 @@ numpy = [
     {file = "numpy-1.22.4.zip", hash = "sha256:425b390e4619f58d8526b3dcf656dde069133ae5c240229821f01b5f44ea07af"},
 ]
 opensearch-dsl = [
-    {file = "opensearch-dsl-1.0.0.tar.gz", hash = "sha256:745fd4b05934b764f3ebca0dd9b1e7bd9b5934fcbb6c620d7087d24bcc8241c7"},
-    {file = "opensearch_dsl-1.0.0-py2.py3-none-any.whl", hash = "sha256:aee9199b3fee8a572bc476e22be44d8acafbef8f1b777a51fac898623f125b56"},
+    {file = "opensearch-dsl-2.0.1.tar.gz", hash = "sha256:8226381665073f110ef3d3a5027e625255df55d91d302044999c590b4d662539"},
+    {file = "opensearch_dsl-2.0.1-py2.py3-none-any.whl", hash = "sha256:c233a9b6f35b401db3755dd3430e7a38b989433a50e7ceee2958521a9abf56a7"},
 ]
 opensearch-py = [
     {file = "opensearch-py-2.0.0.tar.gz", hash = "sha256:1b7b451a54557de72faad004de9d338f613db3f38a78e9230105cf9fd8a81c52"},
