@@ -45,7 +45,7 @@ export default {
         this.$emit('setOffset', offset);
       }
     },
-    onMouseUp() {
+    onMouseUp({ event }) {
       if (!event.ctrlKey && this.path) {
         this.set(this.path.strokeBounds, true);
         this.$emit('export', this.roi);

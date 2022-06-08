@@ -46,9 +46,8 @@ function supportedLocalesInclude(locale) {
     if (lang === locale) {
       return true;
     }
-    return false;
   }
-  return locale.match(/([A-Za-z0-9-_]+)\./i);
+  return false;
 }
 
 function getStartingLocale() {

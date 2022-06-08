@@ -167,7 +167,7 @@ export default {
       const query = { [field]: value };
       this.$store.dispatch('search/post', { query });
     },
-    handleSearch(evt) {
+    handleSearch() {
 
     },
     onError() {

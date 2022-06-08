@@ -34,11 +34,11 @@ export default {
       }) => {
         let size = 12;
         if (count > 4) {
-          size += 2;
+          size += 3;
         } else if (count > 9) {
-          size += 4;
-        } else if (count > 14) {
           size += 6;
+        } else if (count > 14) {
+          size += 9;
         }
         if (language === this.$i18n.locale) {
           tags.push({ id, name, size });
@@ -52,3 +52,9 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.v-chip.v-size--x-small {
+  height: 20px;
+}
+</style>
