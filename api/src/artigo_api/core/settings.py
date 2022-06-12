@@ -32,9 +32,10 @@ FORCE_SCRIPT_NAME = '/'
 
 try:
     API = env('DOMAIN')
-    API = 'https://' + API
+    API_URL = 'https://' + API
 except:
     API = 'http://localhost:8000'
+    API_URL = 'http://localhost:8000'
 
 INSTALLED_APPS = [
     'django.contrib.admin',
