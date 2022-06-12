@@ -31,7 +31,7 @@ DEBUG = env('DEBUG')
 FORCE_SCRIPT_NAME = '/'
 
 try:
-    API = env('DOMAIN')
+    API = 'https://' + env('DOMAIN')
 except:
     API = 'http://localhost:8000'
 
