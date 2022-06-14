@@ -64,10 +64,14 @@ const search = {
           urlParams.append('all-text', params.query);
         } else if (params.query instanceof Object) {
           Object.keys(params.query).forEach((field) => {
-            if (params[field] instanceof Array) {
-              urlParams.append(field, params.query[field].join(','));
+            let values = params.query[field];
+            if (values instanceof Set) {
+              values = Array.from(values);
+            }
+            if (values instanceof Array) {
+              urlParams.append(field, values.join(','));
             } else {
-              urlParams.append(field, params.query[field]);
+              urlParams.append(field, values);
             }
           });
         }

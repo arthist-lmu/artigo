@@ -53,18 +53,20 @@ class SearchView(RPCView):
                         queries = [queries]
 
                     for q in queries:
+                        term = grpc_request.terms.add()
+
                         if not isinstance(q, dict):
                             q = {'value': q}
 
-                        if q['value'].startswith('+'):
-                            q['flag'] = 'must'
-                            q['value'] = q['value'][1:]
-                        elif q['value'].startswith('-'):
-                            q['flag'] = 'not'
-                            q['value'] = q['value'][1:]
+                        if q.get('value'):
+                            if q['value'].startswith('+'):
+                                q['flag'] = 'must'
+                                q['value'] = q['value'][1:]
+                            elif q['value'].startswith('-'):
+                                q['flag'] = 'not'
+                                q['value'] = q['value'][1:]
 
-                        term = grpc_request.terms.add()
-                        term.text.query = q['value']
+                            term.text.query = q['value']
 
                         if MAPPER.get(field):
                             term.text.field = MAPPER[field]

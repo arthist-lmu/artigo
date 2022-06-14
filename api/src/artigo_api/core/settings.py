@@ -8,6 +8,7 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 
 import os
 import environ
+import logging
 
 from datetime import timedelta
 
@@ -31,11 +32,11 @@ DEBUG = env('DEBUG')
 FORCE_SCRIPT_NAME = '/'
 
 try:
-    API = env('DOMAIN')
-    API_URL = 'https://' + API
+    API = env('VUE_APP_API')
+    API_URL = f'https://{API}'
 except:
     API = 'http://localhost:8000'
-    API_URL = 'http://localhost:8000'
+    API_URL = API
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -106,12 +107,14 @@ CSRF_TRUSTED_ORIGINS = [
 ]
 
 try:
-    ALLOWED_HOSTS.append(env('DOMAIN'))
+    ALLOWED_HOSTS.append(env('VUE_APP_API'))
     CORS_ALLOWED_ORIGINS.extend([
-        f'https://{env("DOMAIN")}',
-        f'https://{env("FRONTEND_DOMAIN")}',
+        f'https://{env("VUE_APP_API")}',
+        f'https://{env("VUE_APP_FRONTEND")}',
     ])
-    CSRF_TRUSTED_ORIGINS.append(f'https://{env("DOMAIN")}')
+    CSRF_TRUSTED_ORIGINS.append(
+        f'https://{env("VUE_APP_API")}'
+    )
 except:
     pass
 
@@ -120,7 +123,7 @@ ROOT_URLCONF = 'core.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -266,6 +269,7 @@ ACCOUNT_PASSWORD_MIN_LENGTH = 12
 
 # Other settings
 ACCOUNT_DEFAULT_HTTP_PROTOCOL = 'https'
+ACCOUNT_AUTHENTICATED_LOGIN_REDIRECTS = False
 
 # TODO: change to mandatory
 ACCOUNT_EMAIL_VERIFICATION = 'none'

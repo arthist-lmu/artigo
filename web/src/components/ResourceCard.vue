@@ -219,14 +219,14 @@ export default {
           }
         });
         if (creators.length > 0) {
-          return creators;
+          return Array.from(new Set(creators));
         }
       }
       return [this.$t('resource.default.creator')];
     },
     tags() {
+      const tags = [];
       if (this.keyInObj('tags', this.entry)) {
-        const tags = [];
         this.entry.tags.forEach(({
           id, language, name, count,
         }) => {
@@ -237,9 +237,8 @@ export default {
         if (this.moreTags && tags.length > 20) {
           return tags.slice(0, 20);
         }
-        return tags;
       }
-      return [];
+      return tags;
     },
   },
   components: {

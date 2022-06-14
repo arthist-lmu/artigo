@@ -212,7 +212,7 @@ export default {
         }
       });
       if (titles.length > 0) {
-        return new Set(titles);
+        return Array.from(new Set(titles));
       }
       return [this.$t('resource.default.title')];
     },
@@ -224,7 +224,7 @@ export default {
         }
       });
       if (creators.length > 0) {
-        return new Set(creators);
+        return Array.from(new Set(creators));
       }
       return [this.$t('resource.default.creator')];
     },
