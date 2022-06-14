@@ -1,0 +1,84 @@
+{% extends "account/base.html" %}
+
+{% load i18n %}
+{% load socialaccount %}
+
+{% block head_title %}
+{% trans "Sign In" %}
+{% endblock %}
+
+{% block extra_head %}
+<script type="text/javascript">
+  $(function() {
+    $('.btn-google').addClass('btn-google-plus');
+    $('#id_login').addClass('form-control');
+    $('#id_password').addClass('form-control');
+    $('#id_remember').addClass('form-check-input');
+  });
+</script>
+{% endblock %}
+
+{% block content %}
+
+{% get_providers as socialaccount_providers %}
+
+<div class="container col-md-12">
+  <section class="w-100 vh-100 d-flex justify-content-center align-items-center">
+    <form class="login" method="POST" action="{% url 'account_login' %}" style="width: 350px;">
+      {% csrf_token %}
+
+      {% if form.non_field_errors %}
+      <div class="alert alert-warning">
+        <ul class="alert-message">
+          {% for error in form.non_field_errors %}
+          <li>{{ error }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+      {% endif %}
+
+      <div class="form-outline mb-4 {% if form.login.errors %}has-error{% endif %}">
+        {{ form.login }}
+      </div>
+
+      <div class="form-outline mb-4 {% if form.password.errors %}has-error{% endif %}">
+        {{ form.password }}
+      </div>
+
+      {% if redirect_field_value %}
+      <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+      {% endif %}
+
+      <div class="row mb-4">
+        <div class="col d-flex justify-content-center">
+          <div class="form-check">
+            {{ form.remember }}
+            <label class="form-check-label ml-2" for="id_remember">Remember me</label>
+          </div>
+        </div>
+
+        <div class="col d-flex justify-content-center">
+          <a href="{% url 'account_reset_password' %}">{% trans "Forgot Password?" %}</a>
+        </div>
+      </div>
+
+      <div class="d-grid">
+        <button class="btn btn-primary mb-4" type="submit">{% trans "Sign In" %}</button>
+      </div>
+
+      {% if socialaccount_providers %}
+      <div class="text-center">
+        <p>Or sign in with:</p>
+
+        {% for provider in socialaccount_providers %}
+        <button title="{{ provider.name }}" type="button" class="btn btn-link btn-floating mx-1" href="{% provider_login_url provider.id process=" login " %}">
+          <i class="fab fa-{{ provider.id }}"></i>
+        </button>
+        {% endfor %}
+      </div>
+      {% endif %}
+    </form>
+  </section>
+</div>
+
+{% endblock %}
