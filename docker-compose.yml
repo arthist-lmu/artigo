@@ -18,7 +18,7 @@ services:
       - bootstrap.memory_lock=true
       - network.host=0.0.0.0
     volumes:
-#      - ./search/config/perf/:/usr/share/opensearch/data/
+      # - ./search/config/perf/:/usr/share/opensearch/data/
       - ./search/config/opensearch.yml:/usr/share/opensearch/config/opensearch.yml
     ulimits:
       memlock:
@@ -87,14 +87,15 @@ services:
       - redisai
       - memcached
     env_file:
-      - ./api/src/artigo_api/.env
+      - ./.env
     ports:
       - "8000:8000"
 
   web:
     image: artigo/web
     build:
-      context: ./web
+      context: .
+      dockerfile: ./web/Dockerfile
     volumes:
       - type: bind
         source: ./web/
@@ -102,6 +103,8 @@ services:
     working_dir: /web
     depends_on:
       - api
+    env_file:
+      - ./.env
     ports:
       - "8080:80"
       - "8081:8080"

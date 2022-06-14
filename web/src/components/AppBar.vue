@@ -107,8 +107,6 @@
 </template>
 
 <script>
-import { API_LOCATION } from '@/../app.config';
-
 export default {
   data() {
     return {
@@ -136,7 +134,12 @@ export default {
   },
   computed: {
     api() {
-      return `${API_LOCATION}/schema/redoc`;
+      let baseURL = 'http://localhost:8000';
+      const { VUE_APP_API } = process.env;
+      if (VUE_APP_API) {
+        baseURL = `https://${VUE_APP_API}`;
+      }
+      return `${baseURL}/schema/redoc`;
     },
     isAnonymous() {
       return this.$store.state.user.isAnonymous;
