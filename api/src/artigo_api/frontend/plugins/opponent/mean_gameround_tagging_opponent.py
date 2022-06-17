@@ -1,13 +1,13 @@
 import logging
 
 from datetime import timedelta
-from django.db.models import Count, OuterRef, Subquery, F, Avg
+from django.db.models import Count, F, Avg
 from frontend.models import UserTagging
 from frontend.plugins import (
     OpponentPlugin,
     OpponentPluginManager,
 )
-from frontend.serializers import OpponentSerializer
+from frontend.serializers import OpponentTagSerializer
 
 logger = logging.getLogger(__name__)
 
@@ -21,7 +21,6 @@ class MeanGameroundTaggingOpponent(OpponentPlugin):
         super().__init__(**kwargs)
 
     def __call__(self, resource_ids, params):
-        # TODO: filter by game_type (taboo etc.)
         round_duration = params.get('round_duration', 0)
 
         taggings = UserTagging.objects.filter(
@@ -60,7 +59,7 @@ class MeanGameroundTaggingOpponent(OpponentPlugin):
                 'created_after',
             )
 
-        opponents = OpponentSerializer(
+        opponents = OpponentTagSerializer(
             taggings,
             many=True,
             context={'ids': resource_ids}

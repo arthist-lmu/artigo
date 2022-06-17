@@ -7,7 +7,8 @@ from frontend.plugins import (
     OpponentPlugin,
     OpponentPluginManager,
 )
-from frontend.serializers import OpponentSerializer
+from frontend.serializers import OpponentTagSerializer
+from .utils import gamerounds_per_resource
 
 logger = logging.getLogger(__name__)
 
@@ -26,7 +27,6 @@ class RandomGameroundTaggingOpponent(OpponentPlugin):
         self.min_tags = self.config['min_tags']
 
     def __call__(self, resource_ids, params):
-        # TODO: filter by game_type (taboo etc.)
         round_duration = params.get('round_duration', 0)
 
         gamerounds = UserTagging.objects.filter(
@@ -43,18 +43,7 @@ class RandomGameroundTaggingOpponent(OpponentPlugin):
                 'resource_id',
             )
 
-        # filter one random gameround per resource
-        # for performance reasons without subqueries
-
-        gameround_ids = {}
-
-        for x in gamerounds:
-            gameround_ids[x['resource_id']] = x['gameround_id']
-
-            if len(gameround_ids) == len(resource_ids):
-                break
-
-        gameround_ids = gameround_ids.values()
+        gameround_ids = gamerounds_per_resource(gamerounds, resource_ids)
 
         taggings = UserTagging.objects.filter(gameround_id__in=gameround_ids) \
             .annotate(created_after=F('created') - F('gameround__created')) \
@@ -67,7 +56,7 @@ class RandomGameroundTaggingOpponent(OpponentPlugin):
                 'created_after',
             )
 
-        opponents = OpponentSerializer(
+        opponents = OpponentTagSerializer(
             taggings,
             many=True,
             context={'ids': resource_ids}

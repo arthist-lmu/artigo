@@ -1,6 +1,6 @@
 import logging
 
-from frontend.models import UserTagging
+from frontend.models import TabooTagging
 from frontend.plugins import (
     FilterPlugin,
     FilterPluginManager,
@@ -9,8 +9,8 @@ from frontend.plugins import (
 logger = logging.getLogger(__name__)
 
 
-@FilterPluginManager.export('AlreadyAnnotatedFilter')
-class AlreadyAnnotatedFilter(FilterPlugin):
+@FilterPluginManager.export('TabooTaggingFilter')
+class TabooTaggingFilter(FilterPlugin):
     default_config = {}
     default_version = '0.1'
 
@@ -18,7 +18,7 @@ class AlreadyAnnotatedFilter(FilterPlugin):
         super().__init__(**kwargs)
 
     def __call__(self, tags, gameround, params):
-        invalid_tags = UserTagging.objects.filter(
+        invalid_tags = TabooTagging.objects.filter(
                 gameround=gameround,
                 resource=gameround.resource,
             ) \
@@ -26,12 +26,6 @@ class AlreadyAnnotatedFilter(FilterPlugin):
 
         invalid_tags = set(x.lower() for x in invalid_tags)
 
-        result = []
-
         for tag in tags:
-            result.append({
-                'name': tag,
-                'valid': tag not in invalid_tags,
-            })
-            
-        return result
+            if tag['name'] in invalid_tags:
+                tag['valid'] = False

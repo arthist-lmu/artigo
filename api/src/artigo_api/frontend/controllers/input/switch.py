@@ -7,17 +7,19 @@ from django.core.cache import cache
 from django.core.exceptions import ObjectDoesNotExist
 from django.utils import timezone
 from frontend.models import Gameround
-from .input_roi_controller import InputROIController
-from .input_tagging_controller import InputTaggingController
+from .control_roi import InputROIController
+from .control_tagging import InputTaggingController
 
 logger = logging.getLogger(__name__)
 
 
 def switch(request):
-    plugins = cache.get('plugins', {})
     params = request.data['params']
 
     try:
+        if not params.get('resource_id'):
+            return {'type': 'error', 'message': 'missing_resource'}
+
         gameround = Gameround.objects.filter(resource_id=params['resource_id']) \
             .filter(
                 Q (gamesession__round_duration=0) | Q(
@@ -43,15 +45,9 @@ def switch(request):
     game_type = gameround.gamesession.game_type.name
 
     if game_type == 'tagging':
-        input_controller = InputTaggingController(
-            filter_plugin_manager=plugins.get('filter'),
-            score_plugin_manager=plugins.get('score'),
-        )
+        input_controller = InputTaggingController()
     elif game_type == 'roi':
-        input_controller = InputROIController(
-            filter_plugin_manager=plugins.get('filter'),
-            score_plugin_manager=plugins.get('score'),
-        )
+        input_controller = InputROIController()
     else:
         return {'type': 'error', 'message': 'unknown_game_type'}
 

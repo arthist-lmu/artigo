@@ -106,6 +106,10 @@ class OpponentType(GeneralType):
     pass
 
 
+class InputType(GeneralType):
+    pass
+
+
 class TabooType(GeneralType):
     pass
 
@@ -156,6 +160,12 @@ class Gameround(models.Model):
         null=True,
         blank=True,
     )
+    input_type = models.ForeignKey(
+        InputType,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+    )
     taboo_type = models.ForeignKey(
         TabooType,
         on_delete=models.SET_NULL,
@@ -178,6 +188,11 @@ class Tag(models.Model):
 
     def __str__(self):
         return self.name
+
+    def save(self, *args, **kwargs):
+        self.name = self.name.lower()
+        
+        return super().save(*args, **kwargs)
 
 
 class GeneralTagging(models.Model):
@@ -217,12 +232,17 @@ class OpponentTagging(GeneralTagging):
     )
 
 
+class InputTagging(GeneralTagging):
+    resource = models.ForeignKey(Resource, on_delete=models.CASCADE)
+
+
 class TabooTagging(GeneralTagging):
     resource = models.ForeignKey(Resource, on_delete=models.CASCADE)
 
 
 class GeneralROI(models.Model):
     gameround = models.ForeignKey(Gameround, on_delete=models.CASCADE)
+    tag = models.ForeignKey(Tag, on_delete=models.CASCADE, null=True)
     x = models.FloatField(
         default=0,
         validators=[
@@ -283,6 +303,10 @@ class OpponentROI(GeneralROI):
             MinValueValidator(0),
         ],
     )
+
+
+class InputROI(GeneralROI):
+    resource = models.ForeignKey(Resource, on_delete=models.CASCADE)
 
 
 class TabooROI(GeneralROI):

@@ -42,8 +42,7 @@ class FilterPluginManager(PluginManager):
         plugin_list = self.init_plugins(plugins, configs)
 
         for plugin in plugin_list:
-            for entry in plugin['plugin'](tags.keys(), gameround, params):
-                if not entry.get('valid', True):
-                    tags[entry['name']]['valid'] = False
+            # modify tags in-place in the respective plugin
+            plugin['plugin'](tags, gameround, params)
 
         return tags

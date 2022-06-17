@@ -120,6 +120,7 @@ export default {
         'default',
         'taboo',
         'tag-a-tag',
+        'roi',
       ],
     };
   },

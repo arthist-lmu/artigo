@@ -8,8 +8,10 @@
       <ImageCanvas
         v-if="entry"
         :src="entry.path"
+        :tool="gameTool"
         @load="loaded"
         @error="onError"
+        @update="onUpdate"
         class="my-4 grey lighten-2"
         height="70vh"
         contain
@@ -83,7 +85,7 @@ export default {
         language: this.$i18n.locale,
       };
       if (this.gameType === 'taboo') {
-        params.taboo_type = 'most_annotated_taboo';
+        params.taboo_type = 'random_annotated_taboo';
         params.taboo_max_tags = 7;
       } else if (this.gameType === 'tag-a-tag') {
         params.taboo_type = 'most_annotated_taboo';
@@ -91,6 +93,10 @@ export default {
         params.suggester_type = [
           'cooccurrence_suggester',
         ];
+      } else if (this.gameType === 'roi') {
+        params.game_type = 'roi';
+        params.resource_min_roi_tags = 0;
+        params.input_type = 'most_annotated_input';
       }
       this.$store.dispatch('game/get', params).then(() => {
         this.tag = null;
@@ -99,13 +105,15 @@ export default {
     post() {
       if (this.tag.length) {
         const params = {
-          tag: this.tag,
+          tag: {
+            name: this.tag,
+          },
           resource_id: this.entry.resource_id,
           language: this.$i18n.locale,
         };
         this.$store.dispatch('game/post', params).then(() => {
           this.tag = null;
-          this.$refs.tag.focus();
+          this.focusTagInput();
         });
       }
     },
@@ -123,12 +131,32 @@ export default {
     onError() {
       this.nextRound();
     },
+    onUpdate(values) {
+      console.log(values);
+      const params = {
+        tag: {
+          name: this.tag,
+          ...values,
+        },
+        resource_id: this.entry.resource_id,
+        language: this.$i18n.locale,
+      };
+      this.$store.dispatch('game/post', params).then(() => {
+        this.tag = null;
+        this.focusTagInput();
+      });
+    },
     nextRound() {
       if (this.isFinished) {
         const { sessionId: id } = this.$store.state.game;
         this.$router.push({ name: 'session', params: { id } });
       } else {
         this.$store.dispatch('game/get', {});
+      }
+    },
+    focusTagInput() {
+      if (this.$refs.tag !== undefined) {
+        this.$refs.tag.focus();
       }
     },
   },
@@ -146,6 +174,12 @@ export default {
     gameType() {
       return this.$route.query.type || 'default';
     },
+    gameTool() {
+      if (this.gameType === 'roi') {
+        return 'brush';
+      }
+      return 'select';
+    },
     status() {
       const { error, loading } = this.$store.state.utils.status;
       return !loading && error;
@@ -153,7 +187,7 @@ export default {
   },
   watch: {
     entry() {
-      this.$refs.tag.focus();
+      this.focusTagInput();
     },
     status(value) {
       if (value) {
@@ -174,7 +208,6 @@ export default {
     clearInterval(this.timer);
   },
   beforeRouteUpdate() {
-    // TODO: this does not work
     this.get();
   },
   mounted() {

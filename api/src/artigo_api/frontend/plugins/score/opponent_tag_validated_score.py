@@ -1,17 +1,17 @@
 import logging
 
-from django.db.models import Count
 from frontend.models import OpponentTagging
 from frontend.plugins import (
     ScorePlugin,
     ScorePluginManager,
 )
+from frontend.utils import to_iregex
 
 logger = logging.getLogger(__name__)
 
 
-@ScorePluginManager.export('OpponentValidatedScore')
-class OpponentValidatedScore(ScorePlugin):
+@ScorePluginManager.export('OpponentTagValidatedScore')
+class OpponentTagValidatedScore(ScorePlugin):
     default_config = {
         'point_value': 5,
     }
@@ -26,21 +26,15 @@ class OpponentValidatedScore(ScorePlugin):
     def __call__(self, tags, gameround, params):
         valid_tags = OpponentTagging.objects.filter(
                 gameround=gameround,
-                tag__name__iregex=f"({'|'.join(tags)})",
+                tag__name__iregex=to_iregex(tags, 'name'),
                 tag__language=params.get('language', 'de'),
             ) \
             .values_list('tag__name', flat=True)
 
         valid_tags = set(x.lower() for x in valid_tags)
 
-        result = []
-
         for tag in tags:
-            is_valid = tag in valid_tags
+            tag['score'] = tag.get('score', 0)
 
-            result.append({
-                'name': tag,
-                'score': is_valid * self.point_value,
-            })
-
-        return result
+            if tag['valid'] and tag['name'] in valid_tags:
+                tag['score'] += self.point_value

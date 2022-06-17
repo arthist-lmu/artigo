@@ -70,6 +70,10 @@ export default {
   props: {
     ...VImg.props,
     value: Object,
+    tool: {
+      type: String,
+      default: 'select',
+    },
     avatarText: String,
   },
   data() {
@@ -113,7 +117,7 @@ export default {
       });
     },
     update(values) {
-      console.log(this.activeTool, { ...values });
+      this.$emit('update', { ...values });
     },
     reset() {
       this.scope.project.activeLayer.removeChildren();
@@ -155,10 +159,21 @@ export default {
     src() {
       this.reset();
     },
+    tool: {
+      handler(value) {
+        this.activeTool = value;
+      },
+      immediate: true,
+    },
   },
   mounted() {
-    this.scope.setup(this.$refs.canvas);
-    this.scope.activate();
+    const { offsetWidth, offsetHeight } = this.$refs.canvas.parentNode;
+    this.$refs.canvas.style.width = `${offsetWidth}px`;
+    this.$refs.canvas.style.height = `${offsetHeight}px`;
+    this.$nextTick(() => {
+      this.scope.setup(this.$refs.canvas);
+      this.scope.activate();
+    });
   },
   created() {
     this.scope = new paper.PaperScope();
@@ -179,9 +194,9 @@ export default {
 </style>
 
 <style scoped>
-canvas[resize] {
-  width: 100%;
-  height: 100%;
+canvas {
+  width: 600px;
+  height: 400px;
 }
 
 .canvas-container {

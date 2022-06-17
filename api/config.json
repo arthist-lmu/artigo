@@ -8,11 +8,25 @@
             "default": true
         },
         {
+            "name": "custom_resource",
+            "type": "CustomTaggingResource",
+            "game_types": ["tagging"],
+            "disabled": false,
+            "default": false
+        },
+        {
             "name": "random_resource",
             "type": "RandomROIResource",
             "game_types": ["roi"],
             "disabled": false,
             "default": true
+        },
+        {
+            "name": "custom_resource",
+            "type": "CustomROIResource",
+            "game_types": ["roi"],
+            "disabled": false,
+            "default": false
         }
     ],
     "opponents": [
@@ -45,10 +59,47 @@
             "default": true
         }
     ],
+    "inputs": [
+        {
+            "name": "most_annotated_input",
+            "type": "MostAnnotatedInput",
+            "game_types": ["roi"],
+            "disabled": false,
+            "default": false
+        },
+        {
+            "name": "random_annotated_input",
+            "type": "RandomAnnotatedInput",
+            "game_types": ["roi"],
+            "disabled": false,
+            "default": true
+        },
+        {
+            "name": "custom_annotated_input",
+            "type": "CustomAnnotatedInput",
+            "game_types": ["roi"],
+            "disabled": false,
+            "default": false
+        }
+    ],
     "taboos": [
         {
             "name": "most_annotated_taboo",
             "type": "MostAnnotatedTaboo",
+            "game_types": ["tagging"],
+            "disabled": false,
+            "default": false
+        },
+        {
+            "name": "random_annotated_taboo",
+            "type": "RandomAnnotatedTaboo",
+            "game_types": ["tagging"],
+            "disabled": false,
+            "default": false
+        },
+        {
+            "name": "custom_annotated_taboo",
+            "type": "CustomAnnotatedTaboo",
             "game_types": ["tagging"],
             "disabled": false,
             "default": false
@@ -66,31 +117,52 @@
     "filters": [
         {
             "name": "already_annotated_filter",
-            "type": "AlreadyAnnotatedFilter",
+            "type": "AlreadyAnnotatedTaggingFilter",
             "game_types": ["tagging"],
             "disabled": false,
             "default": true
         },
         {
             "name": "taboo_filter",
-            "type": "TabooFilter",
+            "type": "TabooTaggingFilter",
             "game_types": ["tagging"],
             "disabled": false,
             "default": false
+        },
+        {
+            "name": "already_annotated_filter",
+            "type": "AlreadyAnnotatedROIFilter",
+            "game_types": ["roi"],
+            "disabled": false,
+            "default": true
         }
     ],
     "scores": [
         {
             "name": "annotation_validated_score",
-            "type": "AnnotationValidatedScore",
+            "type": "TagValidatedScore",
             "game_types": ["tagging"],
             "disabled": false,
             "default": false
         },
         {
             "name": "opponent_validated_score",
-            "type": "OpponentValidatedScore",
+            "type": "OpponentTagValidatedScore",
             "game_types": ["tagging"],
+            "disabled": false,
+            "default": false
+        },
+        {
+            "name": "annotation_validated_score",
+            "type": "ROIValidatedScore",
+            "game_types": ["roi"],
+            "disabled": false,
+            "default": false
+        },
+        {
+            "name": "opponent_validated_score",
+            "type": "OpponentROIValidatedScore",
+            "game_types": ["roi"],
             "disabled": false,
             "default": false
         }

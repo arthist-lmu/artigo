@@ -36,7 +36,9 @@ class GameView(APIView):
                 },
             ),
             OpenApiParameter(
-                description='Type of each resource',
+                description='Type of each resource. User-defined resources' \
+                    + ' can be specified by passing the respective identifiers' \
+                    + ' through the parameter `resource_ids`.',
                 name='resource_type',
                 type=str,
                 enum=[
@@ -64,11 +66,29 @@ class GameView(APIView):
                 ],
             ),
             OpenApiParameter(
-                description='Type of taboo annotations',
+                description='Type of input annotations. User-defined inputs of' \
+                    + ' `input_type=custom_annotated_input` can be specified by' \
+                    + ' passing the respective values through the parameters' \
+                    + ' `input_tags` and `input_rois`.',
+                name='input_type',
+                type=str,
+                enum=[
+                    'most_annotated_input',
+                    'random_annotated_input',
+                    'custom_annotated_input',
+                ],
+            ),
+            OpenApiParameter(
+                description='Type of taboo annotations. User-defined inputs of' \
+                    + ' `taboo_type=custom_annotated_taboo` can be specified by' \
+                    + ' passing the respective values through the parameters' \
+                    + ' `taboo_tags` and `taboo_rois`.',
                 name='taboo_type',
                 type=str,
                 enum=[
                     'most_annotated_taboo',
+                    'random_annotated_taboo',
+                    'custom_annotated_taboo',
                 ],
             ),
             OpenApiParameter(

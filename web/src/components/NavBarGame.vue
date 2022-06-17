@@ -16,6 +16,44 @@
     </h3>
 
     <v-list
+      v-if="inputTags && inputTags.length"
+      class="pb-0"
+      subheader
+      dense
+      flat
+    >
+      <v-subheader
+        class="pl-1"
+        inset
+      >
+        {{ $t("game.fields.input.tags") }}
+      </v-subheader>
+
+      <v-list-item
+        dense
+      >
+        <v-list-item-content>
+          <v-row class="ma-0">
+            <span
+              v-for="tag in inputTags"
+              :key="tag.name"
+              :title="tag.name"
+              class="mr-1 mb-1 uppercase"
+            >
+              <v-chip
+                @click="selectTag(tag)"
+                :color="selected === tag ? 'primary' : ''"
+                small
+              >
+                {{ tag.name }}
+              </v-chip>
+            </span>
+          </v-row>
+        </v-list-item-content>
+      </v-list-item>
+    </v-list>
+
+    <v-list
       v-if="tabooTags && tabooTags.length"
       class="pb-0"
       subheader
@@ -61,7 +99,7 @@
     </v-list>
 
     <v-list
-      v-if="selected && selected.suggest.length"
+      v-if="hasSuggestions"
       class="pb-0"
       subheader
       dense
@@ -215,6 +253,9 @@ export default {
     entry() {
       return this.$store.state.game.entry;
     },
+    gameType() {
+      return this.$route.query.type || 'default';
+    },
     roundId() {
       return this.$store.state.game.roundId;
     },
@@ -234,18 +275,25 @@ export default {
     opponentTags() {
       return this.entry.opponent_tags;
     },
-    tabooTags() {
-      return this.entry.taboo_tags;
-    },
     opponentTagCount() {
       const tags = this.opponentTags.filter((tag) => tag.created_after <= this.seconds);
       return tags.length;
     },
+    inputTags() {
+      return this.entry.input_tags;
+    },
+    tabooTags() {
+      return this.entry.taboo_tags;
+    },
     seconds() {
       return this.$store.state.game.seconds;
     },
-    gameType() {
-      return this.$route.query.type || 'default';
+    hasSuggestions() {
+      if (this.selected) {
+        const { suggest } = this.selected;
+        return suggest && suggest.length;
+      }
+      return false;
     },
   },
   watch: {

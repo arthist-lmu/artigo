@@ -1,34 +1,26 @@
 import logging
 import traceback
 
-from collections import defaultdict
 from django.utils import timezone
 from frontend.models import Tag, UserTagging
-from .input_controller import InputController
+from .controller import InputController
 
 logger = logging.getLogger(__name__)
 
 
 class InputTaggingController(InputController):
+    _type = 'tagging'
+
     def __call__(self, gameround, params, user):
         query = self.parse_query(gameround, params)
         logger.info(f'[Game Controller] Query: {query}')
 
-        result = {}
-
-        if params.get('tag'):
-            if isinstance(params['tag'], str):
-                params['tag'] = [params['tag']]
-
-            result['tags'] = defaultdict(dict)
-
-            for tag in params['tag']:
-                result['tags'][tag.lower()]['valid'] = True
+        result = {'tags': query.get('tags', [])}
 
         if query.get('filter_type'):
             try:
-                result['tags'] = dict(
-                    self.filter_plugin_manager.run(
+                result['tags'] = list(
+                    self.plugins['filter'].run(
                         result['tags'],
                         gameround,
                         query['game_options'],
@@ -42,8 +34,8 @@ class InputTaggingController(InputController):
 
         if query.get('score_type'):
             try:
-                result['tags'] = dict(
-                    self.score_plugin_manager.run(
+                result['tags'] = list(
+                    self.plugins['score'].run(
                         result['tags'],
                         gameround,
                         query['game_options'],
@@ -55,12 +47,9 @@ class InputTaggingController(InputController):
 
                 return {'type': 'error', 'message': 'invalid_scores'}
 
-        if result.get('tags'):
-            result['tags'] = [
-                {'name': name, **values}
-                for name, values in result['tags'].items()
-            ]
+        logger.info(result)
 
+        if result.get('tags'):
             bulk_list = []
 
             for tag in result['tags']:

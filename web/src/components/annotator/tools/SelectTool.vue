@@ -10,7 +10,7 @@ export default {
   mixins: [tool],
   data() {
     return {
-      name: 'Select',
+      name: 'select',
     };
   },
   methods: {

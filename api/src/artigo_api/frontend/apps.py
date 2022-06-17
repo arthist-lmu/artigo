@@ -35,6 +35,9 @@ def init_plugins(config):
         'opponent': OpponentPluginManager(
             configs=config.get('opponents', []),
         ),
+        'input': InputPluginManager(
+            configs=config.get('inputs', []),
+        ),
         'taboo': TabooPluginManager(
             configs=config.get('taboos', []),
         ),
@@ -48,8 +51,5 @@ def init_plugins(config):
             configs=config.get('scores', []),
         ),
     }
-
-    for key, manager in data.items():
-        manager.find(key)
 
     return data

@@ -6,6 +6,10 @@ from .opponent_plugin import (
     OpponentPlugin,
     OpponentPluginManager,
 )
+from .input_plugin import (
+    InputPlugin,
+    InputPluginManager,
+)
 from .taboo_plugin import (
     TabooPlugin,
     TabooPluginManager,

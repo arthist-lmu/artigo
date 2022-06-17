@@ -16,13 +16,14 @@ from .utils import random_resources
 logger = logging.getLogger(__name__)
 
 
-@ResourcePluginManager.export('RandomROIResource')
-class RandomROIResource(ResourcePlugin):
+@ResourcePluginManager.export('CustomROIResource')
+class CustomROIResource(ResourcePlugin):
     default_config = {
+        'ids': [],
         'rounds': 5,
         'min_tags': 5,
         'min_roi_tags': 5,
-        'max_last_played': 6 * 30,
+        'max_last_played': 0,
     }
 
     default_version = '0.1'
@@ -30,18 +31,22 @@ class RandomROIResource(ResourcePlugin):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
+        self.ids = self.config['ids']
         self.rounds = self.config['rounds']
         self.min_tags = self.config['min_tags']
         self.min_roi_tags = self.config['min_roi_tags']
         self.max_last_played = self.config['max_last_played']
 
-    def __call__(self, params):
-        resources = cache.resource_tagging_count()
+        if not isinstance(self.ids, (list, set)):
+            self.ids = [self.ids]
 
-        resources = resources.filter(
-            count_tags__gte=self.min_tags,
-            count_roi_tags__gte=self.min_roi_tags
-        )
+    def __call__(self, params):
+        resources = cache.resource_tagging_count() \
+            .filter(
+                id__in=self.ids[:100],
+                count_tags__gte=self.min_tags,
+                count_roi_tags__gte=self.min_roi_tags,
+            )
 
         if params.get('user_id') and self.max_last_played > 0:
             max_last_played = make_aware(datetime.today()) \
@@ -53,6 +58,9 @@ class RandomROIResource(ResourcePlugin):
 
             resources = resources.exclude(id__in=user_resources)
 
-        resource_ids = random_resources(resources, limit=self.rounds)
+        resource_ids = list(resources.values_list('id', flat=True))
+
+        self.rounds = min(len(resource_ids), self.rounds)
+        resource_ids = random.sample(resource_ids, max(1, self.rounds))
 
         return resource_ids

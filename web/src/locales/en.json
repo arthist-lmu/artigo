@@ -203,6 +203,13 @@
         "texts": [
 
         ]
+      },
+      "roi": {
+        "title": "ROI",
+        "placeholder": "",
+        "texts": [
+
+        ]
       }
     }
   },

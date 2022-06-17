@@ -11,7 +11,7 @@ export default {
   mixins: [tool],
   data() {
     return {
-      name: 'Rectangle',
+      name: 'rectangle',
       rectangle: [null, null],
     };
   },

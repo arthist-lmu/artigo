@@ -8,26 +8,16 @@ from django.core.exceptions import ObjectDoesNotExist
 from frontend.models import *
 from frontend.utils import to_type, is_in
 from frontend.views.utils import ResourceViewHelper
+from ..utils import get_configs
 
 logger = logging.getLogger(__name__)
 
 
 class GameController:
-    def __init__(
-        self,
-        resource_plugin_manager=None,
-        opponent_plugin_manager=None,
-        taboo_plugin_manager=None,
-        suggester_plugin_manager=None,
-        score_plugin_manager=None,
-    ):
+    def __init__(self):
         super().__init__()
 
-        self.resource_plugin_manager = resource_plugin_manager
-        self.opponent_plugin_manager = opponent_plugin_manager
-        self.taboo_plugin_manager = taboo_plugin_manager
-        self.suggester_plugin_manager = suggester_plugin_manager
-        self.score_plugin_manager = score_plugin_manager
+        self.plugins = cache.get('plugins', {})
 
     def __call__(self, params, user):
         if len(params) == 0:
@@ -55,38 +45,40 @@ class GameController:
 
             gamesession = result['gamesession']
 
-        data = cache.get(f'gamesession_{gamesession.id}')
+        gamesession_data = cache.get(f'gamesession_{gamesession.id}')
 
-        if data is None:
+        if gamesession_data is None:
             return {'type': 'error', 'message': 'outdated_gamesession'}
 
-        if len(data['game']) == 0:
+        if len(gamesession_data['game']) == 0:
             cache.delete(f'gamesession_{gamesession.id}')
 
             return {'type': 'error', 'message': 'finished_gamesession'}
 
-        gameround_data = list(data['game'].values())[0]
+        gameround_data = list(gamesession_data['game'].values())[0]
 
         try:
             gameround = self.create_gameround(
-                query=data['query'],
-                data=gameround_data,
+                resource_id=gameround_data['resource_id'],
+                query=gamesession_data['query'],
                 gamesession=gamesession,
                 user=user,
             )
+
+            self.fill_gameround(gameround, gameround_data)
         except Exception as error:
             logger.error(traceback.format_exc())
 
             return {'type': 'error', 'message': 'unknown_error'}
 
-        data['game'].pop(gameround.resource_id)
-        cache.set(f'gamesession_{gamesession.id}', data)
+        gamesession_data['game'].pop(gameround.resource_id)
+        cache.set(f'gamesession_{gamesession.id}', gamesession_data)
 
         return {
             'type': 'ok',
             'session_id': gamesession.id,
             'rounds': gamesession.rounds,
-            'round_id': gamesession.rounds - len(data['game']),
+            'round_id': gamesession.rounds - len(gamesession_data['game']),
             'data': gameround_data,
         }
 
@@ -96,16 +88,10 @@ class GameController:
 
         try:
             resource_ids = list(
-                self.resource_plugin_manager.run(
+                self.plugins['resource'].run(
                     {'user_id': user.id},
                     query['resource_type'],
-                    configs=[
-                        {
-                            'type': resource_type,
-                            'params': query['resource_options'],
-                        }
-                        for resource_type in query['resource_type']
-                    ],
+                    configs=get_configs(query, 'resource'),
                 )
             )
         except Exception as error:
@@ -121,17 +107,11 @@ class GameController:
         if query.get('opponent_type') is not None:
             try:
                 result['opponent'] = list(
-                    self.opponent_plugin_manager.run(
+                    self.plugins['opponent'].run(
                         resource_ids,
                         query['game_options'],
                         query['opponent_type'],
-                        configs=[
-                            {
-                                'type': opponent_type,
-                                'params': query['opponent_options'],
-                            }
-                            for opponent_type in query['opponent_type']
-                        ],
+                        configs=get_configs(query, 'opponent'),
                     )
                 )
             except Exception as error:
@@ -139,20 +119,29 @@ class GameController:
 
                 return {'type': 'error', 'message': 'invalid_opponents'}
 
+        if query.get('input_type') is not None:
+            try:
+                result['input'] = list(
+                    self.plugins['input'].run(
+                        resource_ids,
+                        query['game_options'],
+                        query['input_type'],
+                        configs=get_configs(query, 'input'),
+                    )
+                )
+            except Exception as error:
+                logger.error(traceback.format_exc())
+
+                return {'type': 'error', 'message': 'invalid_inputs'}
+
         if query.get('taboo_type') is not None:
             try:
                 result['taboo'] = list(
-                    self.taboo_plugin_manager.run(
+                    self.plugins['taboo'].run(
                         resource_ids,
                         query['game_options'],
                         query['taboo_type'],
-                        configs=[
-                            {
-                                'type': taboo_type,
-                                'params': query['taboo_options'],
-                            }
-                            for taboo_type in query['taboo_type']
-                        ],
+                        configs=get_configs(query, 'taboo'),
                     )
                 )
             except Exception as error:
@@ -162,10 +151,11 @@ class GameController:
 
             if len(query.get('suggester_type', [])) > 0:
                 result['taboo'] = list(
-                    self.suggester_plugin_manager.run(
+                    self.plugins['suggester'].run(
                         result['taboo'],
                         query['game_options'],
                         query['suggester_type'],
+                        configs=get_configs(query, 'suggester'),
                     )
                 )
 
@@ -174,7 +164,7 @@ class GameController:
 
         try:
             game_type, _ = GameType.objects \
-                .get_or_create(name=query['game_type'])
+                .get_or_create(name=self._type)
             game_type.save()
 
             gamesession = Gamesession(
@@ -205,10 +195,57 @@ class GameController:
             'gamesession': gamesession,
         }
 
+    @staticmethod
+    def create_gameround(resource_id, query, gamesession, user):
+        gameround = Gameround(
+            user=user,
+            gamesession=gamesession,
+            resource_id=resource_id,
+        )
+
+        if query.get('opponent_type') is not None:
+            opponent_type, _ = OpponentType.objects \
+                .get_or_create(name=query['opponent_type'])
+            opponent_type.save()
+
+            gameround.opponent_type = opponent_type
+
+        if query.get('input_type') is not None:
+            input_type, _ = InputType.objects \
+                .get_or_create(name=query['input_type'])
+            input_type.save()
+
+            gameround.input_type = input_type
+
+        if query.get('taboo_type') is not None:
+            taboo_type, _ = TabooType.objects \
+                .get_or_create(name=query['taboo_type'])
+            taboo_type.save()
+
+            gameround.taboo_type = taboo_type
+
+        gameround.save()
+
+        for name in query.get('suggester_type', []):
+            suggester_type, _ = SuggesterType.objects \
+                .get_or_create(name=name)
+
+            gameround.suggester_types.add(suggester_type)
+
+        for name in query.get('score_type', []):
+            score_type, _ = ScoreType.objects \
+                .get_or_create(name=name)
+
+            gameround.score_types.add(score_type)
+
+        return gameround
+
+    @staticmethod
+    def fill_gameround(gameround, data):
+        pass
+
     def parse_query(self, query):
         result = defaultdict(list)
-
-        result['game_type'] = query.get('game_type', 'tagging')
         result['game_options'] = {}
 
         for key, value in query.items():
@@ -218,15 +255,7 @@ class GameController:
                 if not key in ['type', 'type[]']:
                     result['game_options'][key] = to_type(value)
 
-        plugins = {
-            'resource': self.resource_plugin_manager,
-            'opponent': self.opponent_plugin_manager,
-            'taboo': self.taboo_plugin_manager,
-            'suggester': self.suggester_plugin_manager,
-            'score': self.score_plugin_manager,
-        }
-
-        for plugin_name, plugin_manager in plugins.items():
+        for plugin_name, plugin_manager in self.plugins.items():
             plugin_type = f'{plugin_name}_type'
             plugin_options = f'{plugin_name}_options'
 
@@ -234,7 +263,7 @@ class GameController:
                 for plugin in plugin_manager.plugin_list:
                     config = plugin.get('config', {})
 
-                    if is_in(result['game_type'], config['game_types']):
+                    if is_in(self._type, config['game_types']):
                         values = query.get(plugin_type)
 
                         if values is None:
@@ -251,10 +280,14 @@ class GameController:
 
                 for key, value in query.items():
                     if key.startswith(f'{plugin_name}_'):
-                        key = key.strip().split('_', 1)[-1]
+                        if key.endswith('[]'):
+                            value = query.getlist(key)
+                            key = key.strip()[:-2]
 
-                        if not key in ['type', 'type[]']:
-                            result[plugin_options][key] = to_type(value)
+                        key = key.split('_', 1)[-1]
+                        if key == 'type': continue
+
+                        result[plugin_options][key] = to_type(value)
 
         return dict(result)
 

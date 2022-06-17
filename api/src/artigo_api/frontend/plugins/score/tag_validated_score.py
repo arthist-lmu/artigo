@@ -6,12 +6,13 @@ from frontend.plugins import (
     ScorePlugin,
     ScorePluginManager,
 )
+from frontend.utils import to_iregex
 
 logger = logging.getLogger(__name__)
 
 
-@ScorePluginManager.export('AnnotationValidatedScore')
-class AnnotationValidatedScore(ScorePlugin):
+@ScorePluginManager.export('TagValidatedScore')
+class TagValidatedScore(ScorePlugin):
     default_config = {
         'point_value': 5,
         'min_taggings': 1,
@@ -28,7 +29,7 @@ class AnnotationValidatedScore(ScorePlugin):
     def __call__(self, tags, gameround, params):
         valid_tags = UserTagging.objects.filter(
                 resource_id=params.get('resource_id'),
-                tag__name__iregex=f"({'|'.join(tags)})",
+                tag__name__iregex=to_iregex(tags, 'name'),
                 tag__language=params.get('language', 'de'),
             ) \
             .values('resource', 'tag') \
@@ -38,14 +39,8 @@ class AnnotationValidatedScore(ScorePlugin):
 
         valid_tags = set(x.lower() for x in valid_tags)
 
-        result = []
-
         for tag in tags:
-            is_valid = tag in valid_tags
+            tag['score'] = tag.get('score', 0)
 
-            result.append({
-                'name': tag,
-                'score': is_valid * self.point_value,
-            })
-
-        return result
+            if tag['valid'] and tag['name'] in valid_tags:
+                tag['score'] += self.point_value
