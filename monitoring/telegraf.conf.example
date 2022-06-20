@@ -19,7 +19,7 @@
    bucket = "telegraf"
 
 [[inputs.cpu]]
-  percpu = true
+  percpu = false
   totalcpu = true
   collect_cpu_time = false
   report_active = false
@@ -33,3 +33,6 @@
 [[inputs.processes]]
 [[inputs.swap]]
 [[inputs.system]]
+
+[[inputs.docker]]
+  endpoint = "unix:///var/run/docker.sock"
