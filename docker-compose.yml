@@ -109,50 +109,51 @@ services:
       - "8080:80"
       - "8081:8080"
 
-  grafana-db:
-    image: postgres:14
-    volumes:
-      - grafana-db:/var/lib/postgresql/data
-    environment:
-      - POSTGRES_DB=grafana
-    env_file:
-      - ./monitoring/.grafana-db.env
+#   grafana-db:
+#     image: postgres:14
+#     volumes:
+#       - grafana-db:/var/lib/postgresql/data
+#     environment:
+#       - POSTGRES_DB=grafana
+#     env_file:
+#       - ./monitoring/.grafana-db.env
 
-  grafana:
-    image: grafana/grafana
-    ports:
-      - 8083:3000
-    environment:
-      - GF_DATABASE_NAME=grafana
-      - GF_DATABASE_TYPE=postgres
-      - GF_DATABASE_HOST=grafana-db:5432
-      - GF_DATABASE_MAX_OPEN_CONN=300
-    volumes:
-      - grafana:/var/lib/grafana
-    env_file:
-       - ./monitoring/.grafana.env
-    depends_on:
-      - grafana-db
+#   grafana:
+#     image: grafana/grafana
+#     ports:
+#       - 8083:3000
+#     environment:
+#       - GF_DATABASE_NAME=grafana
+#       - GF_DATABASE_TYPE=postgres
+#       - GF_DATABASE_HOST=grafana-db:5432
+#       - GF_DATABASE_MAX_OPEN_CONN=300
+#     volumes:
+#       - grafana:/var/lib/grafana
+#     env_file:
+#        - ./monitoring/.grafana.env
+#     depends_on:
+#       - grafana-db
 
-  influxdb:
-    image: influxdb
-    volumes:
-      - influxdb:/root/.influxdbv2
-    env_file:
-       - ./monitoring/.influxdb.env
+#   influxdb:
+#     image: influxdb
+#     volumes:
+#       - influxdb:/root/.influxdbv2
+#     env_file:
+#        - ./monitoring/.influxdb.env
 
-  telegraf:
-    image: telegraf
-    environment:
-      - HOST_PROC=/host/proc
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock:ro
-      - /proc:/host/proc:ro
-      - ./monitoring/telegraf.conf:/etc/telegraf/telegraf.conf:ro
-    depends_on:
-      - influxdb
+#   telegraf:
+#     image: telegraf
+#     user: telegraf:$(stat -c '%g' /var/run/docker.sock)
+#     environment:
+#       - HOST_PROC=/host/proc
+#     volumes:
+#       - /var/run/docker.sock:/var/run/docker.sock:ro
+#       - /proc:/host/proc:ro
+#       - ./monitoring/telegraf.conf:/etc/telegraf/telegraf.conf:ro
+#     depends_on:
+#       - influxdb
 
-volumes:
-  influxdb:
-  grafana:
-  grafana-db:
+# volumes:
+#   influxdb:
+#   grafana:
+#   grafana-db:
