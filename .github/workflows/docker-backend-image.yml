@@ -16,4 +16,4 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: Build the backend Docker image
-      run: docker build api/ --file Dockerfile --tag artigo_backend:$(date +%s)
+      run: docker build . --file api/Dockerfile --tag artigo_backend:$(date +%s)
