@@ -20,11 +20,11 @@ def meta_to_proto(proto, data):
         field.key = d['name']
 
         if d.get('value_int') is not None:
-            field.int_val = d['value_int']
+            field.int_val = int(d['value_int'])
         elif d.get('value_float') is not None:
-            field.float_val = d['value_float']
+            field.float_val = float(d['value_float'])
         elif d.get('value_str'):
-            field.string_val = d['value_str']
+            field.string_val = str(d['value_str'])
 
     return proto
 
@@ -38,18 +38,18 @@ def meta_from_proto(proto):
         if field == 'string_val' and x.string_val:
             result.append({
             	'name': x.key,
-            	'value_str': x.string_val,
+            	'value_str': str(x.string_val),
             })
         elif field == 'int_val':
             result.append({
             	'name': x.key,
-            	'value_int': x.int_val,
+            	'value_int': int(x.int_val),
             	'value_str': str(x.int_val),
             })
         elif field == 'float_val':
             result.append({
             	'name': x.key,
-            	'value_float': x.float_val,
+            	'value_float': float(x.float_val),
             	'value_str': str(x.float_val),
             })
 
@@ -63,7 +63,7 @@ def tags_to_proto(proto, data):
         field.id = d['id']
         field.name = d['name']
         field.language = d['language']
-        field.count = d['count']
+        field.count = int(d['count'])
 
     return proto
 
@@ -76,7 +76,7 @@ def tags_from_proto(proto):
             'id': x.id,
             'name': x.name,
             'language': x.language,
-            'count': x.count,
+            'count': int(x.count),
         })
 
     return result

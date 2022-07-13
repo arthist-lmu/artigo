@@ -3,17 +3,20 @@ import axios from '@/plugins/axios';
 const game = {
   namespaced: true,
   state: {
+    params: {},
+    dialog: false,
     tags: [],
     entry: {},
     rounds: 5,
     roundId: 1,
     sessionId: null,
-    seconds: 0,
   },
   actions: {
     get({ commit, rootState, state }, params) {
       if (Object.keys(params).length === 0) {
         params = { session_id: state.sessionId };
+      } else {
+        commit('updateParams', params);
       }
       axios.get('/game/', {
         params,
@@ -35,29 +38,27 @@ const game = {
           commit('updateTags', data);
         });
     },
-    setSeconds({ commit }, seconds) {
-      commit('updateSeconds', seconds);
-    },
   },
   mutations: {
+    updateParams(state, params) {
+      state.params = params;
+    },
+    updateDialog(state, dialog) {
+      state.dialog = dialog;
+    },
     updateData(state, {
       session_id, rounds, round_id, data,
     }) {
-      state.sessionId = session_id;
+      state.tags = [];
+      state.entry = data;
       state.rounds = rounds;
       state.roundId = round_id;
-      state.entry = data;
-      state.tags = [];
+      state.sessionId = session_id;
     },
     updateTags(state, { tags }) {
       tags.forEach((tag) => {
-        if (tag.valid) {
-          state.tags.push(tag);
-        }
+        state.tags.push(tag);
       });
-    },
-    updateSeconds(state, seconds) {
-      state.seconds = seconds;
     },
   },
 };

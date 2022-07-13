@@ -1,3 +1,24 @@
+p,
+div {
+  hyphens: auto;
+}
+
+b,
+strong {
+  font-weight: bold;
+}
+
+span.clip {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  max-width: 250px !important;
+}
+
+span.clip.w100 {
+  max-width: 100% !important;
+}
+
 .capitalize {
   text-transform: capitalize;
 }
@@ -10,46 +31,125 @@
 	display: none;
 }
 
-span.clip {
-	text-overflow: ellipsis;
-  white-space: nowrap;
-  overflow: hidden;
-  max-width: 250px !important;
+.blur > span {
+  color: transparent !important;
+  text-shadow: 0 0 5px rgba(0, 0, 0, 0.87);
 }
 
-span.clip.w100 {
-  max-width: 100% !important;
+.hide {
+  opacity: 0;
+}
+
+.max-w {
+  width: 100%;
+}
+
+.v-toolbar__content {
+  padding: 4px 0;
+}
+
+.v-toolbar__content .v-btn.v-btn--icon.v-size--default {
+  height: 36px !important;
+  width: 36px !important;
+}
+
+.v-autocomplete.theme--light.primary--text .v-input__append-inner {
+  color: rgba(0, 0, 0, 0.87) !important;
+}
+
+.v-autocomplete .v-input__append-outer {
+  margin-top: 0 !important;
+}
+
+.v-autocomplete .v-input__prepend-inner {
+  padding-right: 16px !important;
+}
+
+.v-autocomplete:not(.v-input--is-focused).v-select--chips input {
+  max-height: 25px !important;
+}
+
+.v-autocomplete__content.v-menu__content {
+  max-width: 340px;
+  margin-top: 4px;
+}
+
+.v-menu__content {
+  border-radius: 28px !important;
+}
+
+.v-menu__content > .v-sheet.v-list {
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+.v-chip {
+  border-color: rgba(0, 0, 0, 0.12) !important;
+}
+
+.theme--light.v-btn.grey--text:not(.v-btn--icon) > span {
+  color: rgba(0, 0, 0, 0.87) !important;
+}
+
+.theme--light.dark-variant .v-btn.v-btn--has-bg {
+  color: rgba(0, 0, 0, 0.87) !important;
+}
+
+.v-btn:not(.v-btn--round):not(.v-btn--block).v-size--default {
+  min-width: 125px !important;
+}
+
+.v-btn.v-size--default {
+  font-size: 1rem !important;
+}
+
+.v-select.v-select--is-menu-active .v-input__icon--append .v-icon {
+  transform: rotate(0) !important;
+}
+
+.v-expansion-panel-header > :not(.v-expansion-panel-header__icon) {
+  flex: initial !important;
 }
 
 .v-expansion-panel-header > span {
   padding-top: 1px;
 }
 
-p, div {
-  hyphens: auto;
+.v-stepper {
+  overflow: inherit !important;
 }
 
-.v-expansion-panel-content__wrap {
-  padding: 0;
+.v-stepper .v-stepper__step--editable:hover {
+  background: transparent !important;
 }
 
-.v-pagination__item, .v-pagination__navigation {
-  box-shadow: none !important;
+.v-stepper--vertical .v-stepper__step > .v-ripple__container {
+  display: none;
 }
 
-.v-alert .v-select .v-input__control {
-  max-width: 65px;
-  min-height: 14px;
+.v-stepper--vertical > div:first-child .v-stepper__step {
+  padding-top: 8px;
 }
 
-.v-alert .v-select .v-input__append-outer {
-  display: flex;
-  align-items: center;
-  margin-top: 0;
-  margin-bottom: 0;
-  height: 24px;
+.v-stepper--vertical > div:not(:last-child) .v-stepper__content {
+  border-left: 1px solid rgba(0, 0, 0, 0.12) !important;
 }
 
-.v-alert .v-select .v-select__selection {
-  margin-top: 0;
+.v-stepper__step.disabled .v-stepper__step__step {
+  background-color: rgba(0, 0, 0, 0.16) !important;
+  border-color: rgba(0, 0, 0, 0.16) !important;
+}
+
+.v-stepper__step__step .v-stepper__label,
+.v-stepper__step__step .v-stepper__label > small {
+  color: rgba(0, 0, 0, 0.16) !important;
+}
+
+.v-stepper__content.active .v-stepper__wrapper {
+  overflow: inherit !important;
+}
+
+.v-slide-group__prev--disabled,
+.v-slide-group__next--disabled {
+  display: none !important;
 }

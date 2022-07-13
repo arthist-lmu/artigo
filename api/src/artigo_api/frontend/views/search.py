@@ -73,12 +73,31 @@ class SearchView(RPCView):
                         else:
                             term.text.field = f'meta.{field}'
 
-                        if q.get('flag') == 'must':
-                            term.text.flag = index_pb2.TextSearchTerm.MUST
+                        if q.get('flag') == 'should':
+                            term.text.flag = index_pb2.TextSearchTerm.SHOULD
                         elif q.get('flag') == 'not':
                             term.text.flag = index_pb2.TextSearchTerm.NOT
                         else:
-                            term.text.flag = index_pb2.TextSearchTerm.SHOULD
+                            term.text.flag = index_pb2.TextSearchTerm.MUST
+
+        if params.get('date_range'):
+            date_range = params['date_range']
+
+            if not isinstance(date_range, (list, set)):
+                date_range = [date_range]
+
+            if len(date_range) > 1:
+                term = grpc_request.terms.add()
+                term.number.field = 'meta.year_max'
+                term.number.int_query = max(date_range)
+                term.number.flag = indexer_pb2.NumberSearchTerm.MUST
+                term.number.relation = indexer_pb2.NumberSearchTerm.LESS_EQ
+
+            term = grpc_request.terms.add()
+            term.number.field = 'meta.year_min'
+            term.number.int_query = min(date_range)
+            term.number.flag = indexer_pb2.NumberSearchTerm.MUST
+            term.number.relation = indexer_pb2.NumberSearchTerm.GREATER_EQ
 
         if params.get('aggregate'):
             aggregate = params['aggregate']
@@ -211,6 +230,8 @@ class SearchView(RPCView):
                                 'type': 'string',
                             },
                             'flag': {
+                                'description': 'For more information, see the [OpenSearch Documentation]' \
+                                    + '(https://opensearch.org/docs/latest/opensearch/query-dsl/bool/)',
                                 'type': 'string',
                                 'enum': [
                                     'should',
@@ -266,6 +287,7 @@ class SearchView(RPCView):
                 default=0,
             ),
             OpenApiParameter(
+                description='Receive status updates of the respective job',
                 name='job_id',
                 type=str,
             ),

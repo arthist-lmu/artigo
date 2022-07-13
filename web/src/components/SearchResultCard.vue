@@ -1,249 +1,136 @@
 <template>
-  <v-card
-    :class="value ? 'disabled' : ''"
-    flat
-  >
-    <v-card-text>
-      <v-row>
-        <v-col
-          v-if="cols.tags > 0"
-          :cols="cols.tags"
+  <v-hover v-slot="{ hover }">
+    <div
+      @click="showDialog"
+      @keyDown="showDialog"
+      class="grid-item"
+      :disabled="isDisabled"
+      :style="getCss"
+    >
+      <img
+        :src="entry.path"
+        v-on:error="onError"
+        v-on:load="onLoad"
+        alt=""
+      />
+
+      <v-fade-transition>
+        <div
+          v-if="isLoaded && (hover || selected)"
+          class="overlay"
         >
-          <TagCloud
-            v-if="displayTags"
-            :tags="tags"
-          />
-        </v-col>
+          <div class="pa-4">
+            <TagCloud :tags="tags" />
+          </div>
 
-        <v-col :cols="cols.image">
-          <v-img
-            :src="entry.path"
-            @click="showDialog"
-            max-height="250"
-            v-on:error="onError"
-            style="cursor: pointer;"
-            contain
-          >
-            <template v-slot:placeholder>
-              <v-row
-                class="fill-height ma-0"
-                justify="center"
-                align="center"
-              >
-                <v-progress-circular indeterminate />
-              </v-row>
-            </template>
-          </v-img>
-        </v-col>
-
-        <v-col
-          v-if="displayMetadata && cols.metadata > 0"
-          :cols="cols.metadata"
-        >
-          <v-row
-            justify="space-around"
-            no-gutters
-          >
-            <v-col
-              class="align-center d-flex"
-              cols="3"
+          <div class="metadata pa-4">
+            <div
+              class="text-subtitle-1"
+              :title="title"
             >
-              <span class="capitalize">
-                {{ $t("resource.metadata.fields.titles") }}
-              </span>
-            </v-col>
+              <b>{{ title }}</b>
+            </div>
 
-            <v-col cols="9">
-              <v-chip
-                v-for="title in titles"
-                :key="title"
-                :title="title"
-                class="mr-1 mb-2"
-                outlined
-              >
-                <span
-                  @click="search(title, 'titles')"
-                  @keyDown="handleSearch"
-                  style="cursor: pointer;"
-                  class="clip"
-                >
-                  {{ title }}
-                </span>
-
-                <ReconcileButton
-                  :entries="[entry]"
-                  type="resource"
-                />
-              </v-chip>
-            </v-col>
-          </v-row>
-
-          <v-row
-            justify="space-around"
-            no-gutters
-          >
-            <v-col
-              class="align-center d-flex"
-              cols="3"
-            >
-              <span class="capitalize">
-                {{ $t("resource.metadata.fields.creators") }}
-              </span>
-            </v-col>
-
-            <v-col cols="9">
-              <v-chip
+            <div class="text-caption">
+              <span
                 v-for="creator in creators"
                 :key="creator"
                 :title="creator"
-                class="mr-1 mb-2"
-                outlined
               >
-                <span
-                  @click="search(creators, 'creators')"
-                  @keyDown="handleSearch"
-                  class="clip"
-                  style="cursor: pointer;"
-                >
-                  {{ creator }}
-                </span>
-
-                <ReconcileButton
-                  :entries="[entry]"
-                  type="creator"
-                />
-              </v-chip>
-            </v-col>
-          </v-row>
-
-          <v-row
-            v-for="(value, field) in metadata"
-            :key="`${field}:${value}`"
-            class="mb-2"
-            justify="space-around"
-            no-gutters
-          >
-            <v-col
-              class="align-center d-flex"
-              cols="3"
-            >
-              <span class="capitalize">
-                {{ $t("resource.metadata.fields")[field] }}
+                {{ creator }}
               </span>
-            </v-col>
-
-            <v-col cols="9">
-              <v-chip
-                :title="value"
-                @click="search(value, field)"
-                class="mr-1"
-                outlined
-              >
-                <span class="clip">{{ value }}</span>
-              </v-chip>
-            </v-col>
-          </v-row>
-        </v-col>
-      </v-row>
-    </v-card-text>
-  </v-card>
+            </div>
+          </div>
+        </div>
+      </v-fade-transition>
+    </div>
+  </v-hover>
 </template>
 
 <script>
+import tool from '@/mixins/resource';
+
 export default {
-  props: {
-    entry: Object,
-    value: Boolean,
-    displayTags: Boolean,
-    displayMetadata: Boolean,
-  },
+  mixins: [tool],
   data() {
     return {
-      showModal: false,
+      width: 'auto',
+      height: '225px',
     };
   },
-  methods: {
-    search(value, field) {
-      const query = { [field]: value };
-      this.$store.dispatch('search/post', { query });
-    },
-    handleSearch() {
-
-    },
-    onError() {
-      this.$emit('input', true);
-    },
-    showDialog() {
-      this.$store.commit('resource/updateData', this.entry);
-    },
-  },
   computed: {
-    cols() {
-      if (!this.displayMetadata) {
-        if (!this.displayTags) {
-          return { tags: 0, image: 12, metadata: 0 };
-        }
-        return { tags: 6, image: 6, metadata: 0 };
-      }
-      return { tags: 3, image: 3, metadata: 6 };
+    selected() {
+      return Math.random() < 0.15;
     },
-    metadata() {
-      const metadata = {};
-      const fields = [
-        'location',
-        'institution',
-        'source',
-      ];
-      this.entry.meta.forEach(({ name, value_str }) => {
-        if (fields.includes(name) && value_str) {
-          metadata[name] = value_str;
-        }
-      });
-      if (this.entry.source && this.entry.source.id) {
-        metadata.source = this.entry.source.name;
-      }
-      return metadata;
-    },
-    titles() {
-      const titles = [];
-      this.entry.meta.forEach(({ name, value_str }) => {
-        if (name === 'titles' && value_str) {
-          titles.push(value_str);
-        }
-      });
-      if (titles.length > 0) {
-        return Array.from(new Set(titles));
-      }
-      return [this.$t('resource.default.title')];
-    },
-    creators() {
-      const creators = [];
-      this.entry.meta.forEach(({ name, value_str }) => {
-        if (name === 'creators' && value_str) {
-          creators.push(value_str);
-        }
-      });
-      if (creators.length > 0) {
-        return Array.from(new Set(creators));
-      }
-      return [this.$t('resource.default.creator')];
-    },
-    tags() {
-      if (this.keyInObj('tags', this.entry)) {
-        return this.entry.tags;
-      }
-      return [];
+    getCss() {
+      return {
+        height: this.height,
+        width: this.width,
+        cursor: 'pointer',
+      };
     },
   },
   components: {
     TagCloud: () => import('@/components/TagCloud.vue'),
-    ReconcileButton: () => import('@/components/ReconcileButton.vue'),
   },
 };
 </script>
 
 <style>
-.v-image .v-responsive__content {
-  width: 1000px !important;
+.grid-item {
+  border-radius: 28px;
+  position: relative;
+  overflow: hidden;
+  min-width: 80px;
+  display: block;
+  flex-grow: 1;
+}
+
+.grid-item[disabled] {
+  display: none;
+}
+
+.grid-item > img {
+  transition: transform 0.5s ease;
+  transform: scale(1.05);
+  object-fit: cover;
+  min-width: 100%;
+  max-width: 100%;
+  height: 100%;
+}
+
+.grid-item:hover > img {
+  transform: scale(1.3);
+}
+
+.grid-item > .overlay {
+  background: linear-gradient(to top, black, #00000000 40%);
+  transform: translate(-50%, -50%);
+  position: absolute;
+  object-fit: cover;
+  min-width: 100%;
+  max-width: 100%;
+  color: #ffffff;
+  height: 100%;
+  left: 50%;
+  top: 50%;
+}
+
+.grid-item > .overlay .metadata {
+  position: absolute;
+  width: 100%;
+  bottom: 0;
+  left: 0;
+}
+
+.grid-item > .overlay .metadata * {
+  text-overflow: ellipsis;
+  line-height: 1.25rem;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.grid-item > .overlay span:not(:first-child):before {
+  content: ", ";
 }
 </style>

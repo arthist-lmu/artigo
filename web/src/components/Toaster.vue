@@ -1,14 +1,17 @@
 <template>
   <v-snackbar
     v-model="display"
+    class="mb-10"
     :timeout="timeout"
     :color="color"
+    :dark="color === 'primary'"
+    rounded
   >
     <span
       v-for="detail in details"
       :key="detail"
     >
-      {{ keyInObj(detail, $t("error")) ? $t("error")[detail] : $t("error.unknown_error") }}
+      {{ keyInObj(detail, $t("messages")) ? $t(`messages.${detail}`) : $t("messages.unknown_error") }}
     </span>
   </v-snackbar>
 </template>
@@ -30,10 +33,7 @@ export default {
     },
     color() {
       const { type } = this.$store.state.utils.message;
-      if (type === 'error') {
-        return 'error';
-      }
-      return 'primary';
+      return type === 'error' ? 'error' : 'primary';
     },
   },
   watch: {

@@ -17,19 +17,6 @@
 
   <body>
     {% block body %}
-
-    {% if messages %}
-    <div>
-      <strong>Messages:</strong>
-      
-      <ul>
-        {% for message in messages %}
-        <li>{{message}}</li>
-        {% endfor %}
-      </ul>
-    </div>
-    {% endif %}
-
     {% block content %}
     {% endblock %}
     {% endblock %}

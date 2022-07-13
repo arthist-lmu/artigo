@@ -21,19 +21,22 @@ class GameController:
 
     def __call__(self, params, user):
         if len(params) == 0:
-            complete_gamesessions = Gameround.objects.filter(user=user) \
+            complete_gamesession_ids = Gameround.objects.filter(user=user) \
                 .values('gamesession') \
                 .annotate(count_gamerounds=Count('gamesession')) \
                 .filter(count_gamerounds=F('gamesession__rounds')) \
-                .values('gamesession')
+                .values('gamesession_id')
 
             gamesession = Gamesession.objects.filter(user=user) \
-                .exclude(gamesession__in=complete_gamesessions)
+                .exclude(id__in=complete_gamesession_ids)
 
             if gamesession.count() > 1:
                 return {'type': 'error', 'message': 'multiple_valid_gamesessions'}
 
-            gamesession = gamesession.latest('created')
+            try:
+                gamesession = gamesession.latest('created')
+            except:
+                return {'type': 'error', 'message': 'no_valid_gamesessions'}
         elif params.get('session_id'):
             try:
                 gamesession = Gamesession.objects.get(id=params['session_id'])
@@ -203,23 +206,23 @@ class GameController:
             resource_id=resource_id,
         )
 
-        if query.get('opponent_type') is not None:
+        for name in query.get('opponent_type', []):
             opponent_type, _ = OpponentType.objects \
-                .get_or_create(name=query['opponent_type'])
+                .get_or_create(name=name)
             opponent_type.save()
 
             gameround.opponent_type = opponent_type
 
-        if query.get('input_type') is not None:
+        for name in query.get('input_type', []):
             input_type, _ = InputType.objects \
-                .get_or_create(name=query['input_type'])
+                .get_or_create(name=name)
             input_type.save()
 
             gameround.input_type = input_type
 
-        if query.get('taboo_type') is not None:
+        for name in query.get('taboo_type', []):
             taboo_type, _ = TabooType.objects \
-                .get_or_create(name=query['taboo_type'])
+                .get_or_create(name=name)
             taboo_type.save()
 
             gameround.taboo_type = taboo_type
@@ -246,7 +249,9 @@ class GameController:
 
     def parse_query(self, query):
         result = defaultdict(list)
-        result['game_options'] = {}
+        result['game_options'] = {
+            'round_duration': 60,
+        }
 
         for key, value in query.items():
             if key.startswith('game_'):
@@ -305,6 +310,9 @@ class GameController:
 
                 for field, v in value.items():
                     game[resource_id][f'{key}_{field}'] = v
+
+                if game.get(resource_id) is None:
+                    game[resource_id] = {}
 
                 game[resource_id].update(resources[resource_id])
 

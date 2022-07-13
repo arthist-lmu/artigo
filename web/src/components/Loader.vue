@@ -4,8 +4,8 @@
     class="loading"
   >
     <v-progress-circular
+      color="primary"
       indeterminate
-      color="accent"
     />
   </div>
 </template>

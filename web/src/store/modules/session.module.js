@@ -3,7 +3,7 @@ import axios from '@/plugins/axios';
 const session = {
   namespaced: true,
   state: {
-    data: {},
+    data: [],
   },
   actions: {
     get({ commit, rootState }, params) {

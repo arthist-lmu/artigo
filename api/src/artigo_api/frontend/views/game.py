@@ -119,6 +119,31 @@ class GameView(APIView):
                 },
             ),
         ],
+        responses={
+            200: {
+                'type': 'object',
+                'properties': {
+                    'type': {
+                        'type': 'string',
+                    },
+                    'session_id': {
+                        'type': 'integer',
+                    },
+                    'rounds': {
+                        'type': 'integer',
+                    },
+                    'round_id': {
+                        'type': 'integer',
+                    },
+                    'data': {
+                        'type': 'object',
+                        'properties': {
+
+                        },
+                    },
+                },
+            },
+        },
         description='Create games. The first valid game round is automatically' \
             + ' returned when a new game is created. All further rounds can be' \
             + ' obtained by passing the respective `session_id`.',

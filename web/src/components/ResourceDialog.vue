@@ -1,6 +1,6 @@
 <template>
   <v-dialog
-    v-model="showModal"
+    v-model="dialog"
     :retain-focus="false"
     max-width="750"
   >
@@ -13,24 +13,28 @@ export default {
   data() {
     return {
       entry: null,
-      showModal: false,
+      dialog: false,
     };
   },
   computed: {
-    data() {
+    show() {
       return this.$store.state.resource.data;
     },
   },
   watch: {
-    data(value) {
-      this.$store.commit('resource/updateData', null);
+    dialog(value) {
+      if (!value) {
+        this.$store.commit('resource/updateData', null);
+      }
+    },
+    show(value) {
       if (value) {
         this.entry = value;
-        this.showModal = true;
+        this.dialog = true;
       }
     },
     $route() {
-      this.showModal = false;
+      this.dialog = false;
     },
   },
   components: {

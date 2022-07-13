@@ -23,8 +23,8 @@
     </v-img>
 
     <v-card-title class="mb-2">
-      <div class="text-h5 max-w mb-1">
-        {{ title }}
+      <div class="text-h5 max-w">
+        <b>{{ title }}</b>
 
         <ReconcileButton
           :entries="[entry]"
@@ -57,19 +57,27 @@
           v-for="tag in tags"
           :key="tag.id"
           @click="search(tag.name, 'tags')"
-          class="mr-1 mb-2"
-          outlined
+          :title="tag.name"
+          class="mr-1 mb-1"
+          color="primary"
         >
-          <span :title="tag.name">
-            {{ tag.name }}
-          </span>
+          {{ tag.name }}
+
+          <v-avatar
+            v-if="tag.count > 1"
+            class="primary lighten-1"
+            right
+          >
+            {{ tag.count }}
+          </v-avatar>
         </v-chip>
 
         <v-btn
           v-if="moreTags"
           @click="moreTags = false"
-          class="mb-2"
+          class="mb-1"
           color="grey lighten-2"
+          height="32"
           depressed
           small
           icon
@@ -79,8 +87,9 @@
         <v-btn
           v-else
           @click="moreTags = true"
-          class="mb-2"
+          class="mb-1"
           color="grey lighten-2"
+          height="32"
           depressed
           small
           icon
@@ -102,6 +111,7 @@
           <v-expansion-panel-header class="pa-0">
             <v-icon
               class="mr-3"
+              color="grey lighten-2"
               size="18"
             >
               mdi-information-outline
@@ -125,7 +135,7 @@
                 cols="3"
               >
                 <span class="capitalize">
-                  {{ $t("resource.metadata.fields")[field] }}
+                  {{ $t(`resource.metadata.fields.${field}`) }}
                 </span>
               </v-col>
 
@@ -230,12 +240,17 @@ export default {
         this.entry.tags.forEach(({
           id, language, name, count,
         }) => {
-          if (language === this.$i18n.locale) {
+          if (
+            language === this.$i18n.locale
+            || language === undefined
+          ) {
+            if (count === undefined) count = 1;
             tags.push({ id, name, count });
           }
         });
-        if (this.moreTags && tags.length > 20) {
-          return tags.slice(0, 20);
+        tags.sort((a, b) => b.count - a.count);
+        if (this.moreTags && tags.length > 15) {
+          return tags.slice(0, 15);
         }
       }
       return tags;
@@ -246,13 +261,3 @@ export default {
   },
 };
 </script>
-
-<style>
-.v-card .max-w {
-  width: 100%;
-}
-
-.v-card .v-expansion-panel-header > :not(.v-expansion-panel-header__icon) {
-  flex: initial;
-}
-</style>

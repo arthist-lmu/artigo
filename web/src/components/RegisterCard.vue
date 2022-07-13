@@ -1,6 +1,6 @@
 <template>
   <v-card
-    max-width="450"
+    max-width="600"
     flat
   >
     <v-card-title v-if="isDialog">
@@ -16,26 +16,30 @@
       </v-btn>
     </v-card-title>
 
-    <v-card-text :class="isDialog ? '' : 'pt-0 px-0'">
+    <v-card-text :class="isDialog ? 'pt-4' : 'pt-0 px-0'">
       <v-form v-model="isFormValid">
         <v-text-field
           v-model="user.username"
           :placeholder="$t('user.fields.username')"
           :rules="[checkLength]"
-          prepend-icon="mdi-account"
           tabindex="0"
           counter="75"
           clearable
+          outlined
+          rounded
+          dense
         />
 
         <v-text-field
           v-model="user.email"
           :placeholder="$t('user.fields.email')"
           :rules="[checkLength]"
-          prepend-icon="mdi-email"
           tabindex="0"
           counter="75"
           clearable
+          outlined
+          rounded
+          dense
         />
 
         <v-text-field
@@ -47,10 +51,12 @@
           :append-icon="
             showPassword ? 'mdi-eye-outline' : 'mdi-eye-off-outline'
           "
-          prepend-icon="mdi-lock"
           tabindex="0"
           counter="75"
           clearable
+          outlined
+          rounded
+          dense
         />
 
         <v-text-field
@@ -62,30 +68,35 @@
           :append-icon="
             showPassword ? 'mdi-eye-outline' : 'mdi-eye-off-outline'
           "
-          prepend-icon="mdi-lock"
           tabindex="0"
           counter="75"
           clearable
+          outlined
+          rounded
+          dense
         />
 
         <v-checkbox
           v-model="user.privacy_policy"
           :label="$t('user.fields.privacy-policy')"
           :rules="[checkTrue]"
+          class="mt-0"
           on-icon="mdi-check-circle-outline"
           off-icon="mdi-checkbox-blank-circle-outline"
           tabindex="0"
           color="primary"
+          hide-details
+          dense
         />
       </v-form>
     </v-card-text>
 
-    <v-card-actions :class="isDialog ? 'pt-0 pb-6 px-6' : 'pb-8 px-0'">
+    <v-card-actions :class="isDialog ? 'pb-6 px-6' : 'pb-8 px-0'">
       <v-btn
         @click="register"
         :disabled="!isFormValid"
         tabindex="0"
-        color="accent"
+        color="primary"
         depressed
         rounded
         block
@@ -99,20 +110,22 @@
 <script>
 export default {
   props: {
-    isDialog: Boolean,
+    isDialog: {
+      type: Boolean,
+      default: true,
+    },
     value: Boolean,
   },
   data() {
     return {
-      showPassword: false,
-      isFormValid: false,
       user: {},
+      isFormValid: false,
+      showPassword: false,
     };
   },
   methods: {
     register() {
       this.$store.dispatch('user/register', this.user);
-      // TODO: go to user-specific page if successful?
     },
     close() {
       this.$emit('input', false);

@@ -1,211 +1,127 @@
 <template>
-  <v-card flat>
-    <v-card-text>
-      <div v-if="seconds >= 0">
-        <v-progress-linear :value="progress" />
-      </div>
-
-      <ImageCanvas
-        v-if="entry"
-        :src="entry.path"
-        :tool="gameTool"
-        @load="loaded"
-        @error="onError"
-        @update="onUpdate"
-        class="my-4 grey lighten-2"
-        height="70vh"
-        contain
+  <v-container
+    v-if="!dialog"
+    class="mt-8"
+    style="position: relative; height: calc(100% - 22px);"
+  >
+    <v-fade-transition>
+      <Countdown
+        v-if="countdown"
+        :duration="3"
+        @finish="onFinish"
       />
+      <v-card
+        v-else
+        style="overflow: clip;"
+        flat
+      >
+        <Progress
+          :key="path"
+          :params="params"
+          @next="next"
+          @progress="progress"
+        />
 
-      <v-container>
         <v-row>
-          <v-col cols="8">
-            <v-text-field
-              v-model="tag"
-              ref="tag"
-              @keyup.enter.native="post"
-              :placeholder="$t('game.fields')[gameType].placeholder"
-              tabindex="0"
-              hide-details
-              single-line
-              clearable
+          <v-col
+            class="py-0"
+            cols="8"
+          >
+            <ROICanvas
+              v-if="gameType === 'roi'"
+              tool="brush"
+              :entry="entry"
+              :params="params"
+              @load="onLoad"
+              @error="next"
+            />
+            <DefaultCanvas
+              v-else
+              :entry="entry"
+              :params="params"
+              @load="onLoad"
+              @error="next"
             />
           </v-col>
 
-          <v-col cols="4">
-            <v-btn
-              @click="post"
-              class="mr-2"
-              color="primary"
-              width="calc(50% - 4px)"
-              depressed
-              rounded
-            >
-              {{ $t("game.fields.basic.enter") }}
-            </v-btn>
-
-            <v-btn
-              @click="nextRound"
-              color="accent"
-              width="calc(50% - 4px)"
-              depressed
-              rounded
-            >
-              {{ $t("game.fields.basic.skip") }}
-            </v-btn>
+          <v-col
+            class="py-0"
+            cols="4"
+          >
+            <TaggingSidebar
+              v-if="gameType === 'tagging'"
+              :key="path"
+              :entry="entry"
+              :params="params"
+              :seconds="seconds"
+              @next="next"
+            />
+            <DefaultSidebar
+              v-else
+              :key="path"
+              :entry="entry"
+              :params="params"
+              :seconds="seconds"
+              @next="next"
+            />
           </v-col>
         </v-row>
-      </v-container>
-    </v-card-text>
-  </v-card>
+      </v-card>
+    </v-fade-transition>
+  </v-container>
 </template>
 
 <script>
+import { mapState } from 'vuex';
+
 export default {
   data() {
     return {
-      tag: null,
-      timer: null,
+      path: '',
       seconds: 0,
-      rounds: 5,
-      roundDuration: 60,
+      countdown: false,
     };
   },
   methods: {
     get() {
-      const params = {
-        game_type: 'tagging',
-        game_round_duration: this.roundDuration,
-        resource_rounds: this.rounds,
-        // resource_percentile: 0.75,
-        score_type: [
-          'annotation_validated_score',
-          'opponent_validated_score',
-        ],
-        language: this.$i18n.locale,
-      };
-      if (this.gameType === 'taboo') {
-        params.taboo_type = 'random_annotated_taboo';
-        params.taboo_max_tags = 7;
-      } else if (this.gameType === 'tag-a-tag') {
-        params.taboo_type = 'most_annotated_taboo';
-        params.taboo_max_tags = 1;
-        params.suggester_type = [
-          'cooccurrence_suggester',
-        ];
-      } else if (this.gameType === 'roi') {
-        params.game_type = 'roi';
-        params.resource_min_roi_tags = 0;
-        params.input_type = 'most_annotated_input';
-      }
-      this.$store.dispatch('game/get', params).then(() => {
-        this.tag = null;
-      });
+      this.$store.commit('game/updateDialog', true);
     },
-    post() {
-      if (this.tag.length) {
-        const params = {
-          tag: {
-            name: this.tag,
-          },
-          resource_id: this.entry.resource_id,
-          language: this.$i18n.locale,
-        };
-        this.$store.dispatch('game/post', params).then(() => {
-          this.tag = null;
-          this.focusTagInput();
-        });
-      }
-    },
-    loaded() {
-      this.seconds = 0;
-      clearInterval(this.timer);
-      this.timer = setInterval(() => {
-        if (this.seconds === this.roundDuration) {
-          this.nextRound();
-        } else {
-          this.seconds += 1;
-        }
-      }, 1000);
-    },
-    onError() {
-      this.nextRound();
-    },
-    onUpdate(values) {
-      console.log(values);
-      const params = {
-        tag: {
-          name: this.tag,
-          ...values,
-        },
-        resource_id: this.entry.resource_id,
-        language: this.$i18n.locale,
-      };
-      this.$store.dispatch('game/post', params).then(() => {
-        this.tag = null;
-        this.focusTagInput();
-      });
-    },
-    nextRound() {
-      if (this.isFinished) {
+    next() {
+      if (this.roundId === this.rounds) {
         const { sessionId: id } = this.$store.state.game;
         this.$router.push({ name: 'session', params: { id } });
       } else {
-        this.$store.dispatch('game/get', {});
+        this.countdown = true;
       }
     },
-    focusTagInput() {
-      if (this.$refs.tag !== undefined) {
-        this.$refs.tag.focus();
-      }
+    onLoad() {
+      this.path = this.entry.path;
+    },
+    onFinish() {
+      this.$store.dispatch('game/get', {}).then(() => {
+        this.countdown = false;
+      });
+    },
+    progress(seconds) {
+      this.seconds = seconds;
     },
   },
   computed: {
-    entry() {
-      return this.$store.state.game.entry;
-    },
-    progress() {
-      return (this.seconds / this.roundDuration) * 100;
-    },
-    isFinished() {
-      const { roundId, rounds } = this.$store.state.game;
-      return roundId === rounds;
-    },
+    ...mapState('game', [
+      'entry',
+      'params',
+      'dialog',
+      'roundId',
+      'rounds',
+    ]),
     gameType() {
-      return this.$route.query.type || 'default';
-    },
-    gameTool() {
-      if (this.gameType === 'roi') {
-        return 'brush';
-      }
-      return 'select';
-    },
-    status() {
-      const { error, loading } = this.$store.state.utils.status;
-      return !loading && error;
+      return this.params.game_type;
     },
   },
   watch: {
-    entry() {
-      this.focusTagInput();
-    },
-    status(value) {
-      if (value) {
-        clearInterval(this.timer);
-      }
-    },
-    seconds(value) {
-      this.$store.dispatch('game/setSeconds', value);
-    },
     '$route.params.lang'() {
       this.get();
     },
-    '$route.query.type'() {
-      this.get();
-    },
-  },
-  beforeDestroy() {
-    clearInterval(this.timer);
   },
   beforeRouteUpdate() {
     this.get();
@@ -216,14 +132,18 @@ export default {
     });
   },
   components: {
-    ImageCanvas: () => import('@/components/annotator/ImageCanvas.vue'),
+    Progress: () => import('@/components/game/Progress.vue'),
+    DefaultCanvas: () => import('@/components/game/canvas/Default.vue'),
+    ROICanvas: () => import('@/components/game/canvas/ROI.vue'),
+    DefaultSidebar: () => import('@/components/game/sidebar/Default.vue'),
+    TaggingSidebar: () => import('@/components/game/sidebar/Tagging.vue'),
+    Countdown: () => import('@/components/Countdown.vue'),
   },
 };
 </script>
 
 <style scoped>
-.v-input {
-  padding-top: 0;
-  margin-top: 0;
+.container div:not([role=progressbar]) {
+  height: 100%;
 }
 </style>

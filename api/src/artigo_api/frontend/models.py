@@ -191,6 +191,7 @@ class Tag(models.Model):
 
     def save(self, *args, **kwargs):
         self.name = self.name.lower()
+        self.language = self.language.lower()
         
         return super().save(*args, **kwargs)
 

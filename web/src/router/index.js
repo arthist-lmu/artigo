@@ -31,16 +31,6 @@ const router = new VueRouter({
           component: () => import('@/views/Home.vue'),
         },
         {
-          path: 'resource/:id/',
-          name: 'resource',
-          component: () => import('@/views/Resource.vue'),
-        },
-        {
-          path: 'collection/:name/',
-          name: 'collection',
-          component: () => import('@/views/Collection.vue'),
-        },
-        {
           path: 'imprint',
           name: 'imprint',
           beforeEnter: () => {
@@ -53,18 +43,6 @@ const router = new VueRouter({
           beforeEnter: () => {
             window.open(`${instituteUrl}/funktionen/datenschutz`, '_blank');
           },
-        },
-        {
-          path: 'register',
-          name: 'register',
-          component: () => import('@/views/Register.vue'),
-          meta: { title: 'register.title' },
-        },
-        {
-          path: 'login',
-          name: 'login',
-          component: () => import('@/views/Login.vue'),
-          meta: { title: 'login.title' },
         },
         {
           path: 'about',

@@ -14,12 +14,15 @@ const search = {
     params: {},
     jobId: null,
     backBtn: false,
+    itemsPerPage: 96,
   },
   actions: {
     post({ commit, dispatch, state }, params) {
       if (mixins.methods.keyInObj('offset', params)) {
         params = { ...state.params, ...params };
       }
+      params.limit = state.itemsPerPage;
+      params.aggregate = { fields: ['tags'] };
       commit('resetData', params);
       if (!params.sourceView) {
         if (!state.backBtn) {
@@ -91,10 +94,10 @@ const search = {
       state.params = params;
     },
     updateData(state, data) {
-      state.data.total = data.total || 0;
-      state.data.offset = data.offset || 0;
-      state.data.entries = data.entries || [];
-      state.data.aggregations = data.aggregations || [];
+      state.data.total = data.total;
+      state.data.offset = data.offset;
+      state.data.entries = data.entries;
+      state.data.aggregations = data.aggregations;
     },
     updateJobId(state, jobId) {
       state.jobId = jobId;

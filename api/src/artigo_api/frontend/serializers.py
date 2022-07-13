@@ -372,14 +372,16 @@ class TagROISerializer(serializers.ModelSerializer):
 
 class SessionSerializer(serializers.ModelSerializer):
     resource_id = serializers.ReadOnlyField()
-    count = serializers.ReadOnlyField(source='count_tags')
-    score = serializers.ReadOnlyField(source='sum_score')
+    id = serializers.ReadOnlyField(source='tag_id')
+    name = serializers.ReadOnlyField(source='tag__name')
+    score = serializers.ReadOnlyField()
 
     class Meta:
         model = UserTagging
         fields = (
             'resource_id',
-            'count',
+            'id',
+            'name',
             'score',
         )
         list_serializer_class = ResourceTagListSerializer

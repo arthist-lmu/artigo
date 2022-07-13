@@ -1,24 +1,43 @@
 <template>
-  <v-app id="app">
-    <NavBar />
-    <AppBar />
+  <v-app
+    id="app"
+    :class="{ 'dark-variant': isHome }"
+  >
+    <Header
+      :dark="isHome"
+      :left="width"
+    />
+    <GameDrawer
+      v-if="isHome"
+      :width="width"
+    />
+
     <Loader />
     <Toaster />
 
     <ResourceDialog />
     <ReconcileDialog />
+    <GameSelectDialog />
 
     <v-main class="mx-6 mb-6">
       <router-view />
     </v-main>
+
+    <Footer :dark="isHome" />
   </v-app>
 </template>
 
 <script>
 export default {
   computed: {
+    width() {
+      return this.isHome ? 300 : 0;
+    },
     locale() {
       return this.$i18n.locale;
+    },
+    isHome() {
+      return this.$route.name === 'home';
     },
   },
   watch: {
@@ -32,19 +51,20 @@ export default {
     document.documentElement.lang = this.locale;
   },
   components: {
-    NavBar: () => import('@/components/NavBar.vue'),
-    AppBar: () => import('@/components/AppBar.vue'),
+    Header: () => import('@/components/Header.vue'),
     Loader: () => import('@/components/Loader.vue'),
     Toaster: () => import('@/components/Toaster.vue'),
+    Footer: () => import('@/components/Footer.vue'),
+    GameDrawer: () => import('@/components/game/Drawer.vue'),
     ResourceDialog: () => import('@/components/ResourceDialog.vue'),
     ReconcileDialog: () => import('@/components/ReconcileDialog.vue'),
+    GameSelectDialog: () => import('@/components/game/SelectDialog.vue'),
   },
 };
 </script>
 
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  background-color: #f9f9f9;
+<style scoped>
+.theme--light.dark-variant.v-application {
+  background-color: rgb(66, 71, 152);
 }
 </style>

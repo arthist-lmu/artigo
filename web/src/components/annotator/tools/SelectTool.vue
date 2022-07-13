@@ -3,7 +3,7 @@
 </template>
 
 <script>
-import tool from '@/mixins/tool';
+import tool from '@/mixins/game/annotator';
 
 export default {
   name: 'SelectTool',

@@ -47,7 +47,6 @@ instance.interceptors.response.use((response) => {
   if (!message.details) {
     message.details = ['unknown_error'];
   }
-  console.log(message);
   store.dispatch('utils/setMessage', message, { root: true });
   return new Promise(() => { });
 });

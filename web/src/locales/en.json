@@ -17,15 +17,6 @@
       "creator": "Unknown"
     }
   },
-  "collection": {
-    "fields": {
-      "results": "{n} Objects|{n} Object|{n} Objects",
-      "per-page": "Objects per page"
-    },
-    "texts": [
-
-    ]
-  },
   "user": {
     "fields": {
       "username": "Name",
@@ -44,10 +35,7 @@
         "min": "Min. {n} characters.",
         "max": "Max. {n} characters.",
         "password-repeat": "Passwords don't match."
-      },
-      "texts": [
-
-      ]
+      }
     },
     "login": {
       "title": "Login",
@@ -55,10 +43,7 @@
       "rules": {
         "min": "Min. {n} characters.",
         "max": "Max. {n} characters."
-      },
-      "texts": [
-
-      ]
+      }
     },
     "logout": {
       "title": "Logout"
@@ -80,22 +65,13 @@
   "privacy-policy": {
     "title": "Data privacy"
   },
-  "api": {
-      "title": "API"
-  },
   "search": {
-    "title": "Search",
+    "title": "Search for images",
     "fields": {
-      "default": "Simple search",
-      "advanced": "Advanced search",
-      "results": "{n} Search results|{n} Search result|{n} Search results",
-      "per-page": "Results per page",
-      "display-tags": "Display tags",
-      "display-metadata": "Display metadata"
-    },
-    "texts": [
-
-    ]
+      "of": "of",
+      "reset": "Reset",
+      "no-results": "No results could be found for your search query."
+    }
   },
   "reconcile": {
     "title": "Reconcile metadata",
@@ -156,61 +132,96 @@
       "name": "Name",
       "count-taggings": "Number of taggings",
       "count-gamerounds": "Number of gamerounds"
-    },
-    "texts": [
-
-    ]
+    }
   },
   "game": {
-    "title": "Games",
+    "title": "Play",
     "fields": {
+      "new-game": "New game",
+      "settings": "More settings",
       "basic": {
-        "enter": "Enter",
-        "skip": "Skip",
+        "skip": "Skip game round",
+        "score": "{n} Points|{n} Point|{n} Points",
         "rounds": "Round {i} of {total}",
-        "tags": "Assigned tags",
-        "own-tags": "You",
-        "opponent-tags": "Fellow player",
-        "suggestions": "Suggestions",
-        "score": "Score"
+        "invalid": "This tag must not be entered (again)"
       },
-      "default": {
-        "title": "ARTigo Game",
-        "placeholder": "For example, describe what you see",
-        "texts": [
-          {
-            "content": [
-              "ARTigo is an online game with the aim to supply artworks with tags. The same artwork is simultaneously shown to you and a co-player. The game now consists in describing the artwork accurately with tags. A tag can describe what you see on the artwork or remarks on style, quality or emotions. For each artwork, you have 60 seconds for your input. You get points for the tags identical to the ones entered by your co-player or another player in a previous round. The more tags per artwork are matched, the more points you get during the five rounds of the game. Every entered tag is saved and improves the search for artworks. As for the search however, only those tags entered at least twice for an artwork and thus marked in blue are relevant.",
-              "On the left side of the artwork you see the tags you already entered. According to the points, some are marked in different colours:",
-              "<ul><li>Black tags have never been entered before for this artwork. You don't get any points.</li><li>Dark blue tags were entered by your co-player in this round. Both of you get 25 points.</li><li>Light blue tags have been entered for this artwork in previous games. You get 5 points.</li></ul>",
-              "As to the taboo game, some taboo words are indicated additionally. You cannot use them for the description of the artwork because they had already been verified.",
-              "After five rounds you can review the artworks with additional information. Title, artist, location and date of origin are displayed."
-            ]
-          }
-        ]
-      },
-      "taboo": {
-        "title": "ARTigo Taboo",
-        "placeholder": "For example, describe what you see",
-        "tags": "Taboo tags",
-        "texts": [
-
-        ]
-      },
-      "tag-a-tag": {
-        "title": "Tag a Tag",
-        "placeholder": "Describe the taboo words in more detail",
-        "texts": [
-
-        ]
+      "tagging": {
+        "post": "Enter tag",
+        "intro": "What do you see in the displayed image? What feelings does it trigger in you?",
+        "taboo": "You may not use the following tags: {tags}."
       },
       "roi": {
-        "title": "ROI",
-        "placeholder": "",
-        "texts": [
-
-        ]
+        "post": "Annotate image region",
+        "intro": "Do you see the tags above the displayed image? Draw with the mouse over the corresponding image regions."
       }
+    },
+    "params": {
+      "game_type": {
+        "title": "Which game mode do you prefer?",
+        "fields": {
+          "tagging": "Annotate images with tags",
+          "roi": "Annotate image regions based on tags"
+        }
+      },
+      "game_round_duration": {
+        "title": "How long does a game round last?",
+        "suffix": "{n} seconds|{n} second|{n} second"
+      },
+      "resource_rounds": {
+        "title": "How many rounds do you want to play?",
+        "suffix": "{n} rounds|{n} round|{n} rounds"
+      }
+    },
+    "plugins": {
+      "resources": {
+        "title": "Which images do you want to play with?",
+        "fields": {
+          "random_resource": "Randomly selected images",
+          "custom_resource": "Custom images"
+        }
+      },
+      "opponents": {
+        "title": "Who do you want to play against?",
+        "fields": {
+          "mean_gameround_opponent": "Average opponents",
+          "random_gameround_opponent": "Randomly selected opponents"
+        }
+      },
+      "inputs": {
+        "title": "What annotations are displayed at the start of the game?",
+        "fields": {
+          "no_inputs": "None",
+          "most_annotated_input": "Most frequently assigned annotations",
+          "random_annotated_input": "Randomly assigned annotations",
+          "custom_annotated_input": "Custom annotations"
+        }
+      },
+      "taboos": {
+        "title": "Which annotations are taboo?",
+        "fields": {
+          "no_taboos": "None",
+          "most_annotated_taboo": "Most frequently assigned annotations",
+          "random_annotated_taboo": "Randomly assigned annotations",
+          "custom_annotated_taboo": "Custom annotations"
+        }
+      },
+      "suggesters": {
+        "title": "Which annotations should be recommended?",
+        "fields": {
+          "no_suggesters": "None",
+          "cooccurrence_suggester": "Annotations that frequently occur together"
+        }
+      }
+    }
+  },
+  "session": {
+    "title": "Game session",
+    "fields": {
+      "tags": "Tags",
+      "score": "Points",
+      "images": "Images",
+      "per-image": "per image",
+      "filter-tags": "Filter by assigned tags"
     }
   },
   "error": {
@@ -221,6 +232,7 @@
     "this_password_is_too_short_it_must_contain_at_least_8_characters": "Your password must contain at least 8 characters.",
     "a_user_is_already_registered_with_this_e-mail_address": "A user is already registered with this e-mail address.",
     "not_authenticated": "Please login to proceed.",
-    "invalid_token": "Please login to proceed."
+    "invalid_token": "Please login to proceed.",
+    "copied_to_clipboard": "Link was successfully copied to the clipboard."
   }
 }

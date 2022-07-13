@@ -26,6 +26,17 @@ module.exports = {
       },
     },
   },
+  css: {
+    loaderOptions: {
+      sass: {
+        implementation: require('sass'),
+        additionalData: `@import '@/styles/variables.scss'`,
+      },
+      scss: {
+        additionalData: `@import '@/styles/variables.scss';`,
+      },
+    },
+  },
   devServer: {
     disableHostCheck: true,
   },

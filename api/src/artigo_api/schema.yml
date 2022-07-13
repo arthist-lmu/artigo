@@ -106,6 +106,9 @@ paths:
   /game/:
     get:
       operationId: game_retrieve
+      description: Create games. The first valid game round is automatically returned
+        when a new game is created. All further rounds can be obtained by passing
+        the respective `session_id`.
       parameters:
       - in: query
         name: opponent_type
@@ -116,15 +119,6 @@ paths:
           - random_gameround_opponent
         description: Type of each opponent. Opponents are invalid for infinite game
           rounds (`round_duration=0`).
-      - in: query
-        name: resource_options
-        schema:
-          type: object
-          properties:
-            lt_percentile:
-              type: number
-              default: 1.0
-        description: Resource options
       - in: query
         name: resource_type
         schema:
@@ -159,6 +153,15 @@ paths:
             - annotation_validated_score
             - opponent_validated_score
         description: Score types
+      - in: query
+        name: suggester_types
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - cooccurrence_suggester
+        description: Suggester types
       - in: query
         name: taboo_type
         schema:
@@ -416,10 +419,16 @@ paths:
       - in: query
         name: aggregate
         schema:
-          type: array
-          items:
-            type: string
-        description: Metadata fields that should be aggregated
+          type: object
+          properties:
+            fields:
+              description: Metadata fields that should be aggregated
+              type: array
+            size:
+              description: Maximum number of aggregation results
+              type: integer
+              default: 250
+        description: Aggregation options
       - in: query
         name: job_id
         schema:
