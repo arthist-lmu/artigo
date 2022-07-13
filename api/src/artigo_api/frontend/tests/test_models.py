@@ -1,46 +1,56 @@
+import uuid
 import pytest
+
+from frontend.models import *
 from django.contrib.auth import get_user_model
-from django.test import TestCase
-
-
-from frontend.models import Source
 
 
 @pytest.mark.django_db
-def test_create_source():
-    source = Source.objects.create(name="Source")
+class TestUser:
+    def test_create_default(self):
+        user = get_user_model().objects.create_user(
+            username='user',
+            email='user@artigo.org',
+            password=uuid.uuid4().hex,
+        )
 
-    assert source.name == "Source"
+        assert user.username == 'user'
+        assert user.get_username() == 'user'
+        assert user.email == 'user@artigo.org'
+        assert user.is_active
+        assert not user.is_staff
+        assert not user.is_superuser
 
-
-
-class UsersManagersTests(TestCase):
-
-    def test_create_user(self):
-        User = get_user_model()
-        user = User.objects.create_user(username='testuser', email='normal@user.com', password='foo')
-        self.assertEqual(user.email, 'normal@user.com')
-        self.assertEqual(user.username, 'testuser')
-        self.assertTrue(user.is_active)
-        self.assertFalse(user.is_staff)
-        self.assertFalse(user.is_superuser)
-
-        with self.assertRaises(TypeError):
-            User.objects.create_user()
-        with self.assertRaises(TypeError):
-            User.objects.create_user(email='')
-        with self.assertRaises(ValueError):
-            User.objects.create_user(email='', password="foo", username='')
+        with pytest.raises(TypeError):
+            user = get_user_model().objects.create_user(
+                email='user@artigo.org',
+                password=uuid.uuid4().hex,
+            )
 
     def test_create_superuser(self):
-        User = get_user_model()
-        admin_user = User.objects.create_superuser(username='testadmin', email='super@user.com', password='foo')
-        self.assertEqual(admin_user.email, 'super@user.com')
-        self.assertEqual(admin_user.username, 'testadmin')
-        self.assertTrue(admin_user.is_active)
-        self.assertTrue(admin_user.is_staff)
-        self.assertTrue(admin_user.is_superuser)
+        user = get_user_model().objects.create_superuser(
+            username='user',
+            email='user@artigo.org',
+            password=uuid.uuid4().hex,
+        )
 
-        with self.assertRaises(ValueError):
-            User.objects.create_superuser(
-                email='super@user.com', password='foo', username='')
+        assert user.username == 'user'
+        assert user.get_username() == 'user'
+        assert user.email == 'user@artigo.org'
+        assert user.is_active
+        assert user.is_staff
+        assert user.is_superuser
+
+        with pytest.raises(TypeError):
+            user = get_user_model().objects.create_superuser(
+                email='user@artigo.org',
+                password=uuid.uuid4().hex,
+            )
+
+
+@pytest.mark.django_db
+def test_resource_tags_property():
+    tagging = UserTagging.objects.get(id=1)
+
+    for value in tagging.resource.tags:
+        assert value['count'] > 0

@@ -4,6 +4,8 @@ omit =
   *__main__.py
   */tests/*
   */migrations/*
+  *admin.py
+  *middleware.py
 
 [report]
 sort = Cover
