@@ -89,7 +89,7 @@ services:
         source: ./api/
         target: /api
       - type: bind
-        source: ./api/config.json
+        source: ./plugin.config.json
         target: /config.json
     working_dir: /api/src/artigo_api
     environment:
@@ -114,6 +114,9 @@ services:
       - type: bind
         source: ./web/
         target: /web
+      - type: bind
+        source: ./plugin.config.json
+        target: /config.json
     working_dir: /web
     depends_on:
       - api

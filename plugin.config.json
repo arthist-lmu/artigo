@@ -62,21 +62,21 @@
     "inputs": [
         {
             "name": "most_annotated_input",
-            "type": "MostAnnotatedInput",
+            "type": "MostAnnotatedTaggingInput",
             "game_types": ["roi"],
             "disabled": false,
             "default": false
         },
         {
             "name": "random_annotated_input",
-            "type": "RandomAnnotatedInput",
+            "type": "RandomAnnotatedTaggingInput",
             "game_types": ["roi"],
             "disabled": false,
             "default": true
         },
         {
             "name": "custom_annotated_input",
-            "type": "CustomAnnotatedInput",
+            "type": "CustomAnnotatedTaggingInput",
             "game_types": ["roi"],
             "disabled": false,
             "default": false
@@ -85,21 +85,21 @@
     "taboos": [
         {
             "name": "most_annotated_taboo",
-            "type": "MostAnnotatedTaboo",
+            "type": "MostAnnotatedTaggingTaboo",
             "game_types": ["tagging"],
             "disabled": false,
             "default": false
         },
         {
             "name": "random_annotated_taboo",
-            "type": "RandomAnnotatedTaboo",
+            "type": "RandomAnnotatedTaggingTaboo",
             "game_types": ["tagging"],
             "disabled": false,
             "default": false
         },
         {
             "name": "custom_annotated_taboo",
-            "type": "CustomAnnotatedTaboo",
+            "type": "CustomAnnotatedTaggingTaboo",
             "game_types": ["tagging"],
             "disabled": false,
             "default": false
