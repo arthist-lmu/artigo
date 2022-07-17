@@ -138,7 +138,7 @@
     "title": "Play",
     "fields": {
       "new-game": "New game",
-      "settings": "More settings",
+      "settings": "Settings",
       "basic": {
         "skip": "Skip game round",
         "score": "{n} Points|{n} Point|{n} Points",
@@ -171,6 +171,11 @@
         "title": "How many rounds do you want to play?",
         "suffix": "{n} rounds|{n} round|{n} rounds"
       }
+    },
+    "inputs": {
+      "custom_resource": "Enter image identifiers",
+      "custom_annotated_input": "Enter tags",
+      "custom_annotated_taboo": "Enter tags"
     },
     "plugins": {
       "resources": {
@@ -214,11 +219,39 @@
       }
     }
   },
+  "home": {
+    "title": "Home",
+    "fields": {
+      "tag": "{value}? {value}!",
+      "color": "Play it {value}",
+      "epoch": "{value} everywhere",
+      "creator": "Get to know {value}",
+      "try-out": "Try a game"
+    },
+    "texts": {
+      "intro": "We show you an image by",
+      "prefix": "Tell us",
+      "example-1": "what you see on it",
+      "example-2": "what feelings it triggers in you",
+      "example-3": "what associations it evokes",
+      "example-4": "whether it appeals to you",
+      "example-5": "if it repels you"
+    },
+    "game_type": {
+      "roi": "Image regions are annotated based on tags"
+    },
+    "plugins": {
+      "taboos": {
+        "most_annotated_taboo": "Most frequently assigned annotations are taboo"
+      }
+    }
+  },
   "session": {
     "title": "Game session",
     "fields": {
       "tags": "Tags",
       "score": "Points",
+      "users": "Players",
       "images": "Images",
       "per-image": "per image",
       "filter-tags": "Filter by assigned tags"
@@ -233,6 +266,6 @@
     "a_user_is_already_registered_with_this_e-mail_address": "A user is already registered with this e-mail address.",
     "not_authenticated": "Please login to proceed.",
     "invalid_token": "Please login to proceed.",
-    "copied_to_clipboard": "Link was successfully copied to the clipboard."
+    "copied_to_clipboard": "The link was successfully copied to the clipboard."
   }
 }

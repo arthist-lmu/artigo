@@ -109,7 +109,8 @@ export default {
       return this.$vuetify.breakpoint.smAndDown;
     },
     hasOpacity() {
-      return ['game', 'session'].includes(this.$route.name);
+      const names = ['home', 'game', 'session'];
+      return names.includes(this.$route.name);
     },
   },
 };

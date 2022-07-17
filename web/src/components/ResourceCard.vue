@@ -36,7 +36,10 @@
         <span
           v-for="creator in creators"
           :key="creator"
+          @click="search(creator, 'creators')"
+          @keydown="search(creator, 'creators')"
           class="creator"
+          style="cursor: pointer;"
         >
           {{ creator }}
 

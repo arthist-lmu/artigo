@@ -16,7 +16,7 @@ from artigo_search.utils import meta_from_proto, tags_from_proto
 
 logger = logging.getLogger(__name__)
 
-MAPPER = {
+mapper = {
     'tags': 'tags',
     'source': 'collection',
     '': 'all-text',
@@ -68,8 +68,8 @@ class SearchView(RPCView):
 
                             term.text.query = q['value']
 
-                        if MAPPER.get(field):
-                            term.text.field = MAPPER[field]
+                        if mapper.get(field):
+                            term.text.field = mapper[field]
                         else:
                             term.text.field = f'meta.{field}'
 

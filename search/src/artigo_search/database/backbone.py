@@ -110,6 +110,9 @@ class Backbone:
         for field in kwargs.get('fields', []):
             field_path = [y for y in field.split('.', 1) if y]
 
+            if field_path[0].startswith('meta'):
+                field_path[0] = 'metadata'
+
             if kwargs.get('significant'):
                 terms = 'significant_terms'
             else:

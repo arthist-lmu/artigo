@@ -137,7 +137,7 @@
     "title": "Spielen",
     "fields": {
       "new-game": "Neues Spiel",
-      "settings": "Weitere Einstellungen",
+      "settings": "Einstellungen",
       "basic": {
         "skip": "Spielrunde überspringen",
         "score": "{n} Punkte|{n} Punkt|{n} Punkte",
@@ -151,7 +151,8 @@
       },
       "roi": {
         "post": "Bildregion annotieren",
-        "intro": "Siehst Du die Schlagwörter über dem angezeigten Bild? Zeichne mit der Maus über die zugehörigen Bildregionen."
+        "intro": "Siehst Du die Schlagwörter über dem angezeigten Bild? Zeichne mit der Maus über die zugehörigen Bildregionen.",
+        "taboo": "Folgende Schlagwörter darfst Du nicht verwenden: {tags}."
       }
     },
     "params": {
@@ -170,6 +171,11 @@
         "title": "Wie viele Runden möchtest Du spielen?",
         "suffix": "{n} Runden|{n} Runde|{n} Runden"
       }
+    },
+    "inputs": {
+      "custom_resource": "Bildidentifikatoren eingeben",
+      "custom_annotated_input": "Schlagwörter eingeben",
+      "custom_annotated_taboo": "Schlagwörter eingeben"
     },
     "plugins": {
       "resources": {
@@ -213,11 +219,39 @@
       }
     }
   },
+  "home": {
+    "title": "Startseite",
+    "fields": {
+      "tag": "{value}? {value}!",
+      "color": "Treib’s mal {value}",
+      "epoch": "{value} überall",
+      "creator": "Lerne {value} kennen",
+      "try-out": "Probiere ein Spiel aus"
+    },
+    "texts": {
+      "intro": "Wir zeigen Dir ein Bild von",
+      "prefix": "Sage uns,",
+      "example-1": "was Du darauf siehst",
+      "example-2": "welche Gefühle es bei Dir auslöst",
+      "example-3": "welche Assoziationen es weckt",
+      "example-4": "ob es Dich anspricht",
+      "example-5": "ob es Dich abstößt"
+    },
+    "game_type": {
+      "roi": "Bildregionen werden auf Basis von Schlagwörtern annotiert"
+    },
+    "plugins": {
+      "taboos": {
+        "most_annotated_taboo": "Am häufigsten vergebene Annotationen sind tabu"
+      }
+    }
+  },
   "session": {
     "title": "Spielsitzung",
     "fields": {
       "tags": "Schlagwörter",
       "score": "Punkte",
+      "users": "Spieler:innen",
       "images": "Bilder",
       "per-image": "pro Bild",
       "filter-tags": "Filtere nach vergebenen Schlagwörtern"
@@ -232,6 +266,6 @@
     "a_user_is_already_registered_with_this_e-mail_address": "Ein:e Benutzer:in ist bereits mit dieser E-Mail-Adresse registriert.",
     "not_authenticated": "Bitte melde dich an, um fortzufahren.",
     "invalid_token": "Bitte melde dich an, um fortzufahren.",
-    "copied_to_clipboard": "Link wurde erfolgreich in die Zwischenablage kopiert."
+    "copied_to_clipboard": "Der Link wurde erfolgreich in die Zwischenablage kopiert."
   }
 }

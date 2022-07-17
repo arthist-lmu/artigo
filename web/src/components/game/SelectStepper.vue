@@ -72,12 +72,12 @@
         :key="config.name"
       >
         <v-stepper-step
-          :class="items[config.name].length > 1 ? undefined : 'disabled'"
-          edit-icon="mdi-check"
-          complete-icon="mdi-check"
+          :class="{ disabled: items[config.name].length > 1 }"
           :complete="stepper > getStep(i, isPlugin = true)"
           :step="getStep(i, isPlugin = true)"
           :editable="items[config.name].length > 1"
+          edit-icon="mdi-check"
+          complete-icon="mdi-check"
         >
           {{ $t(`game.plugins.${config.name}.title`) }}
 
@@ -106,6 +106,32 @@
               {{ $t(`game.plugins.${config.name}.fields.${item.name}`) }}
             </template>
           </v-select>
+
+          <v-combobox
+            v-if="data[config.name].startsWith('custom_')"
+            v-model="data[`${config.name.slice(0, -1)}_inputs`]"
+            :placeholder="$t(`game.inputs.${data[config.name]}`)"
+            class="mt-2"
+            hide-details
+            single-line
+            outlined
+            multiple
+            rounded
+            chips
+            dense
+          >
+            <template v-slot:selection="{ item }">
+              <v-chip
+                class="my-1"
+                color="primary"
+                outlined
+                close
+                small
+              >
+                {{ item }}
+              </v-chip>
+            </template>
+          </v-combobox>
         </v-stepper-content>
       </div>
     </template>
@@ -117,6 +143,7 @@ import configs from '/config.json';
 
 export default {
   props: {
+    defaultParams: Object,
     showMore: {
       type: Boolean,
       default: false,
@@ -182,15 +209,18 @@ export default {
           'annotation_validated_score',
           'opponent_validated_score',
         ],
-        // TODO: move to config
-        resource_min_roi_tags: 0,
         language: this.$i18n.locale,
       };
       Object.keys(this.params).forEach((name) => {
         values[name] = this.params[name].default;
       });
+      if (values.game_type === 'roi') {
+        values.resource_min_roi_tags = 0;
+      }
       Object.keys(this.data).forEach((name) => {
-        if (!this.data[name].startsWith('no_')) {
+        if (this.isArray(this.data[name])) {
+          values[name] = this.data[name];
+        } else if (!this.data[name].startsWith('no_')) {
           const pluginType = `${name.slice(0, -1)}_type`;
           values[pluginType] = this.data[name];
         }
@@ -202,6 +232,26 @@ export default {
         return i + 1 + Object.keys(this.params).length;
       }
       return i + 1;
+    },
+    setDefault(params) {
+      if (params) {
+        if (this.keyInObj('game_type', params)) {
+          this.params.game_type.default = params.game_type;
+        }
+        Object.keys(params).forEach((name) => {
+          let field = `${name.split('_')[0]}s`;
+          if (this.keyInObj(field, this.data)) {
+            this.data[field] = params[name];
+            if (
+              typeof params[name] === 'string'
+              && params[name].startsWith('custom_')
+            ) {
+              field = `${field.slice(0, -1)}_inputs`;
+              this.data[field] = params[field];
+            }
+          }
+        });
+      }
     },
   },
   computed: {
@@ -229,6 +279,9 @@ export default {
     },
   },
   watch: {
+    defaultParams(values) {
+      this.setDefault(values);
+    },
     items: {
       handler(values) {
         this.data = {};
@@ -239,6 +292,7 @@ export default {
             }
           });
         });
+        this.setDefault(this.defaultParams);
       },
       deep: true,
     },

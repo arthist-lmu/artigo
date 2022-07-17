@@ -11,7 +11,9 @@
         :value="progress"
         color="primary"
       >
-        {{ value }}
+        <span class="font-weight-medium">
+          {{ value }}
+        </span>
       </v-progress-circular>
     </template>
 
@@ -75,3 +77,17 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.v-alert .v-progress-circular {
+  background-color: transparent;
+  border-radius: 24px;
+  -webkit-transition: background-color 0.25s linear;
+  -ms-transition: background-color 0.25s linear;
+  transition: background-color 0.25s linear;
+}
+
+.v-alert:hover .v-progress-circular {
+  background-color: rgba(66, 71, 152, 0.15);
+}
+</style>

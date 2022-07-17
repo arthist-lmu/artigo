@@ -12,6 +12,7 @@ logger = logging.getLogger(__name__)
 @TabooPluginManager.export('CustomAnnotatedTaggingTaboo')
 class CustomAnnotatedTaggingTaboo(TabooPlugin):
     default_config = {
+        'inputs': [],
         'max_tags': 5,
     }
 
@@ -20,13 +21,14 @@ class CustomAnnotatedTaggingTaboo(TabooPlugin):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
+        self.inputs = self.config['inputs']
         self.max_tags = self.config['max_tags']
 
-    def __call__(self, resource_ids, params):
-        if not isinstance(params['tags'], (list, set)):
-            params['tags'] = [params['tags']]
+        if not isinstance(self.inputs, (list, set)):
+            self.inputs = [self.inputs]
 
-        tags = [{'name': tag} for tag in params['tags']]
+    def __call__(self, resource_ids, params):
+        tags = [{'name': tag} for tag in self.inputs]
 
         for tag in tags:
             tag_obj = Tag.objects.filter(

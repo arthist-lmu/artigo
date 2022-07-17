@@ -4,7 +4,10 @@ const game = {
   namespaced: true,
   state: {
     params: {},
-    dialog: false,
+    dialog: {
+      show: false,
+      params: {},
+    },
     tags: [],
     entry: {},
     rounds: 5,
@@ -43,8 +46,11 @@ const game = {
     updateParams(state, params) {
       state.params = params;
     },
-    updateDialog(state, dialog) {
-      state.dialog = dialog;
+    updateDialog(state, { show, params }) {
+      state.dialog.show = show;
+      if (params) {
+        state.dialog.params = params;
+      }
     },
     updateData(state, {
       session_id, rounds, round_id, data,

@@ -34,7 +34,7 @@
       v-if="tags.length"
       class="mt-0 mb-n2"
     >
-      <v-col>
+      <v-col cols="11">
         <v-slide-group
           v-model="slides"
           :title="$t('session.fields.filter-tags')"
@@ -60,6 +60,20 @@
           </v-slide-item>
         </v-slide-group>
       </v-col>
+
+      <v-col
+        cols="1"
+        align="right"
+      >
+        <v-btn
+          @click="share"
+          icon
+        >
+          <v-icon>
+            mdi-share-variant-outline
+          </v-icon>
+        </v-btn>
+      </v-col>
     </v-row>
 
     <v-row class="mx-n1 mt-7">
@@ -84,37 +98,6 @@
           </div>
         </v-slide-item>
       </v-slide-group>
-    </v-row>
-
-    <v-row
-      class="mt-7"
-      justify="end"
-    >
-      <v-col :cols="newGameCols">
-        <v-btn
-          @click="goTo('game')"
-          color="primary"
-          depressed
-          rounded
-          block
-        >
-          {{ $t("game.fields.new-game") }}
-        </v-btn>
-      </v-col>
-
-      <v-col
-        class="pl-0"
-        :cols="shareCols"
-      >
-        <v-btn
-          @click="share"
-          icon
-        >
-          <v-icon>
-            mdi-share-variant-outline
-          </v-icon>
-        </v-btn>
-      </v-col>
     </v-row>
   </v-container>
 </template>
@@ -142,9 +125,6 @@ export default {
         timestamp: new Date(),
       };
       this.$store.dispatch('utils/setMessage', message);
-    },
-    goTo(name) {
-      this.$router.push({ name });
     },
   },
   computed: {

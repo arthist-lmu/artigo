@@ -25,29 +25,8 @@ export default {
           title: this.$t('about.title'),
           texts: this.$t('about.texts'),
         },
-        {
-          title: this.$t('game.fields.default.title'),
-          texts: this.$t('game.fields.default.texts'),
-        },
       ];
     },
-  },
-  beforeRouteEnter(to, from, next) {
-    next((vm) => {
-      if (to.query.tab === 'game') {
-        vm.tab = 1;
-      } else {
-        vm.tab = 0;
-      }
-    });
-  },
-  beforeRouteUpdate(to, from, next) {
-    if (to.query.tab === 'game') {
-      this.tab = 1;
-    } else {
-      this.tab = 0;
-    }
-    next();
   },
   components: {
     PageTabs: () => import('@/components/PageTabs.vue'),

@@ -4,7 +4,7 @@
     class="loading"
   >
     <v-progress-circular
-      color="primary"
+      color="error"
       indeterminate
     />
   </div>

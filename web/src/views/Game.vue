@@ -77,14 +77,14 @@ import { mapState } from 'vuex';
 export default {
   data() {
     return {
-      path: '',
+      path: null,
       seconds: 0,
       countdown: false,
     };
   },
   methods: {
     get() {
-      this.$store.commit('game/updateDialog', true);
+      this.$store.commit('game/updateDialog', { show: true });
     },
     next() {
       if (this.roundId === this.rounds) {
@@ -110,10 +110,12 @@ export default {
     ...mapState('game', [
       'entry',
       'params',
-      'dialog',
       'roundId',
       'rounds',
     ]),
+    dialog() {
+      return this.$store.state.game.dialog.show;
+    },
     gameType() {
       return this.params.game_type;
     },

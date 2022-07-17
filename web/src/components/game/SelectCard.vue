@@ -3,7 +3,7 @@
     max-width="625"
     flat
   >
-    <v-card-title v-if="isDialog">
+    <v-card-title>
       {{ $t("game.fields.new-game") }}
 
       <v-col
@@ -33,14 +33,15 @@
       </v-col>
     </v-card-title>
 
-    <v-card-text :class="isDialog ? 'pt-4' : 'pt-0 px-0'">
+    <v-card-text class="pt-4">
       <SelectStepper
         v-model="params"
         :showMore="showMore"
+        :defaultParams="defaultParams"
       />
     </v-card-text>
 
-    <v-card-actions :class="isDialog ? 'pb-6 px-6' : 'pb-8 px-0'">
+    <v-card-actions class="pb-6 px-6">
       <v-btn
         @click="play"
         tabindex="0"
@@ -58,10 +59,7 @@
 <script>
 export default {
   props: {
-    isDialog: {
-      type: Boolean,
-      default: true,
-    },
+    defaultParams: Object,
     persistent: {
       type: Boolean,
       default: false,

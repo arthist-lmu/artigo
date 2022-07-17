@@ -1,13 +1,13 @@
 import axios from '@/plugins/axios';
 
-const highscore = {
+const home = {
   namespaced: true,
   state: {
     data: {},
   },
   actions: {
     get({ commit }, params) {
-      axios.get('/highscore/', { params })
+      axios.get('/home/', { params })
         .then(({ data }) => {
           commit('updateData', data);
         });
@@ -20,4 +20,4 @@ const highscore = {
   },
 };
 
-export default highscore;
+export default home;

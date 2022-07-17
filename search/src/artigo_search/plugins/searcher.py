@@ -142,7 +142,7 @@ class Searcher:
                 field_path = [y for y in x['field'].split('.') if y]
 
                 if len(field_path) == 1:
-                    if field_path[0] == 'meta':
+                    if field_path[0].startswith('meta'):
                         term = Q(
                             'multi_match',
                             fields=['all_metadata'],
@@ -158,6 +158,10 @@ class Searcher:
                                     Q('match', tags__name=x['query']),
                                     Q('range', tags__count={'gte': 1}),
                                 ],
+                                # rank_feature={
+                                #     'field': 'tags.count',
+                                #     'boost': 0.5,
+                                # },
                             ),
                         )
                     elif field_path[0] == 'collection':
@@ -167,7 +171,7 @@ class Searcher:
                             query=x['query'],
                         )
                 elif len(field_path) == 2:
-                    if field_path[0] == 'meta':
+                    if field_path[0].startswith('meta'):
                         term = Q(
                             'nested',
                             path='metadata',
@@ -202,7 +206,7 @@ class Searcher:
                 field_path = [y for y in x['field'].split('.') if y]
 
                 if len(field_path) == 2:
-                    if field_path[0] == 'meta':
+                    if field_path[0].startswith('meta'):
                         if x['relation'] == 'eq':
                             value_match = Q(
                                 'term',

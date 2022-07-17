@@ -31,7 +31,7 @@
 export default {
   computed: {
     width() {
-      return this.isHome ? 300 : 0;
+      return this.isHome ? 350 : 0;
     },
     locale() {
       return this.$i18n.locale;

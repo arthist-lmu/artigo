@@ -16,6 +16,7 @@
       <v-row
         v-for="aggregation in aggregations"
         :key="aggregation.field"
+        class="aggregate"
       >
         <v-col v-if="aggregation.entries.length">
           <v-slide-group show-arrows>
@@ -75,3 +76,9 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.row.aggregate + .row.aggregate {
+  margin-top: 0;
+}
+</style>

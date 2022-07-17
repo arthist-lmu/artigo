@@ -44,8 +44,8 @@ span.clip.w100 {
   width: 100%;
 }
 
-.v-toolbar__content {
-  padding: 4px 0;
+.v-footer.v-footer--inset {
+  padding: 0 12px;
 }
 
 .v-toolbar__content .v-btn.v-btn--icon.v-size--default {
@@ -105,6 +105,12 @@ span.clip.w100 {
 
 .v-select.v-select--is-menu-active .v-input__icon--append .v-icon {
   transform: rotate(0) !important;
+}
+
+.v-select.v-select--chips.v-input--dense .v-select__selections {
+  overflow-x: hidden;
+  overflow-y: scroll;
+  max-height: 73px;
 }
 
 .v-expansion-panel-header > :not(.v-expansion-panel-header__icon) {

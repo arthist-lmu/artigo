@@ -48,7 +48,7 @@ export default {
   methods: {
     goTo(name) {
       if (this.isGame) {
-        this.$store.commit('game/updateDialog', true);
+        this.$store.commit('game/updateDialog', { show: true });
       } else {
         this.$router.push({ name });
       }

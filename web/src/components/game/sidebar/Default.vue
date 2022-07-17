@@ -84,8 +84,8 @@ export default {
 }
 
 .row.align-end {
-  height: 0;
-  margin-right: 0;
   overflow-y: auto;
+  margin-right: 0;
+  height: 0;
 }
 </style>

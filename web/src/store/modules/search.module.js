@@ -22,9 +22,11 @@ const search = {
         params = { ...state.params, ...params };
       }
       params.limit = state.itemsPerPage;
-      params.aggregate = { fields: ['tags'] };
+      if (params.aggregate === undefined) {
+        params.aggregate = { fields: ['tags'] };
+      }
       commit('resetData', params);
-      if (!params.sourceView) {
+      if (!params.external) {
         if (!state.backBtn) {
           dispatch('setURLParams', params);
         } else {

@@ -8,6 +8,7 @@
     <SelectCard
       v-model="dialog"
       :persistent="isGame"
+      :defaultParams="params"
     />
   </v-dialog>
 </template>
@@ -21,7 +22,10 @@ export default {
   },
   computed: {
     show() {
-      return this.$store.state.game.dialog;
+      return this.$store.state.game.dialog.show;
+    },
+    params() {
+      return this.$store.state.game.dialog.params;
     },
     isGame() {
       return this.$route.name === 'game';
@@ -30,7 +34,8 @@ export default {
   watch: {
     dialog(value) {
       if (!value) {
-        this.$store.commit('game/updateDialog', false);
+        const params = { show: false, params: {} };
+        this.$store.commit('game/updateDialog', params);
       }
     },
     show: {

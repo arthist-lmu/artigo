@@ -3,17 +3,35 @@
     :width="width"
     app
   >
-    <v-container fill-height>
+    <v-container class="px-6">
+      <v-row></v-row>
+
       <v-row
-        v-for="n in 3"
-        :key="n"
+        v-for="entry in data"
+        :key="entry.path"
+        style="flex: 0;"
       >
         <v-col>
-          <v-card flat>
-            Game {{ n }}
-          </v-card>
+          <Card :entry="entry" />
         </v-col>
       </v-row>
+
+      <v-row style="flex: 0;">
+        <v-col>
+          <v-btn
+            @click="goTo('game')"
+            color="grey lighten-2"
+            depressed
+            outlined
+            rounded
+            block
+          >
+            {{ $t("game.fields.new-game") }}
+          </v-btn>
+        </v-col>
+      </v-row>
+
+      <v-row></v-row>
     </v-container>
   </v-navigation-drawer>
 </template>
@@ -23,19 +41,33 @@ export default {
   props: {
     width: {
       type: Number,
-      default: 300,
+      default: 325,
     },
   },
-  data() {
-    return {
-
-    };
-  },
   methods: {
-
+    goTo(name) {
+      this.$router.push({ name });
+    },
   },
   computed: {
-
+    data() {
+      return this.$store.state.home.data;
+    },
+  },
+  mounted() {
+    const params = { lang: this.$i18n.locale };
+    this.$store.dispatch('home/get', params);
+  },
+  components: {
+    Card: () => import('./Card.vue'),
   },
 };
 </script>
+
+<style scoped>
+.container {
+  flex-direction: column;
+  display: flex;
+  height: 100%;
+}
+</style>
