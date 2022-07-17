@@ -22,7 +22,7 @@
     "vuetify": "^2.6.6",
     "vuex": "^3.6.2",
     "vuex-persistedstate": "^4.1.0",
-    "webpack": "4.36.0",
+    "webpack": "5.73.0",
     "progress-webpack-plugin": "0.0.24"
   },
   "devDependencies": {
