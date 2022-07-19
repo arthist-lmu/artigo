@@ -6,6 +6,7 @@ from opensearch_dsl import (
     Long,
     Float,
     Boolean,
+    RankFeature,
 )
 
 
@@ -37,6 +38,8 @@ class Resource(Document):
                 copy_to=['all_text'],
             ),
             'count': Long(),
+            # TODO: currently not supported
+            # 'count': RankFeature(),
         },
     )
 

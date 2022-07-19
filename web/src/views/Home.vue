@@ -1,5 +1,10 @@
 <template>
   <v-container v-if="creators">
+    <GameDrawer
+      ref="drawer"
+      :forceOpen="drawer"
+    />
+
     <v-row></v-row>
 
     <v-row style="flex: 0;">
@@ -94,7 +99,8 @@
       appear
     >
       <div
-        v-if="overlay"
+        v-show="overlay"
+        ref="overlay"
         class="overlay"
       />
     </transition>
@@ -111,6 +117,7 @@ export default {
         examples: false,
         button: false,
       },
+      drawer: false,
       creator: null,
       overlay: false,
     };
@@ -128,9 +135,13 @@ export default {
       this.$store.dispatch('search/post', { query });
     },
     darken() {
+      const { drawer, overlay } = this.$refs;
+      overlay.style.left = `${drawer.width}px`;
+      this.drawer = true;
       this.overlay = true;
       setTimeout(() => {
         this.$nextTick(() => {
+          this.drawer = false;
           this.overlay = false;
         });
       }, 2000);
@@ -156,25 +167,26 @@ export default {
   },
   watch: {
     dialog: {
-      handler({ prefix }) {
-        let { names } = this.creators;
-        names = this.shuffle(names).slice(0, 4);
-        const { data } = this.$store.state.home;
-        data.forEach((entry) => {
-          if (entry.type === 'creator') {
-            names.push(entry.query);
-          }
-        });
-        this.timer = setInterval(() => {
-          if (!prefix) {
+      handler({ creator, prefix }) {
+        if (creator && !prefix) {
+          let { names } = this.creators;
+          names = this.shuffle(names).slice(0, 4);
+          const { data } = this.$store.state.home;
+          data.forEach((entry) => {
+            if (entry.type === 'creator') {
+              names.push(entry.query);
+            }
+          });
+          this.creator = names.shift();
+          this.timer = setInterval(() => {
             if (names.length === 0) {
               clearInterval(this.timer);
               this.show('prefix');
             } else {
               this.creator = names.shift();
             }
-          }
-        }, 1000);
+          }, 1000);
+        }
       },
       deep: true,
     },
@@ -184,6 +196,7 @@ export default {
   },
   components: {
     Typer: () => import('@/components/Typer.vue'),
+    GameDrawer: () => import('@/components/game/Drawer.vue'),
   },
 };
 </script>
@@ -191,7 +204,6 @@ export default {
 <style scoped>
 .overlay {
   background-color: rgba(0, 0, 0, 0.5);
-  margin-left: -35px;
   position: fixed;
   z-index: 99;
   height: 100%;

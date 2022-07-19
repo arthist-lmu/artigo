@@ -11,6 +11,9 @@ const utils = {
       details: null,
       timestamp: null,
     },
+    drawer: {
+      width: 0,
+    },
   },
   actions: {
     setStatus({ commit }, params) {
@@ -18,6 +21,9 @@ const utils = {
     },
     setMessage({ commit }, params) {
       commit('updateMessage', params);
+    },
+    setDrawer({ commit }, params) {
+      commit('updateDrawer', params);
     },
   },
   mutations: {
@@ -30,6 +36,9 @@ const utils = {
       state.message.type = type;
       state.message.details = details;
       state.message.timestamp = timestamp;
+    },
+    updateDrawer(state, { width }) {
+      state.drawer.width = width;
     },
   },
 };

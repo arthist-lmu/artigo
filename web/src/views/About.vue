@@ -1,36 +1,43 @@
 <template>
-  <PageTabs v-model="tab" :items="items">
-    <template v-slot:default="slotProps">
-      <div
-        v-if="slotProps.title == $t('about.title')"
-        class="mb-8"
-      >
+  <v-container>
+    <GameDrawer />
+
+    <v-row>
+      <v-col class="pa-12">
+        <div class="text-h2 accent--text mb-6">
+          {{ $t("contributors.title") }}
+        </div>
+
         <Contributors />
-      </div>
-    </template>
-  </PageTabs>
+      </v-col>
+    </v-row>
+
+    <v-row>
+      <v-col class="pa-12">
+        <div class="text-h2 accent--text mb-6">
+          {{ $t("publications.title") }}
+        </div>
+
+        <Publications />
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 
 <script>
 export default {
   data() {
     return {
-      tab: null,
+
     };
   },
   computed: {
-    items() {
-      return [
-        {
-          title: this.$t('about.title'),
-          texts: this.$t('about.texts'),
-        },
-      ];
-    },
+
   },
   components: {
-    PageTabs: () => import('@/components/PageTabs.vue'),
+    GameDrawer: () => import('@/components/game/Drawer.vue'),
     Contributors: () => import('@/components/Contributors.vue'),
+    Publications: () => import('@/components/Publications.vue'),
   },
 };
 </script>

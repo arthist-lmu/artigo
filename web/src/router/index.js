@@ -51,12 +51,6 @@ const router = new VueRouter({
           meta: { title: 'about.title' },
         },
         {
-          path: 'highscore',
-          name: 'highscore',
-          component: () => import('@/views/Highscore.vue'),
-          meta: { title: 'highscore.title' },
-        },
-        {
           path: 'search',
           name: 'search',
           component: () => import('@/views/Search.vue'),

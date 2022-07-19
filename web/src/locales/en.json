@@ -90,30 +90,13 @@
         "content": [
           "Art history studies mainly original artworks, but often their reproductions, too. Today, these reproductions exist in substantial electronic repositories sometimes amounting to several million items. What can we do to retrieve these reproductions preferably on the basis of various criteria? As the possibilities of a computerized search of these reproductions are still very limited we allocate keywords, known as metadata. This is a most time-consuming operation and one would need a great number of staff members to do this job. We would appreciate your contribution to this game. However, we don't only want something from you but we offer you as well entertainment and at the same time training as you get to know quite a lot about the paintings shown here. In addition to that, you will be able to work with the descriptions you gave us."
         ]
-      },
-      {
-        "header": "Image portfolio",
-        "content": [
-          "The underlying image portfolio originates from the Diathek of the Institute for Art History at the University of Munich."
-        ]
-      },
-      {
-        "header": "Project funding",
-        "content": [
-          "The project was funded by the <a href='http://www.dfg.de/' target='_blank'>German Research Foundation (DFG)</a>."
-        ]
-      },
-      {
-        "header": "Version history",
-        "content": [
-          "This version of ARTigo is based on a game foremost developed by Dr. Gerhard Schön from the <a href='http://www.itg.uni-muenchen.de/' target='_blank'>IT-Group Humanities</a>. Prof. Dr. Hubertus Kohle had the idea for this project. He was inspired by Prof. Dr. François Bry during a conversation about “Games with a Purpose”. Furthermore, we would like to thank <a href='http://www.cs.cmu.edu/~biglou/' target='_blank'>Luis von Ahn</a> who lead us to this game idea with his <a href='https://en.wikipedia.org/wiki/ESP_game' target='_blank'>ESP Game</a>. You can learn more about the principles of the game in his talk about <a href='https://youtu.be/tx082gDwGcM' target='_blank'>Human Computation</a> given at Google as “TechTalk” on 26th of July 2006."
-        ]
       }
     ]
   },
   "contributors": {
     "title": "Contributors",
     "fields": {
+      "leader": "Current project leader",
       "informatics": "Institute for Informatics",
       "cis": "Center for Information and Language Processing",
       "art-history": "Institute for Art History",
@@ -121,17 +104,11 @@
       "itg": "IT-Group Humanities"
     }
   },
-  "highscore": {
-    "title": "Highscore",
+  "publications": {
+    "title": "Publications",
     "fields": {
-      "alltime": "Best players of all time",
-      "current": "Best players this month",
-      "previous": "Best players last month"
-    },
-    "headers": {
-      "name": "Name",
-      "count-taggings": "Number of taggings",
-      "count-gamerounds": "Number of gamerounds"
+      "journals": "Contributions to journals and anthologies",
+      "theses": "Theses and Dissertations"
     }
   },
   "game": {

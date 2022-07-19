@@ -59,10 +59,6 @@ export default {
       type: Boolean,
       default: false,
     },
-    left: {
-      type: Number,
-      default: 0,
-    },
   },
   methods: {
     goTo(name) {
@@ -70,14 +66,20 @@ export default {
     },
   },
   computed: {
+    left() {
+      if (this.$vuetify.breakpoint.lgAndUp) {
+        return this.$store.state.utils.drawer.width;
+      }
+      return 0;
+    },
+    getCss() {
+      return { left: `${this.left}px !important` };
+    },
     isSearch() {
       return this.$route.name === 'search';
     },
     isMobile() {
       return this.$vuetify.breakpoint.mobile;
-    },
-    getCss() {
-      return { left: `${this.left}px !important` };
     },
     hasOpacity() {
       return ['game', 'session'].includes(this.$route.name);

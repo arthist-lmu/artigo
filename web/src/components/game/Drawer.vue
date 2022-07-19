@@ -1,5 +1,7 @@
 <template>
   <v-navigation-drawer
+    v-model="drawer"
+    :temporary="isTemporary"
     :width="width"
     app
   >
@@ -39,10 +41,16 @@
 <script>
 export default {
   props: {
-    width: {
-      type: Number,
-      default: 325,
+    forceOpen: {
+      type: Boolean,
+      default: false,
     },
+  },
+  data() {
+    return {
+      drawer: false,
+      width: 350,
+    };
   },
   methods: {
     goTo(name) {
@@ -53,13 +61,40 @@ export default {
     data() {
       return this.$store.state.home.data;
     },
+    isTemporary() {
+      return !this.$vuetify.breakpoint.lgAndUp;
+    },
+  },
+  watch: {
+    drawer: {
+      handler(value) {
+        const params = { width: 0 };
+        if (value) params.width = this.width;
+        this.$store.commit('utils/updateDrawer', params);
+      },
+      immediate: true,
+    },
+    forceOpen: {
+      handler(value) {
+        if (value) {
+          this.drawer = true;
+        }
+      },
+      immediate: true,
+    },
+    isTemporary: {
+      handler(value) {
+        this.drawer = !value;
+      },
+      immediate: true,
+    },
   },
   mounted() {
     const params = { lang: this.$i18n.locale };
     this.$store.dispatch('home/get', params);
   },
   components: {
-    Card: () => import('./Card.vue'),
+    Card: () => import('./DrawerCard.vue'),
   },
 };
 </script>

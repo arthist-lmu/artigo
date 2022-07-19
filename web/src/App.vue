@@ -1,16 +1,9 @@
 <template>
   <v-app
     id="app"
-    :class="{ 'dark-variant': isHome }"
+    :class="{ 'dark-variant': isDark }"
   >
-    <Header
-      :dark="isHome"
-      :left="width"
-    />
-    <GameDrawer
-      v-if="isHome"
-      :width="width"
-    />
+    <Header :dark="isDark" />
 
     <Loader />
     <Toaster />
@@ -23,21 +16,19 @@
       <router-view />
     </v-main>
 
-    <Footer :dark="isHome" />
+    <Footer :dark="isDark" />
   </v-app>
 </template>
 
 <script>
 export default {
   computed: {
-    width() {
-      return this.isHome ? 350 : 0;
-    },
     locale() {
       return this.$i18n.locale;
     },
-    isHome() {
-      return this.$route.name === 'home';
+    isDark() {
+      const pages = ['home', 'about'];
+      return pages.includes(this.$route.name);
     },
   },
   watch: {
@@ -55,7 +46,6 @@ export default {
     Loader: () => import('@/components/Loader.vue'),
     Toaster: () => import('@/components/Toaster.vue'),
     Footer: () => import('@/components/Footer.vue'),
-    GameDrawer: () => import('@/components/game/Drawer.vue'),
     ResourceDialog: () => import('@/components/ResourceDialog.vue'),
     ReconcileDialog: () => import('@/components/ReconcileDialog.vue'),
     GameSelectDialog: () => import('@/components/game/SelectDialog.vue'),

@@ -89,30 +89,13 @@
         "content": [
           "Die Kunstgeschichte arbeitet mit den originalen Kunstwerken, häufig aber auch mit Reproduktionen davon. Diese Reproduktionen werden heute in umfangreichen elektronischen Repositorien vorgehalten und können leicht in die Millionen gehen. Was machen wir, um diese Reproduktionen wiederzufinden, und zwar möglichst nach den unterschiedlichsten Kritereien geordnet? Manchmal wollen wir Bilder finden, die einen spezifischen Inhalt oder eine spezifische Form haben. Da die Möglichkeiten, über den Computer direkt auf die Reproduktion zuzugreifen, noch sehr beschränkt sind, vergeben wir Schlagwörter, sogenannte Metadaten. Das ist ein sehr zeitraubendes Geschäft und kann am besten von einer großen Anzahl von Mitarbeiter:innen übernommen werden. Um diesen Beitrag bitten wir Dich mit diesem Spiel. Aber wir wollen nicht nur etwas von Dir, sondern bieten auch etwas: Unterhaltung einerseits, aber auch Belehrung, denn Du wirst eine Menge über die Werke der Künstler:innen lernen, die wir hier vorführen. Und Du wirst dann mit den von Dir gelieferten Beschreibungen auch selbst arbeiten können."
         ]
-      },
-      {
-        "header": "Bilderbestand",
-        "content": [
-          "Der zugrundeliegende Bilderbestand entstammt der <a href='https://www.kunstgeschichte.uni-muenchen.de/ifk/einrichtungen/bildarchiv/index.html' target='_blank'>Diathek des Instituts für Kunstgeschichte</a> der LMU München."
-        ]
-      },
-      {
-        "header": "Projektförderung",
-        "content": [
-          "Das Projekt wurde gefördert durch die <a href='http://www.dfg.de/' target='_blank'>Deutsche Forschungsgemeinschaft (DFG)</a>."
-        ]
-      },
-      {
-        "header": "Versionsgeschichte",
-        "content": [
-          "Diese Version von ARTigo basiert auf einem führend von Dr. Gerhard Schön von der <a href='http://www.itg.uni-muenchen.de/' target='_blank'>IT-Gruppe Geisteswissenschaften</a> entwickelten Spiel. Die Idee für dieses Projekt stammt von Prof. Dr. Hubertus Kohle nach einem Gespräch mit Prof. Dr. François Bry über „Games with a Purpose“. Weiterhin danken wir <a href='http://www.cs.cmu.edu/~biglou/' target='_blank'>Luis von Ahn</a>, der uns mit seinem <a href='https://en.wikipedia.org/wiki/ESP_game' target='_blank'>ESP Game</a> auf die Idee zu diesem Spiel gebracht hat. Über das Spielprinzip erfährst Du Faszinierendes in seinem Vortrag über <a href='https://youtu.be/tx082gDwGcM' target='_blank'>Human Computation</a>, gehalten bei Google als „TechTalk“ am 26. Juli 2006."
-        ]
       }
     ]
   },
   "contributors": {
     "title": "Mitwirkende",
     "fields": {
+      "leader": "Aktuelle Projektleiterin",
       "informatics": "Institut für Informatik",
       "cis": "Centrum für Informations- und Sprachverarbeitung",
       "art-history": "Institut für Kunstgeschichte",
@@ -120,17 +103,11 @@
       "itg": "IT-Gruppe Geisteswissenschaften"
     }
   },
-  "highscore": {
-    "title": "Bestenliste",
+  "publications": {
+    "title": "Publikationen",
     "fields": {
-      "alltime": "Beste Spieler:innen aller Zeiten",
-      "current": "Beste Spieler:innen im laufenden Monat",
-      "previous": "Beste Spieler:innen im letzten Monat"
-    },
-    "headers": {
-      "name": "Name",
-      "count-taggings": "Anzahl Taggings",
-      "count-gamerounds": "Anzahl Spielrunden"
+      "journals": "Beiträge zu Zeitschriften und Sammelbänden",
+      "theses": "Abschlussarbeiten und Dissertationen"
     }
   },
   "game": {

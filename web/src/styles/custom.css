@@ -44,7 +44,7 @@ span.clip.w100 {
   width: 100%;
 }
 
-.v-footer.v-footer--inset {
+.dark-variant .v-footer.v-footer--inset {
   padding: 0 12px;
 }
 

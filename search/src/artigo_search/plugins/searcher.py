@@ -158,6 +158,7 @@ class Searcher:
                                     Q('match', tags__name=x['query']),
                                     Q('range', tags__count={'gte': 1}),
                                 ],
+                                # TODO: currently not supported
                                 # rank_feature={
                                 #     'field': 'tags.count',
                                 #     'boost': 0.5,
