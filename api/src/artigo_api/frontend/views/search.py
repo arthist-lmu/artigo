@@ -67,6 +67,8 @@ class SearchView(RPCView):
                                 q['value'] = q['value'][1:]
 
                             term.text.query = q['value']
+                        else:
+                            continue
 
                         if mapper.get(field):
                             term.text.field = mapper[field]
