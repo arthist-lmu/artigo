@@ -84,14 +84,9 @@
   },
   "about": {
     "title": "About ARTigo",
-    "texts": [
-      {
-        "header": "Goals of ARTigo",
-        "content": [
-          "Art history studies mainly original artworks, but often their reproductions, too. Today, these reproductions exist in substantial electronic repositories sometimes amounting to several million items. What can we do to retrieve these reproductions preferably on the basis of various criteria? As the possibilities of a computerized search of these reproductions are still very limited we allocate keywords, known as metadata. This is a most time-consuming operation and one would need a great number of staff members to do this job. We would appreciate your contribution to this game. However, we don't only want something from you but we offer you as well entertainment and at the same time training as you get to know quite a lot about the paintings shown here. In addition to that, you will be able to work with the descriptions you gave us."
-        ]
-      }
-    ]
+    "fields": {
+      "summary": "Since 2010, {images} images were annotated with {taggings} tags by {users} players."
+    }
   },
   "contributors": {
     "title": "Contributors",

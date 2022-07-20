@@ -83,6 +83,7 @@ class StatisticsView(APIView):
             'tags': {'n': Tag.objects.count()},
             'users': {'n': CustomUser.objects.count()},
             'creators': {'n': Creator.objects.count()},
+            'taggings': {'n': UserTagging.objects.count()},
             'resources': {'n': Resource.objects.count()},
             'gamerounds': {'n': Gameround.objects.count()},
             'gamesessions': {'n': Gamesession.objects.count()},
@@ -94,7 +95,7 @@ class StatisticsView(APIView):
                 'tag__name'
             ) \
             .annotate(Count('tag')) \
-            .filter(tag__count__gte=10) \
+            .filter(tag__count__gte=25) \
             .order_by('-tag__count') \
             .values_list('tag__name', flat=True)
 

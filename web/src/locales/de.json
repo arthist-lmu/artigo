@@ -83,14 +83,9 @@
   },
   "about": {
     "title": "Über das Projekt",
-    "texts": [
-      {
-        "header": "Ziele von ARTigo",
-        "content": [
-          "Die Kunstgeschichte arbeitet mit den originalen Kunstwerken, häufig aber auch mit Reproduktionen davon. Diese Reproduktionen werden heute in umfangreichen elektronischen Repositorien vorgehalten und können leicht in die Millionen gehen. Was machen wir, um diese Reproduktionen wiederzufinden, und zwar möglichst nach den unterschiedlichsten Kritereien geordnet? Manchmal wollen wir Bilder finden, die einen spezifischen Inhalt oder eine spezifische Form haben. Da die Möglichkeiten, über den Computer direkt auf die Reproduktion zuzugreifen, noch sehr beschränkt sind, vergeben wir Schlagwörter, sogenannte Metadaten. Das ist ein sehr zeitraubendes Geschäft und kann am besten von einer großen Anzahl von Mitarbeiter:innen übernommen werden. Um diesen Beitrag bitten wir Dich mit diesem Spiel. Aber wir wollen nicht nur etwas von Dir, sondern bieten auch etwas: Unterhaltung einerseits, aber auch Belehrung, denn Du wirst eine Menge über die Werke der Künstler:innen lernen, die wir hier vorführen. Und Du wirst dann mit den von Dir gelieferten Beschreibungen auch selbst arbeiten können."
-        ]
-      }
-    ]
+    "fields": {
+      "summary": "Seit 2010 wurden {images} Bilder von {users} Spieler:innen mit {taggings} Schlagwörtern annotiert."
+    }
   },
   "contributors": {
     "title": "Mitwirkende",
