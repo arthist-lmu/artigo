@@ -117,6 +117,10 @@ span.clip.w100 {
   flex: initial !important;
 }
 
+.v-expansion-panels--flat > .v-expansion-panel::before {
+  box-shadow: none !important;
+}
+
 .v-expansion-panel-header > span {
   padding-top: 1px;
 }
