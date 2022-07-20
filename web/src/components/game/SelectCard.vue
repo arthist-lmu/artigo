@@ -4,7 +4,7 @@
     flat
   >
     <v-card-title>
-      {{ $t("game.fields.new-game") }}
+      {{ $t("game.fields.new-game-default") }}
 
       <v-col
         class="pa-0"

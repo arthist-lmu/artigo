@@ -2,7 +2,7 @@
   <v-menu
     v-model="menu"
     min-width="225"
-    max-width="225"
+    max-width="325"
     :close-on-content-click="false"
     offset-y
     bottom
@@ -25,7 +25,16 @@
     <v-list dense>
       <v-list-item @click="goTo('game')">
         <v-list-item-content>
-          {{ $t('game.fields.new-game') }}
+          {{ $t('game.fields.new-game-default') }}
+        </v-list-item-content>
+      </v-list-item>
+
+      <v-list-item
+        v-if="isSearch"
+        @click="goTo('game')"
+      >
+        <v-list-item-content>
+          {{ $t('game.fields.new-game-search') }}
         </v-list-item-content>
       </v-list-item>
     </v-list>
@@ -47,17 +56,26 @@ export default {
   },
   methods: {
     goTo(name) {
-      if (this.isGame) {
-        this.$store.commit('game/updateDialog', { show: true });
-      } else {
-        this.$router.push({ name });
+      const values = { show: false, params: {} };
+      if (this.isSearch) {
+        let { entries } = this.$store.state.search.data;
+        entries = entries.map(({ resource_id }) => resource_id);
+        values.params.resource_inputs = entries;
+        values.params.resource_type = 'custom_resource';
+      } else if (this.isGame) {
+        values.show = true; // force dialog to open
       }
+      this.$store.commit('game/updateDialog', values);
+      this.$router.push({ name });
       this.menu = false;
     },
   },
   computed: {
     isGame() {
       return this.$route.name === 'game';
+    },
+    isSearch() {
+      return this.$route.name === 'search';
     },
   },
 };

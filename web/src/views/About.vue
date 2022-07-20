@@ -26,14 +26,6 @@
 
 <script>
 export default {
-  data() {
-    return {
-
-    };
-  },
-  computed: {
-
-  },
   components: {
     GameDrawer: () => import('@/components/game/Drawer.vue'),
     Contributors: () => import('@/components/Contributors.vue'),

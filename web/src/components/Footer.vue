@@ -1,5 +1,6 @@
 <template>
   <v-footer
+    ref="footer"
     :dark="dark"
     padless
     fixed
@@ -85,6 +86,7 @@ export default {
   },
   data() {
     return {
+      observer: null,
       pages: [
         'imprint',
         'privacy-policy',
@@ -94,6 +96,11 @@ export default {
   methods: {
     goTo(name) {
       this.$router.push({ name });
+    },
+    handleObserver() {
+      const { left } = this.$refs.footer.$el.style;
+      const params = { width: left.replace('px', '') };
+      this.$store.dispatch('utils/setDrawer', params);
     },
   },
   computed: {
@@ -112,6 +119,25 @@ export default {
       const names = ['home', 'game', 'session'];
       return names.includes(this.$route.name);
     },
+  },
+  beforeDestroy() {
+    if (this.observer) {
+      this.observer.disconnect();
+    }
+  },
+  mounted() {
+    const config = {
+      attributes: true,
+      attributeFilter: ['style'],
+    };
+    const callback = () => {
+      this.$nextTick(() => {
+        this.handleObserver();
+      });
+    };
+    const observer = new MutationObserver(callback);
+    observer.observe(this.$refs.footer.$el, config);
+    this.observer = observer;
   },
 };
 </script>

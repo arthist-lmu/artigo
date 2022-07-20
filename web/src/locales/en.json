@@ -114,7 +114,8 @@
   "game": {
     "title": "Play",
     "fields": {
-      "new-game": "New game",
+      "new-game-default": "New game",
+      "new-game-search": "Play with these images",
       "settings": "Settings",
       "basic": {
         "skip": "Skip game round",

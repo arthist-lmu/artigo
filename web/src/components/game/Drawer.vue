@@ -28,7 +28,7 @@
             rounded
             block
           >
-            {{ $t("game.fields.new-game") }}
+            {{ $t("game.fields.new-game-default") }}
           </v-btn>
         </v-col>
       </v-row>
@@ -66,14 +66,6 @@ export default {
     },
   },
   watch: {
-    drawer: {
-      handler(value) {
-        const params = { width: 0 };
-        if (value) params.width = this.width;
-        this.$store.commit('utils/updateDrawer', params);
-      },
-      immediate: true,
-    },
     forceOpen: {
       handler(value) {
         if (value) {

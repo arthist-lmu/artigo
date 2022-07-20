@@ -1,6 +1,6 @@
 <template>
   <v-app-bar
-    :style="getCss"
+    :style="{ left: `${left}px !important` }"
     :dark="dark"
     clipped-left
     flat
@@ -67,13 +67,7 @@ export default {
   },
   computed: {
     left() {
-      if (this.$vuetify.breakpoint.lgAndUp) {
-        return this.$store.state.utils.drawer.width;
-      }
-      return 0;
-    },
-    getCss() {
-      return { left: `${this.left}px !important` };
+      return this.$store.state.utils.drawer.width;
     },
     isSearch() {
       return this.$route.name === 'search';
@@ -82,7 +76,8 @@ export default {
       return this.$vuetify.breakpoint.mobile;
     },
     hasOpacity() {
-      return ['game', 'session'].includes(this.$route.name);
+      const pages = ['game', 'session'];
+      return pages.includes(this.$route.name);
     },
   },
   components: {

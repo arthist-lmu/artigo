@@ -113,7 +113,8 @@
   "game": {
     "title": "Spielen",
     "fields": {
-      "new-game": "Neues Spiel",
+      "new-game-default": "Neues Spiel",
+      "new-game-search": "Spiele mit diesen Bildern",
       "settings": "Einstellungen",
       "basic": {
         "skip": "Spielrunde überspringen",
