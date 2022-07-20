@@ -9,7 +9,7 @@
 <p float="left">
 	<img src="images/game-config.png" width="250" hspace="10" />
 	<img src="images/game.png" width="250" hspace="10" /> 
-	<img src="images/game-result.jpg" width="250" hspace="10" />
+	<img src="images/game-result.png" width="250" hspace="10" />
 </p>
 
 
