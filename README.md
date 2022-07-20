@@ -26,26 +26,26 @@ Copy the contents of `.env.example` to `.env` and adjust the settings.
 1. To import data, `.csv` and `.jsonl` files should be stored in the `./dump` and corresponding `.jpg` files in the `./media` folder.
 
 2. Build and start the container:
-		```sh
-		sudo docker-compose up --build
-		```
+	```sh
+	sudo docker-compose up --build
+	```
 
 3. Install `npm`:
-		```sh
-		sudo docker-compose exec web npm install
-		```
+	```sh
+	sudo docker-compose exec web npm install
+	```
 
 4. Apply necessary Django operations and import fixtures:
-		```sh
-		sudo docker-compose exec api python3 manage.py migrate
-		sudo docker-compose exec api python3 manage.py loaddata sites.json
-		```
+	```sh
+	sudo docker-compose exec api python3 manage.py migrate
+	sudo docker-compose exec api python3 manage.py loaddata sites.json
+	```
 
 5. Import the data into `api` and `search`:
-		```sh
-		sudo docker-compose exec api python3 manage.py import
-		sudo docker-compose exec search python3 -m artigo_search --mode client --task insert
-		```
+	```sh
+	sudo docker-compose exec api python3 manage.py import
+	sudo docker-compose exec search python3 -m artigo_search --mode client --task insert
+	```
 
 
 ## Miscellaneous
