@@ -1,0 +1,13 @@
+.vscode/
+venv/
+/db/
+/opensearch/
+/media/
+/dump/
+/mediafiles/
+/convert/
+/media_input/
+/dump_input/
+.idea/
+dist/
+node_modules/
