@@ -1,14 +1,14 @@
-FROM python:3.8-alpine
+FROM python:3.9
 
-RUN pip install pip --upgrade
 RUN pip install poetry
 
 COPY /api/pyproject.toml /api/poetry.lock /api/
 RUN cd /api; poetry export -f requirements.txt --output requirements.txt --without-hashes
 RUN cd /api; pip install -r requirements.txt
 
-COPY /api /api/
+COPY /api/src/ /api
+COPY plugin.config.json /config.json
 
-COPY /api/docker-entrypoint.sh /docker-entrypoint.sh
-RUN chmod +x /docker-entrypoint.sh
-ENTRYPOINT ["/docker-entrypoint.sh"]
+COPY /api/docker-entrypoint.sh /api/docker-entrypoint.sh
+RUN chmod +x /api/docker-entrypoint.sh
+ENTRYPOINT ["/api/docker-entrypoint.sh"]
