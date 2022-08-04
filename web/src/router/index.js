@@ -63,6 +63,12 @@ const router = new VueRouter({
           meta: { title: 'game.title' },
         },
         {
+          path: 'sessions',
+          name: 'sessions',
+          component: () => import('@/views/Sessions.vue'),
+          meta: { title: 'sessions.title' },
+        },
+        {
           path: 'game',
           name: 'game',
           component: () => import('@/views/Game.vue'),

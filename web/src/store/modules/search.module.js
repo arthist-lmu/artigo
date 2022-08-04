@@ -74,10 +74,9 @@ const search = {
               values = Array.from(values);
             }
             if (values instanceof Array) {
-              urlParams.append(field, values.join(','));
-            } else {
-              urlParams.append(field, values);
+              values = values.join(',');
             }
+            urlParams.append(field, values);
           });
         }
       }
@@ -95,11 +94,13 @@ const search = {
       }
       state.params = params;
     },
-    updateData(state, data) {
-      state.data.total = data.total;
-      state.data.offset = data.offset;
-      state.data.entries = data.entries;
-      state.data.aggregations = data.aggregations;
+    updateData(state, {
+      total, offset, entries, aggregations,
+    }) {
+      state.data.total = total;
+      state.data.offset = offset;
+      state.data.entries = entries;
+      state.data.aggregations = aggregations;
     },
     updateJobId(state, jobId) {
       state.jobId = jobId;

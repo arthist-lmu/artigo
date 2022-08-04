@@ -124,7 +124,7 @@ class SearchView(RPCView):
         if isinstance(params.get('limit'), int):
             grpc_request.limit = params['limit']
         else:
-            grpc_request.limit = 100
+            grpc_request.limit = 96
 
         if isinstance(params.get('offset'), int):
             grpc_request.offset = params['offset']

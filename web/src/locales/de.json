@@ -72,6 +72,14 @@
       "no-results": "Für Deine Suchanfrage konnten keine Ergebnisse gefunden werden."
     }
   },
+  "sessions": {
+    "title": "Spielsitzungen",
+    "fields": {
+      "of": "von",
+      "query": "Nach Spielsitzungen suchen",
+      "no-results": "Es konnten keine Spielsitzungen gefunden werden."
+    }
+  },
   "reconcile": {
     "title": "Metadaten abgleichen",
     "fields": {

@@ -1,8 +1,8 @@
 <template>
   <v-menu
     v-model="menu"
-    min-width="225"
-    max-width="225"
+    min-width="275"
+    max-width="425"
     :close-on-content-click="false"
     offset-y
     bottom
@@ -24,7 +24,7 @@
       <v-list-item v-if="!isAnonymous">
         <v-list-item-content class="justify-center px-4 py-6">
           <div class="mx-auto text-center">
-            <v-avatar color="primary">
+            <v-avatar color="error">
               <span class="white--text text-h5">
                 {{ initials }}
               </span>
@@ -61,14 +61,35 @@
         </v-list-item-content>
       </v-list-item>
 
-      <v-list-item
-        v-if="!isAnonymous"
-        @click="logout"
-      >
-        <v-list-item-content>
-          {{ $t("user.logout.title") }}
-        </v-list-item-content>
-      </v-list-item>
+      <template v-if="!isAnonymous">
+        <v-list-item
+          v-if="data.game_sessions > 0"
+          @click="goTo('sessions')"
+        >
+          <v-list-item-content>
+            {{ $t("sessions.title") }}
+          </v-list-item-content>
+
+          <v-list-item-action>
+            <v-chip
+              class="ml-2"
+              style="cursor: pointer;"
+              outlined
+              small
+            >
+              {{ data.game_sessions }}
+            </v-chip>
+          </v-list-item-action>
+        </v-list-item>
+
+        <v-list-item @click="logout">
+          <v-list-item-content>
+            {{ $t("user.logout.title") }}
+          </v-list-item-content>
+        </v-list-item>
+
+        <v-divider />
+      </template>
 
       <LanguageMenu />
     </v-list>
@@ -107,6 +128,9 @@ export default {
     };
   },
   methods: {
+    goTo(name) {
+      this.$router.push({ name });
+    },
     logout() {
       this.$store.dispatch('user/logout');
     },

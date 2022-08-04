@@ -1,3 +1,5 @@
+import logging
+
 from django.db import models
 from django.db.models import Count
 from django.utils import timezone
@@ -9,6 +11,8 @@ from django.dispatch import receiver
 from rest_framework.authtoken.models import Token
 from frontend.fields import NameField
 from frontend.managers import CustomUserManager, ResourceManager
+
+logger = logging.getLogger(__name__)
 
 
 @receiver(post_save, sender=settings.AUTH_USER_MODEL)
@@ -35,6 +39,21 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
     objects = CustomUserManager()
 
+    @property
+    def taggings(self):
+        return self.taggings.count()
+
+    @property
+    def resources(self):
+        resources = self.taggings.values('resource') \
+            .annotate(count=Count('resource'))
+
+        return len(list(resources))
+
+    @property
+    def game_sessions(self):
+        return self.gamesessions.count()
+    
     def get_username(self):
         return self.username
 
@@ -83,9 +102,15 @@ class Resource(models.Model):
 
     @property
     def tags(self):
-        tags = self.taggings.values('tag').annotate(count=Count('tag'))
+        tags = self.taggings.values('tag') \
+            .annotate(count=Count('tag'))
 
-        return tags.values('tag_id', 'tag__name', 'tag__language', 'count')
+        return tags.values(
+            'tag_id',
+            'tag__name',
+            'tag__language',
+            'count',
+        )
 
 
 class GeneralType(models.Model):
@@ -123,7 +148,12 @@ class ScoreType(GeneralType):
 
 
 class Gamesession(models.Model):
-    user = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, null=True)
+    user = models.ForeignKey(
+        CustomUser,
+        on_delete=models.SET_NULL,
+        related_name='gamesessions',
+        null=True,
+    )
     game_type = models.ForeignKey(GameType, on_delete=models.CASCADE)
     created = models.DateTimeField(editable=False)
     rounds = models.PositiveIntegerField(
@@ -149,7 +179,12 @@ class Gamesession(models.Model):
 
 
 class Gameround(models.Model):
-    user = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, null=True)
+    user = models.ForeignKey(
+        CustomUser,
+        on_delete=models.SET_NULL,
+        related_name='gamerounds',
+        null=True,
+    )
     gamesession = models.ForeignKey(Gamesession, on_delete=models.CASCADE)
     resource = models.ForeignKey(Resource, on_delete=models.CASCADE)
     created = models.DateTimeField(editable=False)
@@ -197,7 +232,11 @@ class Tag(models.Model):
 
 
 class GeneralTagging(models.Model):
-    gameround = models.ForeignKey(Gameround, on_delete=models.CASCADE)
+    gameround = models.ForeignKey(
+        Gameround,
+        on_delete=models.CASCADE,
+        related_name='%(class)ss',
+    )
     tag = models.ForeignKey(Tag, on_delete=models.CASCADE)
 
     class Meta:
@@ -205,7 +244,12 @@ class GeneralTagging(models.Model):
 
 
 class UserTagging(GeneralTagging):
-    user = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, null=True)
+    user = models.ForeignKey(
+        CustomUser,
+        on_delete=models.SET_NULL,
+        related_name='taggings',
+        null=True,
+    )
     resource = models.ForeignKey(
         Resource,
         on_delete=models.CASCADE,
@@ -242,7 +286,11 @@ class TabooTagging(GeneralTagging):
 
 
 class GeneralROI(models.Model):
-    gameround = models.ForeignKey(Gameround, on_delete=models.CASCADE)
+    gameround = models.ForeignKey(
+        Gameround,
+        on_delete=models.CASCADE,
+        related_name='%(class)ss',
+    )
     tag = models.ForeignKey(Tag, on_delete=models.CASCADE, null=True)
     x = models.FloatField(
         default=0,

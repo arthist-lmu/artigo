@@ -1,11 +1,12 @@
 import logging
 
 from itertools import groupby
-from frontend.models import *
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
 from dj_rest_auth.serializers import UserDetailsSerializer
 from dj_rest_auth.registration.serializers import RegisterSerializer
+from frontend.models import *
+from frontend.utils import media_url_to_image
 
 try:
     from allauth.account.adapter import get_adapter
@@ -41,6 +42,15 @@ class CustomUserDetailsSerializer(UserDetailsSerializer):
         if hasattr(get_user_model(), 'is_anonymous'):
             fields.append('is_anonymous')
 
+        if hasattr(get_user_model(), 'taggings'):
+            fields.append('taggings')
+
+        if hasattr(get_user_model(), 'resources'):
+            fields.append('resources')
+
+        if hasattr(get_user_model(), 'game_sessions'):
+            fields.append('game_sessions')
+
         model = get_user_model()
         fields = ('id', *fields)
         read_only_fields = ('email',)
@@ -72,6 +82,14 @@ class CustomRegisterSerializer(RegisterSerializer):
         setup_user_email(request, user, [])
 
         return user
+
+
+class ListSerializer(serializers.ListSerializer):
+    def to_representation(self, data):
+        data = super().to_representation(data)
+
+        return [dict(x) for x in data]
+
 
 
 class ResourceTagListSerializer(serializers.ListSerializer):
@@ -370,6 +388,7 @@ class TagROISerializer(serializers.ModelSerializer):
         )
         list_serializer_class = TagListSerializer
 
+
 class SessionSerializer(serializers.ModelSerializer):
     resource_id = serializers.ReadOnlyField()
     id = serializers.ReadOnlyField(source='tag_id')
@@ -385,3 +404,28 @@ class SessionSerializer(serializers.ModelSerializer):
             'score',
         )
         list_serializer_class = ResourceTagListSerializer
+
+
+class SessionCountSerializer(serializers.ModelSerializer):
+    id = serializers.ReadOnlyField(source='gamesession_id')
+    created = serializers.ReadOnlyField(source='gamesession__created')
+    resources = serializers.ReadOnlyField()
+    annotations = serializers.ReadOnlyField()
+
+    class Meta:
+        model = Gameround
+        fields = (
+            'id',
+            'created',
+            'resources',
+            'annotations',
+        )
+        list_serializer_class = ListSerializer
+
+    def to_representation(self, data):
+        data = super().to_representation(data)
+
+        resource_id = data.pop('resources')[0]
+        data['path'] = media_url_to_image(resource_id)
+
+        return data

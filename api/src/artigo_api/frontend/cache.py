@@ -41,9 +41,10 @@ def resource_tagging_count(**kwargs):
         values = Resource.objects.values('id') \
             .exclude(hash_id__exact='') \
             .annotate(
-                count_roi_tags=Coalesce(Count('rois__tag', distinct=True), 0),
                 count_tags=Coalesce(Count('taggings__tag', distinct=True), 0),
                 count_taggings=Coalesce(Count('taggings__tag'), 0),
+                count_roi_tags=Coalesce(Count('rois__tag', distinct=True), 0),
+                count_roi_taggings=Coalesce(Count('rois__tag'), 0),
             )
 
         timeout = kwargs.get('timeout', 60 * 60 * 24)

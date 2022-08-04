@@ -1,7 +1,7 @@
 <template>
   <v-hover v-slot="{ hover }">
     <v-card
-      :disabled="disabled"
+      :disabled="isDisabled"
       flat
     >
       <v-img

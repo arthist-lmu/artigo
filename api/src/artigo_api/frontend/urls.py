@@ -18,6 +18,7 @@ urlpatterns = [
     path('search/', SearchView.as_view(), name='search'),
     path('scores/', ScoresView.as_view(), name='scores'),
     path('session/', SessionView.as_view(), name='session'),
+    path('sessions/', SessionsView.as_view(), name='sessions'),
     path('statistics/', StatisticsView.as_view(), name='statistics'),
     path('schema/', SpectacularAPIView.as_view(), name='schema'),
     path('schema/swagger-ui/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),

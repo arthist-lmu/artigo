@@ -91,7 +91,7 @@ span.clip.w100 {
   color: rgba(0, 0, 0, 0.87) !important;
 }
 
-.theme--light.dark-variant .v-btn.v-btn--has-bg {
+.theme--light.dark-variant .v-btn.v-btn--has-bg:not(.primary) {
   color: rgba(0, 0, 0, 0.87) !important;
 }
 
@@ -117,7 +117,9 @@ span.clip.w100 {
   flex: initial !important;
 }
 
-.v-expansion-panels--flat > .v-expansion-panel::before {
+.v-expansion-panels--flat > .v-expansion-panel::before,
+.v-sheet.v-alert:not(.v-sheet--outlined),
+.v-sheet.v-card--flat {
   box-shadow: none !important;
 }
 

@@ -73,6 +73,14 @@
       "no-results": "No results could be found for your search query."
     }
   },
+  "sessions": {
+    "title": "Game sessions",
+    "fields": {
+      "of": "of",
+      "query": "Search for game sessions",
+      "no-results": "No game sessions could be found."
+    }
+  },
   "reconcile": {
     "title": "Reconcile metadata",
     "fields": {

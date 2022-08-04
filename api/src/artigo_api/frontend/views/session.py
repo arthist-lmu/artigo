@@ -15,7 +15,7 @@ from frontend.models import (
     UserROI,
     UserTagging,
 )
-from frontend.serializers import SessionSerializer
+from frontend.serializers import SessionSerializer as Serializer
 from .utils import ResourceViewHelper
 
 logger = logging.getLogger(__name__)
@@ -40,15 +40,15 @@ class SessionView(APIView):
         # if gamesession.user != request.user:
         #     raise ParseError('user_access_denied')
 
-        gamerounds = Gameround.objects.filter(gamesession=gamesession)
-        resource_ids = gamerounds.values_list('resource_id', flat=True)
-
         if gamesession.game_type.name == 'tagging':
             taggings = UserTagging.objects
         elif gamesession.game_type.name == 'roi':
             taggings = UserROI.objects
         else:
             raise ParseError('game_type_not_implemented')
+
+        gamerounds = Gameround.objects.filter(gamesession=gamesession)
+        resource_ids = gamerounds.values_list('resource_id', flat=True)
 
         taggings = taggings.filter(gameround__in=gamerounds) \
             .values(
@@ -60,8 +60,8 @@ class SessionView(APIView):
 
         session = ResourceView()(resource_ids)
 
-        for x in SessionSerializer(taggings, many=True).data:
-            session[str(x['resource_id'])].update(x)
+        for tagging in Serializer(taggings, many=True).data:
+            session[str(tagging['resource_id'])].update(tagging)
 
         return Response(session.values())
 

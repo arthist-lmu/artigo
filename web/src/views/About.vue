@@ -67,11 +67,6 @@ export default {
   },
   mounted() {
     this.$store.dispatch('statistics/get');
-    this.$nextTick(() => {
-      const { filler, summary } = this.$refs;
-      const { bottom } = summary.getBoundingClientRect();
-      filler.style.height = `${bottom - 60}px`;
-    });
   },
   components: {
     GameDrawer: () => import('@/components/game/Drawer.vue'),

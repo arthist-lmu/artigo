@@ -104,40 +104,41 @@
         </v-icon>
       </v-btn>
 
-      <v-divider
-        v-if="showExtended"
-        class="mx-4"
-        vertical
-      />
-
-      <span v-if="showExtended">
-        <v-btn
-          @click.stop="previousPage"
-          class="mr-1"
-          :disabled="page <= 1"
-          icon
-        >
-          <v-icon>
-            mdi-chevron-left
-          </v-icon>
-        </v-btn>
+      <template v-if="total > 0 && showExtended">
+        <v-divider
+          class="mx-4"
+          vertical
+        />
 
         <span>
-          {{ offset + 1 }}–{{ offset + entries.length }}
-          {{ $t('search.fields.of') }} {{ total }}
-        </span>
+          <v-btn
+            @click.stop="previousPage"
+            class="mr-1"
+            :disabled="page <= 1"
+            icon
+          >
+            <v-icon>
+              mdi-chevron-left
+            </v-icon>
+          </v-btn>
 
-        <v-btn
-          @click.stop="nextPage"
-          class="ml-1 mr-n3"
-          :disabled="page >= numberOfPages"
-          icon
-        >
-          <v-icon>
-            mdi-chevron-right
-          </v-icon>
-        </v-btn>
-      </span>
+          <span>
+            {{ offset + 1 }}–{{ offset + entries.length }}
+            {{ $t('search.fields.of') }} {{ total }}
+          </span>
+
+          <v-btn
+            @click.stop="nextPage"
+            class="ml-1 mr-n3"
+            :disabled="page >= numberOfPages"
+            icon
+          >
+            <v-icon>
+              mdi-chevron-right
+            </v-icon>
+          </v-btn>
+        </span>
+      </template>
     </template>
   </v-combobox>
 </template>

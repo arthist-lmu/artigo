@@ -191,7 +191,7 @@ export default {
       deep: true,
     },
   },
-  mounted() {
+  created() {
     this.$store.dispatch('statistics/get');
   },
   components: {
