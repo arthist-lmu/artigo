@@ -1,15 +1,14 @@
-FROM python:3.9-alpine
+FROM python:3.9
 
-COPY ./search/config.json /config.json
-RUN pip install pip --upgrade
-RUN pip install poetry
-
+RUN pip install --no-cache-dir poetry
 COPY ./search/pyproject.toml ./search/poetry.lock /
 RUN poetry export -f requirements.txt --output requirements.txt --without-hashes
-RUN pip install -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
 
 COPY ./search/ /search/
 RUN pip install /search
+
+COPY ./search/config.json /config.json
 
 COPY ./search/docker-entrypoint.sh /docker-entrypoint.sh
 RUN chmod +x /docker-entrypoint.sh
