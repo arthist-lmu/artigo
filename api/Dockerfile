@@ -1,26 +1,24 @@
-FROM ubuntu:20.04
+FROM python:3.9
 
-RUN DEBIAN_FRONTEND=noninteractive apt-get update --fix-missing -y
-RUN DEBIAN_FRONTEND=noninteractive apt-get upgrade -y
-RUN DEBIAN_FRONTEND=noninteractive apt-get install python3-pip npm libpq-dev -y
-
-RUN pip install pip --upgrade
-RUN pip install poetry
-RUN pip install pytest pytest-cov
+RUN pip install --no-cache-dir poetry
 
 COPY /api/pyproject.toml /api/poetry.lock /api/
-RUN cd /api; poetry export -f requirements.txt --output requirements.txt --without-hashes
-RUN cd /api; pip install -r requirements.txt
-
 COPY /search/pyproject.toml /search/poetry.lock /search/
+
+RUN cd /api; poetry export -f requirements.txt --output requirements.txt --without-hashes
+RUN cd /api; pip install --no-cache-dir -r requirements.txt
+
 RUN cd /search; poetry export -f requirements.txt --output requirements.txt  --without-hashes
-RUN cd /search; pip install -r requirements.txt
+RUN cd /search; pip install --no-cache-dir -r requirements.txt
 
-COPY /api /api/
 COPY /search /search/
-
 RUN pip install /search
 
-COPY /api/docker-entrypoint.sh /docker-entrypoint.sh
-RUN chmod +x /docker-entrypoint.sh
-ENTRYPOINT ["/docker-entrypoint.sh"]
+COPY /api /api
+COPY plugin.config.json /config.json
+ENV PYTHONPATH=/api/src/
+WORKDIR /api/src/artigo_api
+
+COPY /api/docker-entrypoint.sh /api/docker-entrypoint.sh
+RUN chmod +x /api/docker-entrypoint.sh
+ENTRYPOINT ["/api/docker-entrypoint.sh"]

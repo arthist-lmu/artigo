@@ -1,16 +1,15 @@
-FROM python:3.8
+FROM python:3.9
 
-RUN pip install pip --upgrade
-RUN pip install poetry
-RUN pip install pytest pytest-cov
-
-COPY pyproject.toml poetry.lock ./
+RUN pip install --no-cache-dir poetry
+COPY ./search/pyproject.toml ./search/poetry.lock /
 RUN poetry export -f requirements.txt --output requirements.txt --without-hashes
-RUN pip install -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
 
-COPY . /search/
+COPY ./search/ /search/
 RUN pip install /search
 
-COPY /docker-entrypoint.sh /docker-entrypoint.sh
+COPY ./search/config.json /config.json
+
+COPY ./search/docker-entrypoint.sh /docker-entrypoint.sh
 RUN chmod +x /docker-entrypoint.sh
 ENTRYPOINT ["/docker-entrypoint.sh"]

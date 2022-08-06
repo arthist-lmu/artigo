@@ -52,17 +52,11 @@ services:
     image: artigo/search
     restart: always
     build:
-      context: ./search
+      context: .
     volumes:
       - type: bind
         source: ./dump/
         target: /dump
-      - type: bind
-        source: ./search/
-        target: /search
-      - type: bind
-        source: ./search/config.json
-        target: /config.json
     working_dir: /search/src/artigo_search
     environment:
       - POETRY_VIRTUALENVS_CREATE=False
