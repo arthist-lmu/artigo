@@ -8,7 +8,7 @@ on:
 
 env:
   REGISTRY: https://hub.docker.com
-  IMAGE_NAME: arthistlmu/artigo_web
+  IMAGE_NAME: arthistlmu/artigo
 
 jobs:
   build-and-push-image:
