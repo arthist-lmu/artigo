@@ -15,6 +15,7 @@
 **/node_modules
 **/__pycache__
 **/Dockerfile
+**/celerybeat-schedule.db
 
 *.md
 docker-compose.yml
@@ -22,5 +23,5 @@ docker-compose.yml
 *.db
 *.txt
 
-.env
-.coveragerc
+**/.env
+**/.coveragerc
