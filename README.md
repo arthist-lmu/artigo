@@ -13,6 +13,8 @@
 </p>
 
 
+[![Web Docker](https://github.com/arthist-lmu/artigo/actions/workflows/docker-frontend-image.yml/badge.svg)](https://github.com/arthist-lmu/artigo/actions/workflows/docker-frontend-image.yml)
+
 ## Development setup
 
 ### Requirements
