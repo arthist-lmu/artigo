@@ -13,7 +13,9 @@
 </p>
 
 
-[![Web Docker](https://github.com/arthist-lmu/artigo/actions/workflows/docker-frontend-image.yml/badge.svg)](https://github.com/arthist-lmu/artigo/actions/workflows/docker-frontend-image.yml)
+[![Docker Web Build](https://github.com/arthist-lmu/artigo/actions/workflows/docker-web.yml/badge.svg)](https://github.com/arthist-lmu/artigo/actions/workflows/docker-web.yml)
+[![Docker Api Build](https://github.com/arthist-lmu/artigo/actions/workflows/docker-api.yml/badge.svg)](https://github.com/arthist-lmu/artigo/actions/workflows/docker-api.yml)
+[![Docker Search Build](https://github.com/arthist-lmu/artigo/actions/workflows/docker-search.yml/badge.svg)](https://github.com/arthist-lmu/artigo/actions/workflows/docker-search.yml)
 
 ## Development setup
 
