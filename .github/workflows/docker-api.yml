@@ -1,4 +1,4 @@
-name: Docker Web Build
+name: Docker Api Build
 
 on:
   push:
