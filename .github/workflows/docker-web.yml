@@ -1,5 +1,4 @@
-
-name: Build and publish frontend Docker image
+name: Docker Web Build
 
 on:
   push:
