@@ -8,14 +8,12 @@ services:
 
   memcached:
     image: memcached:1
-    restart: always
     command: -I 32m
     labels:
       com.centurylinklabs.watchtower.enable: "true"
 
   opensearch:
-    image: opensearchproject/opensearch:latest
-    restart: always
+    image: opensearchproject/opensearch:2
     environment:
       - node.name=os01
       - discovery.seed_hosts=os01
@@ -38,7 +36,6 @@ services:
 
   db:
     image: postgres:14
-    restart: always
     volumes:
       - ./db/:/var/lib/postgresql/data
     environment:
@@ -50,7 +47,6 @@ services:
 
   search:
     image: artigo/search
-    restart: always
     build:
       context: .
     volumes:
@@ -68,7 +64,6 @@ services:
 
   api:
     image: artigo/api
-    restart: always
     build:
       context: .
       dockerfile: ./api/Dockerfile
@@ -100,7 +95,6 @@ services:
 
   web:
     image: artigo/web
-    restart: always
     build:
       context: .
       dockerfile: ./web/Dockerfile
