@@ -61,7 +61,7 @@ services:
       com.centurylinklabs.watchtower.enable: "true"
 
   api:
-    image: arthistlmu/artigo:master
+    image: arthistlmu/artigo_api:master
     volumes:
       - type: bind
         source: ./media/
