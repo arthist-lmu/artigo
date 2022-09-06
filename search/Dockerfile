@@ -11,5 +11,4 @@ RUN pip install /search
 COPY ./search/config.json /config.json
 
 COPY ./search/docker-entrypoint.sh /docker-entrypoint.sh
-RUN chmod +x /docker-entrypoint.sh
 ENTRYPOINT ["/docker-entrypoint.sh"]

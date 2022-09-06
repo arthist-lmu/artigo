@@ -20,5 +20,4 @@ ENV PYTHONPATH=/api/src/
 WORKDIR /api/src/artigo_api
 
 COPY /api/docker-entrypoint.sh /api/docker-entrypoint.sh
-RUN chmod +x /api/docker-entrypoint.sh
 ENTRYPOINT ["/api/docker-entrypoint.sh"]
