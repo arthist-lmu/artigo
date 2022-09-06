@@ -1,0 +1,102 @@
+version: "3.2"
+
+services:
+  redisai:
+    image: redislabs/redisai:edge-cpu-bionic
+    labels:
+      com.centurylinklabs.watchtower.enable: "true"
+
+  memcached:
+    image: memcached:1
+    command: -I 32m
+    labels:
+      com.centurylinklabs.watchtower.enable: "true"
+
+  opensearch:
+    image: opensearchproject/opensearch:2
+    environment:
+      - node.name=os01
+      - discovery.seed_hosts=os01
+      - cluster.initial_master_nodes=os01
+      - "OPENSEARCH_JAVA_OPTS=-Xms512m -Xmx512m"
+      - bootstrap.memory_lock=true
+      - network.host=0.0.0.0
+    volumes:
+      - ./search/config/opensearch.yml:/usr/share/opensearch/config/opensearch.yml
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+      nofile:
+        soft: 65536
+        hard: 65536
+    labels:
+      com.centurylinklabs.watchtower.enable: "true"
+
+  db:
+    image: postgres:14
+    volumes:
+      - ./db/:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=artigo
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    labels:
+      com.centurylinklabs.watchtower.enable: "true"
+
+  search:
+    image: arthistlmu/artigo_search:master
+    volumes:
+      - type: bind
+        source: ./dump/
+        target: /dump
+    working_dir: /search/src/artigo_search
+    environment:
+      - POETRY_VIRTUALENVS_CREATE=False
+      - PYTHONPATH=/search/src/
+    depends_on:
+      - api
+      - redisai
+
+  api:
+    image: arthistlmu/artigo:master
+    volumes:
+      - type: bind
+        source: ./media/
+        target: /media
+      - type: bind
+        source: ./dump/
+        target: /dump
+      - type: bind
+        source: ./plugin.config.json
+        target: /config.json
+    working_dir: /api/src/artigo_api
+    environment:
+      - POETRY_VIRTUALENVS_CREATE=False
+      - PYTHONPATH=/api/src/
+    depends_on:
+      - db
+      - redisai
+      - memcached
+    env_file:
+      - ./.env
+    ports:
+      - "8000:8000"
+
+  web:
+    image: arthistlmu/artigo:master
+#    build:
+#      context: .
+#      dockerfile: ./web/Dockerfile
+#    volumes:
+#      - type: bind
+#        source: ./plugin.config.json
+#        target: /config.json
+#    working_dir: /web
+    depends_on:
+      - api
+    env_file:
+      - ./.env
+    ports:
+      - "8080:80"
+      - "8081:8080"
