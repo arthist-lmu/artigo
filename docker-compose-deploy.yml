@@ -1,4 +1,4 @@
-version: "3.2"
+version: "3"
 
 services:
   redisai:
@@ -36,7 +36,7 @@ services:
   db:
     image: postgres:14
     volumes:
-      - ./db/:/var/lib/postgresql/data
+      - db_data:/var/lib/postgresql/data
     environment:
       - POSTGRES_DB=artigo
       - POSTGRES_USER=postgres
@@ -57,6 +57,8 @@ services:
     depends_on:
       - api
       - redisai
+    labels:
+      com.centurylinklabs.watchtower.enable: "true"
 
   api:
     image: arthistlmu/artigo:master
@@ -67,9 +69,6 @@ services:
       - type: bind
         source: ./dump/
         target: /dump
-      - type: bind
-        source: ./plugin.config.json
-        target: /config.json
     working_dir: /api/src/artigo_api
     environment:
       - POETRY_VIRTUALENVS_CREATE=False
@@ -82,21 +81,20 @@ services:
       - ./.env
     ports:
       - "8000:8000"
+    labels:
+      com.centurylinklabs.watchtower.enable: "true"
 
   web:
     image: arthistlmu/artigo:master
-#    build:
-#      context: .
-#      dockerfile: ./web/Dockerfile
-#    volumes:
-#      - type: bind
-#        source: ./plugin.config.json
-#        target: /config.json
-#    working_dir: /web
     depends_on:
       - api
     env_file:
       - ./.env
     ports:
       - "8080:80"
-      - "8081:8080"
+    labels:
+      com.centurylinklabs.watchtower.enable: "true"
+
+
+volumes:
+  db_data:
