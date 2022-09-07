@@ -384,7 +384,7 @@ test = ["mock", "pytest (>=3.0)", "pytest-cov", "pytest-django", "pytest-runner"
 
 [[package]]
 name = "drf-spectacular"
-version = "0.22.1"
+version = "0.23.1"
 description = "Sane and flexible OpenAPI 3 schema generation for Django REST framework"
 category = "main"
 optional = false
@@ -1104,7 +1104,7 @@ testing = ["func-timeout", "jaraco.itertools", "pytest (>=6)", "pytest-black (>=
 [metadata]
 lock-version = "1.1"
 python-versions = ">=3.8,<3.10"
-content-hash = "ab2d607858c291b896cf1943aaee935a61721abb733291fb4ace6033cc7f8206"
+content-hash = "438ca1d3faeb455e1993bdc508381a99f66e27f1e0c828b0c4e2d45dea79bba6"
 
 [metadata.files]
 amqp = [
@@ -1383,8 +1383,8 @@ drf-jwt = [
     {file = "drf_jwt-1.19.2-py2.py3-none-any.whl", hash = "sha256:63c3d4ed61a1013958cd63416e2d5c84467d8ae3e6e1be44b1fb58743dbd1582"},
 ]
 drf-spectacular = [
-    {file = "drf-spectacular-0.22.1.tar.gz", hash = "sha256:866e16ddaae167a1234c76cd8c351161373551db994ce9665b347b32d5daf38b"},
-    {file = "drf_spectacular-0.22.1-py3-none-any.whl", hash = "sha256:17ac5e31e5d6150dd5fa10843b429202f4f38069202acc44394cc5a771de63d9"},
+    {file = "drf-spectacular-0.23.1.tar.gz", hash = "sha256:d1724da1fd4ae99d66333b1c8530f3c51788d87b380f5951830bf8405f234120"},
+    {file = "drf_spectacular-0.23.1-py3-none-any.whl", hash = "sha256:2e42ae16717a5c3b2ae8632ac2b92f7eeb7b4fb9a941bc7879a92343e50ddeb6"},
 ]
 flake8 = [
     {file = "flake8-4.0.1-py2.py3-none-any.whl", hash = "sha256:479b1304f72536a55948cb40a32dce8bb0ffe3501e26eaf292c7e60eb5e0428d"},
