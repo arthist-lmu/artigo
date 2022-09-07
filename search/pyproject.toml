@@ -21,7 +21,7 @@ wheel = "^0.37.1"
 black = "^22.1"
 flake8 = "^4.0.1"
 isort = "^5.5.2"
-mypy-protobuf = "^3.2"
+mypy-protobuf = "^3.3"
 
 [tool.black]
 line-length = 120
