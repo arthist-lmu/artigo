@@ -778,19 +778,20 @@ Pygments = "*"
 
 [[package]]
 name = "PyJWT"
-version = "2.4.0"
+version = "2.5.0"
 description = "JSON Web Token implementation in Python"
 category = "main"
 optional = false
-python-versions = ">=3.6"
+python-versions = ">=3.7"
 
 [package.dependencies]
 cryptography = {version = ">=3.3.1", optional = true, markers = "extra == \"crypto\""}
+types-cryptography = {version = ">=3.3.21", optional = true, markers = "extra == \"crypto\""}
 
 [package.extras]
-crypto = ["cryptography (>=3.3.1)"]
-dev = ["coverage[toml] (==5.0.4)", "cryptography (>=3.3.1)", "mypy", "pre-commit", "pytest (>=6.0.0,<7.0.0)", "sphinx", "sphinx-rtd-theme", "zope.interface"]
-docs = ["sphinx", "sphinx-rtd-theme", "zope.interface"]
+crypto = ["cryptography (>=3.3.1)", "types-cryptography (>=3.3.21)"]
+dev = ["coverage[toml] (==5.0.4)", "cryptography (>=3.3.1)", "pre-commit", "pytest (>=6.0.0,<7.0.0)", "sphinx (>=4.5.0,<5.0.0)", "sphinx-rtd-theme", "types-cryptography (>=3.3.21)", "zope.interface"]
+docs = ["sphinx (>=4.5.0,<5.0.0)", "sphinx-rtd-theme", "zope.interface"]
 tests = ["coverage[toml] (==5.0.4)", "pytest (>=6.0.0,<7.0.0)"]
 
 [[package]]
@@ -1029,6 +1030,14 @@ slack = ["slack-sdk"]
 telegram = ["requests"]
 
 [[package]]
+name = "types-cryptography"
+version = "3.3.23"
+description = "Typing stubs for cryptography"
+category = "main"
+optional = false
+python-versions = "*"
+
+[[package]]
 name = "typing-extensions"
 version = "4.3.0"
 description = "Backported and Experimental Type Hints for Python 3.7+"
@@ -1104,7 +1113,7 @@ testing = ["func-timeout", "jaraco.itertools", "pytest (>=6)", "pytest-black (>=
 [metadata]
 lock-version = "1.1"
 python-versions = ">=3.8,<3.10"
-content-hash = "b8ed69557e290e50555c91958b9c90ab109727ee55c3c5d32ac7d11b878e4625"
+content-hash = "8304cfe76e9788a35990fd79b487ee5a0d7d4b67a4ad7938f2e8890d7c352f88"
 
 [metadata.files]
 amqp = [
@@ -1774,8 +1783,8 @@ pygments-pprint-sql = [
     {file = "pygments-pprint-sql-0.1.0.tar.gz", hash = "sha256:741dc47408ea7b1279b3272f4deb10074ea952a94418b6490f20ed187beba498"},
 ]
 PyJWT = [
-    {file = "PyJWT-2.4.0-py3-none-any.whl", hash = "sha256:72d1d253f32dbd4f5c88eaf1fdc62f3a19f676ccbadb9dbc5d07e951b2b26daf"},
-    {file = "PyJWT-2.4.0.tar.gz", hash = "sha256:d42908208c699b3b973cbeb01a969ba6a96c821eefb1c5bfe4c390c01d67abba"},
+    {file = "PyJWT-2.5.0-py3-none-any.whl", hash = "sha256:8d82e7087868e94dd8d7d418e5088ce64f7daab4b36db654cbaedb46f9d1ca80"},
+    {file = "PyJWT-2.5.0.tar.gz", hash = "sha256:e77ab89480905d86998442ac5788f35333fa85f65047a534adc38edf3c88fc3b"},
 ]
 pymemcache = [
     {file = "pymemcache-3.5.2-py2.py3-none-any.whl", hash = "sha256:3fca0215845d7b2ecd5f4c627fcf4ce2345a703a897b7e116380115b5a197be2"},
@@ -1909,6 +1918,10 @@ tomli = [
 tqdm = [
     {file = "tqdm-4.64.1-py2.py3-none-any.whl", hash = "sha256:6fee160d6ffcd1b1c68c65f14c829c22832bc401726335ce92c52d395944a6a1"},
     {file = "tqdm-4.64.1.tar.gz", hash = "sha256:5f4f682a004951c1b450bc753c710e9280c5746ce6ffedee253ddbcbf54cf1e4"},
+]
+types-cryptography = [
+    {file = "types-cryptography-3.3.23.tar.gz", hash = "sha256:b85c45fd4d3d92e8b18e9a5ee2da84517e8fff658e3ef5755c885b1c2a27c1fe"},
+    {file = "types_cryptography-3.3.23-py3-none-any.whl", hash = "sha256:913b3e66a502edbf4bfc3bb45e33ab476040c56942164a7ff37bd1f0ef8ef783"},
 ]
 typing-extensions = [
     {file = "typing_extensions-4.3.0-py3-none-any.whl", hash = "sha256:25642c956049920a5aa49edcdd6ab1e06d7e5d467fc00e0506c44ac86fbfca02"},
