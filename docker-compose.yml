@@ -3,14 +3,10 @@ version: "3.2"
 services:
   redisai:
     image: redislabs/redisai:edge-cpu-bionic
-    labels:
-      com.centurylinklabs.watchtower.enable: "true"
 
   memcached:
     image: memcached:1
     command: -I 32m
-    labels:
-      com.centurylinklabs.watchtower.enable: "true"
 
   opensearch:
     image: opensearchproject/opensearch:2
@@ -31,8 +27,6 @@ services:
       nofile:
         soft: 65536
         hard: 65536
-    labels:
-      com.centurylinklabs.watchtower.enable: "true"
 
   db:
     image: postgres:14
@@ -42,17 +36,19 @@ services:
       - POSTGRES_DB=artigo
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
-    labels:
-      com.centurylinklabs.watchtower.enable: "true"
 
   search:
     image: artigo/search
     build:
       context: .
+      dockerfile: ./search/Dockerfile
     volumes:
       - type: bind
         source: ./dump/
         target: /dump
+      - type: bind
+        source: ./search/
+        target: /search
     working_dir: /search/src/artigo_search
     environment:
       - POETRY_VIRTUALENVS_CREATE=False

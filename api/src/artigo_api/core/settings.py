@@ -8,6 +8,7 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 
 import os
 import environ
+import logging
 
 from datetime import timedelta
 
@@ -36,6 +37,7 @@ try:
 except:
     API = 'http://localhost:8000'
     API_URL = API
+    logging.warning("Running with localhost API configuration")
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -115,7 +117,7 @@ try:
         f'https://{env("VUE_APP_API")}'
     )
 except:
-    pass
+    logging.warning("Running with localhost Allowed Hosts, CORS and CSRF configuration")
 
 ROOT_URLCONF = 'core.urls'
 
