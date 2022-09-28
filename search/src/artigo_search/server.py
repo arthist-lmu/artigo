@@ -360,6 +360,6 @@ class Server:
             while True:
                 n_jobs = len(self.commune.futures)
                 logger.info(f'[Server] Number of jobs: {n_jobs}')
-                time.sleep(10)
+                time.sleep(1000)
         except KeyboardInterrupt:
             self.server.stop(0)
