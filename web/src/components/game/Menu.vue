@@ -23,7 +23,7 @@
     </template>
 
     <v-list dense>
-      <v-list-item @click="goTo('game')">
+      <v-list-item @click="goToGame()">
         <v-list-item-content>
           {{ $t('game.fields.new-game-default') }}
         </v-list-item-content>
@@ -31,7 +31,7 @@
 
       <v-list-item
         v-if="isSearch"
-        @click="goTo('game')"
+        @click="goToGame()"
       >
         <v-list-item-content>
           {{ $t('game.fields.new-game-search') }}
@@ -55,7 +55,7 @@ export default {
     };
   },
   methods: {
-    goTo(name) {
+    goToGame() {
       const values = { show: false, params: {} };
       if (this.isSearch) {
         let { entries } = this.$store.state.search.data;
@@ -66,7 +66,7 @@ export default {
         values.show = true; // force dialog to open
       }
       this.$store.commit('game/updateDialog', values);
-      this.$router.push({ name });
+      this.$router.push({ name: 'game' });
       this.menu = false;
     },
   },

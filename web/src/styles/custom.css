@@ -44,8 +44,12 @@ span.clip.w100 {
   width: 100%;
 }
 
-.dark-variant .v-footer.v-footer--inset {
+.v-footer.v-footer--inset.theme--dark  {
   padding: 0 12px;
+}
+
+.v-footer.v-footer--inset:not(.theme--dark ) {
+  background-color: rgb(247, 248, 251);
 }
 
 .v-toolbar__content .v-btn.v-btn--icon.v-size--default {
@@ -53,7 +57,7 @@ span.clip.w100 {
   width: 36px !important;
 }
 
-.v-autocomplete.theme--light.primary--text .v-input__append-inner {
+.theme--light.v-autocomplete.primary--text .v-input__append-inner {
   color: rgba(0, 0, 0, 0.87) !important;
 }
 
@@ -91,16 +95,16 @@ span.clip.w100 {
   color: rgba(0, 0, 0, 0.87) !important;
 }
 
-.theme--light.dark-variant .v-btn.v-btn--has-bg:not(.primary) {
-  color: rgba(0, 0, 0, 0.87) !important;
-}
-
 .v-btn:not(.v-btn--round):not(.v-btn--block).v-size--default {
   min-width: 125px !important;
 }
 
 .v-btn.v-size--default {
   font-size: 1rem !important;
+}
+
+.dark-variant .v-btn.v-btn--has-bg:not(.primary) {
+  color: rgba(0, 0, 0, 0.87) !important;
 }
 
 .v-select.v-select--is-menu-active .v-input__icon--append .v-icon {

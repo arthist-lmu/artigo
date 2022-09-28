@@ -69,7 +69,7 @@
           cols="10"
         >
           <v-btn
-            @click="darken"
+            @click="goToGame()"
             outlined
             x-large
             rounded
@@ -145,6 +145,11 @@ export default {
           this.overlay = false;
         });
       }, 2000);
+    },
+    goToGame() {
+      const values = { show: true, params: {} };
+      this.$store.commit('game/updateDialog', values);
+      this.$router.push({ name: 'game' });
     },
   },
   computed: {

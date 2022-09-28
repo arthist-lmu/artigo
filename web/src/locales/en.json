@@ -238,7 +238,7 @@
       "filter-tags": "Filter by assigned tags"
     }
   },
-  "error": {
+  "messages": {
     "unknown_error": "An unknown error occurred. Please try again.",
     "enter_a_valid_email_address": "Please enter a valid e-mail address.",
     "unable_to_log_in_with_provided_credentials": "Please check your credentials.",

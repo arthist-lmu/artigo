@@ -67,6 +67,7 @@ export default {
   },
   mounted() {
     this.$store.dispatch('statistics/get');
+    window.scrollTo(0, 0);
   },
   components: {
     GameDrawer: () => import('@/components/game/Drawer.vue'),
