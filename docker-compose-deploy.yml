@@ -2,7 +2,7 @@ version: "3"
 
 services:
   redisai:
-    image: redislabs/redisai:edge-cpu-bionic
+    image: redis:latest
     labels:
       com.centurylinklabs.watchtower.enable: "true"
 
