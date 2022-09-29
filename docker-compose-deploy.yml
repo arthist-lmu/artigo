@@ -95,6 +95,5 @@ services:
     labels:
       com.centurylinklabs.watchtower.enable: "true"
 
-
 volumes:
   db_data:

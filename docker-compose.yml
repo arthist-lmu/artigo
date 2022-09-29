@@ -2,7 +2,7 @@ version: "3.2"
 
 services:
   redisai:
-    image: redislabs/redisai:edge-cpu-bionic
+    image: redis:latest
 
   memcached:
     image: memcached:1
@@ -41,7 +41,7 @@ services:
     image: artigo/search
     build:
       context: .
-      dockerfile: ./search/Dockerfile
+      dockerfile: ./search/Dockerfile.dev
     volumes:
       - type: bind
         source: ./dump/
@@ -62,7 +62,7 @@ services:
     image: artigo/api
     build:
       context: .
-      dockerfile: ./api/Dockerfile
+      dockerfile: ./api/Dockerfile.dev
     volumes:
       - type: bind
         source: ./media/
