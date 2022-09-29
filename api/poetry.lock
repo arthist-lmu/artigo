@@ -1109,7 +1109,7 @@ testing = ["func-timeout", "jaraco.itertools", "pytest (>=6)", "pytest-black (>=
 [metadata]
 lock-version = "1.1"
 python-versions = ">=3.8,<3.10"
-content-hash = "b8ed69557e290e50555c91958b9c90ab109727ee55c3c5d32ac7d11b878e4625"
+content-hash = "8304cfe76e9788a35990fd79b487ee5a0d7d4b67a4ad7938f2e8890d7c352f88"
 
 [metadata.files]
 amqp = [
