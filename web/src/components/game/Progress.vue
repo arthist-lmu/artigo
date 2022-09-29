@@ -44,6 +44,6 @@ export default {
 <style scoped>
 .v-progress-linear {
   position: absolute;
-  z-index: 99;
+  z-index: 4;
 }
 </style>
