@@ -48,8 +48,8 @@ def main():
         level = logging.ERROR
 
     logging.basicConfig(
-        format='%(asctime)s %(levelname)s: %(message)s', 
-        datefmt='%d-%m-%Y %H:%M:%S', level=level
+        format='[%(asctime)s][%(levelname)s] %(message)s', 
+        datefmt='%Y-%m-%dT%H:%M:%S', level=level
     )
 
     if args.config is not None:

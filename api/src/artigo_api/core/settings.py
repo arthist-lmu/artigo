@@ -12,10 +12,8 @@ import logging
 
 from datetime import timedelta
 
-# Use django-environ config
-env = environ.Env(
-    DEBUG=(bool, False)
-)
+logger = logging.getLogger(__name__)
+env = environ.Env(DEBUG=(bool, False))
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
@@ -37,7 +35,8 @@ try:
 except:
     API = 'http://localhost:8000'
     API_URL = API
-    logging.warning("Running with localhost API configuration")
+
+    logger.warning('Running with localhost API configuration')
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -83,15 +82,6 @@ MIDDLEWARE = [
 
 ALLOWED_HOSTS = [
     '127.0.0.1',
-    'localhost',
-]
-
-CORS_ALLOW_CREDENTIALS = True
-
-CORS_ALLOWED_ORIGINS = [
-    'http://localhost',
-    'http://localhost:8080',
-    'http://localhost:8081',
 ]
 
 # CSRF_USE_SESSIONS = False
@@ -101,23 +91,38 @@ CORS_ALLOWED_ORIGINS = [
 # Should be true in production
 # SESSION_COOKIE_SECURE = False
 
-CSRF_TRUSTED_ORIGINS = [
-    'http://localhost',
-    'http://localhost:8080',
-    'http://localhost:8081',
-]
+CORS_ALLOW_CREDENTIALS = True
+
+CORS_ALLOWED_ORIGINS = []
+CSRF_TRUSTED_ORIGINS = []
 
 try:
     ALLOWED_HOSTS.append(env('VUE_APP_API'))
+
     CORS_ALLOWED_ORIGINS.extend([
         f'https://{env("VUE_APP_API")}',
         f'https://{env("VUE_APP_FRONTEND")}',
     ])
-    CSRF_TRUSTED_ORIGINS.append(
-        f'https://{env("VUE_APP_API")}'
-    )
+
+    CSRF_TRUSTED_ORIGINS.extend([
+        f'https://{env("VUE_APP_API")}',
+    ])
 except:
-    logging.warning("Running with localhost Allowed Hosts, CORS and CSRF configuration")
+    ALLOWED_HOSTS.append('localhost')
+
+    CORS_ALLOWED_ORIGINS.extend([
+        'http://localhost',
+        'http://localhost:8080',
+        'http://localhost:8081',
+    ])
+
+    CSRF_TRUSTED_ORIGINS.extend([
+        'http://localhost',
+        'http://localhost:8080',
+        'http://localhost:8081',
+    ])
+    
+    logger.warning('localhost is set for allowed hosts, CORS, and CSRF')
 
 ROOT_URLCONF = 'core.urls'
 
@@ -183,9 +188,9 @@ LOGGING = {
     'disable_existing_loggers': False,
     'formatters': {
         'simple': {
-            'format': '{asctime} {levelname}: {message}',
+            'format': '[{asctime}][{levelname}] {message}',
             'style': '{',
-            'datefmt': '%d-%m-%Y %H:%M:%S',
+            'datefmt': '%Y-%m-%dT%H:%M:%S',
         },
     },
     'handlers': {
@@ -199,9 +204,14 @@ LOGGING = {
         'level': 'INFO',
     },
     'loggers': {
+        '': {
+            'handlers': ['console'],
+            'level': 'INFO',
+        },
         'frontend.middleware': {
             'handlers': ['console'],
             'level': 'DEBUG',
+            'propagate': False,
         },
     },
 }

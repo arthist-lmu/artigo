@@ -22,9 +22,6 @@ RUN pip install /search
 COPY /api /api/
 COPY plugin.config.json /config.json
 
-ENV PYTHONPATH=/api/src/
-WORKDIR /api/src/artigo_api
-
 COPY /api/docker-entrypoint.dev.sh /docker-entrypoint.sh
 RUN chmod +x /docker-entrypoint.sh
 ENTRYPOINT ["/docker-entrypoint.sh"]
