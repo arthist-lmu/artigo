@@ -199,4 +199,7 @@ def random_game_parameters(**kwargs):
 
             random.shuffle(games)
 
+            timeout = kwargs.get('timeout', 60 * 60 * 24)
+            cache.set(f"{kwargs['name']}_{lang}", games, timeout)
+
     return games
