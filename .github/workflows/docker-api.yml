@@ -36,9 +36,9 @@ jobs:
         with:
           context: .
           file: ./api/Dockerfile
-          args:
-            - VUE_APP_API=${{ secrets.VUE_APP_API }}
-            - VUE_APP_FRONTEND=${{ secrets.VUE_APP_FRONTEND }}
+          build-args: |
+            VUE_APP_API=${{ secrets.VUE_APP_API }}
+            VUE_APP_FRONTEND=${{ secrets.VUE_APP_FRONTEND }}
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}

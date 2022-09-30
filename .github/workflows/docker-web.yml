@@ -36,8 +36,7 @@ jobs:
         with:
           context: .
           file: ./web/Dockerfile
-          args:
-            - VUE_APP_API=${{ secrets.VUE_APP_API }}
+          build-args: VUE_APP_API=${{ secrets.VUE_APP_API }}
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
