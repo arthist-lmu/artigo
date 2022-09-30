@@ -16,11 +16,9 @@ COPY /search/pyproject.toml /search/poetry.lock /search/
 RUN cd /search; poetry export -f requirements.txt --output requirements.txt  --without-hashes
 RUN cd /search; pip install -r requirements.txt
 
+COPY /api /api/
 COPY /search /search/
 RUN pip install /search
-
-COPY /api /api/
-COPY plugin.config.json /config.json
 
 COPY /api/docker-entrypoint.dev.sh /docker-entrypoint.sh
 RUN chmod +x /docker-entrypoint.sh

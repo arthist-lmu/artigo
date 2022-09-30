@@ -2,7 +2,7 @@ import axios from 'axios';
 import store from '@/store';
 import mixins from '@/mixins';
 
-let baseURL = 'https://api.artigo.org';
+let baseURL = 'http://localhost:8000';
 const { VUE_APP_API } = process.env;
 if (VUE_APP_API) {
   baseURL = `https://${VUE_APP_API}`;

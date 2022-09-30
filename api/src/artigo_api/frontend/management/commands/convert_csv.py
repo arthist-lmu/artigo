@@ -198,6 +198,8 @@ def main():
         gameround.to_csv(os.path.join(args.output, 'gameround.csv'), index=False)
         tag.to_csv(os.path.join(args.output, 'tag.csv'), index=False)
         tagging.to_csv(os.path.join(args.output, 'tagging.csv'), index=False)
+    else:
+        raise ValueError('Input folder is not a directory.')
 
 
 if __name__ == '__main__':

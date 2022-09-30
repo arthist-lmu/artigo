@@ -88,8 +88,6 @@ services:
     image: arthistlmu/artigo:master
     depends_on:
       - api
-    env_file:
-      - ./.env
     ports:
       - "8080:80"
     labels:

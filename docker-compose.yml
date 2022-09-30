@@ -53,7 +53,6 @@ services:
     environment:
       - POETRY_VIRTUALENVS_CREATE=False
       - PYTHONPATH=/search/src/
-      # - GRPC_VERBOSITY=debug
     depends_on:
       - api
       - redisai
@@ -93,7 +92,7 @@ services:
     image: artigo/web
     build:
       context: .
-      dockerfile: ./web/Dockerfile
+      dockerfile: ./web/Dockerfile.dev
     volumes:
       - type: bind
         source: ./web/
@@ -104,8 +103,6 @@ services:
     working_dir: /web
     depends_on:
       - api
-    env_file:
-      - ./.env
     ports:
       - "8080:80"
       - "8081:8080"

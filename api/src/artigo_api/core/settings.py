@@ -36,7 +36,7 @@ except:
     API = 'http://localhost:8000'
     API_URL = API
 
-    logger.warning('Running with localhost API configuration')
+logger.warning(f'API URL: {API_URL}.')
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -121,8 +121,10 @@ except:
         'http://localhost:8080',
         'http://localhost:8081',
     ])
-    
-    logger.warning('localhost is set for allowed hosts, CORS, and CSRF')
+
+logger.warning(f'Allowed hosts: {ALLOWED_HOSTS}.')
+logger.warning(f'CORS allowed origins: {CORS_ALLOWED_ORIGINS}.')
+logger.warning(f'CSRF trusted origins: {CSRF_TRUSTED_ORIGINS}.')
 
 ROOT_URLCONF = 'core.urls'
 
