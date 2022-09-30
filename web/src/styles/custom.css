@@ -44,10 +44,6 @@ span.clip.w100 {
   width: 100%;
 }
 
-.v-application .text-h1, .v-application .text-h2 {
-  font-family: Montserrat, sans-serif !important;
-}
-
 .v-footer.v-footer--inset.theme--dark  {
   padding: 0 12px;
 }
