@@ -1,4 +1,4 @@
-FROM python:3.9
+FROM python:3.10
 
 ARG VUE_APP_API
 ENV VUE_APP_API=$VUE_APP_API

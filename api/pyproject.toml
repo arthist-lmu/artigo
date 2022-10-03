@@ -27,7 +27,7 @@ pygments-pprint-sql = "^0.1.0"
 pyjwt = "^2.5.0"
 pymemcache = "^3.5.0"
 tqdm = "^4.64.0"
-redisai = "^1.2.2"
+redis = "^4.3.4"
 
 [tool.poetry.dev-dependencies]
 black = "^22.8"
