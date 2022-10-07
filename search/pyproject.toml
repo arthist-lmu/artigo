@@ -18,7 +18,7 @@ wheel = "^0.37.1"
 redis = "^4.3.4"
 
 [tool.poetry.dev-dependencies]
-black = "^22.1"
+black = "^22.10"
 flake8 = "^5.0.4"
 isort = "^5.5.2"
 mypy-protobuf = "^3.2"
