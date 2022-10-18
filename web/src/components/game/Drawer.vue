@@ -1,7 +1,7 @@
 <template>
   <v-navigation-drawer
     v-model="drawer"
-    :temporary="isTemporary"
+    :permanent="isPermanent"
     :width="width"
     app
   >
@@ -40,12 +40,6 @@
 
 <script>
 export default {
-  props: {
-    forceOpen: {
-      type: Boolean,
-      default: false,
-    },
-  },
   data() {
     return {
       drawer: false,
@@ -61,20 +55,12 @@ export default {
     data() {
       return this.$store.state.home.data;
     },
-    isTemporary() {
-      return !this.$vuetify.breakpoint.lgAndUp;
+    isPermanent() {
+      return this.$vuetify.breakpoint.mdAndUp;
     },
   },
   watch: {
-    forceOpen: {
-      handler(value) {
-        if (value) {
-          this.drawer = true;
-        }
-      },
-      immediate: true,
-    },
-    isTemporary: {
+    isPermanent: {
       handler(value) {
         this.drawer = !value;
       },

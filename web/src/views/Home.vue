@@ -1,9 +1,6 @@
 <template>
   <v-container v-if="creators">
-    <GameDrawer
-      ref="drawer"
-      :forceOpen="drawer"
-    />
+    <GameDrawer ref="drawer"/>
 
     <v-row></v-row>
 
@@ -61,7 +58,7 @@
       appear
     >
       <v-row
-        v-if="dialog.examples"
+        v-if="dialog.button"
         style="flex: 0;"
       >
         <v-col
@@ -93,17 +90,6 @@
         </v-col>
       </v-row>
     </transition>
-
-    <transition
-      name="fade"
-      appear
-    >
-      <div
-        v-show="overlay"
-        ref="overlay"
-        class="overlay"
-      />
-    </transition>
   </v-container>
 </template>
 
@@ -115,11 +101,9 @@ export default {
         creator: false,
         prefix: false,
         examples: false,
-        button: false,
+        button: true,
       },
-      drawer: false,
       creator: null,
-      overlay: false,
     };
   },
   methods: {
@@ -127,24 +111,13 @@ export default {
       setTimeout(() => {
         this.$nextTick(() => {
           this.dialog[name] = true;
+          window.scrollTo(0, document.body.scrollHeight);
         });
       }, 250);
     },
     search(value, field) {
       const query = { [field]: value };
       this.$store.dispatch('search/post', { query });
-    },
-    darken() {
-      const { drawer, overlay } = this.$refs;
-      overlay.style.left = `${drawer.width}px`;
-      this.drawer = true;
-      this.overlay = true;
-      setTimeout(() => {
-        this.$nextTick(() => {
-          this.drawer = false;
-          this.overlay = false;
-        });
-      }, 2000);
     },
     goToGame() {
       const values = { show: true, params: {} };
@@ -207,15 +180,6 @@ export default {
 </script>
 
 <style scoped>
-.overlay {
-  background-color: rgba(0, 0, 0, 0.5);
-  position: fixed;
-  z-index: 99;
-  height: 100%;
-  width: 100%;
-  top: 0;
-}
-
 .container {
   flex-direction: column;
   display: flex;
