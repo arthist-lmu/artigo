@@ -53,6 +53,7 @@ services:
     environment:
       - POETRY_VIRTUALENVS_CREATE=False
       - PYTHONPATH=/search/src/
+      - C_FORCE_ROOT=true
     depends_on:
       - api
       - redisai
@@ -79,6 +80,7 @@ services:
     environment:
       - POETRY_VIRTUALENVS_CREATE=False
       - PYTHONPATH=/api/src/
+      - C_FORCE_ROOT=true
     depends_on:
       - db
       - redisai
