@@ -2,6 +2,7 @@ from .views import *
 from django.urls import path
 from django.contrib import admin
 from django.conf.urls import include
+from django.views.generic import RedirectView
 from drf_spectacular.views import (
     SpectacularAPIView,
     SpectacularRedocView,
@@ -31,4 +32,5 @@ urlpatterns = [
     path('auth/password/reset/confirm/', PasswordResetConfirmView.as_view(), name='password_reset_confirm'),
     path('auth/password/change/', PasswordChangeView.as_view(), name='password_change'),
     path('auth/', include('dj_rest_auth.urls')),
+    path('favicon.ico', RedirectView.as_view(url='/static/favicon.ico')),
 ]
