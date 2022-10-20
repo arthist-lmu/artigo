@@ -8,7 +8,7 @@
       v-if="showImage"
       :src="entry.path"
       class="grey lighten-2"
-      max-height="500px"
+      :max-height="imageHeight"
       contain
     >
       <template v-slot:placeholder>
@@ -176,6 +176,7 @@ export default {
   data() {
     return {
       ...VCard.data,
+      imageHeight: 500,
       moreTags: true,
       panels: [0],
     };
@@ -184,6 +185,9 @@ export default {
     search(value, field) {
       const query = { [field]: value };
       this.$store.dispatch('search/post', { query });
+    },
+    setImageHeight() {
+      this.imageHeight = window.innerHeight / 2;
     },
   },
   computed: {
@@ -258,6 +262,15 @@ export default {
       }
       return tags;
     },
+  },
+  mounted() {
+    this.setImageHeight();
+  },
+  created() {
+    window.addEventListener('resize', this.setImageHeight);
+  },
+  destroyed() {
+    window.removeEventListener('resize', this.setImageHeight);
   },
   components: {
     ReconcileButton: () => import('@/components/ReconcileButton.vue'),

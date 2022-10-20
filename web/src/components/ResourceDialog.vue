@@ -3,8 +3,12 @@
     v-model="dialog"
     :retain-focus="false"
     max-width="750"
+    scrollable
   >
-    <ResourceCard :entry="entry"/>
+    <ResourceCard
+      key="entry.id"
+      :entry="entry"
+    />
   </v-dialog>
 </template>
 
