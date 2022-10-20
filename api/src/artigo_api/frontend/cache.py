@@ -32,7 +32,7 @@ def resource_count(**kwargs):
     if values is None or kwargs.get('renew'):
         values = Resource.objects.latest('id').id
 
-        timeout = kwargs.get('timeout', 60 * 60 * 24)
+        timeout = kwargs.get('timeout', None)
         cache.set(kwargs['name'], values, timeout)
 
     return values
@@ -52,7 +52,7 @@ def resource_tagging_count(**kwargs):
                 count_roi_taggings=Coalesce(Count('rois__tag'), 0),
             )
 
-        timeout = kwargs.get('timeout', 60 * 60 * 24)
+        timeout = kwargs.get('timeout', None)
         cache.set(kwargs['name'], values, timeout)
 
     return values
@@ -168,10 +168,10 @@ def random_game_parameters(**kwargs):
     langs = kwargs.get('lang', 'de,en').split(',')
 
     for lang in langs:
-        games = cache.get(f"{kwargs['name']}_{lang}")
+        values = cache.get(f"{kwargs['name']}_{lang}")
 
-        if games is None or kwargs.get('renew'):
-            games = [
+        if values is None or kwargs.get('renew'):
+            values = [
                 {
                     'params': {
                         'game_type': 'roi',
@@ -190,16 +190,16 @@ def random_game_parameters(**kwargs):
                 },
             ]
 
-            for game, variant in zip(games, get_variants()):
+            for game, variant in zip(values, get_variants()):
                 while game.get('path') is None:
                     try:
                         game = create_game(game, variant, lang)
                     except IndexError:
                         pass
 
-            random.shuffle(games)
+            random.shuffle(values)
 
-            timeout = kwargs.get('timeout', 60 * 60 * 24)
-            cache.set(f"{kwargs['name']}_{lang}", games, timeout)
+            timeout = kwargs.get('timeout', None)
+            cache.set(f"{kwargs['name']}_{lang}", values, timeout)
 
-    return games
+    return values

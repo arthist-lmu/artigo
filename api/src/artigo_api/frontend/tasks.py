@@ -1,4 +1,5 @@
 import logging
+import traceback
 
 from frontend import cache
 from celery import shared_task
@@ -13,6 +14,6 @@ def renew_cache():
 
         if callable(item):
             try:
-                item()
-            except:
-                pass
+                item(renew=True)
+            except Exception as error:
+                logger.error(traceback.format_exc())
