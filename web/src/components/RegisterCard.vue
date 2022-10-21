@@ -139,10 +139,10 @@ export default {
     checkLength(value) {
       if (value) {
         if (value.length < 5) {
-          return this.$tc('user.register.rules.min', 5);
+          return this.$tc('rules.min', 5);
         }
         if (value.length > 75) {
-          return this.$tc('user.register.rules.max', 75);
+          return this.$tc('rules.max', 75);
         }
         return true;
       }
@@ -152,7 +152,7 @@ export default {
       if (value && value === this.user.password1) {
         return true;
       }
-      return this.$t('user.register.rules.password-repeat');
+      return this.$t('rules.password-repeat');
     },
   },
   computed: {

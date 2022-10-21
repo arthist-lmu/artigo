@@ -30,23 +30,16 @@
       "joined": "Joined {n} days ago|Joined {n} day ago|Joined {n} days ago"
     },
     "register": {
-      "title": "Register",
-      "rules": {
-        "min": "Min. {n} characters.",
-        "max": "Max. {n} characters.",
-        "password-repeat": "Passwords don't match."
-      }
+      "title": "Register"
     },
     "login": {
-      "title": "Login",
-      "text": "Don't have an account?",
-      "rules": {
-        "min": "Min. {n} characters.",
-        "max": "Max. {n} characters."
-      }
+      "title": "Login"
     },
     "logout": {
       "title": "Logout"
+    },
+    "password-reset": {
+      "title": "Reset password"
     }
   },
   "language": {
@@ -58,6 +51,11 @@
   },
   "field": {
     "required": "This is a required field."
+  },
+  "rules": {
+    "min": "Min. {n} characters.",
+    "max": "Max. {n} characters.",
+    "password-repeat": "Passwords don't match."
   },
   "imprint": {
     "title": "Imprint"

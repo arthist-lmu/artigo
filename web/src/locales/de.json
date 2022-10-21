@@ -30,22 +30,16 @@
       "joined": "Vor {n} Tagen beigetreten|Vor {n} Tag beigetreten|Vor {n} Tagen beigetreten"
     },
     "register": {
-      "title": "Registrieren",
-      "rules": {
-        "min": "Min. {n} Zeichen.",
-        "max": "Max. {n} Zeichen.",
-        "password-repeat": "Passwörter stimmen nicht überein."
-      }
+      "title": "Registrieren"
     },
     "login": {
-      "title": "Anmelden",
-      "rules": {
-        "min": "Min. {n} Zeichen.",
-        "max": "Max. {n} Zeichen."
-      }
+      "title": "Anmelden"
     },
     "logout": {
       "title": "Abmelden"
+    },
+    "password-reset": {
+      "title": "Passwort zurücksetzen"
     }
   },
   "language": {
@@ -57,6 +51,11 @@
   },
   "field": {
     "required": "Dies ist ein Pflichtfeld."
+  },
+  "rules": {
+    "min": "Min. {n} Zeichen.",
+    "max": "Max. {n} Zeichen.",
+    "password-repeat": "Passwörter stimmen nicht überein."
   },
   "imprint": {
     "title": "Impressum"

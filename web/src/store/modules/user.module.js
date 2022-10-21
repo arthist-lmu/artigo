@@ -52,6 +52,13 @@ const user = {
           commit('updateToken', data);
         });
     },
+    resetPassword({ state }, params) {
+      axios.post('/auth/password/reset/', params, {
+        headers: {
+          'Authorization': `Token ${state.token}`,
+        },
+      });
+    },
   },
   mutations: {
     updateToken(state, { key }) {

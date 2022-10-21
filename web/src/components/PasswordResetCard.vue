@@ -4,7 +4,7 @@
     flat
   >
     <v-card-title v-if="isDialog">
-      {{ $t("user.login.title") }}
+      {{ $t("user.password-reset.title") }}
 
       <v-btn
         @click="close"
@@ -19,18 +19,6 @@
     <v-card-text :class="isDialog ? 'pt-4' : 'pt-0 px-0'">
       <v-form v-model="isFormValid">
         <v-text-field
-          v-model="user.username"
-          :placeholder="$t('user.fields.username')"
-          :rules="[checkLength]"
-          tabindex="0"
-          counter="75"
-          clearable
-          outlined
-          rounded
-          dense
-        />
-
-        <v-text-field
           v-model="user.email"
           :placeholder="$t('user.fields.email')"
           :rules="[checkLength]"
@@ -41,32 +29,12 @@
           rounded
           dense
         />
-
-        <v-text-field
-          v-model="user.password"
-          @click:append="showPassword = !showPassword"
-          :type="showPassword ? 'text' : 'password'"
-          :placeholder="$t('user.fields.password')"
-          :rules="[checkLength]"
-          :append-icon="
-            showPassword ? 'mdi-eye-outline' : 'mdi-eye-off-outline'
-          "
-          tabindex="0"
-          counter="75"
-          clearable
-          outlined
-          rounded
-          dense
-        />
       </v-form>
     </v-card-text>
 
-    <v-card-actions
-      :class="isDialog ? 'pb-6 px-6' : 'pb-8 px-0'"
-      style="display: block;"
-    >
+    <v-card-actions :class="isDialog ? 'pb-6 px-6' : 'pb-8 px-0'">
       <v-btn
-        @click="login"
+        @click="resetPassword"
         :disabled="!isFormValid"
         tabindex="0"
         color="primary"
@@ -74,29 +42,9 @@
         rounded
         block
       >
-        {{ $t("user.login.title") }}
-      </v-btn>
-
-      <v-btn
-        @click="resetPassword"
-        class="mt-2 ml-0"
-        tabindex="0"
-        rounded
-        small
-        plain
-        block
-        text
-      >
         {{ $t("user.password-reset.title") }}
       </v-btn>
     </v-card-actions>
-
-    <v-dialog
-      v-model="dialog.passwordReset"
-      max-width="400"
-    >
-      <PasswordResetCard v-model="dialog.passwordReset" />
-    </v-dialog>
   </v-card>
 </template>
 
@@ -113,23 +61,19 @@ export default {
     return {
       user: {},
       isFormValid: false,
-      showPassword: false,
-      dialog: {
-        passwordReset: false,
-      },
     };
   },
   methods: {
-    login() {
-      this.$store.dispatch('user/login', this.user);
+    resetPassword() {
+      this.$store.dispatch('user/resetPassword', this.user);
     },
     close() {
       this.$emit('input', false);
     },
     checkLength(value) {
       if (value) {
-        if (value.length < 4) {
-          return this.$tc('rules.min', 4);
+        if (value.length < 5) {
+          return this.$tc('rules.min', 5);
         }
         if (value.length > 75) {
           return this.$tc('rules.max', 75);
@@ -137,9 +81,6 @@ export default {
         return true;
       }
       return this.$t('field.required');
-    },
-    resetPassword() {
-      this.dialog.passwordReset = true;
     },
   },
   computed: {
@@ -157,9 +98,6 @@ export default {
         this.close();
       }
     },
-  },
-  components: {
-    PasswordResetCard: () => import('./PasswordResetCard.vue'),
   },
 };
 </script>
