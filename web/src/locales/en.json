@@ -122,7 +122,8 @@
         "skip": "Skip game round",
         "score": "{n} Points|{n} Point|{n} Points",
         "rounds": "Round {i} of {total}",
-        "invalid": "This tag must not be entered (again)"
+        "invalid": "This tag must not be entered (again)",
+        "seconds-left": "You have {n} seconds left"
       },
       "tagging": {
         "post": "Enter tag",

@@ -122,7 +122,8 @@
         "skip": "Spielrunde überspringen",
         "score": "{n} Punkte|{n} Punkt|{n} Punkte",
         "rounds": "Runde {i} von {total}",
-        "invalid": "Dieses Schlagwort darf nicht (nochmal) eingegeben werden"
+        "invalid": "Dieses Schlagwort darf nicht (nochmal) eingegeben werden",
+        "seconds-left": "Du hast noch {n} Sekunden"
       },
       "tagging": {
         "post": "Schlagwort eingeben",
