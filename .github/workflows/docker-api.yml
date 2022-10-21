@@ -1,8 +1,8 @@
 name: Docker Api Build
 
 on:
-  push:
-    branches: ['release']
+  release:
+    types: [published]
   workflow_dispatch:
 
 env:
