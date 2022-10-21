@@ -78,7 +78,6 @@
 
         <v-checkbox
           v-model="user.privacy_policy"
-          :label="$t('user.fields.privacy-policy')"
           :rules="[checkTrue]"
           class="mt-0"
           on-icon="mdi-check-circle-outline"
@@ -87,7 +86,24 @@
           color="primary"
           hide-details
           dense
-        />
+        >
+          <template v-slot:label>
+            {{ $t('user.fields.privacy-policy') }}
+
+            <v-btn
+              @click.stop
+              class="ml-1"
+              href="https://www.kunstgeschichte.uni-muenchen.de/funktionen/datenschutz/index.html"
+              target="_blank"
+              small
+              icon
+            >
+              <v-icon>
+                mdi-link-variant
+              </v-icon>
+            </v-btn>
+          </template>
+        </v-checkbox>
       </v-form>
     </v-card-text>
 
