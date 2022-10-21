@@ -7,9 +7,9 @@
     <v-row style="flex: 0;">
       <v-col
         class="pa-12"
-        cols="10"
+        :cols="isMdAndDown ? '12' : '10'"
       >
-        <div class="text-h2 accent--text">
+        <div :class="[isMdAndDown ? 'text-h3' : 'text-h2', 'accent--text']">
           <Typer
             @onComplete="show('creator')"
             :strings="[$t('home.texts.intro')]"
@@ -142,6 +142,9 @@ export default {
         this.$t('home.texts.example-1'),
       ];
     },
+    isMdAndDown() {
+      return this.$vuetify.breakpoint.mdAndDown;
+    },
   },
   watch: {
     dialog: {
@@ -188,6 +191,10 @@ export default {
 
 .text-h2 {
   line-height: 4.75rem;
+}
+
+.text-h3 {
+  line-height: 3.75rem;
 }
 
 span.space::before {

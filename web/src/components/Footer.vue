@@ -9,13 +9,13 @@
   >
     <v-container
       :class="{
-        'px-7': isSmAndDown,
+        'px-7': isMdAndDown,
         transparent: hasOpacity,
       }"
     >
       <v-row>
         <v-col
-          :cols="isSmAndDown ? '4' : '6'"
+          :cols="isMdAndDown ? '4' : '6'"
           align="left"
         >
           <v-btn
@@ -34,7 +34,7 @@
           </v-btn>
 
           <v-chip
-            v-if="!isSmAndDown"
+            v-if="!isMdAndDown"
             style="background-color: transparent;"
             class="ml-2"
             small
@@ -44,7 +44,7 @@
         </v-col>
 
         <v-col
-          :cols="isSmAndDown ? '8' : '6'"
+          :cols="isMdAndDown ? '8' : '6'"
           align="right"
         >
           <v-btn
@@ -112,12 +112,12 @@ export default {
       }
       return `${baseURL}/schema/redoc`;
     },
-    isSmAndDown() {
-      return this.$vuetify.breakpoint.smAndDown;
-    },
     hasOpacity() {
       const names = ['home', 'game', 'session'];
       return names.includes(this.$route.name);
+    },
+    isMdAndDown() {
+      return this.$vuetify.breakpoint.mdAndDown;
     },
   },
   beforeDestroy() {
