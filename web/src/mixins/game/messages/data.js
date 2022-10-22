@@ -41,6 +41,9 @@ export default {
           if (this.keyInObj('valid', tag)) {
             message.valid = tag.valid;
           }
+          if (this.keyInObj('suggest', tag)) {
+            message.suggest = tag.suggest;
+          }
           this.$emit('add', message);
         });
       }

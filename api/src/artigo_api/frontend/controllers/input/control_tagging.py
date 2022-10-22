@@ -17,6 +17,20 @@ class InputTaggingController(InputController):
 
         result = {'tags': query.get('tags', [])}
 
+        if query.get('suggester_type'):
+            try:
+                result['tags'] = list(
+                    self.plugins['suggester'].run(
+                        result['tags'],
+                        query['game_options'],
+                        query['suggester_type'],
+                    )
+                )
+            except Exception as error:
+                logger.error(traceback.format_exc())
+
+                return {'type': 'error', 'message': 'invalid_suggesters'}
+
         if query.get('filter_type'):
             try:
                 result['tags'] = list(

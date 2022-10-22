@@ -152,16 +152,6 @@ class GameController:
 
                 return {'type': 'error', 'message': 'invalid_taboos'}
 
-            if len(query.get('suggester_type', [])) > 0:
-                result['taboo'] = list(
-                    self.plugins['suggester'].run(
-                        result['taboo'],
-                        query['game_options'],
-                        query['suggester_type'],
-                        configs=get_configs(query, 'suggester'),
-                    )
-                )
-
         game = self.merge_to_game(result, resource_ids)
         # logger.info(f'[Game Controller] Game: {game}')
 

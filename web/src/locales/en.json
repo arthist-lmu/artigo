@@ -122,8 +122,9 @@
         "skip": "Skip game round",
         "score": "{n} Points|{n} Point|{n} Points",
         "rounds": "Round {i} of {total}",
+        "suggest": "Click to add similar tags",
         "invalid": "This tag must not be entered (again)",
-        "seconds-left": "You have {n} seconds left"
+        "seconds-left": "You have {n} seconds left."
       },
       "tagging": {
         "post": "Enter tag",

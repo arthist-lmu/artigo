@@ -24,21 +24,24 @@ class CooccurrenceSuggester(SuggesterPlugin):
         self.max_tags = self.config['max_tags']
 
     def __call__(self, tags, params):
-        return list(AggregateView()(tags, self.config))
+        return AggregateView()(tags, self.max_tags)
 
 
 class AggregateView(AggregateViewHelper):
-    def __call__(self, tags, config):
+    def __call__(self, tags, max_tags):
         for tag in tags:
+            if not tag.get('suggest'):
+                tag['suggest'] = set()
+
             params = {
                 'query': [{
                     'name': 'tags',
-                    'value': tag,
+                    'value': tag['name'],
                 }],
                 'aggregate': {
                     'use_query': True,
                     'fields': ['tags'],
-                    'size': config.get('max_tags', 10) + 1,
+                    'size': max_tags + 1,
                     'significant': True,
                 },
             }
@@ -47,7 +50,7 @@ class AggregateView(AggregateViewHelper):
 
             for aggregation in result['aggregations']:
                 for entry in aggregation['entries']:
-                    yield {
-                        'name': tag,
-                        'suggest': entry['name'],
-                    }
+                    if entry['name'] != tag['name']:
+                        tag['suggest'].add(entry['name'])
+
+        return tags

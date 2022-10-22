@@ -37,23 +37,11 @@ class SuggesterPluginManager(PluginManager):
     def plugins(self):
         return self._suggester_plugins
 
-    def run(self, resources, params, plugins=None, configs=None):
+    def run(self, tags, params, plugins=None, configs=None):
         plugin_list = self.init_plugins(plugins, configs)
 
-        tags = {}
-
-        for resource in resources:
-            for tag in resource['tags']:
-                tags[tag['name'].lower()] = set()
-
         for plugin in plugin_list:
-            for entry in plugin['plugin'](tags, params):
-                tags[entry['name']].add(entry['suggest'])
+            # modify tags in-place in the respective plugin
+            plugin['plugin'](tags, params)
 
-        for resource in resources:
-            invalid_tags = set(x['name'] for x in resource['tags'])
-
-            for tag in resource['tags']:
-                tag['suggest'] = tags[tag['name'].lower()] - invalid_tags
-
-        return resources
+        return tags

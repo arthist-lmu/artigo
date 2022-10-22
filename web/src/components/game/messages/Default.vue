@@ -5,6 +5,7 @@
         <UserMessage
           v-if="message.from === 'user'"
           :key="i"
+          :entry="entry"
           :message="message"
         />
 

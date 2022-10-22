@@ -50,6 +50,9 @@ class InputController:
                         elif gameround.get(f'{parent_name}_type'):
                             result[plugin_type].append(config['type'])
 
+        for suggester_type in gameround.get('suggester_types', []):
+            result['suggester_type'].append(suggester_type.name)
+
         for score_type in gameround.get('score_types', []):
             result['score_type'].append(score_type.name)
 

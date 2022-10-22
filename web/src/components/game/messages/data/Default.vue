@@ -34,21 +34,11 @@ export default {
     },
   },
   created() {
-    const { game_round_duration: duration } = this.params;
     this.tags.push({
       name: this.$t(
         `game.fields.${this.gameType}.intro`,
       ),
       created_after: 0,
-    });
-    [0.5, 0.9].forEach((p) => {
-      this.tags.push({
-        name: this.$t(
-          'game.fields.basic.seconds-left',
-          { n: Math.floor((1 - p) * duration) },
-        ),
-        created_after: p * duration,
-      });
     });
     if (this.tabooTags.length) {
       this.tags.push({
@@ -59,6 +49,16 @@ export default {
         created_after: 1,
       });
     }
+    const { game_round_duration: duration } = this.params;
+    [0.5, 0.9].forEach((p) => {
+      this.tags.push({
+        name: this.$t(
+          'game.fields.basic.seconds-left',
+          { n: Math.floor((1 - p) * duration) },
+        ),
+        created_after: p * duration,
+      });
+    });
   },
 };
 </script>
