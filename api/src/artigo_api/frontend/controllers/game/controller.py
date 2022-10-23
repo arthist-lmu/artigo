@@ -264,7 +264,7 @@ class GameController:
                         if values is None:
                             values = query.getlist(f'{plugin_type}[]')
                             
-                        if values:
+                        if values is not None:
                             if is_in(config['name'], values):
                                 result[plugin_type].append(config['type'])
                         elif config.get('default', False):

@@ -115,7 +115,7 @@ export default {
   methods: {
     post(name) {
       const params = {
-        tag: { name },
+        tag: { name, suggested: true },
         language: this.$i18n.locale,
         resource_id: this.entry.resource_id,
       };

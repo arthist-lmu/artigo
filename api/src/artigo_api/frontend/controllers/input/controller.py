@@ -1,7 +1,11 @@
+import logging
+
 from collections import defaultdict
 from django.core.cache import cache
 from django.forms.models import model_to_dict
 from frontend.utils import is_in
+
+logger = logging.getLogger(__name__)
 
 
 class InputController:
@@ -26,6 +30,9 @@ class InputController:
                 if not isinstance(tag, dict):
                     tag = {'name': tag}
 
+                if not tag.get('suggested'):
+                    tag['suggested'] = False
+
                 tag['name'] = tag['name'].lower()
                 tag['valid'] = True
                 tag['score'] = 0
@@ -33,6 +40,7 @@ class InputController:
                 result['tags'].append(tag)
 
         if not isinstance(gameround, dict):
+            # TODO: change handling of model_to_dict
             gameround = model_to_dict(gameround)
 
         for plugin_name, plugin_manager in self.plugins.items():
@@ -47,13 +55,9 @@ class InputController:
 
                         if config.get('default', False):
                             result[plugin_type].append(config['type'])
-                        elif gameround.get(f'{parent_name}_type'):
-                            result[plugin_type].append(config['type'])
 
-        for suggester_type in gameround.get('suggester_types', []):
-            result['suggester_type'].append(suggester_type.name)
-
-        for score_type in gameround.get('score_types', []):
-            result['score_type'].append(score_type.name)
+                        for child in gameround.get(f'{plugin_type}s', []):
+                            if child.name == config['type']:
+                                result[plugin_type].append(child.name)
 
         return dict(result)

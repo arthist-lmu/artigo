@@ -24,12 +24,15 @@ class CooccurrenceSuggester(SuggesterPlugin):
         self.max_tags = self.config['max_tags']
 
     def __call__(self, tags, params):
-        return AggregateView()(tags, self.max_tags)
+        AggregateView()(tags, self.max_tags)
 
 
 class AggregateView(AggregateViewHelper):
     def __call__(self, tags, max_tags):
         for tag in tags:
+            if tag['suggested']:
+                continue
+
             if not tag.get('suggest'):
                 tag['suggest'] = set()
 
