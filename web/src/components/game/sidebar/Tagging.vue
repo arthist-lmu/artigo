@@ -65,28 +65,15 @@ export default {
           this.input = null;
           this.focusInput();
         });
-      }
-    },
-    onBlur() {
-      this.$nextTick(() => {
+      } else {
         this.focusInput();
-      });
+      }
     },
     onButton() {
       this.blurInput();
       this.$nextTick(() => {
         this.post();
       });
-    },
-    blurInput() {
-      if (this.$refs.input !== undefined) {
-        this.$refs.input.blur();
-      }
-    },
-    focusInput() {
-      if (this.$refs.input !== undefined) {
-        this.$refs.input.focus();
-      }
     },
   },
   created() {

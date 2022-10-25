@@ -71,7 +71,7 @@
     </v-row>
 
     <v-row
-      v-if="message.suggest"
+      v-if="message.suggest && message.suggest.length"
       :class="[message.from, 'mt-0']"
       justify="end"
     >

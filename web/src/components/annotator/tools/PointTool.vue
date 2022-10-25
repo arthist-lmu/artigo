@@ -4,7 +4,7 @@
 
 <script>
 import paper from 'paper';
-import tool from '@/mixins/game/annotator';
+import tool from '@/mixins/annotator/tools';
 
 export default {
   name: 'PointTool',

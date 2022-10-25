@@ -58,7 +58,23 @@ export default {
       this.$nextTick(() => {
         const { scrollHeight } = this.$refs.container;
         this.$refs.container.scrollTop = scrollHeight;
+        this.focusInput();
       });
+    },
+    onBlur() {
+      this.$nextTick(() => {
+        this.focusInput();
+      });
+    },
+    blurInput() {
+      if (this.$refs.input !== undefined) {
+        this.$refs.input.blur();
+      }
+    },
+    focusInput() {
+      if (this.$refs.input !== undefined) {
+        window.setTimeout(() => this.$refs.input.focus(), 0);
+      }
     },
   },
   computed: {
