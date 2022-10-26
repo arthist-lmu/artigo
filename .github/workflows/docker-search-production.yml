@@ -1,7 +1,8 @@
 name: Docker Search Build
 
 on:
-  workflow_dispatch:
+  release:
+    types: [published]
 
 env:
   IMAGE_NAME: arthistlmu/artigo_search

@@ -1,14 +1,16 @@
-name: Docker Search Build
+name: Docker Api Build
 
 on:
-  workflow_dispatch:
+  release:
+    types: [published]
 
 env:
-  IMAGE_NAME: arthistlmu/artigo_search
+  IMAGE_NAME: arthistlmu/artigo_api
 
 jobs:
   build-and-push-image:
     runs-on: ubuntu-latest
+    environment: production
     permissions:
       contents: read
       packages: write
@@ -33,7 +35,10 @@ jobs:
         uses: docker/build-push-action@v3.1.1
         with:
           context: .
-          file: ./search/Dockerfile
+          file: ./api/Dockerfile
+          build-args: |
+            VUE_APP_API=${{ secrets.VUE_APP_API }}
+            VUE_APP_FRONTEND=${{ secrets.VUE_APP_FRONTEND }}
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
