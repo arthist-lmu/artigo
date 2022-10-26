@@ -15,7 +15,7 @@
   >
     <template v-slot:no-data>
       <v-container
-        @focusout="onBlur"
+        v-click-outside="onClickOutside"
         class="pa-8"
       >
         <v-row
@@ -176,14 +176,17 @@ export default {
         this.closeMenu();
       });
     },
-    onBlur() {
-      // this.closeMenu();
-    },
     onButton() {
       this.blurInput();
       this.$nextTick(() => {
         this.search();
       });
+    },
+    onClickOutside({ target }) {
+      const input = this.$refs.input.$el;
+      if (!input.contains(target)) {
+        this.closeMenu();
+      }
     },
     blurInput() {
       if (this.$refs.input !== undefined) {
@@ -246,6 +249,7 @@ export default {
       ) {
         const offset = (value - 1) * this.itemsPerPage;
         this.$store.dispatch('search/post', { offset, sourceView: true });
+        this.closeMenu();
       }
     },
     params: {
