@@ -38,10 +38,8 @@ services:
     image: postgres:14
     volumes:
       - db_data:/var/lib/postgresql/data
-    environment:
-      - POSTGRES_DB=artigo
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
+    env_file:
+      - ./.testing_db.env
     labels:
       com.centurylinklabs.watchtower.enable: "true"
 
