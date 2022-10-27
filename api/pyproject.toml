@@ -25,7 +25,7 @@ celery = "^5.2.7"
 pandas = "^1.4.3"
 pygments-pprint-sql = "^0.1.0"
 pyjwt = "^2.5.0"
-pymemcache = "^3.5.0"
+pymemcache = "^4.0.0"
 tqdm = "^4.64.0"
 redis = "^4.3.4"
 
