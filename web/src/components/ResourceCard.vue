@@ -135,14 +135,14 @@
             >
               <v-col
                 class="align-center d-flex"
-                cols="3"
+                cols="4"
               >
                 <span class="capitalize">
                   {{ $t(`resource.metadata.fields.${field}`) }}
                 </span>
               </v-col>
 
-              <v-col cols="9">
+              <v-col cols="8">
                 <v-chip
                   :title="value"
                   @click="search(value, field)"
