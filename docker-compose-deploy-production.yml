@@ -1,5 +1,5 @@
 version: "3"
-name: testing
+name: production
 
 services:
   redisai:
@@ -38,15 +38,13 @@ services:
     image: postgres:14
     volumes:
       - db_data:/var/lib/postgresql/data
-    environment:
-      - POSTGRES_DB=artigo
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
+    env_file:
+      - ./.production_db.env
     labels:
       com.centurylinklabs.watchtower.enable: "true"
 
   search:
-    image: arthistlmu/artigo_search:master
+    image: arthistlmu/artigo_search:latest
     volumes:
       - type: bind
         source: ./dump/
@@ -62,7 +60,7 @@ services:
       com.centurylinklabs.watchtower.enable: "true"
 
   api:
-    image: arthistlmu/artigo_api:master
+    image: arthistlmu/artigo_api:latest
     volumes:
       - type: bind
         source: ./media/
@@ -79,18 +77,18 @@ services:
       - redisai
       - memcached
     env_file:
-      - ./.env
+      - ./.production_api.env
     ports:
-      - "8001:8000"
+      - "8000:8000"
     labels:
       com.centurylinklabs.watchtower.enable: "true"
 
   web:
-    image: arthistlmu/artigo:master
+    image: arthistlmu/artigo:latest
     depends_on:
       - api
     ports:
-      - "8081:80"
+      - "8080:80"
     labels:
       com.centurylinklabs.watchtower.enable: "true"
 
