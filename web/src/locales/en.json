@@ -169,6 +169,7 @@
       "opponents": {
         "title": "Who do you want to play against?",
         "fields": {
+          "no_opponents": "No one",
           "mean_gameround_opponent": "Average opponents",
           "random_gameround_opponent": "Randomly selected opponents"
         }

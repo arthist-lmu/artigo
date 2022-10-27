@@ -157,7 +157,8 @@ class GameController:
             resource_ids,
             query['retrieve_metadata'],
         )
-        logger.info(f'[Game Controller] Game: {game}')
+        
+        # logger.info(f'[Game Controller] Game: {game}')
 
         try:
             game_type, _ = GameType.objects \
@@ -313,6 +314,11 @@ class GameController:
                 }
                 for x in list(resources)
             }
+
+        # if there is no plugin-based information
+        # only return information about resources
+        if not result:
+            return resources
 
         for key, values in result.items():
             for value in values:

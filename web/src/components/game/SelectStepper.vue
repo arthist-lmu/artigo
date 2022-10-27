@@ -159,6 +159,7 @@ export default {
         opponents: {
           icon: 'mdi-account-outline',
           multiple: false,
+          setDefault: true,
         },
         inputs: {
           icon: 'mdi-tag-outline',

@@ -170,6 +170,7 @@
       "opponents": {
         "title": "Gegen wen möchtest Du spielen?",
         "fields": {
+          "no_opponents": "Niemanden",
           "mean_gameround_opponent": "Durchschnittliche Gegner:innen",
           "random_gameround_opponent": "Zufällig ausgewählte Gegner:innen"
         }
