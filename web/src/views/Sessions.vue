@@ -6,7 +6,7 @@
       :items="entries"
       :items-per-page.sync="itemsPerPage"
       :page.sync="page"
-      class="d-flex flex-column"
+      :class="[$vuetify.breakpoint.mobile ? 'mx-n2' : undefined, 'd-flex flex-column']"
       hide-default-footer
     >
       <template v-slot:default="props">

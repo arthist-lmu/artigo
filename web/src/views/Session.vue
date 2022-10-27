@@ -1,6 +1,6 @@
 <template>
-  <v-container>
-    <v-row class="mt-2">
+  <v-container class="px-0">
+    <v-row class="mt-2 mx-n3">
       <v-col cols="4">
         <SetCard
           icon="mdi-image-outline"
@@ -34,7 +34,7 @@
       v-if="tags.length"
       class="mt-0 mb-n2"
     >
-      <v-col cols="11">
+      <v-col :cols="$vuetify.breakpoint.mdAndDown ? 10 : 11">
         <v-slide-group
           v-model="slides"
           :title="$t('session.fields.filter-tags')"
@@ -62,7 +62,7 @@
       </v-col>
 
       <v-col
-        cols="1"
+        :cols="$vuetify.breakpoint.mdAndDown ? 2 : 1"
         align="right"
       >
         <v-btn

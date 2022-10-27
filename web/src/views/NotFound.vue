@@ -29,11 +29,6 @@ export default {
     reset() {
       this.$router.push({ name: 'home' });
     },
-    handleReset(evt) {
-      if (evt.keyCode === 13) {
-        reset();
-      }
-    },
   },
 };
 </script>
