@@ -1,24 +1,33 @@
 <template>
-  <div
-    class="logo"
-    @click="reset"
-    @keyDown="handleReset"
-    style="cursor: pointer"
-  >
-    <h1>404 Not found</h1>
+  <v-container class="text-center fill-height">
+    <v-row align="center">
+      <v-col class="pa-0">
+        <div :class="[$vuetify.breakpoint.mdAndDown ? 'text-h3' : 'text-h2', 'mb-4']">
+          {{ $t('not-found.title') }}
+        </div>
 
-    <img
-      src="/assets/images/logo.svg"
-      alt=""
-    />
-  </div>
+        <p class="mx-8">
+          {{ $t('not-found.fields.not-exist') }}
+        </p>
+
+        <v-btn
+          @click="reset"
+          color="grey lighten-2"
+          outlined
+          rounded
+        >
+          {{ $t('not-found.fields.go-home') }}
+        </v-btn>
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 
 <script>
 export default {
   methods: {
     reset() {
-      this.$router.push('/');
+      this.$router.push({ name: 'home' });
     },
     handleReset(evt) {
       if (evt.keyCode === 13) {
@@ -28,20 +37,3 @@ export default {
   },
 };
 </script>
-
-<style>
-#not-found {
-  justify-content: center;
-  align-items: center;
-  display: flex;
-  height: 100%;
-}
-
-#not-found .logo {
-  margin: auto;
-}
-
-#not-found .logo > img {
-  max-height: 56px;
-}
-</style>

@@ -12,6 +12,10 @@ const router = new VueRouter({
   base: process.env.BASE_URL,
   routes: [
     {
+      path: '/',
+      redirect: `/${i18n.defaultLocale}`,
+    },
+    {
       path: '/:lang',
       component: RouterView,
       beforeEnter(to, from, next) {
@@ -74,18 +78,22 @@ const router = new VueRouter({
           component: () => import('@/views/Game.vue'),
           meta: { title: 'game.title' },
         },
+        {
+          path: '404',
+          name: 'not-found',
+          component: () => import('@/views/NotFound.vue'),
+          meta: { title: 'not-found.title' },
+        },
+        {
+          path: '*',
+          name: 'not-found',
+          component: () => import('@/views/NotFound.vue'),
+          meta: { title: 'not-found.title' },
+          beforeEnter: (to) => {
+            window.location = `/${to.params.lang}/404`;
+          },
+        },
       ],
-    },
-    {
-      path: '/',
-      beforeEnter: (to, from, next) => {
-        next(i18n.locale);
-      },
-    },
-    {
-      path: '*',
-      name: 'not-found',
-      component: () => import('@/views/NotFound.vue'),
     },
   ],
 });
