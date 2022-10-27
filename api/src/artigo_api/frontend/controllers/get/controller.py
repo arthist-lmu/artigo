@@ -6,7 +6,7 @@ from django.db.models import Count, F
 from django.core.cache import cache
 from django.core.exceptions import ObjectDoesNotExist
 from frontend.models import *
-from frontend.utils import to_type, is_in
+from frontend.utils import to_boolean, to_type, is_in, media_url_to_image
 from frontend.views.utils import ResourceViewHelper
 from ..utils import get_configs
 
@@ -152,8 +152,12 @@ class GameController:
 
                 return {'type': 'error', 'message': 'invalid_taboos'}
 
-        game = self.merge_to_game(result, resource_ids)
-        # logger.info(f'[Game Controller] Game: {game}')
+        game = self.merge_to_game(
+            result,
+            resource_ids,
+            query['retrieve_metadata'],
+        )
+        logger.info(f'[Game Controller] Game: {game}')
 
         try:
             game_type, _ = GameType.objects \
@@ -280,16 +284,35 @@ class GameController:
                             key = key.strip()[:-2]
 
                         key = key.split('_', 1)[-1]
-                        if key == 'type': continue
 
-                        result[plugin_options][key] = to_type(value)
+                        if key.lower() != 'type':
+                            result[plugin_options][key] = to_type(value)
+
+        value = query.get('retrieve_metadata', False)
+        result['retrieve_metadata'] = to_boolean(value)
 
         return dict(result)
 
-    def merge_to_game(self, result, resource_ids):
+    def merge_to_game(self, result, resource_ids, retrieve_metadata=False):
         game = defaultdict(dict)
 
-        resources = ResourceView()(resource_ids)
+        if retrieve_metadata:
+            resources = ResourceView()(resource_ids)
+        else:
+            resources = Resource.objects \
+                .filter(id__in=resource_ids) \
+                .values(
+                    'id',
+                    'hash_id',
+                )
+
+            resources = {
+                str(x['id']): {
+                    'resource_id': str(x['id']),
+                    'path': media_url_to_image(x['hash_id']),
+                }
+                for x in list(resources)
+            }
 
         for key, values in result.items():
             for value in values:

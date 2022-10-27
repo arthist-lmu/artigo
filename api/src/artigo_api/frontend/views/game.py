@@ -5,8 +5,8 @@ from rest_framework.response import Response
 from rest_framework.exceptions import APIException
 from drf_spectacular.utils import extend_schema, OpenApiParameter
 from frontend.controllers import (
-    game_controller_switch,
-    input_controller_switch,
+    get_controller_switch,
+    post_controller_switch,
 )
 
 logger = logging.getLogger(__name__)
@@ -118,6 +118,12 @@ class GameView(APIView):
                     },
                 },
             ),
+            OpenApiParameter(
+                description='Retrieve metadata of resources',
+                name='retrieve_metadata',
+                type='boolean',
+                default=False,
+            ),
         ],
         responses={
             200: {
@@ -152,7 +158,7 @@ class GameView(APIView):
         if not request.user.is_authenticated:
             raise APIException('not_authenticated')
 
-        result = game_controller_switch(request)
+        result = get_controller_switch(request)
 
         if result.get('type', 'error') == 'error':
             message = result.get('message', 'unknown_error')
@@ -165,7 +171,7 @@ class GameView(APIView):
         if not request.user.is_authenticated:
             raise APIException('not_authenticated')
 
-        result = input_controller_switch(request)
+        result = post_controller_switch(request)
 
         if result.get('type', 'error') == 'error':
             message = result.get('message', 'unknown_error')

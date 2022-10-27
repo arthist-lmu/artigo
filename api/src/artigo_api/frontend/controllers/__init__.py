@@ -1,2 +1,2 @@
-from .game import switch as game_controller_switch
-from .input import switch as input_controller_switch
+from .get import switch as get_controller_switch
+from .post import switch as post_controller_switch

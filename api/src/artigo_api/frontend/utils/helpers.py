@@ -19,6 +19,15 @@ def to_float(value, default=1.0):
     return default
 
 
+def to_boolean(value, default=False):
+    try:
+        return str(value).lower() in ('true')
+    except:
+        pass
+
+    return default
+
+
 def to_type(value):
     try:
         return json.loads(value)
