@@ -46,7 +46,7 @@ services:
     image: arthistlmu/artigo_search:latest
     volumes:
       - type: bind
-        source: ./dump/
+        source: ./dump_production/
         target: /dump
     working_dir: /search/src/artigo_search
     environment:
@@ -65,7 +65,7 @@ services:
         source: ./media/
         target: /media
       - type: bind
-        source: ./dump/
+        source: ./dump_production/
         target: /dump
     working_dir: /api/src/artigo_api
     environment:

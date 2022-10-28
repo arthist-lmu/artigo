@@ -46,7 +46,7 @@ services:
     image: arthistlmu/artigo_search:master
     volumes:
       - type: bind
-        source: ./dump/
+        source: ./dump_testing/
         target: /dump
     working_dir: /search/src/artigo_search
     environment:
@@ -65,7 +65,7 @@ services:
         source: ./media/
         target: /media
       - type: bind
-        source: ./dump/
+        source: ./dump_testing/
         target: /dump
     working_dir: /api/src/artigo_api
     environment:
@@ -76,7 +76,7 @@ services:
       - redisai
       - memcached
     env_file:
-      - ./.env
+      - ./.testing_api.env
     ports:
       - "8001:8000"
     labels:
