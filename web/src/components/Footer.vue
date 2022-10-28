@@ -2,6 +2,7 @@
   <v-footer
     ref="footer"
     :dark="dark"
+    :style="$vuetify.breakpoint.mdAndDown ? undefined : 'padding: 0 12px;'"
     padless
     fixed
     inset
@@ -9,13 +10,13 @@
   >
     <v-container
       :class="{
-        'px-7': isMdAndDown,
+        'px-7': $vuetify.breakpoint.mdAndDown,
         transparent: hasOpacity,
       }"
     >
       <v-row>
         <v-col
-          :cols="isMdAndDown ? '4' : '6'"
+          :cols="$vuetify.breakpoint.mdAndDown ? '3' : '6'"
           align="left"
         >
           <v-btn
@@ -34,7 +35,7 @@
           </v-btn>
 
           <v-chip
-            v-if="!isMdAndDown"
+            v-if="!$vuetify.breakpoint.mdAndDown"
             style="background-color: transparent;"
             class="ml-2"
             small
@@ -44,10 +45,11 @@
         </v-col>
 
         <v-col
-          :cols="isMdAndDown ? '8' : '6'"
+          :cols="$vuetify.breakpoint.mdAndDown ? '9' : '6'"
           align="right"
         >
           <v-btn
+            v-if="!$vuetify.breakpoint.mdAndDown"
             :href="api"
             target="_blank"
             small
@@ -115,9 +117,6 @@ export default {
     hasOpacity() {
       const names = ['home', 'game', 'session'];
       return names.includes(this.$route.name);
-    },
-    isMdAndDown() {
-      return this.$vuetify.breakpoint.mdAndDown;
     },
   },
   beforeDestroy() {

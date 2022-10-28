@@ -71,14 +71,6 @@
       "no-results": "Für Deine Suchanfrage konnten keine Ergebnisse gefunden werden."
     }
   },
-  "sessions": {
-    "title": "Spielsitzungen",
-    "fields": {
-      "of": "von",
-      "query": "Nach Spielsitzungen suchen",
-      "no-results": "Es konnten keine Spielsitzungen gefunden werden."
-    }
-  },
   "reconcile": {
     "title": "Metadaten abgleichen",
     "fields": {
@@ -170,6 +162,7 @@
       "opponents": {
         "title": "Gegen wen möchtest Du spielen?",
         "fields": {
+          "no_opponents": "Niemanden",
           "mean_gameround_opponent": "Durchschnittliche Gegner:innen",
           "random_gameround_opponent": "Zufällig ausgewählte Gegner:innen"
         }
@@ -237,6 +230,21 @@
       "images": "Bilder",
       "per-image": "pro Bild",
       "filter-tags": "Filtere nach vergebenen Schlagwörtern"
+    }
+  },
+  "sessions": {
+    "title": "Spielsitzungen",
+    "fields": {
+      "of": "von",
+      "query": "Nach Spielsitzungen suchen",
+      "no-results": "Es konnten keine Spielsitzungen gefunden werden."
+    }
+  },
+  "not-found": {
+    "title": "Ups, 404",
+    "fields": {
+      "not-exist": "Die gesuchte Seite existiert (noch) nicht",
+      "go-home": "Bring mich weg von hier"
     }
   },
   "messages": {

@@ -43,23 +43,19 @@
 
       <v-divider v-if="!isAnonymous" />
 
-      <v-list-item
-        v-if="isAnonymous && isMobile"
-        @click="dialog.register = true"
-      >
-        <v-list-item-content>
-          {{ $t("user.register.title") }}
-        </v-list-item-content>
-      </v-list-item>
+      <template v-if="isAnonymous && $vuetify.breakpoint.mobile">
+        <v-list-item @click="dialog.register = true">
+          <v-list-item-content>
+            {{ $t("user.register.title") }}
+          </v-list-item-content>
+        </v-list-item>
 
-      <v-list-item
-        v-if="isAnonymous && isMobile"
-        @click="dialog.login = true"
-      >
-        <v-list-item-content>
-          {{ $t("user.login.title") }}
-        </v-list-item-content>
-      </v-list-item>
+        <v-list-item @click="dialog.login = true">
+          <v-list-item-content>
+            {{ $t("user.login.title") }}
+          </v-list-item-content>
+        </v-list-item>
+      </template>
 
       <template v-if="!isAnonymous">
         <v-list-item
@@ -152,9 +148,6 @@ export default {
         return this.data.email.slice(0, 2);
       }
       return '';
-    },
-    isMobile() {
-      return this.$vuetify.breakpoint.mobile;
     },
     isAnonymous() {
       return this.$store.state.user.isAnonymous;

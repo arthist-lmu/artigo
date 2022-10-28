@@ -21,12 +21,11 @@
       :title="title"
       class="ml-4"
     >
-      <template v-if="isSmAndDown">
+      <template v-if="$vuetify.breakpoint.smAndDown">
         <v-icon>
           {{ icon }}
         </v-icon>
       </template>
-
       <template v-else>
         <div class="text-subtitle-1 grey--text text--darken-4">
           {{ title }}
@@ -62,11 +61,6 @@ export default {
     return {
       progress: 0,
     };
-  },
-  computed: {
-    isSmAndDown() {
-      return this.$vuetify.breakpoint.smAndDown;
-    },
   },
   created() {
     setTimeout(() => {

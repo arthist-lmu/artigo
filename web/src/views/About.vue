@@ -2,19 +2,22 @@
   <v-container>
     <GameDrawer />
 
-    <v-row ref="filler"></v-row>
+    <v-row
+      v-if="!$vuetify.breakpoint.mdAndDown"
+      ref="filler"
+    />
 
     <v-row ref="summary">
-      <v-col class="pa-12">
-        <div class="text-h2 accent--text">
+      <v-col :class="$vuetify.breakpoint.mdAndDown ? 'px-1 py-6' : 'pa-12'">
+        <div :class="[$vuetify.breakpoint.mdAndDown ? 'text-h3' : 'text-h2', 'accent--text']">
           {{ $t("about.fields.summary", { images, taggings, users }) }}
         </div>
       </v-col>
     </v-row>
 
     <v-row>
-      <v-col class="pa-12">
-        <div class="text-h2 accent--text mb-6">
+      <v-col :class="$vuetify.breakpoint.mdAndDown ? 'px-1 py-6' : 'pa-12'">
+        <div :class="[$vuetify.breakpoint.mdAndDown ? 'text-h3' : 'text-h2', 'accent--text mb-6']">
           {{ $t("contributors.title") }}
         </div>
 
@@ -23,8 +26,8 @@
     </v-row>
 
     <v-row>
-      <v-col class="pa-12">
-        <div class="text-h2 accent--text mb-6">
+      <v-col :class="$vuetify.breakpoint.mdAndDown ? 'px-1 py-6' : 'pa-12'">
+        <div :class="[$vuetify.breakpoint.mdAndDown ? 'text-h3' : 'text-h2', 'accent--text mb-6']">
           {{ $t("publications.title") }}
         </div>
 
@@ -80,5 +83,9 @@ export default {
 <style scoped>
 .text-h2 {
   line-height: 4.75rem;
+}
+
+.text-h3 {
+  line-height: 3.75rem;
 }
 </style>

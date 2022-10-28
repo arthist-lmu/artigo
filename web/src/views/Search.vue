@@ -6,8 +6,7 @@
       :items="entries"
       :items-per-page.sync="itemsPerPage"
       :page.sync="page"
-      class="d-flex flex-column"
-      :class="isMobile ? 'mx-n2' : undefined"
+      :class="[$vuetify.breakpoint.mobile ? 'mx-n2' : undefined, 'd-flex flex-column']"
       hide-default-footer
     >
       <template v-slot:default="props">
@@ -75,9 +74,6 @@ export default {
         case 'lg': return 4;
         default: return 3;
       }
-    },
-    isMobile() {
-      return this.$vuetify.breakpoint.mobile;
     },
   },
   mounted() {

@@ -26,7 +26,7 @@
         <v-spacer />
 
         <v-col
-          v-if="!(dark || isMobile || isSearch)"
+          v-if="!(dark || $vuetify.breakpoint.mobile || isSearch)"
           cols="4"
         >
           <SearchBar />
@@ -37,7 +37,7 @@
           align="right"
         >
           <MobileMenu
-            v-if="isMobile"
+            v-if="$vuetify.breakpoint.mobile"
             :dark="dark"
           />
           <DesktopMenu
@@ -71,9 +71,6 @@ export default {
     },
     isSearch() {
       return this.$route.name === 'search';
-    },
-    isMobile() {
-      return this.$vuetify.breakpoint.mobile;
     },
     hasOpacity() {
       const pages = ['game', 'session'];

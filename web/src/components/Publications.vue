@@ -19,7 +19,10 @@
             :key="value.title"
             class="px-6"
           >
-            <v-col cols="auto">
+            <v-col
+              v-if="!$vuetify.breakpoint.mdAndDown"
+              cols="auto"
+            >
               <v-avatar
                 color="grey lighten-2"
                 size="36"

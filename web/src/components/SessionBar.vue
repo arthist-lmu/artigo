@@ -34,7 +34,10 @@
             </v-icon>
           </v-btn>
 
-          <span>
+          <span
+            v-if="!$vuetify.breakpoint.mdAndDown"
+            class="mr-1"
+          >
             {{ offset + 1 }}–{{ offset + entries.length }}
             {{ $t('sessions.fields.of') }} {{ total }}
           </span>

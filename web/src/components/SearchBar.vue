@@ -122,14 +122,17 @@
             </v-icon>
           </v-btn>
 
-          <span>
+          <span
+            v-if="!$vuetify.breakpoint.mdAndDown"
+            class="mr-1"
+          >
             {{ offset + 1 }}–{{ offset + entries.length }}
             {{ $t('search.fields.of') }} {{ total }}
           </span>
 
           <v-btn
             @click.stop="nextPage"
-            class="ml-1 mr-n3"
+            class="mr-n3"
             :disabled="page >= numberOfPages"
             icon
           >
