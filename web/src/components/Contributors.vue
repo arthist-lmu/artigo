@@ -44,7 +44,9 @@
           outlined
           dark
         >
-          {{ person.name }}
+          <span class="clip">
+            {{ person.name }}
+          </span>
         </v-chip>
       </template>
     </span>

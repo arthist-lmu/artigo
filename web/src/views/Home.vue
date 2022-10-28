@@ -7,9 +7,9 @@
     <v-row style="flex: 0;">
       <v-col
         class="pa-12"
-        :cols="isMdAndDown ? '12' : '10'"
+        :cols="$vuetify.breakpoint.mdAndDown ? 12 : 10"
       >
-        <div :class="[isMdAndDown ? 'text-h3' : 'text-h2', 'accent--text']">
+        <div :class="[$vuetify.breakpoint.mdAndDown ? 'text-h3' : 'text-h2', 'accent--text']">
           <Typer
             @onComplete="show('creator')"
             :strings="[$t('home.texts.intro')]"
@@ -141,9 +141,6 @@ export default {
         this.$t('home.texts.example-5'),
         this.$t('home.texts.example-1'),
       ];
-    },
-    isMdAndDown() {
-      return this.$vuetify.breakpoint.mdAndDown;
     },
   },
   watch: {

@@ -2,6 +2,7 @@
   <v-footer
     ref="footer"
     :dark="dark"
+    :style="$vuetify.breakpoint.mdAndDown ? undefined : 'padding: 0 12px;'"
     padless
     fixed
     inset

@@ -44,10 +44,6 @@ span.clip.w100 {
   width: 100%;
 }
 
-.v-footer.v-footer--inset.theme--dark  {
-  padding: 0 12px;
-}
-
 .v-footer.v-footer--inset:not(.theme--dark ) {
   background-color: rgb(247, 248, 251);
 }
@@ -115,6 +111,10 @@ span.clip.w100 {
   overflow-x: hidden;
   overflow-y: scroll;
   max-height: 73px;
+}
+
+.v-expansion-panel-header {
+  line-height: 1.25 !important;
 }
 
 .v-expansion-panel-header > :not(.v-expansion-panel-header__icon) {

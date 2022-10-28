@@ -1,5 +1,5 @@
 <template>
-  <v-container class="px-0">
+  <v-container :class="{ 'px-0': $vuetify.breakpoint.mdAndDown }">
     <v-row class="mt-2 mx-n3">
       <v-col cols="4">
         <SetCard
