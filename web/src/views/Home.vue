@@ -1,12 +1,15 @@
 <template>
   <v-container v-if="creators">
-    <GameDrawer ref="drawer"/>
+    <GameDrawer
+      v-model="drawer"
+      ref="drawer"
+    />
 
     <v-row></v-row>
 
     <v-row style="flex: 0;">
       <v-col
-        class="pa-12"
+        :class="$vuetify.breakpoint.mdAndDown ? 'px-1 py-6' : 'pa-12'"
         :cols="$vuetify.breakpoint.mdAndDown ? 12 : 10"
       >
         <div :class="[$vuetify.breakpoint.mdAndDown ? 'text-h3' : 'text-h2', 'accent--text']">
@@ -62,7 +65,7 @@
         style="flex: 0;"
       >
         <v-col
-          class="px-12 pt-0 pb-12"
+          :class="[$vuetify.breakpoint.mdAndDown ? 'px-1 pb-6' : 'px-12 pb-12', 'pt-0']"
           cols="10"
         >
           <v-btn
@@ -97,6 +100,7 @@
 export default {
   data() {
     return {
+      drawer: false,
       dialog: {
         creator: false,
         prefix: false,
@@ -120,9 +124,12 @@ export default {
       this.$store.dispatch('search/post', { query });
     },
     goToGame() {
-      const values = { show: true, params: {} };
-      this.$store.commit('game/updateDialog', values);
-      this.$router.push({ name: 'game' });
+      if (!this.$vuetify.breakpoint.mdAndDown) {
+        const values = { show: true, params: {} };
+        this.$store.commit('game/updateDialog', values);
+        this.$router.push({ name: 'game' });
+      }
+      this.drawer = true;
     },
   },
   computed: {

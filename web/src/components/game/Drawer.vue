@@ -1,6 +1,6 @@
 <template>
   <v-navigation-drawer
-    v-model="drawer"
+    v-model="value"
     :permanent="isPermanent"
     :width="width"
     app
@@ -40,9 +40,14 @@
 
 <script>
 export default {
+  props: {
+    value: {
+      type: Boolean,
+      required: false,
+    },
+  },
   data() {
     return {
-      drawer: false,
       width: 350,
     };
   },
@@ -60,11 +65,11 @@ export default {
     },
   },
   watch: {
-    isPermanent: {
-      handler(value) {
-        this.drawer = !value;
-      },
-      immediate: true,
+    value() {
+      this.$emit('input', this.value);
+    },
+    isPermanent(value) {
+      this.$emit('input', !value);
     },
   },
   mounted() {
