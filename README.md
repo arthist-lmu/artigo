@@ -13,9 +13,9 @@
 </p>
 
 
-[![Docker Web Build](https://github.com/arthist-lmu/artigo/actions/workflows/docker-web.yml/badge.svg)](https://github.com/arthist-lmu/artigo/actions/workflows/docker-web.yml)
-[![Docker Api Build](https://github.com/arthist-lmu/artigo/actions/workflows/docker-api.yml/badge.svg)](https://github.com/arthist-lmu/artigo/actions/workflows/docker-api.yml)
-[![Docker Search Build](https://github.com/arthist-lmu/artigo/actions/workflows/docker-search.yml/badge.svg)](https://github.com/arthist-lmu/artigo/actions/workflows/docker-search.yml)
+[![Web Testing](https://github.com/arthist-lmu/artigo/actions/workflows/build-web-testing.yml/badge.svg)](https://github.com/arthist-lmu/artigo/actions/workflows/build-web-testing.yml)
+[![Api Testing](https://github.com/arthist-lmu/artigo/actions/workflows/build-api-testing.yml/badge.svg)](https://github.com/arthist-lmu/artigo/actions/workflows/build-api-testing.yml)
+[![Search Testing](https://github.com/arthist-lmu/artigo/actions/workflows/build-search-testing.yml/badge.svg)](https://github.com/arthist-lmu/artigo/actions/workflows/build-search-testing.yml)
 
 ## Development setup
 
