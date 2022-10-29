@@ -1,6 +1,6 @@
 <template>
   <v-navigation-drawer
-    v-model="value"
+    v-model="drawer"
     :permanent="isPermanent"
     :width="width"
     app
@@ -48,6 +48,7 @@ export default {
   },
   data() {
     return {
+      drawer: false,
       width: 350,
     };
   },
@@ -66,7 +67,10 @@ export default {
   },
   watch: {
     value() {
-      this.$emit('input', this.value);
+      this.drawer = this.value;
+    },
+    drawer(value) {
+      this.$emit('input', value);
     },
     isPermanent(value) {
       this.$emit('input', !value);

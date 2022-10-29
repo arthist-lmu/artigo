@@ -9,7 +9,7 @@
 
     <v-row ref="summary">
       <v-col :class="$vuetify.breakpoint.mdAndDown ? 'px-1 py-6' : 'pa-12'">
-        <div :class="[$vuetify.breakpoint.mdAndDown ? 'text-h3' : 'text-h2', 'accent--text']">
+        <div :class="textSize">
           {{ $t("about.fields.summary", { images, taggings, users }) }}
         </div>
       </v-col>
@@ -17,7 +17,7 @@
 
     <v-row>
       <v-col :class="$vuetify.breakpoint.mdAndDown ? 'px-1 py-6' : 'pa-12'">
-        <div :class="[$vuetify.breakpoint.mdAndDown ? 'text-h3' : 'text-h2', 'accent--text mb-6']">
+        <div :class="textSize">
           {{ $t("contributors.title") }}
         </div>
 
@@ -27,7 +27,7 @@
 
     <v-row>
       <v-col :class="$vuetify.breakpoint.mdAndDown ? 'px-1 py-6' : 'pa-12'">
-        <div :class="[$vuetify.breakpoint.mdAndDown ? 'text-h3' : 'text-h2', 'accent--text mb-6']">
+        <div :class="textSize">
           {{ $t("publications.title") }}
         </div>
 
@@ -40,6 +40,21 @@
 <script>
 export default {
   computed: {
+    textSize() {
+      const values = ['accent--text', 'mb-6'];
+      switch (this.$vuetify.breakpoint.name) {
+        case 'xs':
+          values.push('text-h4');
+          break;
+        case 'sm':
+          values.push('text-h3');
+          break;
+        default:
+          values.push('text-h2');
+          break;
+      }
+      return values;
+    },
     data() {
       return this.$store.state.statistics.data;
     },
@@ -87,5 +102,9 @@ export default {
 
 .text-h3 {
   line-height: 3.75rem;
+}
+
+.text-h4 {
+  line-height: 2.75rem;
 }
 </style>
