@@ -18,7 +18,7 @@
           src="/assets/images/logo.svg"
           :class="{ dark: dark }"
           style="cursor: pointer;"
-          height="36"
+          height="32"
         />
 
         <GameMenu :dark="dark" />

@@ -12,7 +12,7 @@
         :class="$vuetify.breakpoint.mdAndDown ? 'px-1 py-6' : 'pa-12'"
         :cols="$vuetify.breakpoint.mdAndDown ? 12 : 10"
       >
-        <div :class="[$vuetify.breakpoint.mdAndDown ? 'text-h3' : 'text-h2', 'accent--text']">
+        <div :class="textSize">
           <Typer
             @onComplete="show('creator')"
             :strings="[$t('home.texts.intro')]"
@@ -66,7 +66,7 @@
       >
         <v-col
           :class="[$vuetify.breakpoint.mdAndDown ? 'px-1 pb-6' : 'px-12 pb-12', 'pt-0']"
-          cols="10"
+          :cols="$vuetify.breakpoint.mdAndDown ? 12 : 10"
         >
           <v-btn
             @click="goToGame()"
@@ -133,6 +133,21 @@ export default {
     },
   },
   computed: {
+    textSize() {
+      const values = ['accent--text'];
+      switch (this.$vuetify.breakpoint.name) {
+        case 'xs':
+          values.push('text-h4');
+          break;
+        case 'sm':
+          values.push('text-h3');
+          break;
+        default:
+          values.push('text-h2');
+          break;
+      }
+      return values;
+    },
     data() {
       return this.$store.state.statistics.data;
     },
@@ -199,6 +214,10 @@ export default {
 
 .text-h3 {
   line-height: 3.75rem;
+}
+
+.text-h4 {
+  line-height: 2.75rem;
 }
 
 span.space::before {

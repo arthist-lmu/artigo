@@ -120,7 +120,7 @@ span.clip.w100 {
 }
 
 .v-expansion-panel-header {
-  line-height: 1.25 !important;
+  line-height: 1.5 !important;
 }
 
 .v-expansion-panel-header > :not(.v-expansion-panel-header__icon) {
@@ -165,6 +165,15 @@ span.clip.w100 {
 .v-stepper__step__step .v-stepper__label,
 .v-stepper__step__step .v-stepper__label > small {
   color: rgba(0, 0, 0, 0.16) !important;
+}
+
+.v-stepper__step .v-stepper__label,
+.v-text-field--single-line .v-select__selections {
+  line-height: 1.5 !important;
+}
+
+.v-text-field--single-line .v-select__selections {
+  margin: 5px 0;
 }
 
 .v-stepper__content.active .v-stepper__wrapper {

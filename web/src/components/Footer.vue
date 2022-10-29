@@ -25,7 +25,8 @@
             :color="dark ? 'accent' : 'primary'"
             depressed
             rounded
-            small
+            :small="!$vuetify.breakpoint.mdAndDown"
+            :x-small="$vuetify.breakpoint.mdAndDown"
           >
             <v-icon left>
               mdi-information-outline
@@ -52,7 +53,8 @@
             v-if="!$vuetify.breakpoint.mdAndDown"
             :href="api"
             target="_blank"
-            small
+            :small="!$vuetify.breakpoint.mdAndDown"
+            :x-small="$vuetify.breakpoint.mdAndDown"
             icon
           >
             <v-icon>
@@ -68,7 +70,8 @@
             color="grey lighten-2"
             outlined
             rounded
-            small
+            :small="!$vuetify.breakpoint.mdAndDown"
+            :x-small="$vuetify.breakpoint.mdAndDown"
           >
             {{ $t(`${page}.title`) }}
           </v-btn>

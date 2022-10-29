@@ -83,8 +83,8 @@ export default {
 
 <style scoped>
 .play {
-  margin-left: -58px;
-  width: 48px;
+  margin-left: -48px;
+  width: 36px;
 }
 
 .play::before {
