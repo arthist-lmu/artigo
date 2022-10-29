@@ -1,7 +1,8 @@
-name: Docker Web Build
+name: build web production
 
 on:
-  workflow_dispatch:
+  release:
+    types: [published]
 
 env:
   IMAGE_NAME: arthistlmu/artigo
@@ -9,7 +10,7 @@ env:
 jobs:
   build-and-push-image:
     runs-on: ubuntu-latest
-    environment: build
+    environment: production
     permissions:
       contents: read
       packages: write

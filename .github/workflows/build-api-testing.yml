@@ -1,4 +1,4 @@
-name: Docker Api Build
+name: Api build testing
 
 on:
   workflow_dispatch:
