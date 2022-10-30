@@ -16,13 +16,12 @@ logger = logging.getLogger(__name__)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 where = os.getenv('WHERE')
+env = environ.Env(DEBUG=(bool, False))
 if where is None:
     logging.info('Running unconfined')
-    env = environ.Env(DEBUG=(bool, False))
     environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 elif where is 'dev':
     logging.info('Running in dev environment')
-    env = environ.Env(DEBUG=(bool, False))
     environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 elif where is 'production':
     logging.info('Running in prodution environment')
