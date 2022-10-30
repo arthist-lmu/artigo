@@ -25,8 +25,10 @@ elif where is 'dev':
     environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 elif where is 'production':
     logging.info('Running in prodution environment')
+    environ.Env.read_env(os.path.join(BASE_DIR, '.production_api.env'))
 elif where is 'testing':
     logging.info('Running in testing environment')
+    environ.Env.read_env(os.path.join(BASE_DIR, '.testing_api.env'))
 
 
 # Quick-start development settings - unsuitable for production
