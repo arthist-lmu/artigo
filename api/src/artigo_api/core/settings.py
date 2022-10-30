@@ -15,20 +15,18 @@ from datetime import timedelta
 logger = logging.getLogger(__name__)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-where = os.getenv('WHERE')
+where_var = os.getenv('WHERE')
 env = environ.Env(DEBUG=(bool, False))
-if where is None:
-    logging.info('Running unconfined')
-    environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
-elif where is 'dev':
+if where_var == 'dev':
     logging.info('Running in dev environment')
     environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
-elif where is 'production':
+elif where_var == 'production':
     logging.info('Running in prodution environment')
-    environ.Env.read_env(os.path.join(BASE_DIR, '.production_api.env'))
-elif where is 'testing':
+elif where_var == 'testing':
     logging.info('Running in testing environment')
-    environ.Env.read_env(os.path.join(BASE_DIR, '.testing_api.env'))
+else:
+    logging.info('Running unconfined')
+    environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 
 
 # Quick-start development settings - unsuitable for production
