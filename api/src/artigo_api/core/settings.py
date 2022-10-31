@@ -13,10 +13,21 @@ import logging
 from datetime import timedelta
 
 logger = logging.getLogger(__name__)
-env = environ.Env(DEBUG=(bool, False))
-
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
+
+where_var = os.getenv('WHERE')
+env = environ.Env(DEBUG=(bool, False))
+if where_var == 'dev':
+    logging.info('Running in dev environment')
+    environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
+elif where_var == 'production':
+    logging.info('Running in prodution environment')
+elif where_var == 'testing':
+    logging.info('Running in testing environment')
+else:
+    logging.info('Running unconfined')
+    environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
+
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.1/howto/deployment/checklist/
