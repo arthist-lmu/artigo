@@ -21,23 +21,16 @@
       :title="title"
       class="ml-4"
     >
-      <template v-if="$vuetify.breakpoint.smAndDown">
-        <v-icon>
-          {{ icon }}
-        </v-icon>
-      </template>
-      <template v-else>
-        <div class="text-subtitle-1 grey--text text--darken-4">
-          {{ title }}
-        </div>
+      <div class="text-subtitle-1 grey--text text--darken-4">
+        {{ title }}
+      </div>
 
-        <div
-          v-if="subvalue > 0"
-          class="mt-n2 text-caption grey--text"
-        >
-          {{ subvalue }} {{ subtitle }}
-        </div>
-      </template>
+      <div
+        v-if="subvalue > 0"
+        class="mt-n2 text-caption grey--text"
+      >
+        {{ subvalue }} {{ subtitle }}
+      </div>
     </div>
   </v-alert>
 </template>

@@ -37,7 +37,7 @@
               justify="end"
             >
               <v-col
-                class="pt-1"
+                class="pt-2"
                 cols="auto"
               >
                 <v-icon

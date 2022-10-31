@@ -40,7 +40,7 @@
             v-if="$vuetify.breakpoint.mobile"
             :dark="dark"
           />
-          <DesktopMenu
+          <DefaultMenu
             v-else
             :dark="dark"
           />
@@ -79,10 +79,10 @@ export default {
   },
   components: {
     SearchBar: () => import('@/components/SearchBar.vue'),
-    MobileMenu: () => import('@/components/MobileMenu.vue'),
-    DesktopMenu: () => import('@/components/DesktopMenu.vue'),
+    DefaultMenu: () => import('@/components/menu/Default.vue'),
+    MobileMenu: () => import('@/components/menu/Mobile.vue'),
     GameMenu: () => import('@/components/game/Menu.vue'),
-    UserMenu: () => import('@/components/UserMenu.vue'),
+    UserMenu: () => import('@/components/user/Menu.vue'),
   },
 };
 </script>

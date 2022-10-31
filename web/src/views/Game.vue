@@ -1,7 +1,7 @@
 <template>
   <v-container
     v-if="!dialog"
-    class="mt-8"
+    :class="[$vuetify.breakpoint.mdAndDown ? 'mobile px-1' : undefined, 'mt-8']"
     style="position: relative; height: calc(100% - 22px);"
   >
     <v-fade-transition>
@@ -25,32 +25,31 @@
         <v-row>
           <v-col
             class="py-0"
-            cols="8"
+            :cols="$vuetify.breakpoint.mdAndDown ? 12 : 8"
           >
             <ROICanvas
               v-if="gameType === 'roi'"
               tool="brush"
               :entry="entry"
               :params="params"
-              @load="onLoad"
+              @load="load"
               @error="next"
             />
             <DefaultCanvas
               v-else
               :entry="entry"
               :params="params"
-              @load="onLoad"
+              @load="load"
               @error="next"
             />
           </v-col>
 
           <v-col
             class="py-0"
-            cols="4"
+            :cols="$vuetify.breakpoint.mdAndDown ? 12 : 4"
           >
             <TaggingSidebar
               v-if="gameType === 'tagging'"
-              :key="path"
               :entry="entry"
               :params="params"
               :seconds="seconds"
@@ -58,7 +57,6 @@
             />
             <DefaultSidebar
               v-else
-              :key="path"
               :entry="entry"
               :params="params"
               :seconds="seconds"
@@ -135,11 +133,11 @@ export default {
   },
   components: {
     Progress: () => import('@/components/game/Progress.vue'),
+    Countdown: () => import('@/components/Countdown.vue'),
     DefaultCanvas: () => import('@/components/game/canvas/Default.vue'),
     ROICanvas: () => import('@/components/game/canvas/ROI.vue'),
     DefaultSidebar: () => import('@/components/game/sidebar/Default.vue'),
     TaggingSidebar: () => import('@/components/game/sidebar/Tagging.vue'),
-    Countdown: () => import('@/components/Countdown.vue'),
   },
 };
 </script>
@@ -147,5 +145,9 @@ export default {
 <style scoped>
 .container div:not([role=progressbar]) {
   height: 100%;
+}
+
+.container.mobile .row {
+  height: 50%;
 }
 </style>

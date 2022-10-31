@@ -1,7 +1,7 @@
 <template>
   <v-container :class="{ 'px-0': $vuetify.breakpoint.mdAndDown }">
     <v-row class="mt-2 mx-n3">
-      <v-col cols="4">
+      <v-col :cols="$vuetify.breakpoint.smAndDown ? 12 : 4">
         <SetCard
           icon="mdi-image-outline"
           :title="$t('session.fields.images')"
@@ -9,7 +9,10 @@
         />
       </v-col>
 
-      <v-col cols="4">
+      <v-col
+        :cols="$vuetify.breakpoint.smAndDown ? 12 : 4"
+        :class="$vuetify.breakpoint.smAndDown ? 'pt-0' : undefined"
+      >
         <SetCard
           icon="mdi-tag-outline"
           :title="$t('session.fields.tags')"
@@ -19,7 +22,10 @@
         />
       </v-col>
 
-      <v-col cols="4">
+      <v-col
+        :cols="$vuetify.breakpoint.smAndDown ? 12 : 4"
+        :class="$vuetify.breakpoint.smAndDown ? 'pt-0' : undefined"
+      >
         <SetCard
           icon="mdi-star-outline"
           :title="$t('session.fields.score')"
