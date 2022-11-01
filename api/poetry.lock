@@ -40,7 +40,7 @@ python-versions = ">=3.5"
 dev = ["cloudpickle", "coverage[toml] (>=5.0.2)", "furo", "hypothesis", "mypy (>=0.900,!=0.940)", "pre-commit", "pympler", "pytest (>=4.3.0)", "pytest-mypy-plugins", "sphinx", "sphinx-notfound-page", "zope.interface"]
 docs = ["furo", "sphinx", "sphinx-notfound-page", "zope.interface"]
 tests = ["cloudpickle", "coverage[toml] (>=5.0.2)", "hypothesis", "mypy (>=0.900,!=0.940)", "pympler", "pytest (>=4.3.0)", "pytest-mypy-plugins", "zope.interface"]
-tests_no_zope = ["cloudpickle", "coverage[toml] (>=5.0.2)", "hypothesis", "mypy (>=0.900,!=0.940)", "pympler", "pytest (>=4.3.0)", "pytest-mypy-plugins"]
+tests-no-zope = ["cloudpickle", "coverage[toml] (>=5.0.2)", "hypothesis", "mypy (>=0.900,!=0.940)", "pympler", "pytest (>=4.3.0)", "pytest-mypy-plugins"]
 
 [[package]]
 name = "backports.zoneinfo"
@@ -162,7 +162,7 @@ optional = false
 python-versions = ">=3.6.0"
 
 [package.extras]
-unicode_backport = ["unicodedata2"]
+unicode-backport = ["unicodedata2"]
 
 [[package]]
 name = "click"
@@ -289,11 +289,11 @@ Django = ">=2.0"
 djangorestframework = ">=3.7.0"
 
 [package.extras]
-with_social = ["django-allauth (>=0.40.0,<0.51.0)"]
+with-social = ["django-allauth (>=0.40.0,<0.51.0)"]
 
 [[package]]
-name = "Django"
-version = "4.1.2"
+name = "django"
+version = "4.1.3"
 description = "A high-level Python web framework that encourages rapid development and clean, pragmatic design."
 category = "main"
 optional = false
@@ -526,9 +526,9 @@ python-versions = ">=3.6.1,<4.0"
 
 [package.extras]
 colors = ["colorama (>=0.4.3,<0.5.0)"]
-pipfile_deprecated_finder = ["pipreqs", "requirementslib"]
+pipfile-deprecated-finder = ["pipreqs", "requirementslib"]
 plugins = ["setuptools"]
-requirements_deprecated_finder = ["pip-api", "pipreqs"]
+requirements-deprecated-finder = ["pip-api", "pipreqs"]
 
 [[package]]
 name = "jsonschema"
@@ -648,8 +648,8 @@ python-versions = ">=3.8"
 
 [package.dependencies]
 numpy = [
-    {version = ">=1.21.0", markers = "python_version >= \"3.10\""},
     {version = ">=1.20.3", markers = "python_version < \"3.10\""},
+    {version = ">=1.21.0", markers = "python_version >= \"3.10\""},
 ]
 python-dateutil = ">=2.8.1"
 pytz = ">=2020.1"
@@ -947,7 +947,7 @@ urllib3 = ">=1.21.1,<1.27"
 
 [package.extras]
 socks = ["PySocks (>=1.5.6,!=1.5.7)"]
-use_chardet_on_py3 = ["chardet (>=3.0.2,<6)"]
+use-chardet-on-py3 = ["chardet (>=3.0.2,<6)"]
 
 [[package]]
 name = "requests-oauthlib"
@@ -1094,7 +1094,7 @@ testing = ["flake8 (<5)", "func-timeout", "jaraco.functools", "jaraco.itertools"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "399167c508c2196f43ff4c6998300a12aed8d9b1c8e272c3087696384aac12ee"
+content-hash = "dfe0109177ad7cd848dea38b0cd937fd5ae403a2156c2e874a69553f18828a47"
 
 [metadata.files]
 amqp = [
@@ -1347,9 +1347,9 @@ Deprecated = [
 dj-rest-auth = [
     {file = "dj-rest-auth-2.2.5.tar.gz", hash = "sha256:c9a0dd9c79c33a2d4c723d1e4c1a60ab4657b6333aa2539b6781fe25a01c41b6"},
 ]
-Django = [
-    {file = "Django-4.1.2-py3-none-any.whl", hash = "sha256:26dc24f99c8956374a054bcbf58aab8dc0cad2e6ac82b0fe036b752c00eee793"},
-    {file = "Django-4.1.2.tar.gz", hash = "sha256:b8d843714810ab88d59344507d4447be8b2cf12a49031363b6eed9f1b9b2280f"},
+django = [
+    {file = "Django-4.1.3-py3-none-any.whl", hash = "sha256:6b1de6886cae14c7c44d188f580f8ba8da05750f544c80ae5ad43375ab293cd5"},
+    {file = "Django-4.1.3.tar.gz", hash = "sha256:678bbfc8604eb246ed54e2063f0765f13b321a50526bdc8cb1f943eda7fa31f1"},
 ]
 django-allauth = [
     {file = "django-allauth-0.51.0.tar.gz", hash = "sha256:ca1622733b6faa591580ccd3984042f12d8c79ade93438212de249b7ffb6f91f"},
