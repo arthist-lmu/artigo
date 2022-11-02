@@ -1,11 +1,3 @@
-'''
-For more information on this file, see
-https://docs.djangoproject.com/en/2.1/topics/settings/
-
-For the full list of settings and their values, see
-https://docs.djangoproject.com/en/2.1/ref/settings/
-'''
-
 import os
 import environ
 import logging
@@ -15,14 +7,14 @@ from datetime import timedelta
 logger = logging.getLogger(__name__)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-where_var = os.getenv('WHERE')
-env = environ.Env()
-if where_var == 'dev':
+environ.Env.read_env(os.path.join(BASE_DIR, '.env'), overwrite=False)
+if env('WHERE') == 'dev':
     logger.info('Running in dev environment')
-    env.read_env(os.path.join(BASE_DIR, '.env'))
-elif where_var == 'production':
+    env.read_env(os.path.dirname(
+        os.path.dirname((os.path.join(BASE_DIR, '.env')))))
+elif env('WHERE') == 'production':
     logger.info('Running in prodution environment')
-elif where_var == 'testing':
+elif env('WHERE') == 'testing':
     logger.info('Running in testing environment')
 else:
     logger.info('Running unconfined')
