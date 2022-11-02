@@ -6,19 +6,28 @@ from datetime import timedelta
 
 logger = logging.getLogger(__name__)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+ENVFILE_PATH = os.path.join(os.path.dirname(
+    os.path.dirname(BASE_DIR)), '.env')
+env = environ.Env(
+    DEBUG=(bool, False),
+)
 
-environ.Env.read_env(os.path.join(BASE_DIR, '.env'), overwrite=False)
-if env('WHERE') == 'dev':
+if os.getenv('WHERE') == 'dev':
     logger.info('Running in dev environment')
-    env.read_env(os.path.dirname(
-        os.path.dirname((os.path.join(BASE_DIR, '.env')))))
+    if os.path.isfile(ENVFILE_PATH):
+        environ.Env.read_env(ENVFILE_PATH, overwrite=False)
+    else:
+        logger.info('No env file found, continuing without')
 elif env('WHERE') == 'production':
     logger.info('Running in prodution environment')
 elif env('WHERE') == 'testing':
     logger.info('Running in testing environment')
 else:
     logger.info('Running unconfined')
-    env.read_env(os.path.join(BASE_DIR, '.env'))
+    if os.path.isfile(ENVFILE_PATH):
+        environ.Env.read_env(ENVFILE_PATH, overwrite=False)
+    else:
+        logger.info('No env file found, continuing without')
 
 
 # Quick-start development settings - unsuitable for production
