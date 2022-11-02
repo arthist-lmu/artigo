@@ -16,17 +16,17 @@ logger = logging.getLogger(__name__)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 where_var = os.getenv('WHERE')
-env = environ.Env(DEBUG=(bool, False))
+env = environ.Env()
 if where_var == 'dev':
-    logging.info('Running in dev environment')
-    environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
+    logger.info('Running in dev environment')
+    env.read_env(os.path.join(BASE_DIR, '.env'))
 elif where_var == 'production':
-    logging.info('Running in prodution environment')
+    logger.info('Running in prodution environment')
 elif where_var == 'testing':
-    logging.info('Running in testing environment')
+    logger.info('Running in testing environment')
 else:
-    logging.info('Running unconfined')
-    environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
+    logger.info('Running unconfined')
+    env.read_env(os.path.join(BASE_DIR, '.env'))
 
 
 # Quick-start development settings - unsuitable for production
