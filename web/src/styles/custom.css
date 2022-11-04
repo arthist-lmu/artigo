@@ -115,7 +115,7 @@ span.clip.w100 {
 
 .v-select.v-select--chips.v-input--dense .v-select__selections {
   overflow-x: hidden;
-  overflow-y: scroll;
+  overflow-y: auto;
   max-height: 73px;
 }
 

@@ -107,31 +107,33 @@
             </template>
           </v-select>
 
-          <v-combobox
-            v-if="data[config.name].startsWith('custom_')"
-            v-model="data[`${config.name.slice(0, -1)}_inputs`]"
-            :placeholder="$t(`game.inputs.${data[config.name]}`)"
-            class="mt-2"
-            hide-details
-            single-line
-            outlined
-            multiple
-            rounded
-            chips
-            dense
-          >
-            <template v-slot:selection="{ item }">
-              <v-chip
-                class="my-1"
-                color="primary"
-                outlined
-                close
-                small
-              >
-                {{ item }}
-              </v-chip>
-            </template>
-          </v-combobox>
+          <template v-if="typeof data[config.name] === 'string'">
+            <v-combobox
+              v-if="data[config.name].startsWith('custom_')"
+              v-model="data[`${config.name.slice(0, -1)}_inputs`]"
+              :placeholder="$t(`game.inputs.${data[config.name]}`)"
+              class="mt-2"
+              hide-details
+              single-line
+              outlined
+              multiple
+              rounded
+              chips
+              dense
+            >
+              <template v-slot:selection="{ item }">
+                <v-chip
+                  class="my-1"
+                  color="primary"
+                  outlined
+                  close
+                  small
+                >
+                  {{ item }}
+                </v-chip>
+              </template>
+            </v-combobox>
+          </template>
         </v-stepper-content>
       </div>
     </template>
@@ -221,7 +223,10 @@ export default {
       Object.keys(this.data).forEach((name) => {
         if (this.isArray(this.data[name])) {
           values[name] = this.data[name];
-        } else if (!this.data[name].startsWith('no_')) {
+        } else if (
+          typeof this.data[name] === 'string'
+          && !this.data[name].startsWith('no_')
+        ) {
           const pluginType = `${name.slice(0, -1)}_type`;
           values[pluginType] = this.data[name];
         }
@@ -235,13 +240,12 @@ export default {
       return i + 1;
     },
     setDefault(params) {
-      if (params) {
-        if (this.keyInObj('game_type', params)) {
-          this.params.game_type.default = params.game_type;
-        }
+      if (params && Object.keys(params).length) {
         Object.keys(params).forEach((name) => {
           let field = `${name.split('_')[0]}s`;
-          if (this.keyInObj(field, this.data)) {
+          if (this.keyInObj(name, this.params)) {
+            this.params[name].default = params[name];
+          } else if (this.keyInObj(field, this.data)) {
             this.data[field] = params[name];
             if (
               typeof params[name] === 'string'

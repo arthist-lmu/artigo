@@ -5,28 +5,53 @@
             "type": "RandomTaggingResource",
             "game_types": ["tagging"],
             "disabled": false,
-            "default": true
+            "default": true,
+            "params": {
+                "rounds": 5,
+                "min_tags": 5,
+                "percentile": 1.0,
+                "max_last_played": 180
+            }
         },
         {
             "name": "custom_resource",
             "type": "CustomTaggingResource",
             "game_types": ["tagging"],
             "disabled": false,
-            "default": false
+            "default": false,
+            "params": {
+                "inputs": [],
+                "rounds": 5,
+                "min_tags": 5,
+                "max_last_played": 0
+            }
         },
         {
             "name": "random_resource",
             "type": "RandomROIResource",
             "game_types": ["roi"],
             "disabled": false,
-            "default": true
+            "default": true,
+            "params": {
+                "rounds": 5,
+                "min_tags": 5,
+                "min_roi_tags": 5,
+                "max_last_played": 180
+            }
         },
         {
             "name": "custom_resource",
             "type": "CustomROIResource",
             "game_types": ["roi"],
             "disabled": false,
-            "default": false
+            "default": false,
+            "params": {
+                "inputs": [],
+                "rounds": 5,
+                "min_tags": 5,
+                "min_roi_tags": 5,
+                "max_last_played": 0
+            }
         }
     ],
     "opponents": [
@@ -42,7 +67,10 @@
             "type": "RandomGameroundTaggingOpponent",
             "game_types": ["tagging"],
             "disabled": false,
-            "default": true
+            "default": true,
+            "params": {
+                "min_tags": 5
+            }
         },
         {
             "name": "mean_gameround_opponent",
@@ -56,7 +84,10 @@
             "type": "RandomGameroundROIOpponent",
             "game_types": ["roi"],
             "disabled": false,
-            "default": true
+            "default": true,
+            "params": {
+                "min_tags": 5
+            }
         }
     ],
     "inputs": [
@@ -65,21 +96,32 @@
             "type": "MostAnnotatedTaggingInput",
             "game_types": ["roi"],
             "disabled": false,
-            "default": false
+            "default": false,
+            "params": {
+                "max_tags": 5
+            }
         },
         {
             "name": "random_annotated_input",
             "type": "RandomAnnotatedTaggingInput",
             "game_types": ["roi"],
             "disabled": false,
-            "default": true
+            "default": true,
+            "params": {
+                "max_tags": 5,
+                "is_validated": true
+            }
         },
         {
             "name": "custom_annotated_input",
             "type": "CustomAnnotatedTaggingInput",
             "game_types": ["roi"],
             "disabled": false,
-            "default": false
+            "default": false,
+            "params": {
+                "inputs": [],
+                "max_tags": 5
+            }
         }
     ],
     "taboos": [
@@ -88,21 +130,32 @@
             "type": "MostAnnotatedTaggingTaboo",
             "game_types": ["tagging"],
             "disabled": false,
-            "default": false
+            "default": false,
+            "params": {
+                "max_tags": 5
+            }
         },
         {
             "name": "random_annotated_taboo",
             "type": "RandomAnnotatedTaggingTaboo",
             "game_types": ["tagging"],
             "disabled": false,
-            "default": false
+            "default": false,
+            "params": {
+                "max_tags": 5,
+                "is_validated": true
+            }
         },
         {
             "name": "custom_annotated_taboo",
             "type": "CustomAnnotatedTaggingTaboo",
             "game_types": ["tagging"],
             "disabled": false,
-            "default": false
+            "default": false,
+            "params": {
+                "inputs": [],
+                "max_tags": 5
+            }
         }
     ],
     "suggesters": [
@@ -111,7 +164,10 @@
             "type": "CooccurrenceSuggester",
             "game_types": ["tagging"],
             "disabled": false,
-            "default": false
+            "default": false,
+            "params": {
+                "max_tags": 10
+            }
         }
     ],
     "filters": [
@@ -134,7 +190,10 @@
             "type": "AlreadyAnnotatedROIFilter",
             "game_types": ["roi"],
             "disabled": false,
-            "default": true
+            "default": true,
+            "params": {
+                "iou_value": 0.5
+            }
         }
     ],
     "scores": [
@@ -143,28 +202,43 @@
             "type": "TagValidatedScore",
             "game_types": ["tagging"],
             "disabled": false,
-            "default": false
+            "default": false,
+            "params": {
+                "point_value": 5,
+                "min_taggings": 1
+            }
         },
         {
             "name": "opponent_validated_score",
             "type": "OpponentTagValidatedScore",
             "game_types": ["tagging"],
             "disabled": false,
-            "default": false
+            "default": false,
+            "params": {
+                "point_value": 5
+            }
         },
         {
             "name": "annotation_validated_score",
             "type": "ROIValidatedScore",
             "game_types": ["roi"],
             "disabled": false,
-            "default": false
+            "default": false,
+            "params": {
+                "iou_value": 0.5,
+                "point_value": 5
+            }
         },
         {
             "name": "opponent_validated_score",
             "type": "OpponentROIValidatedScore",
             "game_types": ["roi"],
             "disabled": false,
-            "default": false
+            "default": false,
+            "params": {
+                "iou_value": 0.5,
+                "point_value": 5
+            }
         }
     ]
 }

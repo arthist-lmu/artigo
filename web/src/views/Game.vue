@@ -32,14 +32,14 @@
               tool="brush"
               :entry="entry"
               :params="params"
-              @load="load"
+              @load="onLoad"
               @error="next"
             />
             <DefaultCanvas
               v-else
               :entry="entry"
               :params="params"
-              @load="load"
+              @load="onLoad"
               @error="next"
             />
           </v-col>
@@ -127,6 +127,10 @@ export default {
     this.get();
   },
   mounted() {
+    this.$store.dispatch('game/getURLParams', this.$route.query);
+    window.onpopstate = () => {
+      this.$store.dispatch('game/getURLParams', this.$route.query);
+    };
     this.$nextTick(() => {
       this.get();
     });

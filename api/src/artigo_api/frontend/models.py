@@ -217,6 +217,17 @@ class Gameround(models.Model):
         return super().save(*args, **kwargs)
 
 
+class GameroundParameter(models.Model):
+    gameround = models.ForeignKey(
+        Gameround,
+        on_delete=models.CASCADE,
+        related_name='%(class)ss',
+    )
+    plugin_type = models.CharField(max_length=256)
+    name = models.CharField(max_length=256)
+    value = models.CharField(max_length=256)
+
+
 class Tag(models.Model):
     name = NameField(max_length=256)
     language = models.CharField(max_length=256)

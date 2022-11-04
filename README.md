@@ -65,6 +65,12 @@ Alternatively, use `serve` to enable a hot reloaded instance on `http://localhos
 sudo docker-compose exec web npm run serve
 ```
 
+### Schema updating
+To re-generate the OpenAPI 3.0 schema file, use the following command:
+```sh
+sudo docker-compose exec api python3 manage.py spectacular --file schema.yml
+```
+
 ### Formatting
 Lint can be used to help with standardized formatting:
 ```sh

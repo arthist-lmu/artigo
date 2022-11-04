@@ -31,17 +31,26 @@ class GameController:
                 .exclude(id__in=complete_gamesession_ids)
 
             if gamesession.count() > 1:
-                return {'type': 'error', 'message': 'multiple_valid_gamesessions'}
+                return {
+                    'type': 'error',
+                    'message': 'multiple_valid_gamesessions',
+                }
 
             try:
                 gamesession = gamesession.latest('created')
             except:
-                return {'type': 'error', 'message': 'no_valid_gamesessions'}
+                return {
+                    'type': 'error',
+                    'message': 'no_valid_gamesessions',
+                }
         elif params.get('session_id'):
             try:
                 gamesession = Gamesession.objects.get(id=params['session_id'])
             except ObjectDoesNotExist:
-                return {'type': 'error', 'message': 'invalid_gamesession'}
+                return {
+                    'type': 'error',
+                    'message': 'invalid_gamesession',
+                }
         else:
             result = self.create_gamesession(params, user)
             if result['type'] == 'error': return result
@@ -51,12 +60,18 @@ class GameController:
         gamesession_data = cache.get(f'gamesession_{gamesession.id}')
 
         if gamesession_data is None:
-            return {'type': 'error', 'message': 'outdated_gamesession'}
+            return {
+                'type': 'error',
+                'message': 'outdated_gamesession',
+            }
 
         if len(gamesession_data['game']) == 0:
             cache.delete(f'gamesession_{gamesession.id}')
 
-            return {'type': 'error', 'message': 'finished_gamesession'}
+            return {
+                'type': 'error',
+                'message': 'finished_gamesession',
+            }
 
         gameround_data = list(gamesession_data['game'].values())[0]
 
@@ -72,7 +87,10 @@ class GameController:
         except Exception as error:
             logger.error(traceback.format_exc())
 
-            return {'type': 'error', 'message': 'unknown_error'}
+            return {
+                'type': 'error',
+                'message': 'unknown_error',
+            }
 
         gamesession_data['game'].pop(gameround.resource_id)
         cache.set(f'gamesession_{gamesession.id}', gamesession_data)
@@ -100,57 +118,37 @@ class GameController:
         except Exception as error:
             logger.error(traceback.format_exc())
 
-            return {'type': 'error', 'message': 'invalid_game_options'}
+            return {
+                'type': 'error',
+                'message': 'invalid_game_options',
+            }
 
         if resource_ids is None or len(resource_ids) == 0:
-            return {'type': 'error', 'message': 'invalid_resources'}
+            return {
+                'type': 'error',
+                'message': 'invalid_resources',
+            }
 
         result = {}
 
-        if query.get('opponent_type') is not None:
-            try:
-                result['opponent'] = list(
-                    self.plugins['opponent'].run(
-                        resource_ids,
-                        query['game_options'],
-                        query['opponent_type'],
-                        configs=get_configs(query, 'opponent'),
+        for plugin_name in ['opponent', 'input', 'taboo']:
+            if query.get(f'{plugin_name}_type') is not None:
+                try:
+                    result[plugin_name] = list(
+                        self.plugins[plugin_name].run(
+                            resource_ids,
+                            query['game_options'],
+                            query[f'{plugin_name}_type'],
+                            configs=get_configs(query, plugin_name),
+                        )
                     )
-                )
-            except Exception as error:
-                logger.error(traceback.format_exc())
+                except Exception as error:
+                    logger.error(traceback.format_exc())
 
-                return {'type': 'error', 'message': 'invalid_opponents'}
-
-        if query.get('input_type') is not None:
-            try:
-                result['input'] = list(
-                    self.plugins['input'].run(
-                        resource_ids,
-                        query['game_options'],
-                        query['input_type'],
-                        configs=get_configs(query, 'input'),
-                    )
-                )
-            except Exception as error:
-                logger.error(traceback.format_exc())
-
-                return {'type': 'error', 'message': 'invalid_inputs'}
-
-        if query.get('taboo_type') is not None:
-            try:
-                result['taboo'] = list(
-                    self.plugins['taboo'].run(
-                        resource_ids,
-                        query['game_options'],
-                        query['taboo_type'],
-                        configs=get_configs(query, 'taboo'),
-                    )
-                )
-            except Exception as error:
-                logger.error(traceback.format_exc())
-
-                return {'type': 'error', 'message': 'invalid_taboos'}
+                    return {
+                        'type': 'error',
+                        'message': f'invalid_{plugin_name}s',
+                    }
 
         game = self.merge_to_game(
             result,
@@ -175,7 +173,10 @@ class GameController:
         except Exception as error:
             logger.error(traceback.format_exc())
 
-            return {'type': 'error', 'message': 'invalid_game_options'}
+            return {
+                'type': 'error',
+                'message': 'invalid_game_options',
+            }
 
         timeout = None
 
@@ -195,11 +196,31 @@ class GameController:
 
     @staticmethod
     def create_gameround(resource_id, query, gamesession, user):
+        def add_params(plugin_type, plugin_options):
+            for name, values in plugin_options.items():
+                if not isinstance(values, (list, set)):
+                    values = [values]
+
+                for value in values:
+                    bulk_list.append(
+                        GameroundParameter(
+                            gameround=gameround,
+                            plugin_type=plugin_type,
+                            name=str(name),
+                            value=str(value),
+                        )
+                    )
+
+        bulk_list = []
+
         gameround = Gameround(
             user=user,
             gamesession=gamesession,
             resource_id=resource_id,
         )
+
+        for name in query.get('resource_type', []):
+            add_params(name, query['resource_options'])
 
         for name in query.get('opponent_type', []):
             opponent_type, _ = OpponentType.objects \
@@ -207,6 +228,7 @@ class GameController:
             opponent_type.save()
 
             gameround.opponent_type = opponent_type
+            add_params(name, query['opponent_options'])
 
         for name in query.get('input_type', []):
             input_type, _ = InputType.objects \
@@ -214,6 +236,7 @@ class GameController:
             input_type.save()
 
             gameround.input_type = input_type
+            add_params(name, query['input_options'])
 
         for name in query.get('taboo_type', []):
             taboo_type, _ = TabooType.objects \
@@ -221,6 +244,7 @@ class GameController:
             taboo_type.save()
 
             gameround.taboo_type = taboo_type
+            add_params(name, query['taboo_options'])
 
         gameround.save()
 
@@ -229,12 +253,17 @@ class GameController:
                 .get_or_create(name=name)
 
             gameround.suggester_types.add(suggester_type)
+            add_params(name, query['suggester_options'])
 
         for name in query.get('score_type', []):
             score_type, _ = ScoreType.objects \
                 .get_or_create(name=name)
 
             gameround.score_types.add(score_type)
+            add_params(name, query['score_options'])
+
+        if bulk_list:
+            GameroundParameter.objects.bulk_create(bulk_list)
 
         return gameround
 
@@ -315,8 +344,8 @@ class GameController:
                 for x in list(resources)
             }
 
-        # if there is no plugin-based information
-        # only return information about resources
+        # if there is no plugin-based information only
+        # return information about resources
         if not result:
             return resources
 

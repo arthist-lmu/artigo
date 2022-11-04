@@ -41,6 +41,21 @@ const game = {
           commit('updateTags', data);
         });
     },
+    getURLParams({ commit }, urlParams) {
+      const params = {};
+      Object.keys(urlParams).forEach((field) => {
+        let values = urlParams[field];
+        if (values.includes(',')) {
+          values = values.split(',');
+        } else if (parseFloat(values)) {
+          values = parseFloat(values);
+        }
+        params[field] = values;
+      });
+      if (params && Object.keys(params).length) {
+        commit('updateDialog', { show: true, params });
+      }
+    },
   },
   mutations: {
     updateParams(state, params) {
@@ -48,7 +63,7 @@ const game = {
     },
     updateDialog(state, { show, params }) {
       state.dialog.show = show;
-      if (params) {
+      if (params && Object.keys(params).length) {
         state.dialog.params = params;
       }
     },

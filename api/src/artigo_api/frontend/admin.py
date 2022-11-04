@@ -95,6 +95,11 @@ class GameroundAdmin(admin.ModelAdmin):
         return list(obj.score_types.all())
 
 
+@admin.register(GameroundParameter)
+class GameroundParameterAdmin(CustomModelAdmin):
+    pass
+
+
 @admin.register(Tag)
 class TagAdmin(CustomModelAdmin):
     pass
