@@ -5,30 +5,27 @@ import logging
 from datetime import timedelta
 
 logger = logging.getLogger(__name__)
+
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-ENVFILE_PATH = os.path.join(os.path.dirname(
-    os.path.dirname(BASE_DIR)), '.env')
+ENV_PATH = os.path.join(os.path.dirname(os.path.dirname(BASE_DIR)), '.env')
+
 env = environ.Env(
     DEBUG=(bool, False),
 )
 
-if os.getenv('WHERE') == 'dev':
-    logger.info('Running in dev environment')
-    if os.path.isfile(ENVFILE_PATH):
-        environ.Env.read_env(ENVFILE_PATH, overwrite=False)
+try:
+    if os.getenv('WHERE') in ('dev', 'development'):
+        logger.warning('Running in development environment')
+        environ.Env.read_env(ENV_PATH, overwrite=False)
+    elif env('WHERE') in ('prod', 'production'):
+        logger.warning('Running in production environment')
+    elif env('WHERE') == 'testing':
+        logger.warning('Running in testing environment')
     else:
-        logger.info('No env file found, continuing without')
-elif env('WHERE') == 'production':
-    logger.info('Running in prodution environment')
-elif env('WHERE') == 'testing':
-    logger.info('Running in testing environment')
-else:
-    logger.info('Running unconfined')
-    if os.path.isfile(ENVFILE_PATH):
-        environ.Env.read_env(ENVFILE_PATH, overwrite=False)
-    else:
-        logger.info('No env file found, continuing without')
-
+        logger.warning('Running unconfined environment')
+        environ.Env.read_env(ENV_PATH, overwrite=False)
+except:
+    logger.warning('No .env file specified, continuing without')
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.1/howto/deployment/checklist/
