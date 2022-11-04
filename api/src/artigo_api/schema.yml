@@ -85,13 +85,13 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Register'
+              $ref: '#/components/schemas/CustomRegister'
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/Register'
+              $ref: '#/components/schemas/CustomRegister'
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/Register'
+              $ref: '#/components/schemas/CustomRegister'
         required: true
       security:
       - tokenAuth: []
@@ -101,7 +101,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Register'
+                $ref: '#/components/schemas/CustomRegister'
           description: ''
   /game/:
     get:
@@ -110,6 +110,34 @@ paths:
         when a new game is created. All further rounds can be obtained by passing
         the respective `session_id`.
       parameters:
+      - in: query
+        name: game_round_duration
+        schema:
+          type: integer
+          minimum: 0
+          maximum: 3600
+        description: Duration of each gameround (in seconds). For infinite game rounds,
+          `0` should be passed.
+      - in: query
+        name: game_type
+        schema:
+          type: string
+          enum:
+          - roi
+          - tagging
+          default: tagging
+        description: Type of game
+      - in: query
+        name: input_type
+        schema:
+          type: string
+          enum:
+          - custom_annotated_input
+          - most_annotated_input
+          - random_annotated_input
+        description: Type of input annotations. User-defined inputs of `input_type=custom_annotated_input`
+          can be specified by passing the respective values through the parameters
+          `input_tags` and `input_rois`.
       - in: query
         name: opponent_type
         schema:
@@ -120,31 +148,23 @@ paths:
         description: Type of each opponent. Opponents are invalid for infinite game
           rounds (`round_duration=0`).
       - in: query
+        name: resource_rounds
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 100
+        description: Number of resources. This corresponds to the number of gamerounds
+          to be played.
+      - in: query
         name: resource_type
         schema:
           type: string
           enum:
           - random_resource
-        description: Type of each resource
+        description: Type of each resource. User-defined resources can be specified
+          by passing the respective identifiers through the parameter `resource_ids`.
       - in: query
-        name: round_duration
-        schema:
-          type: integer
-          minimum: 0
-          maximum: 3600
-          default: 60
-        description: Duration of each gameround (in seconds). For infinite game rounds,
-          `0` should be passed.
-      - in: query
-        name: rounds
-        schema:
-          type: integer
-          minimum: 1
-          maximum: 100
-          default: 5
-        description: Number of gamerounds
-      - in: query
-        name: score_types
+        name: score_type
         schema:
           type: array
           items:
@@ -152,23 +172,27 @@ paths:
             enum:
             - annotation_validated_score
             - opponent_validated_score
-        description: Score types
+        description: Score type
       - in: query
-        name: suggester_types
+        name: suggester_type
         schema:
           type: array
           items:
             type: string
             enum:
             - cooccurrence_suggester
-        description: Suggester types
+        description: Suggester type
       - in: query
         name: taboo_type
         schema:
           type: string
           enum:
+          - custom_annotated_taboo
           - most_annotated_taboo
-        description: Type of taboo annotations
+          - random_annotated_taboo
+        description: Type of taboo annotations. User-defined inputs of `taboo_type=custom_annotated_taboo`
+          can be specified by passing the respective values through the parameters
+          `taboo_tags` and `taboo_rois`.
       tags:
       - game
       security:
@@ -176,7 +200,23 @@ paths:
       - {}
       responses:
         '200':
-          description: No response body
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  type:
+                    type: string
+                  session_id:
+                    type: integer
+                  rounds:
+                    type: integer
+                  round_id:
+                    type: integer
+                  data:
+                    type: object
+                    properties: {}
+          description: ''
     post:
       operationId: game_create
       tags:
@@ -433,6 +473,7 @@ paths:
         name: job_id
         schema:
           type: string
+        description: Receive status updates of the respective job
       - in: query
         name: limit
         schema:
@@ -470,6 +511,7 @@ paths:
                 description: Value of field
                 type: string
               flag:
+                description: For more information, see the [OpenSearch Documentation](https://opensearch.org/docs/latest/opensearch/query-dsl/bool/)
                 type: string
                 enum:
                 - should
@@ -568,19 +610,7 @@ components:
       - password
       - token
       - username
-    Login:
-      type: object
-      properties:
-        username:
-          type: string
-        email:
-          type: string
-          format: email
-        password:
-          type: string
-      required:
-      - password
-    Register:
+    CustomRegister:
       type: object
       properties:
         username:
@@ -601,6 +631,18 @@ components:
       - password1
       - password2
       - username
+    Login:
+      type: object
+      properties:
+        username:
+          type: string
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+      required:
+      - password
   securitySchemes:
     tokenAuth:
       type: apiKey
