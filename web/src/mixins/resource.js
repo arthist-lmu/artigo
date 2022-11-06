@@ -25,6 +25,7 @@ export default {
     },
     onError() {
       this.isDisabled = true;
+      this.$emit('disabled', true);
     },
     showDialog() {
       this.$store.commit('resource/updateData', this.entry);

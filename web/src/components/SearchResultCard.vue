@@ -1,5 +1,8 @@
 <template>
-  <v-hover v-slot="{ hover }">
+  <v-hover
+    v-if="!isDisabled"
+    v-slot="{ hover }"
+  >
     <div
       @click="showDialog"
       @keyDown="showDialog"

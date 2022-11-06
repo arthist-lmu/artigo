@@ -35,7 +35,7 @@
           </v-btn>
 
           <span
-            v-if="!$vuetify.breakpoint.mdAndDown"
+            v-if="!$vuetify.breakpoint.smAndDown"
             class="mr-1"
           >
             {{ offset + 1 }}–{{ offset + entries.length }}

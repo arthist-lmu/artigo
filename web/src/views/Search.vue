@@ -102,4 +102,8 @@ export default {
 .container .justify-center {
   height: 100%;
 }
+
+.row > .col:empty {
+  display: none;
+}
 </style>
