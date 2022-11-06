@@ -82,7 +82,7 @@ services:
     volumes:
       - type: bind
         source: ./api-proxy/api-proxy-nginx.conf
-        target: /etc/nginx/conf.d/api-proxy_nginx.conf
+        target: /etc/nginx/conf.d/api-proxy-nginx.conf
         read_only: true
       - type: bind
         source: ./api-proxy/uwsgi_params
