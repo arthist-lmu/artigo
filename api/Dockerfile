@@ -1,5 +1,8 @@
 FROM python:3.10
 
+ENV PYTHONPATH=/api/src/
+ENV POETRY_VIRTUALENVS_CREATE=False
+
 RUN addgroup --system django \
     && adduser --system --ingroup django django
 
