@@ -32,7 +32,7 @@ span.clip.w100 {
 }
 
 .blur > span {
-  text-shadow: 0 0 5px rgba(0, 0, 0, 0.87);
+  text-shadow: 0 0 7.5px rgba(0, 0, 0, 0.87);
   color: transparent !important;
   -webkit-touch-callout: none;
   -webkit-user-select: none;
