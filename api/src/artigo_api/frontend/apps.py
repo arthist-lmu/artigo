@@ -10,8 +10,11 @@ class FrontendConfig(AppConfig):
     name = 'frontend'
 
     def ready(self):
+        from .tasks import renew_cache
+
         plugins = init_plugins(read_config('/config.json'))
         cache.set('plugins', plugins, timeout=None)
+        renew_cache(renew=False)
 
 
 def read_config(file_path):

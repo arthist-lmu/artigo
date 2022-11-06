@@ -7,12 +7,12 @@ logger = logging.getLogger(__name__)
 
 
 @shared_task(ignore_result=True)
-def renew_cache():
+def renew_cache(renew=True):
     for name in dir(cache):
         item = getattr(cache, name)
 
         if callable(item):
             try:
-                item(renew=True)
+                item(renew=renew)
             except:
                 pass

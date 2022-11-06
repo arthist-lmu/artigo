@@ -243,9 +243,12 @@ USE_TZ = True
 STATIC_URL = FORCE_SCRIPT_NAME + 'static/'
 
 if DEBUG:
-    if env('WHERE') == 'testing':
-        STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
-    else:
+    try:
+        if env('WHERE') == 'testing':
+            STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
+        else:
+            raise ValueError
+    except:
         STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 else:
     STATIC_ROOT = os.path.join(BASE_DIR, 'static')

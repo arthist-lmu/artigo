@@ -1,10 +1,11 @@
 <template>
   <v-hover v-slot="{ hover }">
-    <div
+    <v-card
       @click="play"
       @keydown="play"
       class="grid-item"
       :disabled="isDisabled"
+      flat
     >
       <img
         :src="entry.path"
@@ -74,7 +75,7 @@
           </v-col>
         </v-row>
       </v-container>
-    </div>
+    </v-card>
   </v-hover>
 </template>
 
