@@ -68,19 +68,37 @@ services:
         source: ./dump_testing/
         target: /dump
     working_dir: /api/src/artigo_api
-    environment:
-      - POETRY_VIRTUALENVS_CREATE=False
-      - PYTHONPATH=/api/src/
     depends_on:
       - db
       - redisai
       - memcached
     env_file:
       - ./.testing_api.env
-    ports:
-      - "8001:8000"
     labels:
       com.centurylinklabs.watchtower.enable: "true"
+  
+  api-proxy:
+    image: nginx:latest
+    volumes:
+      - type: bind
+        source: ./api-proxy/api-proxy-nginx.conf
+        target: /etc/nginx/conf.d/api-proxy_nginx.conf
+        read_only: true
+      - type: bind
+        source: ./api-proxy/uwsgi_params
+        target: /uwsgi_params
+        read_only: true
+      - type: bind
+        source: ./media
+        target: /media
+      - type: bind
+        source: ./api/src/artigo_api/static
+        target: /static
+        read_only: true
+    depends_on:
+      - api
+    ports:
+      - "8001:8000"
 
   web:
     image: arthistlmu/artigo:master

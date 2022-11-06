@@ -28,6 +28,7 @@ pyjwt = "^2.5.0"
 pymemcache = "^4.0.0"
 tqdm = "^4.64.1"
 redis = "^4.3.4"
+uwsgi = "^2.0.21"
 
 [tool.poetry.dev-dependencies]
 black = "^22.10.0"
