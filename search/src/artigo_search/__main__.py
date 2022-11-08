@@ -72,8 +72,7 @@ def main():
         elif args.task == 'insert':
             client.insert()
         elif args.task == 'delete':
-            query = json.loads(args.query)
-            client.delete(query)
+            client.delete()
     elif args.mode == 'server':
         server = Server(config)
         server.run()

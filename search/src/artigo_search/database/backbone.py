@@ -71,12 +71,11 @@ class Backbone:
 
         bulk(self.client, actions=resources(generator))
 
-    def delete(self, indices):
-        for name in indices:
-            index = Index(name)
+    def delete(self):
+        index = Index(self.index)
 
-            if index.exists():
-                index.delete()
+        if index.exists():
+            index.delete()
 
         return 'ok'
 

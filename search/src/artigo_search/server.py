@@ -223,7 +223,7 @@ class Commune(index_pb2_grpc.IndexServicer):
         json_obj = MessageToDict(request)
 
         backbone = Backbone(config=self.config.get('opensearch', {}))
-        status = backbone.delete(indices=json_obj['names'])
+        status = backbone.delete()
 
         return index_pb2.DeleteReply(status=status)
 

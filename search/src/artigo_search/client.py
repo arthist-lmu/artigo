@@ -27,7 +27,11 @@ def extract_from_jsonl(file_path, media_folder):
     entries = []
 
     base_fields = {
-        'id', 'hash_id', 'meta', 'tags', 'source',
+        'id',
+        'hash_id',
+        'meta',
+        'tags',
+        'source',
     }
 
     with open(file_path, 'r', encoding='utf-8') as file_obj:
@@ -48,7 +52,10 @@ def extract_from_jsonl(file_path, media_folder):
 
 
 class Client:
-    def __init__(self, config):
+    def __init__(self, config=None):
+        if config is None:
+            config = {}
+
         self.host = config.get('host', 'localhost')
         self.port = config.get('port', 50051)
 
@@ -166,12 +173,7 @@ class Client:
                 logger.error(error)
                 try_count -= 1
 
-    def delete(self, params):
+    def delete(self):
         request = index_pb2.DeleteRequest()
-
-        if isinstance(params['name'], (list, set)):
-            request.names.extend(map(str, params['name']))
-        else:
-            request.names.extend([str(params['name'])])
 
         return self.stub.delete(request)

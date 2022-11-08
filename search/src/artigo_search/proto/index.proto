@@ -46,7 +46,7 @@ message StatusReply {
 }
 
 message DeleteRequest {
-  repeated string names = 1;
+
 }
 
 message DeleteReply {

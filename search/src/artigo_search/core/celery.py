@@ -11,6 +11,10 @@ app.autodiscover_tasks(['core'])
 app.conf.beat_schedule = {
     'import_jsonl': {
         'task': 'core.tasks.import_jsonl',
-        'schedule': timedelta(hours=12),
+        'schedule': timedelta(weeks=1),
+    },
+    'delete_jsonl': {
+        'task': 'core.tasks.delete_jsonl',
+        'schedule': timedelta(days=1),
     },
 }
