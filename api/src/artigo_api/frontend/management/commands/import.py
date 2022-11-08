@@ -333,21 +333,21 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         start_time = timezone.now()
 
-        if os.path.isdir(options['input']):
-            if options['format'] == 'csv':
-                CreateUser(options['input']).process()
-                CreateSource(options['input']).process()
-                CreateCreator(options['input']).process()
-                CreateResource(options['input']).process()
-                CreateTitle(options['input']).process()
-                CreateGamesession(options['input']).process()
-                CreateGameround(options['input']).process()
-                CreateTag(options['input']).process()
-                CreateTagging(options['input']).process()
-                CreateResourceTitle(options['input']).process()
-                CreateResourceCreator(options['input']).process()
-        else:
+        if not os.path.isdir(options['input']):
             raise CommandError('Input is not a directory.')
+
+        if options['format'] == 'csv':
+            CreateUser(options['input']).process()
+            CreateSource(options['input']).process()
+            CreateCreator(options['input']).process()
+            CreateResource(options['input']).process()
+            CreateTitle(options['input']).process()
+            CreateGamesession(options['input']).process()
+            CreateGameround(options['input']).process()
+            CreateTag(options['input']).process()
+            CreateTagging(options['input']).process()
+            CreateResourceTitle(options['input']).process()
+            CreateResourceCreator(options['input']).process()
 
         end_time = timezone.now()
         duration = end_time - start_time
