@@ -77,6 +77,29 @@ services:
       - memcached
     env_file:
       - ./.production_api.env
+    labels:
+      com.centurylinklabs.watchtower.enable: "true"
+
+  api-proxy:
+    image: nginx:latest
+    volumes:
+      - type: bind
+        source: ./api-proxy/api-proxy-nginx.conf
+        target: /etc/nginx/conf.d/api-proxy-nginx.conf
+        read_only: true
+      - type: bind
+        source: ./api-proxy/uwsgi_params
+        target: /uwsgi_params
+        read_only: true
+      - type: bind
+        source: ./media
+        target: /media
+      - type: bind
+        source: ./api/src/artigo_api/static
+        target: /static
+        read_only: true
+    depends_on:
+      - api
     ports:
       - "8000:8000"
     labels:

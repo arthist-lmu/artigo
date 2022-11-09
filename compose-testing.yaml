@@ -99,6 +99,8 @@ services:
       - api
     ports:
       - "8001:8000"
+    labels:
+      com.centurylinklabs.watchtower.enable: "true"
 
   web:
     image: arthistlmu/artigo:master
