@@ -1,5 +1,5 @@
 <template>
-  <v-container v-if="creators">
+  <v-container v-if="data && entries">
     <GameDrawer
       v-model="drawer"
       ref="drawer"
@@ -151,6 +151,9 @@ export default {
     data() {
       return this.$store.state.statistics.data;
     },
+    entries() {
+      return this.$store.state.home.data;
+    },
     creators() {
       return this.data.creators;
     },
@@ -169,10 +172,9 @@ export default {
     dialog: {
       handler({ creator, prefix }) {
         if (creator && !prefix) {
-          let { names } = this.creators;
+          let { names } = this.data.creators;
           names = this.shuffle(names).slice(0, 4);
-          const { data } = this.$store.state.home;
-          data.forEach((entry) => {
+          this.entries.forEach((entry) => {
             if (entry.type === 'creator') {
               names.push(entry.query);
             }
