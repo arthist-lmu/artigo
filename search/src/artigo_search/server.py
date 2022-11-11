@@ -24,7 +24,7 @@ logger = logging.getLogger(__name__)
 
 def search(args):
     try:
-        searcher = Searcher(Backbone(args['config'].get('opensearch')))
+        searcher = Searcher(Backbone(args['config']['opensearch']))
 
         results = searcher(
             ParseDict(args['query'], index_pb2.SearchRequest()),
@@ -90,19 +90,29 @@ def init_process(config):
 
 class Commune(index_pb2_grpc.IndexServicer):
     def __init__(self, config):
+        if 'opensearch' not in config:
+            config['opensearch'] = {}
+
+        if 'cache' not in config:
+            config['cache'] = {'cache_dir': None}
+
         self.futures = []
         self.config = config
         self.managers = init_plugins(config)
 
         self.process_pool = futures.ProcessPoolExecutor(
-            max_workers=1, initializer=init_process, initargs=(config,)
+            max_workers=1,
+            initializer=init_process,
+            initargs=(config,),
         )
 
         self.insert_process_pool = futures.ProcessPoolExecutor(
-            max_workers=8, initializer=InsertJob().init_worker, initargs=(config,)
+            max_workers=8,
+            initializer=InsertJob().init_worker,
+            initargs=(config,),
         )
 
-    def status(self, request, context):
+    def status(self, request, context=None):
         futures_data = {x['id']: i for i, x in enumerate(self.futures)}
 
         if request.id in futures_data:
@@ -118,13 +128,19 @@ class Commune(index_pb2_grpc.IndexServicer):
 
         return index_pb2.StatusReply(status='error')
 
-    def get(self, request, context):
+    def count(self, request, context=None):
+        backbone = Backbone(config=self.config['opensearch'])
+        count = backbone.count()
+
+        return index_pb2.CountReply(count=count)
+
+    def get(self, request, context=None):
         json_obj = MessageToDict(request)
         results = index_pb2.GetReply()
 
         logger.info(f'[Server] Get: {json_obj}')
 
-        backbone = Backbone(config=self.config.get('opensearch', {}))
+        backbone = Backbone(config=self.config['opensearch'])
 
         for x in backbone.get(ids=json_obj['ids']):
             entry = results.entries.add()
@@ -147,7 +163,7 @@ class Commune(index_pb2_grpc.IndexServicer):
 
         return results
 
-    def insert(self, request, context):
+    def insert(self, request, context=None):
         def translate(cache, request):
             for x in request:
                 entry = {
@@ -170,13 +186,13 @@ class Commune(index_pb2_grpc.IndexServicer):
 
                 yield entry
 
-        backbone = Backbone(config=self.config.get('opensearch', {}))
-        cache_config = self.config.get('cache', {'cache_dir': None})
+        backbone = Backbone(config=self.config['opensearch'])
+        cache_dir = self.config['cache']['cache_dir']
 
         request_iter = iter(request)
         db_cache = []
 
-        with Cache(cache_config['cache_dir'], mode='r') as cache:
+        with Cache(cache_dir, mode='r') as cache:
             while True:
                 chunk = read_chunk(translate(cache, request_iter), chunksize=512)
 
@@ -217,17 +233,15 @@ class Commune(index_pb2_grpc.IndexServicer):
             backbone.insert(db_cache)
             db_cache = []
 
-    def delete(self, request, context):
+    def delete(self, request, context=None):
         logger.info('[Server] Delete')
 
-        json_obj = MessageToDict(request)
-
-        backbone = Backbone(config=self.config.get('opensearch', {}))
+        backbone = Backbone(config=self.config['opensearch'])
         status = backbone.delete()
 
         return index_pb2.DeleteReply(status=status)
 
-    def search(self, request, context):
+    def search(self, request, context=None):
         json_obj = MessageToDict(request)
         job_id = uuid.uuid4().hex
 
@@ -248,7 +262,7 @@ class Commune(index_pb2_grpc.IndexServicer):
 
         return index_pb2.SearchReply(id=job_id)
 
-    def list_search_result(self, request, context):
+    def list_search_result(self, request, context=None):
         futures_data = {x['id']: i for i, x in enumerate(self.futures)}
 
         if request.id in futures_data:
@@ -282,13 +296,13 @@ class Commune(index_pb2_grpc.IndexServicer):
 
         return index_pb2.ListSearchResultReply()
 
-    def aggregate(self, request, context):
+    def aggregate(self, request, context=None):
         json_obj = MessageToDict(request)
         result = index_pb2.AggregateReply()
 
         logger.info(f'[Server] Aggregate: {json_obj}')
 
-        searcher = Searcher(Backbone(self.config.get('opensearch')))
+        searcher = Searcher(Backbone(self.config['opensearch']))
         results = searcher(request, limit=0, offset=0)
 
         for a in results.get('aggregations', []):
@@ -302,7 +316,7 @@ class Commune(index_pb2_grpc.IndexServicer):
 
         return result
 
-    def reconcile(self, request, context):
+    def reconcile(self, request, context=None):
         json_obj = MessageToDict(request)
         result = index_pb2.ReconcileReply()
 

@@ -1,5 +1,6 @@
 from celery import Celery
 from celery.schedules import crontab
+from datetime import timedelta
 
 app = Celery(
     'core',
@@ -16,5 +17,9 @@ app.conf.beat_schedule = {
     'delete_jsonl': {
         'task': 'core.tasks.delete_jsonl',
         'schedule': crontab(day_of_week='*', hour=2, minute=0),
+    },
+    'log_count': {
+        'task': 'core.tasks.log_count',
+        'schedule': timedelta(minutes=5),
     },
 }

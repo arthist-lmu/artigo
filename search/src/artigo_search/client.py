@@ -78,6 +78,11 @@ class Client:
 
         return self.stub.status(request)
 
+    def count(self):
+        request = index_pb2.CountRequest()
+
+        return self.stub.count(request)
+
     def get(self, params):
         request = index_pb2.GetRequest()
 

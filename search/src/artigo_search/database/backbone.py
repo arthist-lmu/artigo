@@ -1,3 +1,4 @@
+import json
 import logging
 
 from opensearchpy.helpers import bulk
@@ -42,6 +43,14 @@ class Backbone:
     def status(self):
         return 'ok' if self.client.ping() else 'error'
 
+    def count(self):
+        result = self.client.cat.count(
+            index=self.index,
+            params={'format': 'json'},
+        )
+
+        return int(result[0]['count'])
+
     def get(self, ids):
         result = Resource.mget(ids, index=self.index)
 
@@ -85,6 +94,7 @@ class Backbone:
         
         result = Search.from_dict(body) \
             .extra(from_=offset, size=limit) \
+            .index(self.index) \
             .execute()
 
         return {
@@ -121,7 +131,8 @@ class Backbone:
                 .extra(
                     from_=kwargs.get('offset', 0),
                     size=kwargs.get('limit', 0),
-                )
+                ) \
+                .index(self.index)
 
             if len(field_path) == 1:
                 search.aggs \

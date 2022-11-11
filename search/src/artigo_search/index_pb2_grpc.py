@@ -19,6 +19,11 @@ class IndexStub(object):
                 request_serializer=index__pb2.GetRequest.SerializeToString,
                 response_deserializer=index__pb2.GetReply.FromString,
                 )
+        self.count = channel.unary_unary(
+                '/artigo.search.Index/count',
+                request_serializer=index__pb2.CountRequest.SerializeToString,
+                response_deserializer=index__pb2.CountReply.FromString,
+                )
         self.status = channel.unary_unary(
                 '/artigo.search.Index/status',
                 request_serializer=index__pb2.StatusRequest.SerializeToString,
@@ -60,6 +65,12 @@ class IndexServicer(object):
     """Missing associated documentation comment in .proto file."""
 
     def get(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def count(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -114,6 +125,11 @@ def add_IndexServicer_to_server(servicer, server):
                     servicer.get,
                     request_deserializer=index__pb2.GetRequest.FromString,
                     response_serializer=index__pb2.GetReply.SerializeToString,
+            ),
+            'count': grpc.unary_unary_rpc_method_handler(
+                    servicer.count,
+                    request_deserializer=index__pb2.CountRequest.FromString,
+                    response_serializer=index__pb2.CountReply.SerializeToString,
             ),
             'status': grpc.unary_unary_rpc_method_handler(
                     servicer.status,
@@ -174,6 +190,23 @@ class Index(object):
         return grpc.experimental.unary_unary(request, target, '/artigo.search.Index/get',
             index__pb2.GetRequest.SerializeToString,
             index__pb2.GetReply.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def count(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/artigo.search.Index/count',
+            index__pb2.CountRequest.SerializeToString,
+            index__pb2.CountReply.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 

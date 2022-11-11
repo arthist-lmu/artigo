@@ -7,6 +7,9 @@ service Index {
   rpc get(GetRequest)
     returns (GetReply) {}
 
+  rpc count(CountRequest)
+    returns (CountReply) {}
+
   rpc status(StatusRequest)
     returns (StatusReply) {}
 
@@ -35,6 +38,14 @@ message GetRequest {
 
 message GetReply {
   repeated Image entries = 1;
+}
+
+message CountRequest {
+
+}
+
+message CountReply {
+  int32 count = 1;
 }
 
 message StatusRequest {

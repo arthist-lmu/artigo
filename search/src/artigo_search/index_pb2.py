@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   syntax='proto3',
   serialized_options=b'P\001',
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n\x0bindex.proto\x12\rartigo.search\"\x19\n\nGetRequest\x12\x0b\n\x03ids\x18\x01 \x03(\t\"1\n\x08GetReply\x12%\n\x07\x65ntries\x18\x01 \x03(\x0b\x32\x14.artigo.search.Image\"\x1b\n\rStatusRequest\x12\n\n\x02id\x18\x01 \x01(\t\"\x1d\n\x0bStatusReply\x12\x0e\n\x06status\x18\x01 \x01(\t\"\x0f\n\rDeleteRequest\"\x1d\n\x0b\x44\x65leteReply\x12\x0e\n\x06status\x18\x01 \x01(\t\"\x87\x01\n\x0eTextSearchTerm\x12\r\n\x05query\x18\x01 \x01(\t\x12\r\n\x05\x66ield\x18\x02 \x01(\t\x12\x30\n\x04\x66lag\x18\x03 \x01(\x0e\x32\".artigo.search.TextSearchTerm.Flag\"%\n\x04\x46lag\x12\x08\n\x04MUST\x10\x00\x12\n\n\x06SHOULD\x10\x01\x12\x07\n\x03NOT\x10\x02\"\xcd\x02\n\x10NumberSearchTerm\x12\r\n\x05\x66ield\x18\x01 \x01(\t\x12\x16\n\x0cstring_query\x18\x02 \x01(\tH\x00\x12\x13\n\tint_query\x18\x03 \x01(\x05H\x00\x12\x15\n\x0b\x66loat_query\x18\x04 \x01(\x02H\x00\x12:\n\x08relation\x18\x05 \x01(\x0e\x32(.artigo.search.NumberSearchTerm.Relation\x12\x32\n\x04\x66lag\x18\x06 \x01(\x0e\x32$.artigo.search.NumberSearchTerm.Flag\"F\n\x08Relation\x12\x06\n\x02\x45Q\x10\x00\x12\x0b\n\x07GREATER\x10\x01\x12\x0e\n\nGREATER_EQ\x10\x02\x12\x0b\n\x07LESS_EQ\x10\x03\x12\x08\n\x04LESS\x10\x04\"%\n\x04\x46lag\x12\x08\n\x04MUST\x10\x00\x12\n\n\x06SHOULD\x10\x01\x12\x07\n\x03NOT\x10\x02\x42\x07\n\x05query\"v\n\nSearchTerm\x12-\n\x04text\x18\x01 \x01(\x0b\x32\x1d.artigo.search.TextSearchTermH\x00\x12\x31\n\x06number\x18\x02 \x01(\x0b\x32\x1f.artigo.search.NumberSearchTermH\x00\x42\x06\n\x04term\"\x96\x02\n\rSearchRequest\x12(\n\x05terms\x18\x01 \x03(\x0b\x32\x19.artigo.search.SearchTerm\x12\x0f\n\x07sources\x18\x02 \x03(\t\x12\x32\n\taggregate\x18\x03 \x01(\x0b\x32\x1f.artigo.search.AggregateRequest\x12\x35\n\x07sorting\x18\x04 \x01(\x0e\x32$.artigo.search.SearchRequest.Sorting\x12\x0c\n\x04seed\x18\x05 \x01(\t\x12\r\n\x05limit\x18\x06 \x01(\x05\x12\x0e\n\x06offset\x18\x07 \x01(\x05\"2\n\x07Sorting\x12\x13\n\x0fSORTING_DEFAULT\x10\x00\x12\x12\n\x0eSORTING_RANDOM\x10\x01\"\x19\n\x0bSearchReply\x12\n\n\x02id\x18\x01 \x01(\t\"`\n\nValueField\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\x14\n\nstring_val\x18\x02 \x01(\tH\x00\x12\x11\n\x07int_val\x18\x03 \x01(\x05H\x00\x12\x13\n\tfloat_val\x18\x04 \x01(\x02H\x00\x42\x07\n\x05value\"B\n\x06Source\x12\n\n\x02id\x18\x01 \x01(\t\x12\x0c\n\x04name\x18\x02 \x01(\t\x12\x0b\n\x03url\x18\x03 \x01(\t\x12\x11\n\tis_public\x18\x04 \x01(\x08\"@\n\x03Tag\x12\n\n\x02id\x18\x01 \x01(\t\x12\x0c\n\x04name\x18\x02 \x01(\t\x12\x10\n\x08language\x18\x03 \x01(\t\x12\r\n\x05\x63ount\x18\x04 \x01(\x05\"X\n\x10\x41ggregateRequest\x12\x11\n\tuse_query\x18\x01 \x01(\x08\x12\x0e\n\x06\x66ields\x18\x02 \x03(\t\x12\x0c\n\x04size\x18\x03 \x01(\x05\x12\x13\n\x0bsignificant\x18\x04 \x01(\x08\"L\n\x0f\x41ggregateResult\x12\r\n\x05\x66ield\x18\x01 \x01(\t\x12*\n\x07\x65ntries\x18\x02 \x03(\x0b\x32\x19.artigo.search.ValueField\"F\n\x0e\x41ggregateReply\x12\x34\n\x0c\x61ggregations\x18\x01 \x03(\x0b\x32\x1e.artigo.search.AggregateResult\">\n\x14ReconcileRequestTerm\x12\n\n\x02id\x18\x01 \x01(\t\x12\x0c\n\x04name\x18\x02 \x01(\t\x12\x0c\n\x04type\x18\x03 \x01(\t\"b\n\x10ReconcileRequest\x12\x32\n\x05terms\x18\x01 \x03(\x0b\x32#.artigo.search.ReconcileRequestTerm\x12\x0c\n\x04size\x18\x02 \x01(\x05\x12\x0c\n\x04lang\x18\x03 \x01(\t\">\n\x13ReconcileResultTerm\x12\x0b\n\x03ids\x18\x01 \x03(\t\x12\x0c\n\x04name\x18\x02 \x01(\t\x12\x0c\n\x04type\x18\x03 \x01(\t\"N\n\x0eReconcileEntry\x12\n\n\x02id\x18\x01 \x01(\t\x12\x0c\n\x04name\x18\x02 \x01(\t\x12\x13\n\x0b\x64\x65scription\x18\x03 \x01(\t\x12\r\n\x05score\x18\x04 \x01(\x05\"\x84\x01\n\x0fReconcileResult\x12\x30\n\x04term\x18\x01 \x01(\x0b\x32\".artigo.search.ReconcileResultTerm\x12.\n\x07\x65ntries\x18\x02 \x03(\x0b\x32\x1d.artigo.search.ReconcileEntry\x12\x0f\n\x07service\x18\x03 \x01(\t\"I\n\x0eReconcileReply\x12\x37\n\x0freconciliations\x18\x01 \x03(\x0b\x32\x1e.artigo.search.ReconcileResult\"\x96\x01\n\x05Image\x12\n\n\x02id\x18\x01 \x01(\t\x12\x0f\n\x07hash_id\x18\x02 \x01(\t\x12\'\n\x04meta\x18\x03 \x03(\x0b\x32\x19.artigo.search.ValueField\x12%\n\x06source\x18\x04 \x01(\x0b\x32\x15.artigo.search.Source\x12 \n\x04tags\x18\x05 \x03(\x0b\x32\x12.artigo.search.Tag\"4\n\rInsertRequest\x12#\n\x05image\x18\x01 \x01(\x0b\x32\x14.artigo.search.Image\")\n\x0bInsertReply\x12\n\n\x02id\x18\x01 \x01(\t\x12\x0e\n\x06status\x18\x02 \x01(\t\"%\n\x17ListSearchResultRequest\x12\n\n\x02id\x18\x01 \x01(\t\"\x93\x01\n\x15ListSearchResultReply\x12\r\n\x05total\x18\x01 \x01(\x05\x12\x0e\n\x06offset\x18\x02 \x01(\x05\x12%\n\x07\x65ntries\x18\x03 \x03(\x0b\x32\x14.artigo.search.Image\x12\x34\n\x0c\x61ggregations\x18\x04 \x03(\x0b\x32\x1e.artigo.search.AggregateResult2\xe1\x04\n\x05Index\x12;\n\x03get\x12\x19.artigo.search.GetRequest\x1a\x17.artigo.search.GetReply\"\x00\x12\x44\n\x06status\x12\x1c.artigo.search.StatusRequest\x1a\x1a.artigo.search.StatusReply\"\x00\x12\x44\n\x06\x64\x65lete\x12\x1c.artigo.search.DeleteRequest\x1a\x1a.artigo.search.DeleteReply\"\x00\x12\x44\n\x06search\x12\x1c.artigo.search.SearchRequest\x1a\x1a.artigo.search.SearchReply\"\x00\x12J\n\taggregate\x12\x1c.artigo.search.SearchRequest\x1a\x1d.artigo.search.AggregateReply\"\x00\x12M\n\treconcile\x12\x1f.artigo.search.ReconcileRequest\x1a\x1d.artigo.search.ReconcileReply\"\x00\x12H\n\x06insert\x12\x1c.artigo.search.InsertRequest\x1a\x1a.artigo.search.InsertReply\"\x00(\x01\x30\x01\x12\x64\n\x12list_search_result\x12&.artigo.search.ListSearchResultRequest\x1a$.artigo.search.ListSearchResultReply\"\x00\x42\x02P\x01\x62\x06proto3'
+  serialized_pb=b'\n\x0bindex.proto\x12\rartigo.search\"\x19\n\nGetRequest\x12\x0b\n\x03ids\x18\x01 \x03(\t\"1\n\x08GetReply\x12%\n\x07\x65ntries\x18\x01 \x03(\x0b\x32\x14.artigo.search.Image\"\x0e\n\x0c\x43ountRequest\"\x1b\n\nCountReply\x12\r\n\x05\x63ount\x18\x01 \x01(\x05\"\x1b\n\rStatusRequest\x12\n\n\x02id\x18\x01 \x01(\t\"\x1d\n\x0bStatusReply\x12\x0e\n\x06status\x18\x01 \x01(\t\"\x0f\n\rDeleteRequest\"\x1d\n\x0b\x44\x65leteReply\x12\x0e\n\x06status\x18\x01 \x01(\t\"\x87\x01\n\x0eTextSearchTerm\x12\r\n\x05query\x18\x01 \x01(\t\x12\r\n\x05\x66ield\x18\x02 \x01(\t\x12\x30\n\x04\x66lag\x18\x03 \x01(\x0e\x32\".artigo.search.TextSearchTerm.Flag\"%\n\x04\x46lag\x12\x08\n\x04MUST\x10\x00\x12\n\n\x06SHOULD\x10\x01\x12\x07\n\x03NOT\x10\x02\"\xcd\x02\n\x10NumberSearchTerm\x12\r\n\x05\x66ield\x18\x01 \x01(\t\x12\x16\n\x0cstring_query\x18\x02 \x01(\tH\x00\x12\x13\n\tint_query\x18\x03 \x01(\x05H\x00\x12\x15\n\x0b\x66loat_query\x18\x04 \x01(\x02H\x00\x12:\n\x08relation\x18\x05 \x01(\x0e\x32(.artigo.search.NumberSearchTerm.Relation\x12\x32\n\x04\x66lag\x18\x06 \x01(\x0e\x32$.artigo.search.NumberSearchTerm.Flag\"F\n\x08Relation\x12\x06\n\x02\x45Q\x10\x00\x12\x0b\n\x07GREATER\x10\x01\x12\x0e\n\nGREATER_EQ\x10\x02\x12\x0b\n\x07LESS_EQ\x10\x03\x12\x08\n\x04LESS\x10\x04\"%\n\x04\x46lag\x12\x08\n\x04MUST\x10\x00\x12\n\n\x06SHOULD\x10\x01\x12\x07\n\x03NOT\x10\x02\x42\x07\n\x05query\"v\n\nSearchTerm\x12-\n\x04text\x18\x01 \x01(\x0b\x32\x1d.artigo.search.TextSearchTermH\x00\x12\x31\n\x06number\x18\x02 \x01(\x0b\x32\x1f.artigo.search.NumberSearchTermH\x00\x42\x06\n\x04term\"\x96\x02\n\rSearchRequest\x12(\n\x05terms\x18\x01 \x03(\x0b\x32\x19.artigo.search.SearchTerm\x12\x0f\n\x07sources\x18\x02 \x03(\t\x12\x32\n\taggregate\x18\x03 \x01(\x0b\x32\x1f.artigo.search.AggregateRequest\x12\x35\n\x07sorting\x18\x04 \x01(\x0e\x32$.artigo.search.SearchRequest.Sorting\x12\x0c\n\x04seed\x18\x05 \x01(\t\x12\r\n\x05limit\x18\x06 \x01(\x05\x12\x0e\n\x06offset\x18\x07 \x01(\x05\"2\n\x07Sorting\x12\x13\n\x0fSORTING_DEFAULT\x10\x00\x12\x12\n\x0eSORTING_RANDOM\x10\x01\"\x19\n\x0bSearchReply\x12\n\n\x02id\x18\x01 \x01(\t\"`\n\nValueField\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\x14\n\nstring_val\x18\x02 \x01(\tH\x00\x12\x11\n\x07int_val\x18\x03 \x01(\x05H\x00\x12\x13\n\tfloat_val\x18\x04 \x01(\x02H\x00\x42\x07\n\x05value\"B\n\x06Source\x12\n\n\x02id\x18\x01 \x01(\t\x12\x0c\n\x04name\x18\x02 \x01(\t\x12\x0b\n\x03url\x18\x03 \x01(\t\x12\x11\n\tis_public\x18\x04 \x01(\x08\"@\n\x03Tag\x12\n\n\x02id\x18\x01 \x01(\t\x12\x0c\n\x04name\x18\x02 \x01(\t\x12\x10\n\x08language\x18\x03 \x01(\t\x12\r\n\x05\x63ount\x18\x04 \x01(\x05\"X\n\x10\x41ggregateRequest\x12\x11\n\tuse_query\x18\x01 \x01(\x08\x12\x0e\n\x06\x66ields\x18\x02 \x03(\t\x12\x0c\n\x04size\x18\x03 \x01(\x05\x12\x13\n\x0bsignificant\x18\x04 \x01(\x08\"L\n\x0f\x41ggregateResult\x12\r\n\x05\x66ield\x18\x01 \x01(\t\x12*\n\x07\x65ntries\x18\x02 \x03(\x0b\x32\x19.artigo.search.ValueField\"F\n\x0e\x41ggregateReply\x12\x34\n\x0c\x61ggregations\x18\x01 \x03(\x0b\x32\x1e.artigo.search.AggregateResult\">\n\x14ReconcileRequestTerm\x12\n\n\x02id\x18\x01 \x01(\t\x12\x0c\n\x04name\x18\x02 \x01(\t\x12\x0c\n\x04type\x18\x03 \x01(\t\"b\n\x10ReconcileRequest\x12\x32\n\x05terms\x18\x01 \x03(\x0b\x32#.artigo.search.ReconcileRequestTerm\x12\x0c\n\x04size\x18\x02 \x01(\x05\x12\x0c\n\x04lang\x18\x03 \x01(\t\">\n\x13ReconcileResultTerm\x12\x0b\n\x03ids\x18\x01 \x03(\t\x12\x0c\n\x04name\x18\x02 \x01(\t\x12\x0c\n\x04type\x18\x03 \x01(\t\"N\n\x0eReconcileEntry\x12\n\n\x02id\x18\x01 \x01(\t\x12\x0c\n\x04name\x18\x02 \x01(\t\x12\x13\n\x0b\x64\x65scription\x18\x03 \x01(\t\x12\r\n\x05score\x18\x04 \x01(\x05\"\x84\x01\n\x0fReconcileResult\x12\x30\n\x04term\x18\x01 \x01(\x0b\x32\".artigo.search.ReconcileResultTerm\x12.\n\x07\x65ntries\x18\x02 \x03(\x0b\x32\x1d.artigo.search.ReconcileEntry\x12\x0f\n\x07service\x18\x03 \x01(\t\"I\n\x0eReconcileReply\x12\x37\n\x0freconciliations\x18\x01 \x03(\x0b\x32\x1e.artigo.search.ReconcileResult\"\x96\x01\n\x05Image\x12\n\n\x02id\x18\x01 \x01(\t\x12\x0f\n\x07hash_id\x18\x02 \x01(\t\x12\'\n\x04meta\x18\x03 \x03(\x0b\x32\x19.artigo.search.ValueField\x12%\n\x06source\x18\x04 \x01(\x0b\x32\x15.artigo.search.Source\x12 \n\x04tags\x18\x05 \x03(\x0b\x32\x12.artigo.search.Tag\"4\n\rInsertRequest\x12#\n\x05image\x18\x01 \x01(\x0b\x32\x14.artigo.search.Image\")\n\x0bInsertReply\x12\n\n\x02id\x18\x01 \x01(\t\x12\x0e\n\x06status\x18\x02 \x01(\t\"%\n\x17ListSearchResultRequest\x12\n\n\x02id\x18\x01 \x01(\t\"\x93\x01\n\x15ListSearchResultReply\x12\r\n\x05total\x18\x01 \x01(\x05\x12\x0e\n\x06offset\x18\x02 \x01(\x05\x12%\n\x07\x65ntries\x18\x03 \x03(\x0b\x32\x14.artigo.search.Image\x12\x34\n\x0c\x61ggregations\x18\x04 \x03(\x0b\x32\x1e.artigo.search.AggregateResult2\xa4\x05\n\x05Index\x12;\n\x03get\x12\x19.artigo.search.GetRequest\x1a\x17.artigo.search.GetReply\"\x00\x12\x41\n\x05\x63ount\x12\x1b.artigo.search.CountRequest\x1a\x19.artigo.search.CountReply\"\x00\x12\x44\n\x06status\x12\x1c.artigo.search.StatusRequest\x1a\x1a.artigo.search.StatusReply\"\x00\x12\x44\n\x06\x64\x65lete\x12\x1c.artigo.search.DeleteRequest\x1a\x1a.artigo.search.DeleteReply\"\x00\x12\x44\n\x06search\x12\x1c.artigo.search.SearchRequest\x1a\x1a.artigo.search.SearchReply\"\x00\x12J\n\taggregate\x12\x1c.artigo.search.SearchRequest\x1a\x1d.artigo.search.AggregateReply\"\x00\x12M\n\treconcile\x12\x1f.artigo.search.ReconcileRequest\x1a\x1d.artigo.search.ReconcileReply\"\x00\x12H\n\x06insert\x12\x1c.artigo.search.InsertRequest\x1a\x1a.artigo.search.InsertReply\"\x00(\x01\x30\x01\x12\x64\n\x12list_search_result\x12&.artigo.search.ListSearchResultRequest\x1a$.artigo.search.ListSearchResultReply\"\x00\x42\x02P\x01\x62\x06proto3'
 )
 
 
@@ -49,8 +49,8 @@ _TEXTSEARCHTERM_FLAG = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   serialized_options=None,
-  serialized_start=315,
-  serialized_end=352,
+  serialized_start=360,
+  serialized_end=397,
 )
 _sym_db.RegisterEnumDescriptor(_TEXTSEARCHTERM_FLAG)
 
@@ -89,8 +89,8 @@ _NUMBERSEARCHTERM_RELATION = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   serialized_options=None,
-  serialized_start=570,
-  serialized_end=640,
+  serialized_start=615,
+  serialized_end=685,
 )
 _sym_db.RegisterEnumDescriptor(_NUMBERSEARCHTERM_RELATION)
 
@@ -119,8 +119,8 @@ _NUMBERSEARCHTERM_FLAG = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   serialized_options=None,
-  serialized_start=315,
-  serialized_end=352,
+  serialized_start=360,
+  serialized_end=397,
 )
 _sym_db.RegisterEnumDescriptor(_NUMBERSEARCHTERM_FLAG)
 
@@ -144,8 +144,8 @@ _SEARCHREQUEST_SORTING = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   serialized_options=None,
-  serialized_start=1039,
-  serialized_end=1089,
+  serialized_start=1084,
+  serialized_end=1134,
 )
 _sym_db.RegisterEnumDescriptor(_SEARCHREQUEST_SORTING)
 
@@ -214,6 +214,63 @@ _GETREPLY = _descriptor.Descriptor(
 )
 
 
+_COUNTREQUEST = _descriptor.Descriptor(
+  name='CountRequest',
+  full_name='artigo.search.CountRequest',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=108,
+  serialized_end=122,
+)
+
+
+_COUNTREPLY = _descriptor.Descriptor(
+  name='CountReply',
+  full_name='artigo.search.CountReply',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='count', full_name='artigo.search.CountReply.count', index=0,
+      number=1, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=124,
+  serialized_end=151,
+)
+
+
 _STATUSREQUEST = _descriptor.Descriptor(
   name='StatusRequest',
   full_name='artigo.search.StatusRequest',
@@ -241,8 +298,8 @@ _STATUSREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=108,
-  serialized_end=135,
+  serialized_start=153,
+  serialized_end=180,
 )
 
 
@@ -273,8 +330,8 @@ _STATUSREPLY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=137,
-  serialized_end=166,
+  serialized_start=182,
+  serialized_end=211,
 )
 
 
@@ -298,8 +355,8 @@ _DELETEREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=168,
-  serialized_end=183,
+  serialized_start=213,
+  serialized_end=228,
 )
 
 
@@ -330,8 +387,8 @@ _DELETEREPLY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=185,
-  serialized_end=214,
+  serialized_start=230,
+  serialized_end=259,
 )
 
 
@@ -377,8 +434,8 @@ _TEXTSEARCHTERM = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=217,
-  serialized_end=352,
+  serialized_start=262,
+  serialized_end=397,
 )
 
 
@@ -451,8 +508,8 @@ _NUMBERSEARCHTERM = _descriptor.Descriptor(
       create_key=_descriptor._internal_create_key,
     fields=[]),
   ],
-  serialized_start=355,
-  serialized_end=688,
+  serialized_start=400,
+  serialized_end=733,
 )
 
 
@@ -495,8 +552,8 @@ _SEARCHTERM = _descriptor.Descriptor(
       create_key=_descriptor._internal_create_key,
     fields=[]),
   ],
-  serialized_start=690,
-  serialized_end=808,
+  serialized_start=735,
+  serialized_end=853,
 )
 
 
@@ -570,8 +627,8 @@ _SEARCHREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=811,
-  serialized_end=1089,
+  serialized_start=856,
+  serialized_end=1134,
 )
 
 
@@ -602,8 +659,8 @@ _SEARCHREPLY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1091,
-  serialized_end=1116,
+  serialized_start=1136,
+  serialized_end=1161,
 )
 
 
@@ -660,8 +717,8 @@ _VALUEFIELD = _descriptor.Descriptor(
       create_key=_descriptor._internal_create_key,
     fields=[]),
   ],
-  serialized_start=1118,
-  serialized_end=1214,
+  serialized_start=1163,
+  serialized_end=1259,
 )
 
 
@@ -713,8 +770,8 @@ _SOURCE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1216,
-  serialized_end=1282,
+  serialized_start=1261,
+  serialized_end=1327,
 )
 
 
@@ -766,8 +823,8 @@ _TAG = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1284,
-  serialized_end=1348,
+  serialized_start=1329,
+  serialized_end=1393,
 )
 
 
@@ -819,8 +876,8 @@ _AGGREGATEREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1350,
-  serialized_end=1438,
+  serialized_start=1395,
+  serialized_end=1483,
 )
 
 
@@ -858,8 +915,8 @@ _AGGREGATERESULT = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1440,
-  serialized_end=1516,
+  serialized_start=1485,
+  serialized_end=1561,
 )
 
 
@@ -890,8 +947,8 @@ _AGGREGATEREPLY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1518,
-  serialized_end=1588,
+  serialized_start=1563,
+  serialized_end=1633,
 )
 
 
@@ -936,8 +993,8 @@ _RECONCILEREQUESTTERM = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1590,
-  serialized_end=1652,
+  serialized_start=1635,
+  serialized_end=1697,
 )
 
 
@@ -982,8 +1039,8 @@ _RECONCILEREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1654,
-  serialized_end=1752,
+  serialized_start=1699,
+  serialized_end=1797,
 )
 
 
@@ -1028,8 +1085,8 @@ _RECONCILERESULTTERM = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1754,
-  serialized_end=1816,
+  serialized_start=1799,
+  serialized_end=1861,
 )
 
 
@@ -1081,8 +1138,8 @@ _RECONCILEENTRY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1818,
-  serialized_end=1896,
+  serialized_start=1863,
+  serialized_end=1941,
 )
 
 
@@ -1127,8 +1184,8 @@ _RECONCILERESULT = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1899,
-  serialized_end=2031,
+  serialized_start=1944,
+  serialized_end=2076,
 )
 
 
@@ -1159,8 +1216,8 @@ _RECONCILEREPLY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2033,
-  serialized_end=2106,
+  serialized_start=2078,
+  serialized_end=2151,
 )
 
 
@@ -1219,8 +1276,8 @@ _IMAGE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2109,
-  serialized_end=2259,
+  serialized_start=2154,
+  serialized_end=2304,
 )
 
 
@@ -1251,8 +1308,8 @@ _INSERTREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2261,
-  serialized_end=2313,
+  serialized_start=2306,
+  serialized_end=2358,
 )
 
 
@@ -1290,8 +1347,8 @@ _INSERTREPLY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2315,
-  serialized_end=2356,
+  serialized_start=2360,
+  serialized_end=2401,
 )
 
 
@@ -1322,8 +1379,8 @@ _LISTSEARCHRESULTREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2358,
-  serialized_end=2395,
+  serialized_start=2403,
+  serialized_end=2440,
 )
 
 
@@ -1375,8 +1432,8 @@ _LISTSEARCHRESULTREPLY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2398,
-  serialized_end=2545,
+  serialized_start=2443,
+  serialized_end=2590,
 )
 
 _GETREPLY.fields_by_name['entries'].message_type = _IMAGE
@@ -1430,6 +1487,8 @@ _LISTSEARCHRESULTREPLY.fields_by_name['entries'].message_type = _IMAGE
 _LISTSEARCHRESULTREPLY.fields_by_name['aggregations'].message_type = _AGGREGATERESULT
 DESCRIPTOR.message_types_by_name['GetRequest'] = _GETREQUEST
 DESCRIPTOR.message_types_by_name['GetReply'] = _GETREPLY
+DESCRIPTOR.message_types_by_name['CountRequest'] = _COUNTREQUEST
+DESCRIPTOR.message_types_by_name['CountReply'] = _COUNTREPLY
 DESCRIPTOR.message_types_by_name['StatusRequest'] = _STATUSREQUEST
 DESCRIPTOR.message_types_by_name['StatusReply'] = _STATUSREPLY
 DESCRIPTOR.message_types_by_name['DeleteRequest'] = _DELETEREQUEST
@@ -1471,6 +1530,20 @@ GetReply = _reflection.GeneratedProtocolMessageType('GetReply', (_message.Messag
   # @@protoc_insertion_point(class_scope:artigo.search.GetReply)
   })
 _sym_db.RegisterMessage(GetReply)
+
+CountRequest = _reflection.GeneratedProtocolMessageType('CountRequest', (_message.Message,), {
+  'DESCRIPTOR' : _COUNTREQUEST,
+  '__module__' : 'index_pb2'
+  # @@protoc_insertion_point(class_scope:artigo.search.CountRequest)
+  })
+_sym_db.RegisterMessage(CountRequest)
+
+CountReply = _reflection.GeneratedProtocolMessageType('CountReply', (_message.Message,), {
+  'DESCRIPTOR' : _COUNTREPLY,
+  '__module__' : 'index_pb2'
+  # @@protoc_insertion_point(class_scope:artigo.search.CountReply)
+  })
+_sym_db.RegisterMessage(CountReply)
 
 StatusRequest = _reflection.GeneratedProtocolMessageType('StatusRequest', (_message.Message,), {
   'DESCRIPTOR' : _STATUSREQUEST,
@@ -1664,8 +1737,8 @@ _INDEX = _descriptor.ServiceDescriptor(
   index=0,
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_start=2548,
-  serialized_end=3157,
+  serialized_start=2593,
+  serialized_end=3269,
   methods=[
   _descriptor.MethodDescriptor(
     name='get',
@@ -1678,9 +1751,19 @@ _INDEX = _descriptor.ServiceDescriptor(
     create_key=_descriptor._internal_create_key,
   ),
   _descriptor.MethodDescriptor(
+    name='count',
+    full_name='artigo.search.Index.count',
+    index=1,
+    containing_service=None,
+    input_type=_COUNTREQUEST,
+    output_type=_COUNTREPLY,
+    serialized_options=None,
+    create_key=_descriptor._internal_create_key,
+  ),
+  _descriptor.MethodDescriptor(
     name='status',
     full_name='artigo.search.Index.status',
-    index=1,
+    index=2,
     containing_service=None,
     input_type=_STATUSREQUEST,
     output_type=_STATUSREPLY,
@@ -1690,7 +1773,7 @@ _INDEX = _descriptor.ServiceDescriptor(
   _descriptor.MethodDescriptor(
     name='delete',
     full_name='artigo.search.Index.delete',
-    index=2,
+    index=3,
     containing_service=None,
     input_type=_DELETEREQUEST,
     output_type=_DELETEREPLY,
@@ -1700,7 +1783,7 @@ _INDEX = _descriptor.ServiceDescriptor(
   _descriptor.MethodDescriptor(
     name='search',
     full_name='artigo.search.Index.search',
-    index=3,
+    index=4,
     containing_service=None,
     input_type=_SEARCHREQUEST,
     output_type=_SEARCHREPLY,
@@ -1710,7 +1793,7 @@ _INDEX = _descriptor.ServiceDescriptor(
   _descriptor.MethodDescriptor(
     name='aggregate',
     full_name='artigo.search.Index.aggregate',
-    index=4,
+    index=5,
     containing_service=None,
     input_type=_SEARCHREQUEST,
     output_type=_AGGREGATEREPLY,
@@ -1720,7 +1803,7 @@ _INDEX = _descriptor.ServiceDescriptor(
   _descriptor.MethodDescriptor(
     name='reconcile',
     full_name='artigo.search.Index.reconcile',
-    index=5,
+    index=6,
     containing_service=None,
     input_type=_RECONCILEREQUEST,
     output_type=_RECONCILEREPLY,
@@ -1730,7 +1813,7 @@ _INDEX = _descriptor.ServiceDescriptor(
   _descriptor.MethodDescriptor(
     name='insert',
     full_name='artigo.search.Index.insert',
-    index=6,
+    index=7,
     containing_service=None,
     input_type=_INSERTREQUEST,
     output_type=_INSERTREPLY,
@@ -1740,7 +1823,7 @@ _INDEX = _descriptor.ServiceDescriptor(
   _descriptor.MethodDescriptor(
     name='list_search_result',
     full_name='artigo.search.Index.list_search_result',
-    index=7,
+    index=8,
     containing_service=None,
     input_type=_LISTSEARCHRESULTREQUEST,
     output_type=_LISTSEARCHRESULTREPLY,

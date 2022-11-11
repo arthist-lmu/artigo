@@ -9,9 +9,16 @@ logger = logging.getLogger(__name__)
 
 @shared_task(ignore_result=True)
 def import_jsonl():
-    client = Client()
-    client.delete()
-    client.insert()
+    try:
+        client = Client()
+        client.delete()
+        client.insert()
+
+        return True
+    except:
+        pass
+
+    return False
 
 
 @shared_task(ignore_result=True)
@@ -26,3 +33,13 @@ def delete_jsonl(folder='/dump', limit=2):
                 files.append(file_path)
             else:
                 os.remove(file_path)
+
+
+@shared_task()
+def log_count():
+    try:
+        return Client().count().count
+    except:
+        pass
+
+    return 0
