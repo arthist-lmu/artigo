@@ -41,7 +41,7 @@ def document_count():
         result = Client().count()
 
         if result.count == 0:
-            import_jsonl.delay()
+            import_data.delay()
 
         return result.count
     except:
