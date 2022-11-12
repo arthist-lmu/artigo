@@ -7,8 +7,8 @@ from artigo_search.client import Client
 logger = logging.getLogger(__name__)
 
 
-@shared_task(ignore_result=True)
-def import_jsonl():
+@shared_task()
+def import_data():
     try:
         client = Client()
         client.delete()
@@ -22,7 +22,7 @@ def import_jsonl():
 
 
 @shared_task(ignore_result=True)
-def delete_jsonl(folder='/dump', limit=2):
+def delete_data(folder='/dump', limit=2):
     files, last_modified = [], lambda file: file.stat().st_mtime
 
     for file in sorted(os.scandir(folder), key=last_modified, reverse=True):
@@ -36,9 +36,14 @@ def delete_jsonl(folder='/dump', limit=2):
 
 
 @shared_task()
-def log_count():
+def document_count():
     try:
-        return Client().count().count
+        result = Client().count()
+
+        if result.count == 0:
+            import_jsonl.delay()
+
+        return result.count
     except:
         pass
 
