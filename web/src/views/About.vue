@@ -84,7 +84,8 @@ export default {
     },
   },
   mounted() {
-    this.$store.dispatch('statistics/get');
+    // see: @/components/game/Drawer.vue
+    // this.$store.dispatch('statistics/get');
     window.scrollTo(0, 0);
   },
   components: {

@@ -77,8 +77,10 @@ export default {
     },
   },
   mounted() {
-    const params = { lang: this.$i18n.locale };
-    this.$store.dispatch('home/get', params);
+    this.$store.dispatch('statistics/get').then(() => {
+      const params = { lang: this.$i18n.locale };
+      this.$store.dispatch('home/get', params);
+    });
   },
   components: {
     Card: () => import('./DrawerCard.vue'),

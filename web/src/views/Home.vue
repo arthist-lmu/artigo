@@ -1,5 +1,5 @@
 <template>
-  <v-container v-if="data && entries">
+  <v-container>
     <GameDrawer
       v-model="drawer"
       ref="drawer"
@@ -7,7 +7,10 @@
 
     <v-row></v-row>
 
-    <v-row style="flex: 0;">
+    <v-row
+      v-if="creators && entries"
+      style="flex: 0;"
+    >
       <v-col
         :class="$vuetify.breakpoint.mdAndDown ? 'px-1 py-6' : 'pa-12'"
         :cols="$vuetify.breakpoint.mdAndDown ? 12 : 10"
@@ -193,8 +196,9 @@ export default {
       deep: true,
     },
   },
-  created() {
-    this.$store.dispatch('statistics/get');
+  mounted() {
+    // see: @/components/game/Drawer.vue
+    // this.$store.dispatch('statistics/get');
   },
   components: {
     Typer: () => import('@/components/Typer.vue'),

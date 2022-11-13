@@ -2,7 +2,7 @@ import os
 import environ
 import logging
 
-from datetime import timedelta
+from celery.schedules import crontab
 
 logger = logging.getLogger(__name__)
 
@@ -270,13 +270,13 @@ CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TASK_SERIALIZER = 'json'
 
 CELERY_BEAT_SCHEDULE = {
-    'export_jsonl': {
-        'task': 'core.tasks.export_jsonl',
-        'schedule': timedelta(hours=12),
+    'export_data': {
+        'task': 'core.tasks.export_data',
+        'schedule': crontab(day_of_week='*', hour=2, minute=0),
     },
     'renew_cache': {
         'task': 'frontend.tasks.renew_cache',
-        'schedule': timedelta(hours=1),
+        'schedule': crontab(hour='*/2', minute=0),
     },
 }
 
@@ -344,7 +344,4 @@ SPECTACULAR_SETTINGS = {
         'name': 'GNU General Public License v3.0',
         'url': 'https://github.com/arthist-lmu/artigo/blob/master/LICENSE.md',
     },
-    'PREPROCESSING_HOOKS': [
-        'frontend.utils.urls.preprocessing_hook',
-    ],
 }
