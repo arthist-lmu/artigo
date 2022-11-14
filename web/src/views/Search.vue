@@ -6,11 +6,11 @@
       :items="entries"
       :items-per-page.sync="itemsPerPage"
       :page.sync="page"
-      :class="[$vuetify.breakpoint.mobile ? 'mx-n2' : undefined, 'd-flex flex-column']"
+      class="d-flex flex-column"
       hide-default-footer
     >
       <template v-slot:default="props">
-        <v-row class="ma-n1">
+        <v-row :class="$vuetify.breakpoint.mdAndUp ? 'ma-n1' : undefined">
           <v-col
             v-for="entry in props.items"
             :key="entry.resource_id"

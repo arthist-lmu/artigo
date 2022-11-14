@@ -10,7 +10,7 @@
   >
     <v-container
       :class="{
-        'px-7': $vuetify.breakpoint.mdAndDown,
+        'px-7': $vuetify.breakpoint.smAndDown,
         transparent: hasOpacity,
       }"
     >
