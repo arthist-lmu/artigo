@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <v-container :key="$i18n.locale">
     <GameDrawer
       v-model="drawer"
       ref="drawer"
