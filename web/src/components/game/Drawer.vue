@@ -49,7 +49,6 @@ export default {
   data() {
     return {
       drawer: false,
-      width: 350,
     };
   },
   methods: {
@@ -60,6 +59,9 @@ export default {
   computed: {
     data() {
       return this.$store.state.home.data;
+    },
+    width() {
+      return this.isPermanent ? 350 : 300;
     },
     isPermanent() {
       return this.$vuetify.breakpoint.mdAndUp;
