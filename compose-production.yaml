@@ -3,17 +3,20 @@ name: production
 services:
   redisai:
     image: redis:latest
+    restart: always
     labels:
       com.centurylinklabs.watchtower.enable: "true"
 
   memcached:
     image: memcached:1
+    restart: always
     command: -I 32m
     labels:
       com.centurylinklabs.watchtower.enable: "true"
 
   opensearch:
     image: opensearchproject/opensearch:2
+    restart: always
     environment:
       - node.name=os01
       - discovery.seed_hosts=os01
@@ -35,6 +38,7 @@ services:
 
   db:
     image: postgres:14
+    restart: always
     volumes:
       - db_data:/var/lib/postgresql/data
     env_file:
@@ -44,6 +48,7 @@ services:
 
   search:
     image: arthistlmu/artigo_search:latest
+    restart: always
     volumes:
       - type: bind
         source: ./dump_production/
@@ -60,6 +65,7 @@ services:
 
   api:
     image: arthistlmu/artigo_api:latest
+    restart: always
     volumes:
       - type: bind
         source: ./media/
@@ -82,6 +88,7 @@ services:
 
   api-proxy:
     image: nginx:latest
+    restart: always
     volumes:
       - type: bind
         source: ./api-proxy/api-proxy-nginx.conf
@@ -107,6 +114,7 @@ services:
 
   web:
     image: arthistlmu/artigo:latest
+    restart: always
     depends_on:
       - api
     ports:
