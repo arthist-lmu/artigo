@@ -187,7 +187,7 @@ export default {
       this.$store.dispatch('search/post', { query });
     },
     setImageHeight() {
-      this.imageHeight = window.innerHeight / 2;
+      this.imageHeight = window.innerHeight / 3;
     },
   },
   computed: {
