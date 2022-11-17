@@ -1,5 +1,6 @@
 <template>
   <v-app-bar
+    v-if="isVisible"
     :style="{ left: `${left}px !important` }"
     :dark="dark"
     clipped-left
@@ -75,6 +76,15 @@ export default {
     hasOpacity() {
       const pages = ['game', 'session'];
       return pages.includes(this.$route.name);
+    },
+    isVisible() {
+      if (
+        this.$route.name !== 'game'
+        || this.$vuetify.breakpoint.smAndUp
+      ) {
+        return true;
+      }
+      return !this.$store.state.game.input.focus;
     },
   },
   components: {

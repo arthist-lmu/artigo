@@ -10,6 +10,8 @@
             v-model="input"
             ref="input"
             v-on:blur="onBlur"
+            @focus="focus = true;"
+            @blur="focus = false;"
             @keyup.enter.native="post"
             :placeholder="$t('game.fields.tagging.post')"
             append-icon=""

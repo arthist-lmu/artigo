@@ -8,6 +8,9 @@ const game = {
       show: false,
       params: {},
     },
+    input: {
+      focus: false,
+    },
     tags: [],
     entry: {},
     rounds: 5,
@@ -66,6 +69,9 @@ const game = {
       if (params && Object.keys(params).length) {
         state.dialog.params = params;
       }
+    },
+    updateInput(state, { focus }) {
+      state.input.focus = focus;
     },
     updateData(state, {
       session_id, rounds, round_id, data,

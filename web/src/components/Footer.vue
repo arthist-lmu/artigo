@@ -1,5 +1,6 @@
 <template>
   <v-footer
+    v-if="isVisible"
     ref="footer"
     :dark="dark"
     :style="$vuetify.breakpoint.mdAndDown ? undefined : 'padding: 0 12px;'"
@@ -120,6 +121,15 @@ export default {
     hasOpacity() {
       const names = ['home', 'game', 'session'];
       return names.includes(this.$route.name);
+    },
+    isVisible() {
+      if (
+        this.$route.name !== 'game'
+        || this.$vuetify.breakpoint.smAndUp
+      ) {
+        return true;
+      }
+      return !this.$store.state.game.input.focus;
     },
   },
   beforeDestroy() {

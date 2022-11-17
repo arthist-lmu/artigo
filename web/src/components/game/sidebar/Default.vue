@@ -50,6 +50,11 @@ export default {
       default: 0,
     },
   },
+  data() {
+    return {
+      focus: false,
+    };
+  },
   methods: {
     next() {
       this.$emit('next');
@@ -72,9 +77,11 @@ export default {
       }
     },
     focusInput() {
-      if (this.$refs.input !== undefined) {
-        window.setTimeout(() => this.$refs.input.focus(), 0);
-      }
+      window.setTimeout(() => {
+        if (this.$refs.input !== undefined) {
+          this.$refs.input.focus();
+        }
+      }, 0);
     },
   },
   computed: {
@@ -82,6 +89,11 @@ export default {
       'roundId',
       'rounds',
     ]),
+  },
+  watch: {
+    focus(value) {
+      this.$store.commit('game/updateInput', { focus: value });
+    },
   },
   components: {
     Messages: () => import('@/components/game/messages/Default.vue'),
