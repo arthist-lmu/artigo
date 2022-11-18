@@ -94,7 +94,7 @@ services:
     image: artigo/web
     build:
       context: .
-      dockerfile: ./web/Dockerfile.dev
+      dockerfile: ./web/Dockerfile
     volumes:
       - type: bind
         source: ./web/
