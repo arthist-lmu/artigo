@@ -1,11 +1,13 @@
 FROM python:3.10
 
-RUN pip install --no-cache-dir poetry
-COPY /search/pyproject.toml /search/poetry.lock /
-RUN poetry export -f requirements.txt --output requirements.txt --without-hashes
-RUN pip install --no-cache-dir -r requirements.txt
+ENV POETRY_VIRTUALENVS_CREATE=False
 
-COPY /search/ /search/
+RUN pip install --no-cache-dir poetry
+
+COPY /search/pyproject.toml /search/poetry.lock /
+RUN cd /search; poetry install
+
+COPY /search /search/
 RUN pip install /search
 
 COPY /search/config.json /config.json

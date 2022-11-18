@@ -27,7 +27,6 @@ RUN pip install /search
 
 COPY --chown=django:django plugin.config.json /config.json
 
-ENV PYTHONPATH=/api/src/
 WORKDIR /api/src/artigo_api
 
 USER django
