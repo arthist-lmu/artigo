@@ -58,9 +58,13 @@ export default {
 
 <style scoped>
 .tag-container {
-  white-space: break-spaces;
-  max-height: 75px;
+  display: -webkit-box;
   overflow: hidden;
+  color: transparent;
+  white-space: break-spaces;
+  line-clamp: 3; 
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
 }
 
 .v-chip.v-size--x-small {

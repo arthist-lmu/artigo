@@ -199,6 +199,7 @@ export default {
   mounted() {
     // see: @/components/game/Drawer.vue
     // this.$store.dispatch('statistics/get');
+    window.scrollTo(0, document.body.scrollHeight);
   },
   components: {
     Typer: () => import('@/components/Typer.vue'),
