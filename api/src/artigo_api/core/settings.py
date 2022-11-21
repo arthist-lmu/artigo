@@ -41,11 +41,17 @@ FORCE_SCRIPT_NAME = '/'
 try:
     API = env('VUE_APP_API')
     API_URL = f'https://{API}'
+
+    FRONTEND = env('VUE_APP_FRONTEND')
+    FRONTEND_URl = f'https://{FRONTEND}'
 except:
     API = 'http://localhost:8000'
     API_URL = API
 
-logger.warning(f'API URL: {API_URL}.')
+    FRONTEND = 'http://localhost:8080'
+    FRONTEND_URl = FRONTEND
+
+logger.warning(f'API URL set to {API_URL}.')
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -86,6 +92,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
     'frontend.middleware.QueryPrintMiddleware',
 ]
 
@@ -131,10 +138,6 @@ except:
         'http://localhost:8081',
     ])
 
-logger.warning(f'Allowed hosts: {ALLOWED_HOSTS}.')
-logger.warning(f'CORS allowed origins: {CORS_ALLOWED_ORIGINS}.')
-logger.warning(f'CSRF trusted origins: {CSRF_TRUSTED_ORIGINS}.')
-
 ROOT_URLCONF = 'core.urls'
 
 TEMPLATES = [
@@ -175,6 +178,13 @@ CACHES = {
 DATABASES = {
     'default': env.db('DATABASE_URL'),
 }
+
+# Locales
+# https://docs.djangoproject.com/en/2.1/topics/i18n/
+
+LOCALE_PATHS = [
+    os.path.join(BASE_DIR, 'locale'),
+]
 
 # Password validation
 # https://docs.djangoproject.com/en/2.1/ref/settings/#auth-password-validators
@@ -233,8 +243,6 @@ LOGGING = {
 LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'UTC'
 USE_I18N = True
-# deprecated
-# USE_L10N = True
 USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)

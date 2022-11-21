@@ -17,6 +17,7 @@ from dj_rest_auth.registration.views import RegisterView
 from frontend.serializers import (
     CustomUserDetailsSerializer,
     CustomRegisterSerializer,
+    CustomPasswordResetSerializer,
 )
 from frontend.models import (
     CustomUser,
@@ -134,6 +135,8 @@ class CustomPasswordResetView(PasswordResetView):
     '''
     Reset password.
     '''
+
+    serializer_class = CustomPasswordResetSerializer
 
 
 @extend_schema(methods=['POST'], exclude=True)

@@ -1,0 +1,98 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-06-07 04:23-0500\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: templates/account/email/base_message.txt:1
+#, python-format
+msgid "Hello from %(site_name)s!"
+msgstr "Hi von %(site_name)s!"
+
+#: templates/account/email/base_message.txt:5
+#, python-format
+msgid ""
+"Thank you for using %(site_name)s!\n"
+"%(site_domain)s"
+msgstr ""
+"Danke, dass Du %(site_name)s nutzt!\n"
+"%(site_domain)s"
+
+#: templates/account/email/email_confirmation_message.txt:5
+#, python-format
+msgid ""
+"You're receiving this e-mail because user %(user_display)s has given your e-"
+"mail address to register an account on %(site_domain)s.\n"
+"\n"
+"To confirm this is correct, go to %(activate_url)s"
+msgstr ""
+"Du erhältst diese E-Mail, weil der Nutzer %(user_display)s von "
+"%(site_domain)s Deine E-Mail-Adresse als seine angab, um sie mit seinem "
+"Konto zu verknüpfen.\n"
+"\n"
+"Um dies zu bestätigen, rufe bitte folgende Adresse auf: %(activate_url)s"
+
+#: templates/account/email/email_confirmation_subject.txt:3
+msgid "Please Confirm Your E-mail Address"
+msgstr "Bitte bestätige deine E-Mail-Adresse"
+
+#: templates/account/email/password_reset_key_message.txt:4
+msgid ""
+"You're receiving this e-mail because you or someone else has requested a "
+"password for your user account.\n"
+"It can be safely ignored if you did not request a password reset. Click the "
+"link below to reset your password."
+msgstr ""
+"Du erhältst diese E-Mail, weil Du oder jemand anderes die Zurücksetzung des "
+"Passwortes für Dein Konto gefordert hat.\n"
+"Falls es sich dabei nicht um Dich handelt, kann diese Nachricht ignoriert "
+"werden. Rufe folgende Adresse auf, um Dein Passwort zurückzusetzen:"
+
+#: templates/account/email/password_reset_key_message.txt:9
+#, python-format
+msgid "In case you forgot, your username is %(username)s."
+msgstr ""
+"Falls Du Deinen Anmeldenamen vergessen haben solltest; er lautet "
+"%(username)s."
+
+#: templates/account/email/password_reset_key_subject.txt:3
+#: templates/account/email/unknown_account_subject.txt:3
+msgid "Password Reset E-mail"
+msgstr "E-Mail zum Zurücksetzen des Passworts"
+
+#: templates/account/email/unknown_account_message.txt:4
+#, fuzzy, python-format
+#| msgid ""
+#| "You're receiving this e-mail because you or someone else has requested a "
+#| "password for your user account.\n"
+#| "It can be safely ignored if you did not request a password reset. Click "
+#| "the link below to reset your password."
+msgid ""
+"You are receiving this e-mail because you or someone else has requested a\n"
+"password for your user account. However, we do not have any record of a "
+"user\n"
+"with email %(email)s in our database.\n"
+"\n"
+"This mail can be safely ignored if you did not request a password reset.\n"
+"\n"
+"If it was you, you can sign up for an account using the link below."
+msgstr ""
+"Du erhältst diese E-Mail weil Du oder jemand anderes die Zurücksetzung des "
+"Passwortes für Dein Konto gefordert hat.\n"
+"Falls es sich dabei nicht um dich handelt, kann diese Nachricht ignoriert "
+"werden. Rufe folgende Adresse auf, um Dein Passwort zurückzusetzen:"
+

@@ -62,7 +62,7 @@ export default {
   overflow: hidden;
   color: transparent;
   white-space: break-spaces;
-  line-clamp: 3; 
+  line-clamp: 3;
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
 }

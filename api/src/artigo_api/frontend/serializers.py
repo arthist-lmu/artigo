@@ -3,10 +3,16 @@ import logging
 from itertools import groupby
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
-from dj_rest_auth.serializers import UserDetailsSerializer
+from dj_rest_auth.serializers import (
+    UserDetailsSerializer,
+    PasswordResetSerializer,
+)
 from dj_rest_auth.registration.serializers import RegisterSerializer
 from frontend.models import *
-from frontend.utils import media_url_to_image
+from frontend.utils import (
+    media_url_to_image,
+    CustomAllAuthPasswordResetForm,
+)
 
 try:
     from allauth.account.adapter import get_adapter
@@ -84,12 +90,21 @@ class CustomRegisterSerializer(RegisterSerializer):
         return user
 
 
+class CustomPasswordResetSerializer(PasswordResetSerializer):
+    def validate_email(self, value):
+        self.reset_form = CustomAllAuthPasswordResetForm(data=self.initial_data)
+        
+        if not self.reset_form.is_valid():
+            raise serializers.ValidationError(self.reset_form.errors)
+
+        return value
+
+
 class ListSerializer(serializers.ListSerializer):
     def to_representation(self, data):
         data = super().to_representation(data)
 
         return [dict(x) for x in data]
-
 
 
 class ResourceTagListSerializer(serializers.ListSerializer):

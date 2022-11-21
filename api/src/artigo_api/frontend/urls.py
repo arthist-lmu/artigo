@@ -1,13 +1,14 @@
-from .views import *
 from django.urls import path, re_path
 from django.contrib import admin
+from django.conf import settings
 from django.conf.urls import include
-from django.views.generic import RedirectView, TemplateView
+from django.views.generic import TemplateView, RedirectView
 from drf_spectacular.views import (
     SpectacularAPIView as SchemaView,
     SpectacularRedocView as RedocView,
     SpectacularSwaggerView as SwaggerView,
 )
+from .views import *
 
 urlpatterns = [
     path('game/', GameView.as_view(), name='game'),
@@ -35,7 +36,7 @@ urlpatterns = [
     ),
     re_path(
         r'auth/password/reset/confirm/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,32})/$',
-        TemplateView.as_view(template_name='password_reset_confirm.html'),
+        TemplateView.as_view(),
         name='password_reset_confirm',
     ),
     path('auth/password/change/', PasswordChangeView.as_view(), name='password_change'),
