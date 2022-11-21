@@ -4,6 +4,7 @@ from django.contrib.auth.forms import (
     UserChangeForm,
 )
 from django.contrib.sites.shortcuts import get_current_site
+from django.urls import reverse
 from dj_rest_auth.forms import AllAuthPasswordResetForm
 from frontend.models import CustomUser
 
