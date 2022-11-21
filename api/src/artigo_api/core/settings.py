@@ -298,7 +298,7 @@ ACCOUNT_USERNAME_REQUIRED = True
 ACCOUNT_USER_MODEL_USERNAME_FIELD = 'username'
 
 # Email confirmation
-ACCOUNT_EMAIL_SUBJECT_PREFIX = '[Artigo.org]'
+ACCOUNT_EMAIL_SUBJECT_PREFIX = '[ARTigo.org] '
 ACCOUNT_LOGIN_ON_EMAIL_CONFIRMATION = True
 
 # After 10 failed login attempts, restrict logins for 30 minutes

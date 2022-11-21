@@ -3,8 +3,21 @@ from django.contrib.auth.forms import (
     UserCreationForm,
     UserChangeForm,
 )
+from django.contrib.sites.shortcuts import get_current_site
 from dj_rest_auth.forms import AllAuthPasswordResetForm
 from frontend.models import CustomUser
+
+try:
+    from allauth.account import app_settings
+    from allauth.account.adapter import get_adapter
+    from allauth.account.forms import default_token_generator
+    from allauth.account.utils import (
+        user_pk_to_url_str,
+        user_username,
+    )
+    from allauth.utils import build_absolute_uri
+except ImportError:
+    raise ImportError('`allauth` needs to be installed.')
 
 
 class CustomUserCreationForm(UserCreationForm):

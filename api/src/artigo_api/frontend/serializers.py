@@ -18,7 +18,7 @@ try:
     from allauth.account.adapter import get_adapter
     from allauth.account.utils import setup_user_email
 except ImportError:
-    raise ImportError('allauth needs to be added to INSTALLED_APPS.')
+    raise ImportError('`allauth` needs to be installed.')
 
 logger = logging.getLogger(__name__)
 
