@@ -52,7 +52,7 @@ class CustomAllAuthPasswordResetForm(AllAuthPasswordResetForm):
             )
 
             url = build_absolute_uri(request, path)
-            frontend_url = f'{settings.FRONTEND_URL}/path'
+            frontend_url = f'{settings.FRONTEND_URL}/{path}'
 
             context = {
                 'current_site': current_site,
