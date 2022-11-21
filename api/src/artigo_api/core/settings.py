@@ -43,13 +43,13 @@ try:
     API_URL = f'https://{API}'
 
     FRONTEND = env('VUE_APP_FRONTEND')
-    FRONTEND_URl = f'https://{FRONTEND}'
+    FRONTEND_URL = f'https://{FRONTEND}'
 except:
     API = 'http://localhost:8000'
     API_URL = API
 
     FRONTEND = 'http://localhost:8080'
-    FRONTEND_URl = FRONTEND
+    FRONTEND_URL = FRONTEND
 
 logger.warning(f'API URL set to {API_URL}.')
 
