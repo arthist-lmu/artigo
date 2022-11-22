@@ -7,22 +7,12 @@
     flat
     app
   >
-    <v-container :class="{ transparent: hasOpacity }">
+    <v-container :class="{ opaque: opaque }">
       <v-row
         align="center"
         no-gutters
       >
-        <img
-          @click="goTo('home')"
-          @keydown="goTo('home')"
-          alt="ARTigo – Social Image Tagging"
-          src="/assets/images/logo.svg"
-          :class="{ dark: dark }"
-          style="cursor: pointer;"
-          height="32"
-        />
-
-        <GameMenu :dark="dark" />
+        <Logo :dark="dark" />
 
         <v-spacer />
 
@@ -30,7 +20,7 @@
           v-if="!(dark || $vuetify.breakpoint.mobile || isSearch)"
           cols="4"
         >
-          <SearchBar />
+          <Bar />
         </v-col>
 
         <v-col
@@ -60,6 +50,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    opaque: {
+      type: Boolean,
+      default: false,
+    },
   },
   methods: {
     goTo(name) {
@@ -73,10 +67,6 @@ export default {
     isSearch() {
       return this.$route.name === 'search';
     },
-    hasOpacity() {
-      const pages = ['game', 'session'];
-      return pages.includes(this.$route.name);
-    },
     isVisible() {
       if (
         this.$route.name !== 'game'
@@ -87,12 +77,15 @@ export default {
       return !this.$store.state.game.input.focus;
     },
   },
+  mounted() {
+    this.$emit('mounted');
+  },
   components: {
-    SearchBar: () => import('@/components/SearchBar.vue'),
+    Bar: () => import('@/components/search/Bar.vue'),
+    Logo: () => import('@/components/Logo.vue'),
     DefaultMenu: () => import('@/components/menu/Default.vue'),
     MobileMenu: () => import('@/components/menu/Mobile.vue'),
-    GameMenu: () => import('@/components/game/Menu.vue'),
-    UserMenu: () => import('@/components/user/Menu.vue'),
+    UserMenu: () => import('@/components/account/Menu.vue'),
   },
 };
 </script>
@@ -106,15 +99,11 @@ export default {
   -o-transition: opacity .5s ease-out;
 }
 
-.v-app-bar .container.transparent {
+.v-app-bar .container.opaque {
   opacity: 0.25;
 }
 
 .v-app-bar .container:hover {
   opacity: 1;
-}
-
-img.dark {
-  filter: brightness(0) saturate(100%) invert(99%) sepia(1%) saturate(485%) hue-rotate(184deg) brightness(99%) contrast(99%);
 }
 </style>

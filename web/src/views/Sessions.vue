@@ -1,46 +1,48 @@
 <template>
-  <v-container class="pt-0">
-    <SearchBar />
+  <Layout>
+    <v-container class="pt-0">
+      <Bar />
 
-    <v-data-iterator
-      :items="entries"
-      :items-per-page.sync="itemsPerPage"
-      :page.sync="page"
-      :class="[$vuetify.breakpoint.mobile ? 'mx-n2' : undefined, 'd-flex flex-column']"
-      hide-default-footer
-    >
-      <template v-slot:default="props">
-        <v-row class="ma-n1">
-          <v-col
-            v-for="entry in props.items"
-            :key="entry.resource_id"
-            :cols="(12 / itemsPerRow)"
-            class="pa-1"
-          >
-            <ResultCard :entry="entry" />
-          </v-col>
-        </v-row>
-      </template>
-
-      <template v-slot:no-data>
-        <v-row justify="center">
-          <v-col
-            :cols="noDataCols"
-            align-self="center"
-          >
-            <v-alert
-              class="mb-0"
-              type="error"
-              icon="mdi-alert-circle-outline"
-              colored-border
+      <v-data-iterator
+        :items="entries"
+        :items-per-page.sync="itemsPerPage"
+        :page.sync="page"
+        :class="[$vuetify.breakpoint.mobile ? 'mx-n2' : undefined, 'd-flex flex-column']"
+        hide-default-footer
+      >
+        <template v-slot:default="props">
+          <v-row class="ma-n1">
+            <v-col
+              v-for="entry in props.items"
+              :key="entry.resource_id"
+              :cols="(12 / itemsPerRow)"
+              class="pa-1"
             >
-              {{ $t("sessions.fields.no-results") }}
-            </v-alert>
-          </v-col>
-        </v-row>
-      </template>
-    </v-data-iterator>
-  </v-container>
+              <ResultCard :entry="entry" />
+            </v-col>
+          </v-row>
+        </template>
+
+        <template v-slot:no-data>
+          <v-row justify="center">
+            <v-col
+              :cols="noDataCols"
+              align-self="center"
+            >
+              <v-alert
+                class="mb-0"
+                type="error"
+                icon="mdi-alert-circle-outline"
+                colored-border
+              >
+                {{ $t("sessions.fields.no-results") }}
+              </v-alert>
+            </v-col>
+          </v-row>
+        </template>
+      </v-data-iterator>
+    </v-container>
+  </Layout>
 </template>
 
 <script>
@@ -80,8 +82,9 @@ export default {
     this.$store.dispatch('sessions/get', {});
   },
   components: {
-    SearchBar: () => import('@/components/ExtendedSessionBar.vue'),
-    ResultCard: () => import('@/components/SessionCard.vue'),
+    Layout: () => import('@/layouts/Default.vue'),
+    Bar: () => import('@/components/session/ExtendedBar.vue'),
+    ResultCard: () => import('@/components/session/Card.vue'),
   },
 };
 </script>

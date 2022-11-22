@@ -12,6 +12,7 @@
         v-bind="attrs"
         v-on="on"
         :title="$t('game.title')"
+        :dark="dark"
         class="play"
         depressed
         x-small

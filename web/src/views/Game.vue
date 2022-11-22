@@ -1,72 +1,74 @@
 <template>
-  <v-container
-    v-if="!dialog"
-    :class="[$vuetify.breakpoint.mdAndDown ? 'mobile px-1' : undefined, 'mt-8']"
-    style="position: relative; height: calc(100% - 22px);"
-  >
-    <v-fade-transition>
-      <Countdown
-        v-if="countdown"
-        :duration="3"
-        @finish="onFinish"
-      />
-      <v-card
-        v-else
-        style="overflow: clip;"
-        flat
-      >
-        <Progress
-          :key="path"
-          :params="params"
-          @next="next"
-          @progress="progress"
+  <Layout opaque>
+    <v-container
+      v-if="!dialog"
+      :class="[$vuetify.breakpoint.mdAndDown ? 'mobile px-1' : undefined, 'mt-8']"
+      style="position: relative; height: calc(100% - 22px);"
+    >
+      <v-fade-transition>
+        <Countdown
+          v-if="countdown"
+          :duration="3"
+          @finish="onFinish"
         />
+        <v-card
+          v-else
+          style="overflow: clip;"
+          flat
+        >
+          <Progress
+            :key="path"
+            :params="params"
+            @next="next"
+            @progress="progress"
+          />
 
-        <v-row>
-          <v-col
-            class="py-0"
-            :cols="$vuetify.breakpoint.mdAndDown ? 12 : 8"
-          >
-            <ROICanvas
-              v-if="gameType === 'roi'"
-              tool="brush"
-              :entry="entry"
-              :params="params"
-              @load="onLoad"
-              @error="next"
-            />
-            <DefaultCanvas
-              v-else
-              :entry="entry"
-              :params="params"
-              @load="onLoad"
-              @error="next"
-            />
-          </v-col>
+          <v-row>
+            <v-col
+              class="py-0"
+              :cols="$vuetify.breakpoint.mdAndDown ? 12 : 8"
+            >
+              <ROICanvas
+                v-if="gameType === 'roi'"
+                tool="brush"
+                :entry="entry"
+                :params="params"
+                @load="onLoad"
+                @error="next"
+              />
+              <DefaultCanvas
+                v-else
+                :entry="entry"
+                :params="params"
+                @load="onLoad"
+                @error="next"
+              />
+            </v-col>
 
-          <v-col
-            class="py-0"
-            :cols="$vuetify.breakpoint.mdAndDown ? 12 : 4"
-          >
-            <TaggingSidebar
-              v-if="gameType === 'tagging'"
-              :entry="entry"
-              :params="params"
-              :seconds="seconds"
-              @next="next"
-            />
-            <DefaultSidebar
-              v-else
-              :entry="entry"
-              :params="params"
-              :seconds="seconds"
-              @next="next"
-            />
-          </v-col>
-        </v-row>
-      </v-card>
-    </v-fade-transition>
-  </v-container>
+            <v-col
+              class="py-0"
+              :cols="$vuetify.breakpoint.mdAndDown ? 12 : 4"
+            >
+              <TaggingSidebar
+                v-if="gameType === 'tagging'"
+                :entry="entry"
+                :params="params"
+                :seconds="seconds"
+                @next="next"
+              />
+              <DefaultSidebar
+                v-else
+                :entry="entry"
+                :params="params"
+                :seconds="seconds"
+                @next="next"
+              />
+            </v-col>
+          </v-row>
+        </v-card>
+      </v-fade-transition>
+    </v-container>
+  </Layout>
 </template>
 
 <script>
@@ -136,6 +138,7 @@ export default {
     });
   },
   components: {
+    Layout: () => import('@/layouts/Default.vue'),
     Progress: () => import('@/components/game/Progress.vue'),
     Countdown: () => import('@/components/Countdown.vue'),
     DefaultCanvas: () => import('@/components/game/canvas/Default.vue'),

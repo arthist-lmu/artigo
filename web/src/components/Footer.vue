@@ -12,7 +12,7 @@
     <v-container
       :class="{
         'px-7': $vuetify.breakpoint.smAndDown,
-        transparent: hasOpacity,
+        opaque: opaque,
       }"
     >
       <v-row>
@@ -89,6 +89,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    opaque: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
@@ -104,9 +108,11 @@ export default {
       this.$router.push({ name });
     },
     handleObserver() {
-      const { left } = this.$refs.footer.$el.style;
-      const params = { width: left.replace('px', '') };
-      this.$store.dispatch('utils/setDrawer', params);
+      if (this.$refs.footer !== undefined) {
+        const { left } = this.$refs.footer.$el.style;
+        const params = { width: left.replace('px', '') };
+        this.$store.dispatch('utils/setDrawer', params);
+      }
     },
   },
   computed: {
@@ -117,10 +123,6 @@ export default {
         baseURL = `https://${VUE_APP_API}`;
       }
       return `${baseURL}/schema/redoc`;
-    },
-    hasOpacity() {
-      const names = ['home', 'game', 'session'];
-      return names.includes(this.$route.name);
     },
     isVisible() {
       if (
@@ -150,6 +152,7 @@ export default {
     const observer = new MutationObserver(callback);
     observer.observe(this.$refs.footer.$el, config);
     this.observer = observer;
+    this.handleObserver();
   },
 };
 </script>
@@ -162,7 +165,7 @@ export default {
   -o-transition: opacity .5s ease-out;
 }
 
-.v-footer > .container.transparent {
+.v-footer > .container.opaque {
   opacity: 0.25;
 }
 

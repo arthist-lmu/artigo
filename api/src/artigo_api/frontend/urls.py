@@ -36,7 +36,7 @@ urlpatterns = [
     ),
     re_path(
         r'auth/password/reset/confirm/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,32})/$',
-        TemplateView.as_view(),
+        TemplateView.as_view(template_name='password_reset_confirm.html'),
         name='password_reset_confirm',
     ),
     path('auth/password/change/', PasswordChangeView.as_view(), name='password_change'),

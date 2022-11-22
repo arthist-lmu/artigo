@@ -164,8 +164,8 @@ export default {
     },
   },
   components: {
-    LoginCard: () => import('@/components/LoginCard.vue'),
-    RegisterCard: () => import('@/components/RegisterCard.vue'),
+    LoginCard: () => import('@/components/account/LoginCard.vue'),
+    RegisterCard: () => import('@/components/account/RegisterCard.vue'),
     LanguageMenu: () => import('@/components/LanguageMenu.vue'),
   },
 };

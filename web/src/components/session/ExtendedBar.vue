@@ -9,7 +9,7 @@
     <v-container>
       <v-row>
         <v-col class="pb-3">
-          <SearchBar />
+          <Bar />
         </v-col>
       </v-row>
     </v-container>
@@ -32,7 +32,7 @@ export default {
     },
   },
   components: {
-    SearchBar: () => import('@/components/SessionBar.vue'),
+    Bar: () => import('@/components/session/Bar.vue'),
   },
 };
 </script>

@@ -61,6 +61,7 @@ export default {
       return this.$store.state.home.data;
     },
     width() {
+      // see: @/components/Footer.vue for change
       return this.isPermanent ? 350 : 300;
     },
     isPermanent() {

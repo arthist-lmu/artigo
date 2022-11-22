@@ -1,111 +1,113 @@
 <template>
-  <v-container :class="{ 'px-0': $vuetify.breakpoint.mdAndDown }">
-    <v-row class="mt-2 mx-n3">
-      <v-col :cols="$vuetify.breakpoint.smAndDown ? 12 : 4">
-        <SetCard
-          icon="mdi-image-outline"
-          :title="$t('session.fields.images')"
-          :value="entries.length"
-        />
-      </v-col>
+  <Layout opaque>
+    <v-container :class="{ 'px-0': $vuetify.breakpoint.mdAndDown }">
+      <v-row class="mt-2 mx-n3">
+        <v-col :cols="$vuetify.breakpoint.smAndDown ? 12 : 4">
+          <SetCard
+            icon="mdi-image-outline"
+            :title="$t('session.fields.images')"
+            :value="entries.length"
+          />
+        </v-col>
 
-      <v-col
-        :cols="$vuetify.breakpoint.smAndDown ? 12 : 4"
-        :class="$vuetify.breakpoint.smAndDown ? 'pt-0' : undefined"
+        <v-col
+          :cols="$vuetify.breakpoint.smAndDown ? 12 : 4"
+          :class="$vuetify.breakpoint.smAndDown ? 'pt-0' : undefined"
+        >
+          <SetCard
+            icon="mdi-tag-outline"
+            :title="$t('session.fields.tags')"
+            :subtitle="$t('session.fields.per-image')"
+            :value="tags.length"
+            :subvalue="tags.length / entries.length"
+          />
+        </v-col>
+
+        <v-col
+          :cols="$vuetify.breakpoint.smAndDown ? 12 : 4"
+          :class="$vuetify.breakpoint.smAndDown ? 'pt-0' : undefined"
+        >
+          <SetCard
+            icon="mdi-star-outline"
+            :title="$t('session.fields.score')"
+            :subtitle="$t('session.fields.per-image')"
+            :value="score"
+            :subvalue="score / entries.length"
+          />
+        </v-col>
+      </v-row>
+
+      <v-row
+        v-if="tags.length"
+        class="mt-0 mb-n2"
       >
-        <SetCard
-          icon="mdi-tag-outline"
-          :title="$t('session.fields.tags')"
-          :subtitle="$t('session.fields.per-image')"
-          :value="tags.length"
-          :subvalue="tags.length / entries.length"
-        />
-      </v-col>
+        <v-col :cols="$vuetify.breakpoint.mdAndDown ? 10 : 11">
+          <v-slide-group
+            v-model="slides"
+            :title="$t('session.fields.filter-tags')"
+            center-active
+            show-arrows
+            multiple
+          >
+            <v-slide-item
+              v-for="tag in uniqueTags"
+              :key="tag"
+              v-slot="{ active, toggle }"
+            >
+              <v-chip
+                @click="toggle"
+                :color="active ? 'primary' : undefined"
+                class="mx-1"
+                depressed
+                outlined
+                rounded
+              >
+                {{ tag }}
+              </v-chip>
+            </v-slide-item>
+          </v-slide-group>
+        </v-col>
 
-      <v-col
-        :cols="$vuetify.breakpoint.smAndDown ? 12 : 4"
-        :class="$vuetify.breakpoint.smAndDown ? 'pt-0' : undefined"
-      >
-        <SetCard
-          icon="mdi-star-outline"
-          :title="$t('session.fields.score')"
-          :subtitle="$t('session.fields.per-image')"
-          :value="score"
-          :subvalue="score / entries.length"
-        />
-      </v-col>
-    </v-row>
+        <v-col
+          :cols="$vuetify.breakpoint.mdAndDown ? 2 : 1"
+          align="right"
+        >
+          <v-btn
+            @click="share"
+            icon
+          >
+            <v-icon>
+              mdi-share-variant-outline
+            </v-icon>
+          </v-btn>
+        </v-col>
+      </v-row>
 
-    <v-row
-      v-if="tags.length"
-      class="mt-0 mb-n2"
-    >
-      <v-col :cols="$vuetify.breakpoint.mdAndDown ? 10 : 11">
+      <v-row class="mx-n1 mt-7">
         <v-slide-group
-          v-model="slides"
-          :title="$t('session.fields.filter-tags')"
-          center-active
+          class="resource"
           show-arrows
-          multiple
         >
           <v-slide-item
-            v-for="tag in uniqueTags"
-            :key="tag"
+            v-for="entry in entries"
+            :key="entry.resource_id"
             v-slot="{ active, toggle }"
           >
-            <v-chip
-              @click="toggle"
-              :color="active ? 'primary' : undefined"
-              class="mx-1"
-              depressed
-              outlined
-              rounded
+            <div
+              class="pa-1"
+              style="width: 300px"
             >
-              {{ tag }}
-            </v-chip>
+              <ResultCard
+                :entry="entry"
+                height="350"
+                :disabled="!selectedEntries.includes(entry.resource_id)"
+              />
+            </div>
           </v-slide-item>
         </v-slide-group>
-      </v-col>
-
-      <v-col
-        :cols="$vuetify.breakpoint.mdAndDown ? 2 : 1"
-        align="right"
-      >
-        <v-btn
-          @click="share"
-          icon
-        >
-          <v-icon>
-            mdi-share-variant-outline
-          </v-icon>
-        </v-btn>
-      </v-col>
-    </v-row>
-
-    <v-row class="mx-n1 mt-7">
-      <v-slide-group
-        class="resource"
-        show-arrows
-      >
-        <v-slide-item
-          v-for="entry in entries"
-          :key="entry.resource_id"
-          v-slot="{ active, toggle }"
-        >
-          <div
-            class="pa-1"
-            style="width: 300px"
-          >
-            <ResultCard
-              :entry="entry"
-              height="350"
-              :disabled="!selectedEntries.includes(entry.resource_id)"
-            />
-          </div>
-        </v-slide-item>
-      </v-slide-group>
-    </v-row>
-  </v-container>
+      </v-row>
+    </v-container>
+  </Layout>
 </template>
 
 <script>
@@ -187,8 +189,9 @@ export default {
     this.get(this.$route.params.id);
   },
   components: {
-    SetCard: () => import('@/components/SetCard.vue'),
-    ResultCard: () => import('@/components/SessionResultCard.vue'),
+    Layout: () => import('@/layouts/Default.vue'),
+    SetCard: () => import('@/components/session/SetCard.vue'),
+    ResultCard: () => import('@/components/session/ResultCard.vue'),
   },
 };
 </script>

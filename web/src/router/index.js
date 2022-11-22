@@ -13,7 +13,7 @@ const router = new VueRouter({
   routes: [
     {
       path: '/',
-      redirect: `/${i18n.defaultLocale}`,
+      redirect: `/${i18n.locale}`,
     },
     {
       path: '/:lang',
@@ -79,6 +79,24 @@ const router = new VueRouter({
           meta: { title: 'game.title' },
         },
         {
+          path: 'login',
+          name: 'login',
+          component: () => import('@/views/Login.vue'),
+          meta: { title: 'user.login.title' },
+        },
+        {
+          path: 'register',
+          name: 'register',
+          component: () => import('@/views/Register.vue'),
+          meta: { title: 'user.register.title' },
+        },
+        {
+          path: 'password/reset/confirm/:uid/:token/',
+          name: 'password-reset-confirm',
+          component: () => import('@/views/PasswordResetConfirm.vue'),
+          meta: { title: 'user.password-reset.title' },
+        },
+        {
           path: '404',
           name: 'not-found',
           component: () => import('@/views/NotFound.vue'),
@@ -86,9 +104,7 @@ const router = new VueRouter({
         },
         {
           path: '*',
-          name: 'not-found',
-          component: () => import('@/views/NotFound.vue'),
-          meta: { title: 'not-found.title' },
+          name: 'not-found-redirect',
           beforeEnter: (to) => {
             window.location = `/${to.params.lang}/404`;
           },

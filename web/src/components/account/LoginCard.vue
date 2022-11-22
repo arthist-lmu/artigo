@@ -3,10 +3,11 @@
     max-width="600"
     flat
   >
-    <v-card-title v-if="isDialog">
-      {{ $t("user.register.title") }}
+    <v-card-title :class="{ 'pt-6 px-6': !isDialog }">
+      {{ $t("user.login.title") }}
 
       <v-btn
+        v-if="isDialog"
         @click="close"
         absolute
         right
@@ -16,7 +17,7 @@
       </v-btn>
     </v-card-title>
 
-    <v-card-text :class="isDialog ? 'pt-4' : 'pt-0 px-0'">
+    <v-card-text :class="[isDialog ? undefined : 'px-6', 'pt-4']">
       <v-form v-model="isFormValid">
         <v-text-field
           v-model="user.username"
@@ -43,7 +44,7 @@
         />
 
         <v-text-field
-          v-model="user.password1"
+          v-model="user.password"
           @click:append="showPassword = !showPassword"
           :type="showPassword ? 'text' : 'password'"
           :placeholder="$t('user.fields.password')"
@@ -58,58 +59,15 @@
           rounded
           dense
         />
-
-        <v-text-field
-          v-model="user.password2"
-          @click:append="showPassword = !showPassword"
-          :type="showPassword ? 'text' : 'password'"
-          :placeholder="$t('user.fields.password-repeat')"
-          :rules="[checkLength, checkPasswordRepeat]"
-          :append-icon="
-            showPassword ? 'mdi-eye-outline' : 'mdi-eye-off-outline'
-          "
-          tabindex="0"
-          counter="75"
-          clearable
-          outlined
-          rounded
-          dense
-        />
-
-        <v-checkbox
-          v-model="user.privacy_policy"
-          :rules="[checkTrue]"
-          class="mt-0"
-          on-icon="mdi-check-circle-outline"
-          off-icon="mdi-checkbox-blank-circle-outline"
-          tabindex="0"
-          color="primary"
-          hide-details
-          dense
-        >
-          <template v-slot:label>
-            {{ $t('user.fields.privacy-policy') }}
-
-            <v-btn
-              @click.stop
-              class="ml-1"
-              href="https://www.kunstgeschichte.uni-muenchen.de/funktionen/datenschutz/index.html"
-              target="_blank"
-              small
-              icon
-            >
-              <v-icon>
-                mdi-link-variant
-              </v-icon>
-            </v-btn>
-          </template>
-        </v-checkbox>
       </v-form>
     </v-card-text>
 
-    <v-card-actions :class="isDialog ? 'pb-6 px-6' : 'pb-8 px-0'">
+    <v-card-actions
+      class="pb-6 px-6"
+      style="display: block;"
+    >
       <v-btn
-        @click="register"
+        @click="login"
         :disabled="!isFormValid"
         tabindex="0"
         color="primary"
@@ -117,9 +75,29 @@
         rounded
         block
       >
-        {{ $t("user.register.title") }}
+        {{ $t("user.login.title") }}
+      </v-btn>
+
+      <v-btn
+        @click="resetPassword"
+        class="mt-2 ml-0"
+        tabindex="0"
+        rounded
+        small
+        plain
+        block
+        text
+      >
+        {{ $t("user.password-reset.title") }}
       </v-btn>
     </v-card-actions>
+
+    <v-dialog
+      v-model="dialog.passwordReset"
+      max-width="400"
+    >
+      <PasswordResetCard v-model="dialog.passwordReset" />
+    </v-dialog>
   </v-card>
 </template>
 
@@ -137,25 +115,22 @@ export default {
       user: {},
       isFormValid: false,
       showPassword: false,
+      dialog: {
+        passwordReset: false,
+      },
     };
   },
   methods: {
-    register() {
-      this.$store.dispatch('user/register', this.user);
+    login() {
+      this.$store.dispatch('user/login', this.user);
     },
     close() {
       this.$emit('input', false);
     },
-    checkTrue(value) {
-      if (value) {
-        return true;
-      }
-      return this.$t('field.required');
-    },
     checkLength(value) {
       if (value) {
-        if (value.length < 5) {
-          return this.$tc('rules.min', 5);
+        if (value.length < 4) {
+          return this.$tc('rules.min', 4);
         }
         if (value.length > 75) {
           return this.$tc('rules.max', 75);
@@ -164,11 +139,8 @@ export default {
       }
       return this.$t('field.required');
     },
-    checkPasswordRepeat(value) {
-      if (value && value === this.user.password1) {
-        return true;
-      }
-      return this.$t('rules.password-repeat');
+    resetPassword() {
+      this.dialog.passwordReset = true;
     },
   },
   computed: {
@@ -182,10 +154,17 @@ export default {
   },
   watch: {
     timestamp() {
-      if (this.status) {
-        this.close();
+      if (this.isFormValid && this.status) {
+        if (this.isDialog) {
+          this.close();
+        } else {
+          this.$router.push({ name: 'home' });
+        }
       }
     },
+  },
+  components: {
+    PasswordResetCard: () => import('./PasswordResetCard.vue'),
   },
 };
 </script>

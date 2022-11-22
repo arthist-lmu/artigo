@@ -9,7 +9,7 @@
     <v-container>
       <v-row>
         <v-col class="pb-0">
-          <SearchBar :dense="false" />
+          <Bar :dense="false" />
         </v-col>
       </v-row>
 
@@ -72,7 +72,7 @@ export default {
     },
   },
   components: {
-    SearchBar: () => import('@/components/SearchBar.vue'),
+    Bar: () => import('@/components/search/Bar.vue'),
   },
 };
 </script>
