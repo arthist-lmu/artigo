@@ -1,6 +1,6 @@
 <template>
   <v-card
-    max-width="600"
+    max-width="900"
     flat
   >
     <v-card-title :class="{ 'pt-6 px-6': !isDialog }">

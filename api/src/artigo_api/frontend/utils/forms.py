@@ -1,3 +1,5 @@
+import logging
+
 from django.conf import settings
 from django.contrib.auth.forms import (
     UserCreationForm,
@@ -19,6 +21,8 @@ try:
     from allauth.utils import build_absolute_uri
 except ImportError:
     raise ImportError('`allauth` needs to be installed.')
+
+logger = logging.getLogger(__name__)
 
 
 class CustomUserCreationForm(UserCreationForm):
@@ -52,7 +56,11 @@ class CustomAllAuthPasswordResetForm(AllAuthPasswordResetForm):
             )
 
             url = build_absolute_uri(request, path)
-            frontend_url = f'{settings.FRONTEND_URL}/{path}'
+
+            # address locale-specific frontend path
+            lang = request.data.get('lang', 'en')
+            path = path.replace('auth/', f'{lang}/')
+            frontend_url = f'{settings.FRONTEND_URL}{path}'
 
             context = {
                 'current_site': current_site,

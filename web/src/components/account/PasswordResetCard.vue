@@ -1,6 +1,6 @@
 <template>
   <v-card
-    max-width="600"
+    max-width="900"
     flat
   >
     <v-card-title v-if="isDialog">
@@ -65,6 +65,7 @@ export default {
   },
   methods: {
     resetPassword() {
+      this.user.lang = this.$i18n.locale;  // fix locale
       this.$store.dispatch('user/resetPassword', this.user);
     },
     close() {
