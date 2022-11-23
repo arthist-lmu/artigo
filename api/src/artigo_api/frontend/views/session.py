@@ -37,12 +37,9 @@ class SessionView(APIView):
         except Gamesession.DoesNotExist:
             raise NotFound('unknown_gamesession')
 
-        # if gamesession.user != request.user:
-        #     raise ParseError('user_access_denied')
-
-        if gamesession.game_type.name == 'tagging':
+        if gamesession.game_type.name.lower() == 'tagging':
             taggings = UserTagging.objects
-        elif gamesession.game_type.name == 'roi':
+        elif gamesession.game_type.name.lower() == 'roi':
             taggings = UserROI.objects
         else:
             raise ParseError('game_type_not_implemented')

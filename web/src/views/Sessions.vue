@@ -7,11 +7,10 @@
         :items="entries"
         :items-per-page.sync="itemsPerPage"
         :page.sync="page"
-        :class="[$vuetify.breakpoint.mobile ? 'mx-n2' : undefined, 'd-flex flex-column']"
         hide-default-footer
       >
         <template v-slot:default="props">
-          <v-row class="ma-n1">
+          <v-row :class="$vuetify.breakpoint.mdAndUp ? 'ma-n1' : undefined">
             <v-col
               v-for="entry in props.items"
               :key="entry.resource_id"
@@ -90,7 +89,7 @@ export default {
 </script>
 
 <style>
-.v-data-iterator > div {
+.v-data-iterator > div:not(.row) {
   height: 100%;
 }
 </style>

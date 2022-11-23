@@ -7,7 +7,6 @@
         :items="entries"
         :items-per-page.sync="itemsPerPage"
         :page.sync="page"
-        class="d-flex flex-column"
         hide-default-footer
       >
         <template v-slot:default="props">
@@ -94,7 +93,7 @@ export default {
 </script>
 
 <style>
-.v-data-iterator > div {
+.v-data-iterator > div:not(.row) {
   height: 100%;
 }
 </style>

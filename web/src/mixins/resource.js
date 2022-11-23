@@ -4,6 +4,10 @@ export default {
       type: Object,
       required: true,
     },
+    opaque: {
+      type: Boolean,
+      default: false,
+    },
     disabled: {
       type: Boolean,
       default: false,

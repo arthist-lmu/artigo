@@ -4,6 +4,7 @@
     v-slot="{ hover }"
   >
     <v-card
+      :class="{ 'opaque': opaque }"
       :disabled="isDisabled"
       flat
     >
@@ -99,6 +100,12 @@ export default {
 </script>
 
 <style scoped>
+.v-card {
+  -webkit-transition: opacity 0.25s linear;
+  -ms-transition: opacity 0.25s linear;
+  transition: opacity 0.25s linear;
+}
+
 .metadata,
 .metadata > div {
   width: 100%;
@@ -113,5 +120,9 @@ export default {
 
 .metadata span:not(:first-child):before {
   content: ", ";
+}
+
+.opaque {
+  opacity: 0.5;
 }
 </style>

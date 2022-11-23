@@ -100,7 +100,7 @@
               <ResultCard
                 :entry="entry"
                 height="350"
-                :disabled="!selectedEntries.includes(entry.resource_id)"
+                :opaque="!selectedEntries.includes(entry.resource_id)"
               />
             </div>
           </v-slide-item>
