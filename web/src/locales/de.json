@@ -33,7 +33,8 @@
       "title": "Registrieren"
     },
     "login": {
-      "title": "Anmelden"
+      "title": "Anmelden",
+      "legacy-note": "Wenn Du bereits mit der alten Version von ARTigo registriert warst, setze bitte zunächst Dein Passwort zurück."
     },
     "logout": {
       "title": "Abmelden"
@@ -95,6 +96,16 @@
       "art-history": "Institut für Kunstgeschichte",
       "romance-studies": "Institut für Romanische Philologie",
       "itg": "IT-Gruppe Geisteswissenschaften"
+    }
+  },
+  "history": {
+    "title": "Projekthistorie",
+    "texts": {
+      "2008": "<a href=\"https://www.itg.uni-muenchen.de/personen/schoen_gerhard/index.html\" target=\"_blank\">Gerhard Schön</a> (IT-Gruppe Geisteswissenschaften) entwickelt einen ersten Prototyp der <i>Social-Tagging</i>-Plattform ARTigo als <i>Proof-of-Concept</i>.",
+      "2010": "ARTigo wird von der Deutschen Forschungsgemeinschaft (DFG) gefördert. Unter der Leitung von <a href=\"https://www.kunstgeschichte.uni-muenchen.de/personen/professoren_innen/kohle/index.html\" target=\"_blank\">Hubertus Kohle</a> (Institut für Kunstgeschichte) realisieren <a href=\"https://www.pms.ifi.lmu.de/mitarbeiter/derzeitige/francois-bry/\" target=\"_blank\">François Bry</a> (Institut für Informatik), <a href=\"https://www.romanistik.uni-muenchen.de/personen/emeriti/krefeld/index.html\" target=\"_blank\">Thomas Krefeld</a> (Institut für Romanische Philologie), <a href=\"https://www.cis.lmu.de/personen/professoren/schulz/\" target=\"_blank\">Klaus Schulz</a> (Centrum für Informations- und Sprachverarbeitung) und <a href=\"https://www.itg.uni-muenchen.de/personen/riepl_christian/index.html\" target=\"_blank\">Christian Riepl</a> (IT-Gruppe-Geistes&shy;wissen&shy;schaften) das Projekt.",
+      "2012": "Der Spiegel stellt die Plattform im Artikel „<a href=\"https://www.spiegel.de/lebenundlernen/job/lmu-muenchen-laesst-mit-crowdsourcing-bilder-verschlagworten-a-817439.html\" target=\"_blank\">Lass das mal den Schwarm machen</a>“ vor.",
+      "2018": "Im Rahmen des Projekts <a href=\"https://www.volkskundemuseum.at/stadt_land_bild\" target=\"_blank\"><i>Stadt-Land-Bild</i></a> ist ARTigo im Österreichischen Museum für Volkskunde über eine multimediale Installation aus weitläufigen <i>Touch-Screen</i>-Wänden spielbar.",
+      "2021": "Unter der Leitung von <a href=\"https://www.kunstgeschichte.uni-muenchen.de/personen/wiss_ma/schneider/index.html\" target=\"_blank\">Stefanie Schneider</a> (Institut für Kunstgeschichte) wird ARTigo neu konzipiert und an den technischen <i>State-of-the-Art</i> angepasst."
     }
   },
   "publications": {

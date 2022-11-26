@@ -33,7 +33,8 @@
       "title": "Register"
     },
     "login": {
-      "title": "Login"
+      "title": "Login",
+      "legacy-note": "If you were already registered on the old version of ARTigo, please reset your password first."
     },
     "logout": {
       "title": "Logout"
@@ -95,6 +96,16 @@
       "art-history": "Institute for Art History",
       "romance-studies": "Institute for Romance Studies",
       "itg": "IT-Group Humanities"
+    }
+  },
+  "history": {
+    "title": "Project history",
+    "texts": {
+      "2008": "<a href=\"https://www.itg.uni-muenchen.de/personen/schoen_gerhard/index.html\" target=\"_blank\">Gerhard Schön</a> (IT-Group Humanities) develops a first prototype of the <i>social tagging</i> platform ARTigo as a <i>proof-of-concept</i>.",
+      "2010": "ARTigo is funded by the German Research Foundation (DFG). Under the direction of <a href=\"https://www.kunstgeschichte.uni-muenchen.de/personen/professoren_innen/kohle/index.html\" target=\"_blank\">Hubertus Kohle</a> (Institute for Art History), <a href=\"https://www.pms.ifi.lmu.de/mitarbeiter/derzeitige/francois-bry/\" target=\"_blank\">François Bry</a> (Institute for Informatics), <a href=\"https://www.romanistik.uni-muenchen.de/personen/emeriti/krefeld/index.html\" target=\"_blank\">Thomas Krefeld</a> (Institute for Romance Studies), <a href=\"https://www.cis.lmu.de/personen/professoren/schulz/\" target=\"_blank\">Klaus Schulz</a> (Center for Information and Language Processing) and <a href=\"https://www.itg.uni-muenchen.de/personen/riepl_christian/index.html\" target=\"_blank\">Christian Riepl</a> (IT-Group Humanities) are realising the project.",
+      "2012": "Der Spiegel presents the platform in the article “<a href=\"https://www.spiegel.de/lebenundlernen/job/lmu-muenchen-laesst-mit-crowdsourcing-bilder-verschlagworten-a-817439.html\" target=\"_blank\">Lass das mal den Schwarm machen</a>”.",
+      "2018": "As part of the <a href=\"https://www.volkskundemuseum.at/stadt_land_bild\" target=\"_blank\"><i>Stadt-Land-Bild</i>-project</a>, ARTigo can be played in the Austrian Museum of Folk Life and Folk Art via a multimedia installation consisting of extensive <i>touch-screen</i> walls.",
+      "2021": "Under the directon of <a href=\"https://www.kunstgeschichte.uni-muenchen.de/personen/wiss_ma/schneider/index.html\" target=\"_blank\">Stefanie Schneider</a> (Institute for Art History), ARTigo is being re-designed and adapted to the technical <i>state-of-the-art</i>."
     }
   },
   "publications": {

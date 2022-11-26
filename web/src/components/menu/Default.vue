@@ -3,7 +3,7 @@
     <v-dialog
       v-if="isAnonymous"
       v-model="dialog.login"
-      max-width="400"
+      max-width="450"
     >
       <template v-slot:activator="{ on }">
         <v-btn
@@ -26,7 +26,7 @@
     <v-dialog
       v-if="isAnonymous"
       v-model="dialog.register"
-      max-width="400"
+      max-width="450"
     >
       <template v-slot:activator="{ on }">
         <v-btn

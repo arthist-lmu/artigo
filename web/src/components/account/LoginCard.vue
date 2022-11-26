@@ -18,6 +18,8 @@
     </v-card-title>
 
     <v-card-text :class="[isDialog ? undefined : 'px-6', 'pt-4']">
+      <p class="pb-4">{{ $t('user.login.legacy-note') }}</p>
+
       <v-form v-model="isFormValid">
         <v-text-field
           v-model="user.username"

@@ -92,14 +92,14 @@
 
     <v-dialog
       v-model="dialog.register"
-      max-width="400"
+      max-width="450"
     >
       <RegisterCard v-model="dialog.register" />
     </v-dialog>
 
     <v-dialog
       v-model="dialog.login"
-      max-width="400"
+      max-width="450"
     >
       <LoginCard v-model="dialog.login" />
     </v-dialog>

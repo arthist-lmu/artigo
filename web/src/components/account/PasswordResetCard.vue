@@ -65,7 +65,7 @@ export default {
   },
   methods: {
     resetPassword() {
-      this.user.lang = this.$i18n.locale;  // fix locale
+      this.user.lang = this.$i18n.locale; // fix locale
       this.$store.dispatch('user/resetPassword', this.user);
     },
     close() {

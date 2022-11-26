@@ -29,6 +29,16 @@
       <v-row>
         <v-col :class="$vuetify.breakpoint.mdAndDown ? 'px-1 py-6' : 'pa-12'">
           <div :class="textSize">
+            {{ $t("history.title") }}
+          </div>
+
+          <History />
+        </v-col>
+      </v-row>
+
+      <v-row>
+        <v-col :class="$vuetify.breakpoint.mdAndDown ? 'px-1 py-6' : 'pa-12'">
+          <div :class="textSize">
             {{ $t("publications.title") }}
           </div>
 
@@ -94,6 +104,7 @@ export default {
     Layout: () => import('@/layouts/Default.vue'),
     GameDrawer: () => import('@/components/game/Drawer.vue'),
     Contributors: () => import('@/components/Contributors.vue'),
+    History: () => import('@/components/History.vue'),
     Publications: () => import('@/components/Publications.vue'),
   },
 };

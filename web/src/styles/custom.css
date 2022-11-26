@@ -50,6 +50,11 @@ span.clip.w100 {
   width: 100%;
 }
 
+.v-application.dark-variant a {
+  text-decoration: none;
+  color: #ffffff;
+}
+
 .v-footer.v-footer--inset:not(.theme--dark ) {
   background-color: rgb(247, 248, 251);
 }
