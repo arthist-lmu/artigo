@@ -54,6 +54,13 @@
 
       <div class="py-4">
         <div
+          v-if="$vuetify.breakpoint.smAndDown"
+          class="mb-4 font-weight-bold white--text"
+        >
+          {{ item.year }}
+        </div>
+
+        <div
           class="font-weight-light white--text"
           v-html="item.text"
         />
