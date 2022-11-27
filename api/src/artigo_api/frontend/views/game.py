@@ -14,6 +14,7 @@ logger = logging.getLogger(__name__)
 
 class GameView(APIView):
     @extend_schema(
+        request=None,
         parameters=[
             OpenApiParameter(
                 description='Type of game',
@@ -121,7 +122,9 @@ class GameView(APIView):
             OpenApiParameter(
                 description='Retrieve metadata of resources',
                 name='retrieve_metadata',
-                type='boolean',
+                type={
+                    'type': 'boolean',
+                },
                 default=False,
             ),
         ],

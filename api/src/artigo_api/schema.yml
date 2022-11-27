@@ -164,6 +164,12 @@ paths:
         description: Type of each resource. User-defined resources can be specified
           by passing the respective identifiers through the parameter `resource_ids`.
       - in: query
+        name: retrieve_metadata
+        schema:
+          type: boolean
+          default: false
+        description: Retrieve metadata of resources
+      - in: query
         name: score_type
         schema:
           type: array

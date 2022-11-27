@@ -54,7 +54,8 @@ class CustomLoginView(LoginView):
                     except Exception as error:
                         logger.info(error)
 
-            CustomUser.objects.filter(id=previous_user.id) \
+            CustomUser.objects \
+                .filter(id=previous_user.id) \
                 .delete()
 
         return self.get_response()
