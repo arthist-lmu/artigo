@@ -5,6 +5,7 @@ uwsgi \
     --wsgi-file core/wsgi.py \
     --master \
     --processes 1 \
+    --buffer-size 32768 \
     --threads 1 &
 exec celery -A core worker -l INFO -n api@%h &
 exec celery -A core beat -l INFO
