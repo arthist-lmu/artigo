@@ -46,6 +46,7 @@
             </v-col>
 
             <v-col
+              v-if="!loading"
               class="py-0"
               :cols="$vuetify.breakpoint.mdAndDown ? 12 : 4"
             >
@@ -77,7 +78,7 @@ import { mapState } from 'vuex';
 export default {
   data() {
     return {
-      path: null,
+      path: '',
       seconds: 0,
       countdown: false,
     };
@@ -113,6 +114,9 @@ export default {
       'roundId',
       'rounds',
     ]),
+    loading() {
+      return this.$store.state.utils.status.loading;
+    },
     dialog() {
       return this.$store.state.game.dialog.show;
     },
