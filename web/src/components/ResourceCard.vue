@@ -68,6 +68,7 @@
 
           <v-avatar
             v-if="tag.count > 1"
+            :title="$t('resource.metadata.fields.has-tag', { tag: tag.name, n: tag.count })"
             class="primary lighten-1"
             right
           >

@@ -50,6 +50,16 @@
                 mdi-draw
               </v-icon>
             </v-btn>
+            <v-btn
+              v-else
+              :title="$t('home.game_type.tagging')"
+              x-small
+              fab
+            >
+              <v-icon color="primary">
+                mdi-tag-outline
+              </v-icon>
+            </v-btn>
 
             <v-btn
               v-if="tabooType"
@@ -59,7 +69,7 @@
               fab
             >
               <v-icon color="primary">
-                mdi-tag-off-outline
+                mdi-filter-outline
               </v-icon>
             </v-btn>
           </v-col>

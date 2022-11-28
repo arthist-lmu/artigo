@@ -9,7 +9,8 @@
         "location": "Location",
         "institution": "Institution",
         "source": "Collection",
-        "tags": "Tags"
+        "tags": "Tags",
+        "has-tag": "The tag “{tag}” has been annotated {n} times"
       }
     },
     "default": {
@@ -223,7 +224,8 @@
       "example-5": "if it repels you"
     },
     "game_type": {
-      "roi": "Image regions are annotated based on tags"
+      "roi": "Image regions are annotated based on tags",
+      "tagging": "Images are annotated with tags"
     },
     "plugins": {
       "taboos": {

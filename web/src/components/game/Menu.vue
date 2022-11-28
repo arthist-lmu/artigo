@@ -1,45 +1,16 @@
 <template>
-  <v-menu
-    v-model="menu"
-    min-width="225"
-    max-width="325"
-    :close-on-content-click="false"
-    offset-y
-    bottom
+  <v-btn
+    @click="goToGame()"
+    :title="$t('game.title')"
+    :dark="dark"
+    class="play"
+    depressed
+    x-small
   >
-    <template v-slot:activator="{ attrs, on }">
-      <v-btn
-        v-bind="attrs"
-        v-on="on"
-        :title="$t('game.title')"
-        :dark="dark"
-        class="play"
-        depressed
-        x-small
-      >
-        <v-icon :color="dark ? 'accent' : 'primary'">
-          mdi-play
-        </v-icon>
-      </v-btn>
-    </template>
-
-    <v-list dense>
-      <v-list-item @click="goToGame()">
-        <v-list-item-content>
-          {{ $t('game.fields.new-game-default') }}
-        </v-list-item-content>
-      </v-list-item>
-
-      <v-list-item
-        v-if="isSearch"
-        @click="goToGame()"
-      >
-        <v-list-item-content>
-          {{ $t('game.fields.new-game-search') }}
-        </v-list-item-content>
-      </v-list-item>
-    </v-list>
-  </v-menu>
+    <v-icon :color="dark ? 'accent' : 'primary'">
+      mdi-play
+    </v-icon>
+  </v-btn>
 </template>
 
 <script>
@@ -84,11 +55,11 @@ export default {
 
 <style scoped>
 .play {
-  margin-left: -48px;
-  width: 36px;
+  margin-left: -52px;
+  width: 44px;
 }
 
-.play::before {
+.play, .play::before {
   border-radius: 12px;
 }
 </style>

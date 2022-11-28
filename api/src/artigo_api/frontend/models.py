@@ -122,11 +122,6 @@ class GeneralType(models.Model):
     def __str__(self):
         return self.name
 
-    def save(self, *args, **kwargs):
-        self.name = self.name.lower()
-
-        return super().save(*args, **kwargs)
-
 
 class GameType(GeneralType):
     enabled = models.BooleanField(default=True)

@@ -9,7 +9,8 @@
         "location": "Standort",
         "institution": "Institution",
         "source": "Sammlung",
-        "tags": "Schlagwörter"
+        "tags": "Schlagwörter",
+        "has-tag": "Das Schlagwort „{tag}“ wurde {n}-mal annotiert"
       }
     },
     "default": {
@@ -224,7 +225,8 @@
       "example-5": "ob es Dich abstößt"
     },
     "game_type": {
-      "roi": "Bildregionen werden auf Basis von Schlagwörtern annotiert"
+      "roi": "Bildregionen werden auf Basis von Schlagwörtern annotiert",
+      "tagging": "Bilder werden mit Schlagwörtern annotiert"
     },
     "plugins": {
       "taboos": {
