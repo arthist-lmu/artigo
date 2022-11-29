@@ -142,10 +142,6 @@ span.clip.w100 {
   padding-top: 1px;
 }
 
-.v-stepper {
-  overflow: inherit !important;
-}
-
 .v-stepper .v-stepper__step--editable:hover {
   background: transparent !important;
 }

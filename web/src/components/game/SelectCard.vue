@@ -1,8 +1,5 @@
 <template>
-  <v-card
-    max-width="625"
-    flat
-  >
+  <v-card flat>
     <v-card-title>
       {{ $t("game.fields.new-game-default") }}
 
@@ -11,7 +8,7 @@
         align="right"
       >
         <v-btn
-          @click="extend"
+          @click="showMore = !showMore;"
           :title="$t('game.fields.settings')"
           icon
         >
@@ -77,9 +74,6 @@ export default {
         this.close();
         this.$router.push({ name: 'game' });
       });
-    },
-    extend() {
-      this.showMore = !this.showMore;
     },
     close() {
       this.$emit('input', false);

@@ -17,7 +17,7 @@
           flat
         >
           <Progress
-            :key="path"
+            v-if="!loading"
             :params="params"
             @next="next"
             @progress="progress"
@@ -78,8 +78,9 @@ import { mapState } from 'vuex';
 export default {
   data() {
     return {
-      path: '',
+      path: null,
       seconds: 0,
+      loading: true,
       countdown: false,
     };
   },
@@ -93,6 +94,7 @@ export default {
         this.$router.push({ name: 'session', params: { id } });
       } else {
         this.countdown = true;
+        this.loading = true;
       }
     },
     onLoad() {
@@ -114,9 +116,6 @@ export default {
       'roundId',
       'rounds',
     ]),
-    loading() {
-      return this.$store.state.utils.status.loading;
-    },
     dialog() {
       return this.$store.state.game.dialog.show;
     },
@@ -127,6 +126,11 @@ export default {
   watch: {
     '$route.params.lang'() {
       this.get();
+    },
+    path() {
+      this.$nextTick(() => {
+        this.loading = false;
+      });
     },
   },
   beforeRouteUpdate() {

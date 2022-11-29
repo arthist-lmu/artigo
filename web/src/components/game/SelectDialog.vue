@@ -4,6 +4,7 @@
     :retain-focus="false"
     :persistent="isGame"
     max-width="625"
+    scrollable
   >
     <SelectCard
       v-model="dialog"

@@ -78,7 +78,7 @@
 
         <v-btn
           v-if="moreTags"
-          @click="moreTags = false"
+          @click="moreTags = false;"
           class="mb-1"
           color="grey lighten-2"
           height="32"
@@ -90,7 +90,7 @@
         </v-btn>
         <v-btn
           v-else
-          @click="moreTags = true"
+          @click="moreTags = true;"
           class="mb-1"
           color="grey lighten-2"
           height="32"
