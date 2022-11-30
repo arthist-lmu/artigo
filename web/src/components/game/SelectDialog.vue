@@ -35,8 +35,8 @@ export default {
   watch: {
     dialog(value) {
       if (!value) {
-        const params = { show: false, params: {} };
-        this.$store.commit('game/updateDialog', params);
+        const values = { show: false, params: {} };
+        this.$store.commit('game/updateDialog', values);
       }
     },
     show: {
@@ -50,6 +50,11 @@ export default {
     $route() {
       this.dialog = false;
     },
+  },
+  mounted() {
+    window.onpopstate = () => {
+      this.dialog = false;
+    };
   },
   components: {
     SelectCard: () => import('./SelectCard.vue'),

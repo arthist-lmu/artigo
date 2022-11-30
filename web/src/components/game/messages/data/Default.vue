@@ -46,7 +46,7 @@ export default {
           `game.fields.${this.gameType}.taboo`,
           { tags: this.tabooTags.join(', ') },
         ),
-        created_after: 1,
+        created_after: 0,
       });
     }
     const { game_round_duration: duration } = this.params;

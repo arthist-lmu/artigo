@@ -21,33 +21,26 @@ export default {
       default: false,
     },
   },
-  data() {
-    return {
-      menu: false,
-    };
-  },
   methods: {
     goToGame() {
       const values = { show: false, params: {} };
-      if (this.isSearch) {
-        let { entries } = this.$store.state.search.data;
-        entries = entries.map(({ resource_id }) => resource_id);
-        values.params.resource_inputs = entries;
-        values.params.resource_type = 'custom_resource';
-      } else if (this.isGame) {
-        values.show = true; // force dialog to open
+      switch (this.$route.name) {
+        case 'game': {
+          values.show = true; // force dialog to open
+          break;
+        }
+        case 'search': {
+          let { entries } = this.$store.state.search.data;
+          entries = entries.map(({ resource_id }) => resource_id);
+          values.params.resource_inputs = entries;
+          values.params.resource_type = 'custom_resource';
+          break;
+        }
+        default:
+          break;
       }
       this.$store.commit('game/updateDialog', values);
       this.$router.push({ name: 'game' });
-      this.menu = false;
-    },
-  },
-  computed: {
-    isGame() {
-      return this.$route.name === 'game';
-    },
-    isSearch() {
-      return this.$route.name === 'search';
     },
   },
 };

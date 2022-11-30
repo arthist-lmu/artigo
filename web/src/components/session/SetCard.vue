@@ -29,7 +29,7 @@
         v-if="subvalue > 0"
         class="mt-n2 text-caption grey--text"
       >
-        {{ subvalue }} {{ subtitle }}
+        {{ subvalue.toFixed(2) }} {{ subtitle }}
       </div>
     </div>
   </v-alert>

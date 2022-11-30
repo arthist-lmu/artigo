@@ -47,6 +47,7 @@
 
             <v-col
               v-if="!loading"
+              :key="path"
               class="py-0"
               :cols="$vuetify.breakpoint.mdAndDown ? 12 : 4"
             >
