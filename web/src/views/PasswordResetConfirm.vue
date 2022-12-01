@@ -1,13 +1,10 @@
 <template>
-  <Layout dark>
-    <Card :isDialog="false" />
-  </Layout>
+  <Card :isDialog="false" />
 </template>
 
 <script>
 export default {
   components: {
-    Layout: () => import('@/layouts/Account.vue'),
     Card: () => import('@/components/account/PasswordResetConfirmCard.vue'),
   },
 };

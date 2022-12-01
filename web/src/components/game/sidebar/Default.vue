@@ -17,6 +17,16 @@
         >
           <v-icon>mdi-chevron-right</v-icon>
         </v-btn>
+
+        <v-btn
+          @click="finish"
+          :title="$t('game.fields.basic.finish')"
+          color="grey"
+          x-small
+          icon
+        >
+          <v-icon>mdi-page-last</v-icon>
+        </v-btn>
       </v-col>
     </v-row>
 
@@ -58,6 +68,9 @@ export default {
   methods: {
     next() {
       this.$emit('next');
+    },
+    finish() {
+      this.$emit('finish');
     },
     scroll() {
       this.$nextTick(() => {

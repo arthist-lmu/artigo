@@ -124,6 +124,7 @@
       "settings": "Settings",
       "basic": {
         "skip": "Skip game round",
+        "finish": "Finish game",
         "score": "{n} Points|{n} Point|{n} Points",
         "rounds": "Round {i} of {total}",
         "suggest": "Click to add similar tags",

@@ -1,104 +1,102 @@
 <template>
-  <Layout dark>
-    <v-container :key="locale">
-      <GameDrawer
-        v-model="drawer"
-        ref="drawer"
-      />
+  <v-container :key="locale">
+    <GameDrawer
+      v-model="drawer"
+      ref="drawer"
+    />
 
-      <v-row></v-row>
+    <v-row></v-row>
 
+    <v-row
+      v-if="creators && entries"
+      style="flex: 0;"
+    >
+      <v-col
+        :class="$vuetify.breakpoint.mdAndDown ? 'px-1 py-6' : 'pa-12'"
+        :cols="$vuetify.breakpoint.mdAndDown ? 12 : 10"
+      >
+        <div :class="textSize">
+          <Typer
+            @onComplete="show('creator')"
+            :strings="[$t('home.texts.intro')]"
+            :loop="false"
+          />
+
+          <transition
+            name="fade"
+            mode="out-in"
+            appear
+          >
+            <span
+              v-if="dialog.creator && creator"
+              :key="creator"
+              @click="search(creator, 'creators')"
+              @keydown="search(creator, 'creators')"
+              class="creator space"
+              style="cursor: pointer;"
+            >
+              <span>{{ creator }}</span>
+            </span>
+          </transition>
+
+          <Typer
+            v-if="dialog.prefix"
+            @onComplete="show('examples')"
+            class="space"
+            :strings="[$t('home.texts.prefix')]"
+            :loop="false"
+          />
+
+          <Typer
+            v-if="dialog.examples"
+            @onComplete="show('button')"
+            class="space"
+            :removeBackspace="false"
+            :strings="examples"
+            :loop="false"
+          />
+        </div>
+      </v-col>
+    </v-row>
+
+    <transition
+      name="fade"
+      appear
+    >
       <v-row
-        v-if="creators && entries"
+        v-if="dialog.button"
         style="flex: 0;"
       >
         <v-col
-          :class="$vuetify.breakpoint.mdAndDown ? 'px-1 py-6' : 'pa-12'"
+          :class="[$vuetify.breakpoint.mdAndDown ? 'px-1 pb-6' : 'px-12 pb-12', 'pt-0']"
           :cols="$vuetify.breakpoint.mdAndDown ? 12 : 10"
         >
-          <div :class="textSize">
-            <Typer
-              @onComplete="show('creator')"
-              :strings="[$t('home.texts.intro')]"
-              :loop="false"
-            />
+          <v-btn
+            @click="goToGame()"
+            outlined
+            x-large
+            rounded
+            dark
+          >
+            {{ $t("home.fields.try-out") }}
+          </v-btn>
 
-            <transition
-              name="fade"
-              mode="out-in"
-              appear
-            >
-              <span
-                v-if="dialog.creator && creator"
-                :key="creator"
-                @click="search(creator, 'creators')"
-                @keydown="search(creator, 'creators')"
-                class="creator space"
-                style="cursor: pointer;"
-              >
-                <span>{{ creator }}</span>
-              </span>
-            </transition>
-
-            <Typer
-              v-if="dialog.prefix"
-              @onComplete="show('examples')"
-              class="space"
-              :strings="[$t('home.texts.prefix')]"
-              :loop="false"
-            />
-
-            <Typer
-              v-if="dialog.examples"
-              @onComplete="show('button')"
-              class="space"
-              :removeBackspace="false"
-              :strings="examples"
-              :loop="false"
-            />
-          </div>
+          <v-btn
+            @click="search('', 'all-text')"
+            :title="$t('search.title')"
+            class="ml-2"
+            x-large
+            icon
+            dark
+          >
+            <v-icon>
+              mdi-magnify
+            </v-icon>
+          </v-btn>
         </v-col>
       </v-row>
-
-      <transition
-        name="fade"
-        appear
-      >
-        <v-row
-          v-if="dialog.button"
-          style="flex: 0;"
-        >
-          <v-col
-            :class="[$vuetify.breakpoint.mdAndDown ? 'px-1 pb-6' : 'px-12 pb-12', 'pt-0']"
-            :cols="$vuetify.breakpoint.mdAndDown ? 12 : 10"
-          >
-            <v-btn
-              @click="goToGame()"
-              outlined
-              x-large
-              rounded
-              dark
-            >
-              {{ $t("home.fields.try-out") }}
-            </v-btn>
-
-            <v-btn
-              @click="search('', 'all-text')"
-              :title="$t('search.title')"
-              class="ml-2"
-              x-large
-              icon
-              dark
-            >
-              <v-icon>
-                mdi-magnify
-              </v-icon>
-            </v-btn>
-          </v-col>
-        </v-row>
-      </transition>
-    </v-container>
-  </Layout>
+    </transition>
+  </v-container>
 </template>
 
 <script>
@@ -215,7 +213,6 @@ export default {
     window.scrollTo(0, document.body.scrollHeight);
   },
   components: {
-    Layout: () => import('@/layouts/Default.vue'),
     Typer: () => import('@/components/Typer.vue'),
     GameDrawer: () => import('@/components/game/Drawer.vue'),
   },

@@ -3,6 +3,8 @@ import VueRouter from 'vue-router';
 import i18n from '@/plugins/i18n';
 import store from '@/store';
 import RouterView from '@/views/RouterView.vue';
+import DefaultLayout from '@/layouts/Default.vue';
+import AccountLayout from '@/layouts/Account.vue';
 
 Vue.use(VueRouter);
 
@@ -33,6 +35,10 @@ const router = new VueRouter({
           path: '',
           name: 'home',
           component: () => import('@/views/Home.vue'),
+          meta: {
+            layout: DefaultLayout,
+            dark: true,
+          },
         },
         {
           path: 'imprint',
@@ -52,55 +58,88 @@ const router = new VueRouter({
           path: 'about',
           name: 'about',
           component: () => import('@/views/About.vue'),
-          meta: { title: 'about.title' },
+          meta: {
+            title: 'about.title',
+            layout: DefaultLayout,
+            dark: true,
+          },
         },
         {
           path: 'search',
           name: 'search',
           component: () => import('@/views/Search.vue'),
-          meta: { title: 'search.title' },
+          meta: {
+            title: 'search.title',
+            layout: DefaultLayout,
+          },
         },
         {
           path: 'game/:id/',
           name: 'session',
           component: () => import('@/views/Session.vue'),
-          meta: { title: 'game.title' },
+          meta: {
+            title: 'game.title',
+            layout: DefaultLayout,
+            opaque: true,
+          },
         },
         {
           path: 'sessions',
           name: 'sessions',
           component: () => import('@/views/Sessions.vue'),
-          meta: { title: 'sessions.title' },
+          meta: {
+            title: 'sessions.title',
+            layout: DefaultLayout,
+          },
         },
         {
           path: 'game',
           name: 'game',
           component: () => import('@/views/Game.vue'),
-          meta: { title: 'game.title' },
+          meta: {
+            title: 'game.title',
+            layout: DefaultLayout,
+            opaque: true,
+          },
         },
         {
           path: 'login',
           name: 'login',
           component: () => import('@/views/Login.vue'),
-          meta: { title: 'user.login.title' },
+          meta: {
+            title: 'user.login.title',
+            layout: AccountLayout,
+            dark: true,
+          },
         },
         {
           path: 'register',
           name: 'register',
           component: () => import('@/views/Register.vue'),
-          meta: { title: 'user.register.title' },
+          meta: {
+            title: 'user.register.title',
+            layout: AccountLayout,
+            dark: true,
+          },
         },
         {
           path: 'password/reset/confirm/:uid/:token/',
           name: 'password-reset-confirm',
           component: () => import('@/views/PasswordResetConfirm.vue'),
-          meta: { title: 'user.password-reset.title' },
+          meta: {
+            title: 'user.password-reset.title',
+            layout: AccountLayout,
+            dark: true,
+          },
         },
         {
           path: '404',
           name: 'not-found',
           component: () => import('@/views/NotFound.vue'),
-          meta: { title: 'not-found.title' },
+          meta: {
+            title: 'not-found.title',
+            layout: DefaultLayout,
+          },
         },
         {
           path: '*',

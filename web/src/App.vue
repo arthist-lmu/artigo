@@ -1,5 +1,11 @@
 <template>
-  <router-view />
+  <component
+    :is="this.$route.meta.layout || 'div'"
+    :opaque="this.$route.meta.opaque"
+    :dark="this.$route.meta.dark"
+  >
+    <router-view />
+  </component>
 </template>
 
 <script>

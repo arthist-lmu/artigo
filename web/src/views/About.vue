@@ -1,52 +1,50 @@
 <template>
-  <Layout dark>
-    <v-container>
-      <GameDrawer />
+  <v-container>
+    <GameDrawer />
 
-      <v-row
-        v-if="!$vuetify.breakpoint.mdAndDown"
-        ref="filler"
-      />
+    <v-row
+      v-if="!$vuetify.breakpoint.mdAndDown"
+      ref="filler"
+    />
 
-      <v-row ref="summary">
-        <v-col :class="$vuetify.breakpoint.mdAndDown ? 'px-1 py-6' : 'pa-12'">
-          <div :class="textSize">
-            {{ $t("about.fields.summary", { images, taggings, users }) }}
-          </div>
-        </v-col>
-      </v-row>
+    <v-row ref="summary">
+      <v-col :class="$vuetify.breakpoint.mdAndDown ? 'px-1 py-6' : 'pa-12'">
+        <div :class="textSize">
+          {{ $t("about.fields.summary", { images, taggings, users }) }}
+        </div>
+      </v-col>
+    </v-row>
 
-      <v-row>
-        <v-col :class="$vuetify.breakpoint.mdAndDown ? 'px-1 py-6' : 'pa-12'">
-          <div :class="textSize">
-            {{ $t("contributors.title") }}
-          </div>
+    <v-row>
+      <v-col :class="$vuetify.breakpoint.mdAndDown ? 'px-1 py-6' : 'pa-12'">
+        <div :class="textSize">
+          {{ $t("contributors.title") }}
+        </div>
 
-          <Contributors />
-        </v-col>
-      </v-row>
+        <Contributors />
+      </v-col>
+    </v-row>
 
-      <v-row>
-        <v-col :class="$vuetify.breakpoint.mdAndDown ? 'px-1 py-6' : 'pa-12'">
-          <div :class="textSize">
-            {{ $t("history.title") }}
-          </div>
+    <v-row>
+      <v-col :class="$vuetify.breakpoint.mdAndDown ? 'px-1 py-6' : 'pa-12'">
+        <div :class="textSize">
+          {{ $t("history.title") }}
+        </div>
 
-          <History />
-        </v-col>
-      </v-row>
+        <History />
+      </v-col>
+    </v-row>
 
-      <v-row>
-        <v-col :class="$vuetify.breakpoint.mdAndDown ? 'px-1 py-6' : 'pa-12'">
-          <div :class="textSize">
-            {{ $t("publications.title") }}
-          </div>
+    <v-row>
+      <v-col :class="$vuetify.breakpoint.mdAndDown ? 'px-1 py-6' : 'pa-12'">
+        <div :class="textSize">
+          {{ $t("publications.title") }}
+        </div>
 
-          <Publications />
-        </v-col>
-      </v-row>
-    </v-container>
-  </Layout>
+        <Publications />
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 
 <script>
@@ -101,7 +99,6 @@ export default {
     window.scrollTo(0, 0);
   },
   components: {
-    Layout: () => import('@/layouts/Default.vue'),
     GameDrawer: () => import('@/components/game/Drawer.vue'),
     Contributors: () => import('@/components/Contributors.vue'),
     History: () => import('@/components/History.vue'),

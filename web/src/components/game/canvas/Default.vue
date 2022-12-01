@@ -5,8 +5,8 @@
   >
     <slot name="prepend-item"></slot>
 
-    <AnnotatorCanvas
-      :key="entry.path"
+    <Canvas
+      :key="key"
       :src="entry.path"
       :tool="tool"
       v-on="$listeners"
@@ -39,6 +39,16 @@ export default {
       }
     },
   },
+  computed: {
+    key() {
+      return `${this.entry.path}-${this.height}`;
+    }
+  },
+  watch: {
+    'entry.path'() {
+      this.setHeight();
+    },
+  },
   mounted() {
     this.setHeight();
   },
@@ -49,7 +59,7 @@ export default {
     window.removeEventListener('resize', this.setHeight);
   },
   components: {
-    AnnotatorCanvas: () => import('@/components/annotator/Canvas.vue'),
+    Canvas: () => import('@/components/annotator/Canvas.vue'),
   },
 };
 </script>
