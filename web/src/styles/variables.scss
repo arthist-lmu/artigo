@@ -68,8 +68,8 @@ $material-light: (
   ),
   'app-bar': $background-color-light,
   'dividers': $background-color-light,
-  'background': $background-color-light,
-  'navigation-drawer': $background-color-light,
+  'background': $background-color-light !important,
+  'navigation-drawer': $background-color-light !important,
 );
 
 $background-color-dark: rgb(66, 71, 152);
@@ -81,5 +81,5 @@ $material-dark: (
   'cards': '#ffffff',
   'app-bar': $background-color-dark,
   'dividers': $background-color-dark,
-  'background': $background-color-dark,
+  'background': $background-color-dark !important,
 );

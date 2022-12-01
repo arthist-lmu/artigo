@@ -50,6 +50,6 @@ export default {
 
 <style scoped>
 .theme--light.dark-variant.v-application {
-  background-color: rgb(66, 71, 152);
+  background-color: rgb(66, 71, 152) !important;
 }
 </style>

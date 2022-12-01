@@ -42,7 +42,7 @@ export default {
   computed: {
     key() {
       return `${this.entry.path}-${this.height}`;
-    }
+    },
   },
   watch: {
     'entry.path'() {
