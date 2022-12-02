@@ -183,7 +183,7 @@ router.beforeResolve((to, from, next) => {
 router.afterEach((to) => {
   Vue.nextTick(() => {
     let title = 'ARTigo – Social Image Tagging';
-    if (Object.keys(to.meta).length) {
+    if (Object.keys(to.meta).length && to.meta.title) {
       title = `${i18n.t(to.meta.title)} | ${title}`;
     }
     document.title = title;

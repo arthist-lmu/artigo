@@ -8,6 +8,7 @@
   >
     <SelectCard
       v-model="dialog"
+      :key="dialog"
       :defaultParams="params"
     />
   </v-dialog>
