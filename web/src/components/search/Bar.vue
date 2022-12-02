@@ -163,6 +163,7 @@ export default {
         { key: 'titles' },
         { key: 'creators' },
         { key: 'location' },
+        { key: 'institution' },
         { key: 'tags' },
       ],
     };
