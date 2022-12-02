@@ -124,7 +124,7 @@
       "settings": "Einstellungen",
       "basic": {
         "skip": "Spielrunde überspringen",
-        "finish": "Spiel beenden",
+        "finish": "Spiel vorzeitig beenden",
         "score": "{n} Punkte|{n} Punkt|{n} Punkte",
         "rounds": "Runde {i} von {total}",
         "suggest": "Füge ähnliche Schlagwörter hinzu",

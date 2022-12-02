@@ -17,7 +17,7 @@
         <v-spacer />
 
         <v-col
-          v-if="!(dark || $vuetify.breakpoint.mobile || isSearch)"
+          v-if="!(hideSearchBar || $vuetify.breakpoint.mobile)"
           cols="4"
         >
           <Bar />
@@ -54,6 +54,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    hideSearchBar: {
+      type: Boolean,
+      default: false,
+    },
   },
   methods: {
     goTo(name) {
@@ -63,9 +67,6 @@ export default {
   computed: {
     left() {
       return this.$store.state.utils.drawer.width;
-    },
-    isSearch() {
-      return this.$route.name === 'search';
     },
     isVisible() {
       if (

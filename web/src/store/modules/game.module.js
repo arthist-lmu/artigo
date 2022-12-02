@@ -5,7 +5,6 @@ const game = {
   state: {
     params: {},
     dialog: {
-      show: false,
       params: {},
     },
     input: {
@@ -56,7 +55,7 @@ const game = {
         params[field] = values;
       });
       if (params && Object.keys(params).length) {
-        commit('updateDialog', { show: true, params });
+        commit('updateDialog', { params });
       }
     },
   },
@@ -64,11 +63,8 @@ const game = {
     updateParams(state, params) {
       state.params = params;
     },
-    updateDialog(state, { show, params }) {
-      state.dialog.show = show;
-      if (params && Object.keys(params).length) {
-        state.dialog.params = params;
-      }
+    updateDialog(state, { params }) {
+      state.dialog.params = params;
     },
     updateInput(state, { focus }) {
       state.input.focus = focus;

@@ -19,14 +19,6 @@
             mdi-cog-outline
           </v-icon>
         </v-btn>
-
-        <v-btn
-          v-if="!persistent"
-          @click="close"
-          icon
-        >
-          <v-icon>mdi-close</v-icon>
-        </v-btn>
       </v-col>
     </v-card-title>
 
@@ -57,10 +49,6 @@
 export default {
   props: {
     defaultParams: Object,
-    persistent: {
-      type: Boolean,
-      default: false,
-    },
   },
   data() {
     return {

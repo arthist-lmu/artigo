@@ -1,75 +1,78 @@
 <template>
   <v-container
-    v-if="!dialog"
     :class="[$vuetify.breakpoint.mdAndDown ? 'mobile px-1' : undefined, 'mt-8']"
     style="position: relative; height: calc(100% - 22px);"
   >
-    <v-fade-transition>
-      <Countdown
-        v-if="countdown"
-        :duration="3"
-        @finish="finishGameround"
-      />
-      <v-card
-        v-else
-        style="overflow: clip;"
-        flat
-      >
-        <Progress
-          v-if="!loading"
-          :params="params"
-          @next="next"
-          @progress="progress"
+    <SelectDialog v-model="dialog" />
+
+    <template v-if="!dialog">
+      <v-fade-transition>
+        <Countdown
+          v-if="countdown"
+          :duration="3"
+          @finish="finishGameround"
         />
-
-        <v-row>
-          <v-col
-            class="py-0"
-            :cols="$vuetify.breakpoint.mdAndDown ? 12 : 8"
-          >
-            <ROICanvas
-              v-if="gameType === 'roi'"
-              tool="brush"
-              :entry="entry"
-              :params="params"
-              @load="onLoad"
-              @error="next"
-            />
-            <DefaultCanvas
-              v-else
-              :entry="entry"
-              :params="params"
-              @load="onLoad"
-              @error="next"
-            />
-          </v-col>
-
-          <v-col
+        <v-card
+          v-else
+          style="overflow: clip;"
+          flat
+        >
+          <Progress
             v-if="!loading"
-            class="py-0"
-            :key="path"
-            :cols="$vuetify.breakpoint.mdAndDown ? 12 : 4"
-          >
-            <TaggingSidebar
-              v-if="gameType === 'tagging'"
-              :entry="entry"
-              :params="params"
-              :seconds="seconds"
-              @next="next"
-              @finish="finishGamesession"
-            />
-            <DefaultSidebar
-              v-else
-              :entry="entry"
-              :params="params"
-              :seconds="seconds"
-              @next="next"
-              @finish="finishGamesession"
-            />
-          </v-col>
-        </v-row>
-      </v-card>
-    </v-fade-transition>
+            :params="params"
+            @next="next"
+            @progress="progress"
+          />
+
+          <v-row>
+            <v-col
+              class="py-0"
+              :cols="$vuetify.breakpoint.mdAndDown ? 12 : 8"
+            >
+              <ROICanvas
+                v-if="gameType === 'roi'"
+                tool="brush"
+                :entry="entry"
+                :params="params"
+                @load="onLoad"
+                @error="next"
+              />
+              <DefaultCanvas
+                v-else
+                :entry="entry"
+                :params="params"
+                @load="onLoad"
+                @error="next"
+              />
+            </v-col>
+
+            <v-col
+              v-if="!loading"
+              class="py-0"
+              :key="path"
+              :cols="$vuetify.breakpoint.mdAndDown ? 12 : 4"
+            >
+              <TaggingSidebar
+                v-if="gameType === 'tagging'"
+                :entry="entry"
+                :params="params"
+                :seconds="seconds"
+                @next="next"
+                @finish="finishGamesession"
+              />
+              <DefaultSidebar
+                v-else
+                :entry="entry"
+                :params="params"
+                :seconds="seconds"
+                @next="next"
+                @finish="finishGamesession"
+              />
+            </v-col>
+          </v-row>
+        </v-card>
+      </v-fade-transition>
+    </template>
   </v-container>
 </template>
 
@@ -81,13 +84,14 @@ export default {
     return {
       path: null,
       seconds: 0,
+      dialog: false,
       loading: true,
       countdown: false,
     };
   },
   methods: {
     get() {
-      this.$store.commit('game/updateDialog', { show: true });
+      this.dialog = true;
     },
     next() {
       if (this.roundId === this.rounds) {
@@ -98,7 +102,9 @@ export default {
       }
     },
     onLoad() {
-      this.path = this.entry.path;
+      if (!this.$store.state.utils.status.loading) {
+        this.path = this.entry.path;
+      }
     },
     finishGameround() {
       this.$store.dispatch('game/get', {}).then(() => {
@@ -123,20 +129,15 @@ export default {
     gameType() {
       return this.params.game_type;
     },
-    dialog() {
-      return this.$store.state.game.dialog.show;
-    },
   },
   watch: {
     '$route.params.lang'() {
       this.get();
     },
     path() {
-      if (!this.$store.state.utils.status.loading) {
-        this.$nextTick(() => {
-          this.loading = false;
-        });
-      }
+      this.$nextTick(() => {
+        this.loading = false;
+      });
     },
     dialog(value) {
       if (value) {
@@ -170,6 +171,7 @@ export default {
     ROICanvas: () => import('@/components/game/canvas/ROI.vue'),
     DefaultSidebar: () => import('@/components/game/sidebar/Default.vue'),
     TaggingSidebar: () => import('@/components/game/sidebar/Tagging.vue'),
+    SelectDialog: () => import('@/components/game/SelectDialog.vue'),
   },
 };
 </script>

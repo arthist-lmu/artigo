@@ -1,8 +1,9 @@
 <template>
   <component
     :is="this.$route.meta.layout || 'div'"
-    :opaque="this.$route.meta.opaque"
     :dark="this.$route.meta.dark"
+    :opaque="this.$route.meta.opaque"
+    :hideSearchBar="this.$route.meta.hideSearchBar"
   >
     <router-view />
   </component>

@@ -38,6 +38,7 @@ const router = new VueRouter({
           meta: {
             layout: DefaultLayout,
             dark: true,
+            hideSearchBar: true,
           },
         },
         {
@@ -62,6 +63,7 @@ const router = new VueRouter({
             title: 'about.title',
             layout: DefaultLayout,
             dark: true,
+            hideSearchBar: true,
           },
         },
         {
@@ -70,6 +72,16 @@ const router = new VueRouter({
           component: () => import('@/views/Search.vue'),
           meta: {
             title: 'search.title',
+            layout: DefaultLayout,
+            hideSearchBar: true,
+          },
+        },
+        {
+          path: 'sessions',
+          name: 'sessions',
+          component: () => import('@/views/Sessions.vue'),
+          meta: {
+            title: 'sessions.title',
             layout: DefaultLayout,
           },
         },
@@ -84,15 +96,6 @@ const router = new VueRouter({
           },
         },
         {
-          path: 'sessions',
-          name: 'sessions',
-          component: () => import('@/views/Sessions.vue'),
-          meta: {
-            title: 'sessions.title',
-            layout: DefaultLayout,
-          },
-        },
-        {
           path: 'game',
           name: 'game',
           component: () => import('@/views/Game.vue'),
@@ -100,6 +103,7 @@ const router = new VueRouter({
             title: 'game.title',
             layout: DefaultLayout,
             opaque: true,
+            hideSearchBar: true,
           },
         },
         {

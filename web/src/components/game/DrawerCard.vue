@@ -101,8 +101,7 @@ export default {
   },
   methods: {
     play() {
-      const values = { show: false, params: this.entry.params };
-      this.$store.commit('game/updateDialog', values);
+      this.$store.commit('game/updateDialog', { params: this.entry.params });
       this.$router.push({ name: 'game' });
     },
     onError() {

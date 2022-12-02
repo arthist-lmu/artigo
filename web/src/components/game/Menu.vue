@@ -23,24 +23,20 @@ export default {
   },
   methods: {
     goToGame() {
-      const values = { show: false, params: {} };
-      switch (this.$route.name) {
-        case 'game': {
-          values.show = true; // force dialog to open
-          break;
-        }
-        case 'search': {
-          let { entries } = this.$store.state.search.data;
-          entries = entries.map(({ resource_id }) => resource_id);
-          values.params.resource_inputs = entries;
-          values.params.resource_type = 'custom_resource';
-          break;
-        }
-        default:
-          break;
+      const params = {};
+      if (this.$route.name === 'search') {
+        let { entries } = this.$store.state.search.data;
+        entries = entries.map(({ resource_id }) => resource_id);
+        params.resource_inputs = entries;
+        params.resource_type = 'custom_resource';
       }
-      this.$store.commit('game/updateDialog', values);
-      this.$router.push({ name: 'game' });
+      this.$store.commit('/game/updateDialog', { params });
+      if (this.$route.name === 'game') {
+        const path = `/${this.$i18n.locale}/game`;
+        this.$router.push({ path: `${path}?id=${Date.now()}` });
+      } else {
+        this.$router.push({ name: 'game' });
+      }
     },
   },
 };

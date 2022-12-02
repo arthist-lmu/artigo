@@ -6,6 +6,7 @@
     <Header
       :dark="dark"
       :opaque="opaque"
+      :hideSearchBar="hideSearchBar"
       @mounted="mounted = true;"
     />
 
@@ -14,7 +15,6 @@
 
     <ResourceDialog />
     <ReconcileDialog />
-    <GameSelectDialog />
 
     <v-main
       v-if="mounted"
@@ -41,6 +41,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    hideSearchBar: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
@@ -54,7 +58,6 @@ export default {
     Footer: () => import('@/components/Footer.vue'),
     ResourceDialog: () => import('@/components/ResourceDialog.vue'),
     ReconcileDialog: () => import('@/components/ReconcileDialog.vue'),
-    GameSelectDialog: () => import('@/components/game/SelectDialog.vue'),
   },
 };
 </script>

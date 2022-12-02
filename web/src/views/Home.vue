@@ -128,8 +128,7 @@ export default {
     },
     goToGame() {
       if (!this.$vuetify.breakpoint.mdAndDown) {
-        // const values = { show: true, params: {} };
-        // this.$store.commit('game/updateDialog', values);
+        this.$store.commit('game/updateDialog', { params: {} });
         this.$router.push({ name: 'game' });
       }
       this.drawer = true;

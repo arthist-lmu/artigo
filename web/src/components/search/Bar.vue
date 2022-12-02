@@ -186,9 +186,11 @@ export default {
       });
     },
     onClickOutside({ target }) {
-      const input = this.$refs.input.$el;
-      if (!input.contains(target)) {
-        this.closeMenu();
+      if (this.$refs.input !== undefined) {
+        const input = this.$refs.input.$el;
+        if (!input.contains(target)) {
+          this.closeMenu();
+        }
       }
     },
     blurInput() {
