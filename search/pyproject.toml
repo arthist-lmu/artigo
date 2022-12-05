@@ -15,7 +15,7 @@ celery = "^5.2.7"
 pytest = "^7.2.0"
 pytest-cov = "^4.0.0"
 wheel = "^0.37.1"
-redis = "^4.3.4"
+redis = "^4.4.0"
 
 [tool.poetry.dev-dependencies]
 black = "^22.10.0"
