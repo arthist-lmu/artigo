@@ -56,9 +56,17 @@ class SessionView(APIView):
             )
 
         session = ResourceView()(resource_ids)
+        taggings = Serializer(
+            taggings,
+            many=True,
+            context={'ids': resource_ids},
+        ).data
 
-        for tagging in Serializer(taggings, many=True).data:
-            session[str(tagging['resource_id'])].update(tagging)
+        for tagging in taggings:
+            resource_id = str(tagging['resource_id'])
+            
+            if session.get(resource_id):
+                session[resource_id].update(tagging)
 
         return Response(session.values())
 
