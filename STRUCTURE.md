@@ -33,7 +33,7 @@ This container starts an Apache web server that uses the generated [Vue.js](http
 
 # Monitoring
 https://blog.roberthallam.org/2021/11/setting-up-a-tig-telegraf-influxdb-grafana-stack-on-docker/
-TIG: Telegraf, InfluxDB, Grafana
+TIG: node-exporter, prometheus, cadvisor, Grafana https://grafana.com/grafana/dashboards/893-main/
 
 # Authentication
 To enable SAML Auth with LMU-Services see [here](https://doku.lrz.de/pages/viewpage.action?pageId=56919067)
