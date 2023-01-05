@@ -1,6 +1,6 @@
 <template>
   <div class="stage">
-    <div class="waiter"></div>
+    <div class="waiter" />
   </div>
 </template>
 

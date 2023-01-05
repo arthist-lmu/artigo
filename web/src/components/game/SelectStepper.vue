@@ -145,7 +145,10 @@ import configs from '/config.json';
 
 export default {
   props: {
-    defaultParams: Object,
+    defaultParams: {
+      type: Object,
+      default: null,
+    },
     showMore: {
       type: Boolean,
       default: false,

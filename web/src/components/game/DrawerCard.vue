@@ -75,12 +75,12 @@
           </v-col>
         </v-row>
 
-        <v-row></v-row>
+        <v-row />
 
         <v-row style="flex: 0;">
           <v-col class="pa-4">
             <div class="text-subtitle-1 white--text">
-              <p v-html="$t(`home.fields.${entry.type}`, { value: `<b>${entry.query}</b>` })"></p>
+              <p v-html="$t(`home.fields.${entry.type}`, { value: `<b>${entry.query}</b>` })" />
             </div>
           </v-col>
         </v-row>
@@ -92,7 +92,10 @@
 <script>
 export default {
   props: {
-    entry: Object,
+    entry: {
+      type: Object,
+      default: null,
+    },
   },
   data() {
     return {

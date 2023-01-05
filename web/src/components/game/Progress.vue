@@ -8,7 +8,10 @@
 <script>
 export default {
   props: {
-    params: Object,
+    params: {
+      type: Object,
+      default: null,
+    },
   },
   data() {
     return {

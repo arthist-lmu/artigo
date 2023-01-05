@@ -7,7 +7,7 @@
     alt=""
   >
     <template v-slot:placeholder>
-      <slot name="placeholder"></slot>
+      <slot name="placeholder" />
     </template>
 
     <v-avatar
@@ -64,18 +64,24 @@
 
 <script>
 import paper from 'paper';
-import { VImg } from 'vuetify/lib';
+import { VImg } from 'vuetify';
 
 export default {
   extends: VImg,
   props: {
     ...VImg.props,
-    value: Object,
+    value: {
+      type: Object,
+      default: null,
+    },
     tool: {
       type: String,
       default: 'select',
     },
-    avatarText: String,
+    avatarText: {
+      type: String,
+      default: null,
+    },
   },
   data() {
     return {

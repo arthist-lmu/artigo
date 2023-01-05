@@ -96,6 +96,7 @@
               class="ml-1"
               href="https://www.kunstgeschichte.uni-muenchen.de/funktionen/datenschutz/index.html"
               target="_blank"
+              rel="noopener noreferrer"
               small
               icon
             >

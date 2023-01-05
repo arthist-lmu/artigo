@@ -6,7 +6,7 @@
     app
   >
     <v-container class="px-6">
-      <v-row></v-row>
+      <v-row />
 
       <v-row
         v-for="entry in data"
@@ -33,7 +33,7 @@
         </v-col>
       </v-row>
 
-      <v-row></v-row>
+      <v-row />
     </v-container>
   </v-navigation-drawer>
 </template>
