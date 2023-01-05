@@ -42,7 +42,10 @@
 <script>
 export default {
   props: {
-    params: Object,
+    params: {
+      type: Object,
+      default: null,
+    },
     duration: {
       type: Number,
       default: 3,

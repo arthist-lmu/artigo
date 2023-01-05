@@ -42,7 +42,7 @@ export default {
     },
   },
   components: {
-    ResourceCard: () => import('@/components/ResourceCard.vue'),
+    ResourceCard: () => import('./ResourceCard.vue'),
   },
 };
 </script>

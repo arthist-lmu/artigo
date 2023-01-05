@@ -1,5 +1,6 @@
+const { VuetifyPlugin } = require('webpack-plugin-vuetify');
 const webpack = require('webpack');
-const VuetifyLoaderPlugin = require('vuetify-loader/lib/plugin');
+// const VuetifyLoaderPlugin = require('webpack-plugin-vuetify/lib/plugin');
 
 module.exports = {
   publicPath: '/',
@@ -12,11 +13,12 @@ module.exports = {
       },
     },
     plugins: [
-      new VuetifyLoaderPlugin({
-        progressiveImage: {
-          sharp: true,
-        },
-      }),
+      new VuetifyPlugin({ autoImport: true }),
+      // new VuetifyLoaderPlugin({
+      //   progressiveImage: {
+      //     sharp: true,
+      //   },
+      // }),
     ],
     optimization: {
       splitChunks: {
@@ -30,10 +32,10 @@ module.exports = {
     loaderOptions: {
       sass: {
         implementation: require('sass'),
-        additionalData: `@import '@/styles/variables.scss'`,
+        additionalData: '@import \'@/styles/variables.scss\'',
       },
       scss: {
-        additionalData: `@import '@/styles/variables.scss';`,
+        additionalData: '@import \'@/styles/variables.scss\';',
       },
     },
   },

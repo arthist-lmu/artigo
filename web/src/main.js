@@ -1,17 +1,14 @@
 import Vue from 'vue';
 import VueTouch from 'vue-touch';
-import i18n from '@/plugins/i18n';
-import vuetify from '@/plugins/vuetify';
-import App from '@/App.vue';
-import store from '@/store';
-import router from '@/router';
-import mixins from '@/mixins';
-import '@/styles/custom.css';
+import i18n from './plugins/i18n';
+import vuetify from './plugins/vuetify';
+import App from './App.vue';
+import store from './store';
+import router from './router';
+import mixins from './mixins';
+import './styles/custom.css';
 
-Vue.mixin(mixins);
-Vue.use(VueTouch, { name: 'v-touch' });
-
-const ARTigo = Vue.extend({
+const Profile = {
   methods: {
     registerAnonymous() {
       const params = { is_anonymous: true };
@@ -47,13 +44,13 @@ const ARTigo = Vue.extend({
       }
     },
   },
-});
+};
 
-new ARTigo({
-  vuetify,
-  router,
-  store,
-  i18n,
-  render: (h) => h(App),
-})
-  .$mount('#app');
+const app = createApp(Profile).mount('#app');
+app.use(VueTouch, { name: 'v-touch' });
+app.use(i18n);
+app.use(router);
+app.use(vuetify);
+//app.use(App);
+app.use(store);
+Vue.mixin(mixins);

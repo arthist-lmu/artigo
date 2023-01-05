@@ -48,7 +48,10 @@
 <script>
 export default {
   props: {
-    defaultParams: Object,
+    defaultParams: {
+      type: Object,
+      default: null,
+    },
   },
   data() {
     return {

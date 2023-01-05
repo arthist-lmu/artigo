@@ -72,7 +72,7 @@ export default {
     },
   },
   components: {
-    Bar: () => import('@/components/search/Bar.vue'),
+    Bar: () => import('./Bar.vue'),
   },
 };
 </script>

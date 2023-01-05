@@ -53,9 +53,18 @@
 <script>
 export default {
   props: {
-    entry: Object,
-    params: Object,
-    seconds: Number,
+    entry: {
+      type: Object,
+      default: null,
+    },
+    params: {
+      type: Object,
+      default: null,
+    },
+    seconds: {
+      type: Number,
+      default: null,
+    },
   },
   data() {
     return {
@@ -113,7 +122,7 @@ export default {
     UserMessage: () => import('./message/User.vue'),
     DefaultMessage: () => import('./message/Default.vue'),
     OpponentMessage: () => import('./message/Opponent.vue'),
-    Waiter: () => import('@/components/Waiter.vue'),
+    Waiter: () => import('../../Waiter.vue'),
   },
 };
 </script>
