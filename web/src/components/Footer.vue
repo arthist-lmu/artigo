@@ -54,6 +54,7 @@
             v-if="!$vuetify.breakpoint.mdAndDown"
             :href="api"
             target="_blank"
+            rel="noopener noreferrer"
             :small="!$vuetify.breakpoint.mdAndDown"
             :x-small="$vuetify.breakpoint.mdAndDown"
             icon

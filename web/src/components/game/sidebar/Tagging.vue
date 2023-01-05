@@ -43,7 +43,7 @@
 </template>
 
 <script>
-import Sidebar from '@/components/game/sidebar/Default.vue';
+import Sidebar from './Default.vue';
 
 export default {
   extends: Sidebar,

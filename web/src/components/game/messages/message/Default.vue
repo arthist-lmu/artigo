@@ -23,7 +23,10 @@
 <script>
 export default {
   props: {
-    message: Object,
+    message: {
+      type: Object,
+      default: null,
+    },
     hide: {
       type: Boolean,
       default: false,

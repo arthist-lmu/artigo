@@ -109,8 +109,14 @@
 <script>
 export default {
   props: {
-    entry: Object,
-    message: Object,
+    entry: {
+      type: Object,
+      default: null,
+    },
+    message: {
+      type: Object,
+      default: null,
+    },
   },
   methods: {
     post(name) {

@@ -1,9 +1,9 @@
 <template>
-  <div></div>
+  <div />
 </template>
 
 <script>
-import tool from '@/mixins/game/messages/data';
+import tool from '../../../../mixins/game/messages/data';
 
 export default {
   name: 'UserTool',

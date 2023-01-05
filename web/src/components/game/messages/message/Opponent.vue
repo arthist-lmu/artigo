@@ -35,7 +35,10 @@
 <script>
 export default {
   props: {
-    message: Object,
+    message: {
+      type: Object,
+      default: null,
+    },
     hideAvatar: {
       type: Boolean,
       default: false,

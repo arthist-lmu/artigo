@@ -44,7 +44,7 @@
       </v-col>
     </v-row>
 
-    <slot name="append-item"></slot>
+    <slot name="append-item" />
   </v-container>
 </template>
 
@@ -53,8 +53,14 @@ import { mapState } from 'vuex';
 
 export default {
   props: {
-    entry: Object,
-    params: Object,
+    entry: {
+      type: Object,
+      default: null,
+    },
+    params: {
+      type: Object,
+      default: null,
+    },
     seconds: {
       type: Number,
       default: 0,
@@ -109,7 +115,7 @@ export default {
     },
   },
   components: {
-    Messages: () => import('@/components/game/messages/Default.vue'),
+    Messages: () => import('../messages/Default.vue'),
   },
 };
 </script>

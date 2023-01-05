@@ -28,7 +28,7 @@ export default {
     },
   },
   components: {
-    GameMenu: () => import('@/components/game/Menu.vue'),
+    GameMenu: () => import('./game/Menu.vue'),
   },
 };
 </script>

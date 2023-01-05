@@ -82,11 +82,11 @@ export default {
     this.$emit('mounted');
   },
   components: {
-    Bar: () => import('@/components/search/Bar.vue'),
-    Logo: () => import('@/components/Logo.vue'),
-    DefaultMenu: () => import('@/components/menu/Default.vue'),
-    MobileMenu: () => import('@/components/menu/Mobile.vue'),
-    UserMenu: () => import('@/components/account/Menu.vue'),
+    Bar: () => import('./search/Bar.vue'),
+    Logo: () => import('./Logo.vue'),
+    DefaultMenu: () => import('./menu/Default.vue'),
+    MobileMenu: () => import('./menu/Mobile.vue'),
+    UserMenu: () => import('./account/Menu.vue'),
   },
 };
 </script>
