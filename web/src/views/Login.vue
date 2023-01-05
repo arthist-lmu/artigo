@@ -5,7 +5,7 @@
 <script>
 export default {
   components: {
-    Card: () => import('@/components/account/LoginCard.vue'),
+    Card: () => import('../components/account/LoginCard.vue'),
   },
 };
 </script>

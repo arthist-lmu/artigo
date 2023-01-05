@@ -79,8 +79,8 @@ export default {
     this.$store.dispatch('sessions/get', {});
   },
   components: {
-    Bar: () => import('@/components/session/ExtendedBar.vue'),
-    ResultCard: () => import('@/components/session/Card.vue'),
+    Bar: () => import('../components/session/ExtendedBar.vue'),
+    ResultCard: () => import('../components/session/Card.vue'),
   },
 };
 </script>

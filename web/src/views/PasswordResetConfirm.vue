@@ -5,7 +5,7 @@
 <script>
 export default {
   components: {
-    Card: () => import('@/components/account/PasswordResetConfirmCard.vue'),
+    Card: () => import('../components/account/PasswordResetConfirmCard.vue'),
   },
 };
 </script>

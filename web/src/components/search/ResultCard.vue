@@ -27,7 +27,7 @@
             </v-col>
           </v-row>
 
-          <v-row></v-row>
+          <v-row />
 
           <v-row style="flex: 0;">
             <v-col class="pa-4">
@@ -56,7 +56,7 @@
 </template>
 
 <script>
-import tool from '@/mixins/resource';
+import tool from '../../mixins/resource';
 
 export default {
   mixins: [tool],
@@ -66,7 +66,7 @@ export default {
     },
   },
   components: {
-    TagCloud: () => import('@/components/TagCloud.vue'),
+    TagCloud: () => import('../TagCloud.vue'),
   },
 };
 </script>
