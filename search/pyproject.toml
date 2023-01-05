@@ -14,7 +14,7 @@ aiohttp = "^3.8.3"
 celery = "^5.2.7"
 pytest = "^7.2.0"
 pytest-cov = "^4.0.0"
-wheel = "^0.37.1"
+wheel = "^0.38.4"
 redis = "^4.3.4"
 
 [tool.poetry.dev-dependencies]
