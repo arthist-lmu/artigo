@@ -4,7 +4,7 @@
     v-slot="{ hover }"
   >
     <v-card
-      :class="{ 'opaque': opaque }"
+      :class="{ opaque: opaque }"
       :disabled="isDisabled"
       flat
     >
@@ -77,7 +77,7 @@
 </template>
 
 <script>
-import tool from '@/mixins/resource';
+import tool from '../../mixins/resource';
 
 export default {
   mixins: [tool],
@@ -94,7 +94,7 @@ export default {
     },
   },
   components: {
-    TagCloud: () => import('@/components/TagCloud.vue'),
+    TagCloud: () => import('../TagCloud.vue'),
   },
 };
 </script>

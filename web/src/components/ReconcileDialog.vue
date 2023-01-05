@@ -39,8 +39,8 @@
               two-line
               flat
             >
-              <template v-for="(entry, index) in reconciliation.entries">
-                <v-list-item :key="entry.id">
+              <template v-for="(entry, index) in reconciliation.entries" :key="entry.id">
+                <v-list-item>
                   <v-list-item-avatar color="primary">
                     <span class="white--text">{{ entry.score }}</span>
                   </v-list-item-avatar>
@@ -51,6 +51,7 @@
                         v-if="reconciliation.service === 'Wikidata'"
                         :href="`https://www.wikidata.org/wiki/${entry.id}`"
                         target="_blank"
+                        rel="noopener noreferrer"
                         small
                         icon
                       >

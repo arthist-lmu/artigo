@@ -40,10 +40,9 @@ export default {
     },
   },
   components: {
-    Logo: () => import('@/components/Logo.vue'),
-    Loader: () => import('@/components/Loader.vue'),
-    Toaster: () => import('@/components/Toaster.vue'),
-    Footer: () => import('@/components/Footer.vue'),
+    Logo: () => import('../components/Logo.vue'),
+    Loader: () => import('../components/Loader.vue'),
+    Toaster: () => import('../components/Toaster.vue'),
   },
 };
 </script>

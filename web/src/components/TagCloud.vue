@@ -10,7 +10,7 @@
       color="primary"
       x-small
     >
-     <span class="clip">{{ tag.name }}</span>
+      <span class="clip">{{ tag.name }}</span>
     </v-chip>
   </div>
 </template>
@@ -18,7 +18,10 @@
 <script>
 export default {
   props: {
-    tags: Array,
+    tags: {
+      type: Array,
+      default: null,
+    },
   },
   methods: {
     search(value) {

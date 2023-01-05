@@ -3,7 +3,7 @@
     id="app"
     :class="{ 'dark-variant': dark }"
   >
-    <Header
+    <SiteHeader
       :dark="dark"
       :opaque="opaque"
       :hideSearchBar="hideSearchBar"
@@ -23,7 +23,7 @@
       <slot />
     </v-main>
 
-    <Footer
+    <SiteFooter
       :dark="dark"
       :opaque="opaque"
     />
@@ -52,12 +52,12 @@ export default {
     };
   },
   components: {
-    Header: () => import('@/components/Header.vue'),
-    Loader: () => import('@/components/Loader.vue'),
-    Toaster: () => import('@/components/Toaster.vue'),
-    Footer: () => import('@/components/Footer.vue'),
-    ResourceDialog: () => import('@/components/ResourceDialog.vue'),
-    ReconcileDialog: () => import('@/components/ReconcileDialog.vue'),
+    SiteHeader: () => import('../components/Header.vue'),
+    Loader: () => import('../components/Loader.vue'),
+    Toaster: () => import('../components/Toaster.vue'),
+    SiteFooter: () => import('../components/Footer.vue'),
+    ResourceDialog: () => import('../components/ResourceDialog.vue'),
+    ReconcileDialog: () => import('../components/ReconcileDialog.vue'),
   },
 };
 </script>

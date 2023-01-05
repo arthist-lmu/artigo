@@ -1,7 +1,7 @@
 <template>
   <span ref="container">
-    <slot name="prepend-item"></slot>
-    <span class="typing"></span>
+    <slot name="prepend-item" />
+    <span class="typing" />
   </span>
 </template>
 

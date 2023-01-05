@@ -187,8 +187,8 @@ export default {
     this.get(this.$route.params.id);
   },
   components: {
-    SetCard: () => import('@/components/session/SetCard.vue'),
-    ResultCard: () => import('@/components/session/ResultCard.vue'),
+    SetCard: () => import('../components/session/SetCard.vue'),
+    ResultCard: () => import('../components/session/ResultCard.vue'),
   },
 };
 </script>

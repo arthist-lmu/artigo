@@ -49,8 +49,14 @@
 <script>
 export default {
   props: {
-    entries: Array,
-    type: String,
+    entries: {
+      type: Array,
+      default: null,
+    },
+    type: {
+      type: String,
+      default: null,
+    },
   },
   methods: {
     reconcile(type) {

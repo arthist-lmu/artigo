@@ -162,13 +162,16 @@
 </template>
 
 <script>
-import { VCard } from 'vuetify/lib';
+import { VCard } from 'vuetify';
 
 export default {
   extends: VCard,
   props: {
     ...VCard.props,
-    entry: Object,
+    entry: {
+      type: Object,
+      default: null,
+    },
     showImage: {
       type: Boolean,
       default: true,
@@ -274,7 +277,7 @@ export default {
     window.removeEventListener('resize', this.setImageHeight);
   },
   components: {
-    ReconcileButton: () => import('@/components/ReconcileButton.vue'),
+    ReconcileButton: () => import('./ReconcileButton.vue'),
   },
 };
 </script>

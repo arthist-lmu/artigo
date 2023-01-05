@@ -38,9 +38,18 @@
 <script>
 export default {
   props: {
-    icon: String,
-    title: String,
-    subtitle: String,
+    icon: {
+      type: String,
+      default: null,
+    },
+    title: {
+      type: String,
+      default: null,
+    },
+    subtitle: {
+      type: String,
+      default: null,
+    },
     value: {
       type: Number,
       default: 0,

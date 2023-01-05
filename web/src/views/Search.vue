@@ -83,8 +83,8 @@ export default {
     };
   },
   components: {
-    Bar: () => import('@/components/search/ExtendedBar.vue'),
-    ResultCard: () => import('@/components/search/ResultCard.vue'),
+    Bar: () => import('../components/search/ExtendedBar.vue'),
+    ResultCard: () => import('../components/search/ResultCard.vue'),
   },
 };
 </script>
