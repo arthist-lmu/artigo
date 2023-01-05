@@ -5,7 +5,7 @@
       ref="drawer"
     />
 
-    <v-row></v-row>
+    <v-row />
 
     <v-row
       v-if="creators && entries"
@@ -212,8 +212,8 @@ export default {
     window.scrollTo(0, document.body.scrollHeight);
   },
   components: {
-    Typer: () => import('@/components/Typer.vue'),
-    GameDrawer: () => import('@/components/game/Drawer.vue'),
+    Typer: () => import('../components/Typer.vue'),
+    GameDrawer: () => import('../components/game/Drawer.vue'),
   },
 };
 </script>

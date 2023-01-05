@@ -38,12 +38,12 @@
 </template>
 
 <script>
-import Canvas from '@/components/game/canvas/Default.vue';
+import GameCanvas from './Default.vue';
 
 export default {
-  extends: Canvas,
+  extends: GameCanvas,
   props: {
-    ...Canvas.props,
+    ...GameCanvas.props,
   },
   data() {
     return {
@@ -93,9 +93,6 @@ export default {
   },
   destroyed() {
     window.removeEventListener('keydown', this.onKeyDown);
-  },
-  components: {
-    Canvas,
   },
 };
 </script>

@@ -32,7 +32,7 @@ export default {
     },
   },
   components: {
-    Bar: () => import('@/components/session/Bar.vue'),
+    Bar: () => import('./Bar.vue'),
   },
 };
 </script>

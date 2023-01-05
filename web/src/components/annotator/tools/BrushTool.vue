@@ -1,10 +1,10 @@
 <template>
-  <div></div>
+  <div />
 </template>
 
 <script>
 import paper from 'paper';
-import tool from '@/mixins/annotator/tools';
+import tool from '../../../mixins/annotator/tools';
 
 export default {
   name: 'BrushTool',

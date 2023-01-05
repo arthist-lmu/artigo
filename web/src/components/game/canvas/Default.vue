@@ -3,9 +3,9 @@
     ref="container"
     style="position: relative;"
   >
-    <slot name="prepend-item"></slot>
+    <slot name="prepend-item" />
 
-    <Canvas
+    <GameCanvas
       :key="key"
       :src="entry.path"
       :tool="tool"
@@ -24,8 +24,14 @@ export default {
       type: String,
       default: 'select',
     },
-    entry: Object,
-    params: Object,
+    entry: {
+      type: Object,
+      default: null,
+    },
+    params: {
+      type: Object,
+      default: null,
+    },
   },
   data() {
     return {
@@ -59,7 +65,7 @@ export default {
     window.removeEventListener('resize', this.setHeight);
   },
   components: {
-    Canvas: () => import('@/components/annotator/Canvas.vue'),
+    GameCanvas: () => import('../../annotator/Canvas.vue'),
   },
 };
 </script>
