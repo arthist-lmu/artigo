@@ -17,7 +17,7 @@
           style="overflow: clip;"
           flat
         >
-          <Progress
+          <GameProgress
             v-if="!loading"
             :params="params"
             @next="next"
@@ -165,13 +165,13 @@ export default {
     });
   },
   components: {
-    Progress: () => import('@/components/game/Progress.vue'),
-    Countdown: () => import('@/components/Countdown.vue'),
-    DefaultCanvas: () => import('@/components/game/canvas/Default.vue'),
-    ROICanvas: () => import('@/components/game/canvas/ROI.vue'),
-    DefaultSidebar: () => import('@/components/game/sidebar/Default.vue'),
-    TaggingSidebar: () => import('@/components/game/sidebar/Tagging.vue'),
-    SelectDialog: () => import('@/components/game/SelectDialog.vue'),
+    GameProgress: () => import('../components/game/Progress.vue'),
+    Countdown: () => import('../components/Countdown.vue'),
+    DefaultCanvas: () => import('../components/game/canvas/Default.vue'),
+    ROICanvas: () => import('../components/game/canvas/ROI.vue'),
+    DefaultSidebar: () => import('../components/game/sidebar/Default.vue'),
+    TaggingSidebar: () => import('../components/game/sidebar/Tagging.vue'),
+    SelectDialog: () => import('../components/game/SelectDialog.vue'),
   },
 };
 </script>

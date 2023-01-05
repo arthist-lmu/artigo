@@ -1,17 +1,14 @@
 import Vue from 'vue';
-import VueRouter from 'vue-router';
-import i18n from '@/plugins/i18n';
-import store from '@/store';
-import RouterView from '@/views/RouterView.vue';
-import DefaultLayout from '@/layouts/Default.vue';
-import AccountLayout from '@/layouts/Account.vue';
-
-Vue.use(VueRouter);
+import { createRouter, createWebHistory } from 'vue-router'
+import i18n from '../plugins/i18n';
+import store from '../store';
+import RouterView from '../views/RouterView.vue';
+import DefaultLayout from '../layouts/Default.vue';
+import AccountLayout from '../layouts/Account.vue';
 
 const instituteUrl = 'https://www.kunstgeschichte.uni-muenchen.de';
-const router = new VueRouter({
-  mode: 'history',
-  base: process.env.BASE_URL,
+const router = createRouter({
+  history: createWebHistory('process.env.BASE_URL'),
   routes: [
     {
       path: '/',
@@ -34,7 +31,7 @@ const router = new VueRouter({
         {
           path: '',
           name: 'home',
-          component: () => import('@/views/Home.vue'),
+          component: () => import('../views/Home.vue'),
           meta: {
             layout: DefaultLayout,
             dark: true,
@@ -58,7 +55,7 @@ const router = new VueRouter({
         {
           path: 'about',
           name: 'about',
-          component: () => import('@/views/About.vue'),
+          component: () => import('../views/About.vue'),
           meta: {
             title: 'about.title',
             layout: DefaultLayout,
@@ -69,7 +66,7 @@ const router = new VueRouter({
         {
           path: 'search',
           name: 'search',
-          component: () => import('@/views/Search.vue'),
+          component: () => import('../views/Search.vue'),
           meta: {
             title: 'search.title',
             layout: DefaultLayout,
@@ -79,7 +76,7 @@ const router = new VueRouter({
         {
           path: 'sessions',
           name: 'sessions',
-          component: () => import('@/views/Sessions.vue'),
+          component: () => import('../views/Sessions.vue'),
           meta: {
             title: 'sessions.title',
             layout: DefaultLayout,
@@ -88,7 +85,7 @@ const router = new VueRouter({
         {
           path: 'game/:id/',
           name: 'session',
-          component: () => import('@/views/Session.vue'),
+          component: () => import('../views/Session.vue'),
           meta: {
             title: 'game.title',
             layout: DefaultLayout,
@@ -98,7 +95,7 @@ const router = new VueRouter({
         {
           path: 'game',
           name: 'game',
-          component: () => import('@/views/Game.vue'),
+          component: () => import('../views/Game.vue'),
           meta: {
             title: 'game.title',
             layout: DefaultLayout,
@@ -109,7 +106,7 @@ const router = new VueRouter({
         {
           path: 'login',
           name: 'login',
-          component: () => import('@/views/Login.vue'),
+          component: () => import('../views/Login.vue'),
           meta: {
             title: 'user.login.title',
             layout: AccountLayout,
@@ -119,7 +116,7 @@ const router = new VueRouter({
         {
           path: 'register',
           name: 'register',
-          component: () => import('@/views/Register.vue'),
+          component: () => import('../views/Register.vue'),
           meta: {
             title: 'user.register.title',
             layout: AccountLayout,
@@ -129,7 +126,7 @@ const router = new VueRouter({
         {
           path: 'password/reset/confirm/:uid/:token/',
           name: 'password-reset-confirm',
-          component: () => import('@/views/PasswordResetConfirm.vue'),
+          component: () => import('../views/PasswordResetConfirm.vue'),
           meta: {
             title: 'user.password-reset.title',
             layout: AccountLayout,
@@ -139,7 +136,7 @@ const router = new VueRouter({
         {
           path: '404',
           name: 'not-found',
-          component: () => import('@/views/NotFound.vue'),
+          component: () => import('../views/NotFound.vue'),
           meta: {
             title: 'not-found.title',
             layout: DefaultLayout,
@@ -157,6 +154,7 @@ const router = new VueRouter({
   ],
 });
 
+/*
 const routerPush = VueRouter.prototype.push;
 VueRouter.prototype.push = function push(location) {
   return new Promise((resolve, reject) => {
@@ -171,6 +169,7 @@ VueRouter.prototype.push = function push(location) {
     });
   });
 };
+*/
 
 router.beforeResolve((to, from, next) => {
   if (to.name) {

@@ -99,10 +99,10 @@ export default {
     window.scrollTo(0, 0);
   },
   components: {
-    GameDrawer: () => import('@/components/game/Drawer.vue'),
-    Contributors: () => import('@/components/Contributors.vue'),
-    History: () => import('@/components/History.vue'),
-    Publications: () => import('@/components/Publications.vue'),
+    GameDrawer: () => import('../components/game/Drawer.vue'),
+    Contributors: () => import('../components/Contributors.vue'),
+    History: () => import('../components/History.vue'),
+    Publications: () => import('../components/Publications.vue'),
   },
 };
 </script>

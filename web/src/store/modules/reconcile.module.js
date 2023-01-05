@@ -1,5 +1,5 @@
-import axios from '@/plugins/axios';
-import i18n from '@/plugins/i18n';
+import axios from '../../plugins/axios';
+import i18n from '../../plugins/i18n';
 
 const reconcile = {
   namespaced: true,

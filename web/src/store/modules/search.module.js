@@ -1,6 +1,6 @@
-import axios from '@/plugins/axios';
-import router from '@/router';
-import mixins from '@/mixins';
+import axios from '../../plugins/axios';
+import router from '../../router';
+import mixins from '../../mixins';
 
 const search = {
   namespaced: true,

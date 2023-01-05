@@ -11,9 +11,7 @@
     solo
     flat
   >
-    <template v-slot:no-data>
-
-    </template>
+    <template v-slot:no-data />
 
     <template v-slot:append>
       <template v-if="total > 0">

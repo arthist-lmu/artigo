@@ -71,8 +71,8 @@ export default {
     },
   },
   components: {
-    LoginCard: () => import('@/components/account/LoginCard.vue'),
-    RegisterCard: () => import('@/components/account/RegisterCard.vue'),
+    LoginCard: () => import('../account/LoginCard.vue'),
+    RegisterCard: () => import('../account/RegisterCard.vue'),
   },
 };
 </script>

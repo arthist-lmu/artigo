@@ -34,7 +34,7 @@
           </v-col>
         </v-row>
 
-        <v-row></v-row>
+        <v-row />
 
         <v-row style="flex: 0;">
           <v-col class="pa-4" align="right">
@@ -63,7 +63,10 @@
 <script>
 export default {
   props: {
-    entry: Object,
+    entry: {
+      type: Object,
+      default: null,
+    },
     height: {
       type: String,
       default: '225',
