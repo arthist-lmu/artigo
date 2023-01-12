@@ -1,3 +1,4 @@
+import time
 import logging
 import traceback
 
@@ -6,6 +7,7 @@ from django.db.models import Count, F
 from django.core.cache import cache
 from django.core.exceptions import ObjectDoesNotExist
 from frontend.models import *
+from frontend import cache as frontend_cache
 from frontend.utils import to_boolean, to_type, is_in, media_url_to_image
 from frontend.views.utils import ResourceViewHelper
 from ..utils import get_configs
@@ -17,7 +19,7 @@ class GameController:
     def __init__(self):
         super().__init__()
 
-        self.plugins = cache.get('plugins', {})
+        self.plugins = frontend_cache.plugins()
 
     def __call__(self, params, user):
         if len(params) == 0:
@@ -94,6 +96,8 @@ class GameController:
 
         gamesession_data['game'].pop(gameround.resource_id)
         cache.set(f'gamesession_{gamesession.id}', gamesession_data)
+
+        time.sleep(3)
 
         return {
             'type': 'ok',

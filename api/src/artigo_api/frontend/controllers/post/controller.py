@@ -1,8 +1,8 @@
 import logging
 
 from collections import defaultdict
-from django.core.cache import cache
 from django.forms.models import model_to_dict
+from frontend import cache as frontend_cache
 from frontend.utils import is_in
 
 logger = logging.getLogger(__name__)
@@ -12,7 +12,7 @@ class InputController:
     def __init__(self):
         super().__init__()
 
-        self.plugins = cache.get('plugins', {})
+        self.plugins = frontend_cache.plugins()
 
     def parse_query(self, gameround, query):
         result = defaultdict(list)

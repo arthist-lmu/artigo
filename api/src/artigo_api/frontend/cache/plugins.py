@@ -1,7 +1,8 @@
 import json
 import logging
 
-from .plugins import *
+from django.core.cache import cache
+from frontend.plugins import *
 from .utils import name
 
 logger = logging.getLogger(__name__)
@@ -12,7 +13,7 @@ def plugins(**kwargs):
     values = cache.get(kwargs['name'])
 
     if values is None or kwargs.get('renew'):
-        with open(file_path, 'r') as file_obj:
+        with open('/config.json', 'r') as file_obj:
             config = json.load(file_obj)
 
         values = {
