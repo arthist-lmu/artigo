@@ -20,7 +20,7 @@
   },
   "user": {
     "fields": {
-      "username": "Name",
+      "username": "Username",
       "email": "E-Mail",
       "password": "Password",
       "password-repeat": "Repeat password",
@@ -30,18 +30,32 @@
       "title": "Account",
       "joined": "Joined {n} days ago|Joined {n} day ago|Joined {n} days ago"
     },
-    "register": {
-      "title": "Register"
-    },
     "login": {
       "title": "Login",
       "legacy-note": "If you were already registered on the old version of ARTigo, please reset your password first."
+    },
+    "register": {
+      "title": "Register"
+    },
+    "upload": {
+      "title": "Upload collection"
     },
     "logout": {
       "title": "Logout"
     },
     "password-reset": {
       "title": "Reset password"
+    }
+  },
+  "collection": {
+    "title": "Own collections",
+    "fields": {
+      "name": "Collection name",
+      "date": "Date",
+      "count": "Objects",
+      "actions": "Actions",
+      "drag-file": "Drag files to upload or",
+      "browse-file": "Browse files"
     }
   },
   "language": {
@@ -57,6 +71,8 @@
   "rules": {
     "min": "Min. {n} characters.",
     "max": "Max. {n} characters.",
+    "file-size": "Max. file size {n} MB.",
+    "file-types": "Supported are the following file types: {n}.",
     "password-repeat": "Passwords don't match."
   },
   "imprint": {
@@ -269,6 +285,13 @@
     "a_user_is_already_registered_with_this_e-mail_address": "A user is already registered with this e-mail address.",
     "not_authenticated": "Please login to proceed.",
     "invalid_token": "Please login to proceed.",
-    "copied_to_clipboard": "The link was successfully copied to the clipboard."
+    "copied_to_clipboard": "The link was successfully copied to the clipboard.",
+    "collection_name_is_required": "Please enter a collection name.",
+    "an_image_file_is_required": "Please enter an image file.",
+    "this_name_is_too_short": "Your name contains too few characters.",
+    "this_name_is_too_long": "Your name contains too many characters.",
+    "no_valid_colnames_found": "No valid colnames were found.",
+    "corrupt_archives_file": "Please enter a valid archives file.",
+    "no_matching_images_found": "No matching images were found."
   }
 }

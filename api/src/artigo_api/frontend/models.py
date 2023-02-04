@@ -117,6 +117,7 @@ class Title(models.Model):
 class Resource(models.Model):
     collection = models.ForeignKey(
         Collection,
+        related_name='resources',
         on_delete=models.CASCADE,
         null=True,
     )

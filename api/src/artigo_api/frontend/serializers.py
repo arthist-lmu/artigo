@@ -23,6 +23,69 @@ except ImportError:
 logger = logging.getLogger(__name__)
 
 
+class ListSerializer(serializers.ListSerializer):
+    def to_representation(self, data):
+        data = super().to_representation(data)
+
+        return [dict(x) for x in data]
+
+
+class ResourceTagListSerializer(serializers.ListSerializer):
+    def to_representation(self, data):
+        data = super().to_representation(data)
+
+        groups = groupby(data, key=lambda x: x['resource_id'])
+        groups = dict((k, list(group)) for k, group in groups)
+
+        resource_ids = self.context.get('ids', groups.keys())
+
+        return [
+            {
+                'resource_id': resource_id,
+                'tags': [
+                    self.to_dict(x)
+                    for x in groups.get(resource_id, [])
+                ],
+            }
+            for resource_id in resource_ids
+        ]
+
+    @staticmethod
+    def to_dict(values):
+        values = dict(values)
+        values.pop('resource_id', None)
+
+        return values
+
+
+class TagListSerializer(serializers.ListSerializer):
+    def to_representation(self, data):
+        data = super().to_representation(data)
+
+        groups = groupby(data, key=lambda x: x['name'])
+        groups = dict((k, list(group)) for k, group in groups)
+
+        tag_names = self.context.get('names', groups.keys())
+
+        return [
+            {
+                'tag_name': tag_name,
+                'data': [
+                    self.to_dict(x)
+                    for x in groups.get(tag_name, [])
+                ],
+            }
+            for tag_name in tag_names
+        ]
+
+    @staticmethod
+    def to_dict(values):
+        values = dict(values)
+        values.pop('name', None)
+
+        return values
+
+        
 class CustomUserDetailsSerializer(UserDetailsSerializer):
     class Meta:
         fields = []
@@ -100,67 +163,20 @@ class CustomPasswordResetSerializer(PasswordResetSerializer):
         return value
 
 
-class ListSerializer(serializers.ListSerializer):
-    def to_representation(self, data):
-        data = super().to_representation(data)
+class CollectionCountSerializer(serializers.ModelSerializer):
+    count = serializers.IntegerField()
 
-        return [dict(x) for x in data]
-
-
-class ResourceTagListSerializer(serializers.ListSerializer):
-    def to_representation(self, data):
-        data = super().to_representation(data)
-
-        groups = groupby(data, key=lambda x: x['resource_id'])
-        groups = dict((k, list(group)) for k, group in groups)
-
-        resource_ids = self.context.get('ids', groups.keys())
-
-        return [
-            {
-                'resource_id': resource_id,
-                'tags': [
-                    self.to_dict(x)
-                    for x in groups.get(resource_id, [])
-                ],
-            }
-            for resource_id in resource_ids
-        ]
-
-    @staticmethod
-    def to_dict(values):
-        values = dict(values)
-        values.pop('resource_id', None)
-
-        return values
-
-
-class TagListSerializer(serializers.ListSerializer):
-    def to_representation(self, data):
-        data = super().to_representation(data)
-
-        groups = groupby(data, key=lambda x: x['name'])
-        groups = dict((k, list(group)) for k, group in groups)
-
-        tag_names = self.context.get('names', groups.keys())
-
-        return [
-            {
-                'tag_name': tag_name,
-                'data': [
-                    self.to_dict(x)
-                    for x in groups.get(tag_name, [])
-                ],
-            }
-            for tag_name in tag_names
-        ]
-
-    @staticmethod
-    def to_dict(values):
-        values = dict(values)
-        values.pop('name', None)
-
-        return values
+    class Meta:
+        model = Collection
+        fields = (
+            'hash_id',
+            'name',
+            'status',
+            'progress',
+            'date',
+            'count',
+        )
+        list_serializer_class = ListSerializer
 
 
 class SourceSerializer(serializers.ModelSerializer):

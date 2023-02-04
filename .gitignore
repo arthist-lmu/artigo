@@ -4,8 +4,10 @@
 /db/
 /opensearch/
 /media/*
+/upload/*
 /dump/*
 !/media/.gitkeep
+!/upload/.gitkeep
 !/dump/.gitkeep
 /mediafiles/*
 /convert/*

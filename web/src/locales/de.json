@@ -30,18 +30,32 @@
       "title": "Benutzerkonto",
       "joined": "Vor {n} Tagen beigetreten|Vor {n} Tag beigetreten|Vor {n} Tagen beigetreten"
     },
-    "register": {
-      "title": "Registrieren"
-    },
     "login": {
       "title": "Anmelden",
       "legacy-note": "Wenn Du bereits mit der alten Version von ARTigo registriert warst, setze bitte zunächst Dein Passwort zurück."
+    },
+    "register": {
+      "title": "Registrieren"
+    },
+    "upload": {
+      "title": "Sammlung hochladen"
     },
     "logout": {
       "title": "Abmelden"
     },
     "password-reset": {
       "title": "Passwort zurücksetzen"
+    }
+  },
+  "collection": {
+    "title": "Eigene Sammlungen",
+    "fields": {
+      "name": "Sammlungsname",
+      "date": "Datum",
+      "count": "Objekte",
+      "actions": "Aktionen",
+      "drag-file": "Dateien zum Hochladen ziehen oder",
+      "browse-file": "Dateien durchsuchen"
     }
   },
   "language": {
@@ -57,6 +71,8 @@
   "rules": {
     "min": "Min. {n} Zeichen.",
     "max": "Max. {n} Zeichen.",
+    "file-size": "Max. Dateigröße {n} MB.",
+    "file-types": "Unterstützt werden folgende Dateitypen: {n}.",
     "password-repeat": "Passwörter stimmen nicht überein."
   },
   "imprint": {
@@ -270,6 +286,13 @@
     "a_user_is_already_registered_with_this_e-mail_address": "Ein:e Benutzer:in ist bereits mit dieser E-Mail-Adresse registriert.",
     "not_authenticated": "Bitte melde dich an, um fortzufahren.",
     "invalid_token": "Bitte melde dich an, um fortzufahren.",
-    "copied_to_clipboard": "Der Link wurde erfolgreich in die Zwischenablage kopiert."
+    "copied_to_clipboard": "Der Link wurde erfolgreich in die Zwischenablage kopiert.",
+    "collection_name_is_required": "Bitte gib einen Sammlungsnamen ein.",
+    "an_image_file_is_required": "Bitte gib eine Bilddatei ein.",
+    "this_name_is_too_short": "Dein Name enthält zu wenig Zeichen.",
+    "this_name_is_too_long": "Dein Name enthält zu viele Zeichen.",
+    "no_valid_colnames_found": "Es wurden keine gültigen Spaltennamen gefunden.",
+    "corrupt_archives_file": "Bitte gib eine gültige Archivdatei ein.",
+    "no_matching_images_found": "Es wurden keine passenden Bilder gefunden."
   }
 }

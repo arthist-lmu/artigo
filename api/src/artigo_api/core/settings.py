@@ -264,8 +264,17 @@ else:
 MEDIA_ROOT = os.path.join('/media/')
 MEDIA_URL = FORCE_SCRIPT_NAME + 'media/'
 
+UPLOAD_ROOT = os.path.join('/upload/')
+UPLOAD_URL = FORCE_SCRIPT_NAME + 'upload/'
+
 GRPC_HOST = env('GRPC_HOST')
 GRPC_PORT = env('GRPC_PORT')
+
+IMAGE_EXT = 'jpg'
+IMAGE_RESOLUTIONS = [
+    {'min_dim': 200, 'suffix': '_m'},
+    {'min_dim': 1080, 'suffix': ''},
+]
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 TEST_RUNNER = 'core.runner.PytestTestRunner'

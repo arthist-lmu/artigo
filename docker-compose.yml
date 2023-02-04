@@ -68,6 +68,9 @@ services:
         source: ./media/
         target: /media
       - type: bind
+        source: ./upload/
+        target: /upload
+      - type: bind
         source: ./dump/
         target: /dump
       - type: bind

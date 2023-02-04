@@ -5,6 +5,11 @@ from .reconcile import (
     ReconcileAddView,
     ReconcileRemoveView,
 )
+from .collection import (
+    CollectionView,
+    CollectionAddView,
+    CollectionRemoveView,
+)
 from .resource import ResourceView
 from .search import SearchView
 from .session import SessionView

@@ -21,27 +21,29 @@
     </template>
 
     <v-list dense>
-      <v-list-item v-if="!isAnonymous">
-        <v-list-item-content class="justify-center px-4 py-6">
-          <div class="mx-auto text-center">
-            <v-avatar color="error">
-              <span class="white--text text-h5">
-                {{ initials }}
-              </span>
-            </v-avatar>
+      <template v-if="!isAnonymous">
+        <v-list-item>
+          <v-list-item-content class="justify-center px-4 py-6">
+            <div class="mx-auto text-center">
+              <v-avatar color="error">
+                <span class="white--text text-h5">
+                  {{ initials }}
+                </span>
+              </v-avatar>
 
-            <p class="text-caption mt-2 mb-0">
-              {{ data.email }}
-            </p>
+              <p class="text-caption mt-2 mb-0">
+                {{ data.email }}
+              </p>
 
-            <p class="text-caption mb-0">
-              <i>{{ joined }}</i>
-            </p>
-          </div>
-        </v-list-item-content>
-      </v-list-item>
+              <p class="text-caption mb-0">
+                <i>{{ joined }}</i>
+              </p>
+            </div>
+          </v-list-item-content>
+        </v-list-item>
 
-      <v-divider v-if="!isAnonymous" />
+        <v-divider />
+      </template>
 
       <template v-if="isAnonymous && $vuetify.breakpoint.mobile">
         <v-list-item @click="dialog.register = true">
@@ -78,6 +80,18 @@
           </v-list-item-action>
         </v-list-item>
 
+        <v-list-item @click="dialog.collectionList = true">
+          <v-list-item-content>
+            {{ $t("collection.title") }}
+          </v-list-item-content>
+        </v-list-item>
+
+        <v-list-item @click="dialog.collectionUpload = true">
+          <v-list-item-content>
+            {{ $t("user.upload.title") }}
+          </v-list-item-content>
+        </v-list-item>
+
         <v-list-item @click="logout">
           <v-list-item-content>
             {{ $t("user.logout.title") }}
@@ -91,6 +105,13 @@
     </v-list>
 
     <v-dialog
+      v-model="dialog.login"
+      max-width="450"
+    >
+      <LoginCard v-model="dialog.login" />
+    </v-dialog>
+
+    <v-dialog
       v-model="dialog.register"
       max-width="450"
     >
@@ -98,10 +119,17 @@
     </v-dialog>
 
     <v-dialog
-      v-model="dialog.login"
+      v-model="dialog.collectionList"
+      max-width="900"
+    >
+      <CollectionListCard v-model="dialog.collectionList" />
+    </v-dialog>
+
+    <v-dialog
+      v-model="dialog.collectionUpload"
       max-width="450"
     >
-      <LoginCard v-model="dialog.login" />
+      <CollectionUploadCard v-model="dialog.collectionUpload" />
     </v-dialog>
   </v-menu>
 </template>
@@ -118,8 +146,10 @@ export default {
     return {
       menu: false,
       dialog: {
-        register: false,
         login: false,
+        register: false,
+        collectionList: false,
+        collectionUpload: false,
       },
     };
   },
@@ -166,6 +196,8 @@ export default {
   components: {
     LoginCard: () => import('@/components/account/LoginCard.vue'),
     RegisterCard: () => import('@/components/account/RegisterCard.vue'),
+    CollectionListCard: () => import('@/components/account/CollectionListCard.vue'),
+    CollectionUploadCard: () => import('@/components/account/CollectionUploadCard.vue'),
     LanguageMenu: () => import('@/components/LanguageMenu.vue'),
   },
 };
