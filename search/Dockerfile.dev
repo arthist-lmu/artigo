@@ -5,7 +5,7 @@ ENV POETRY_VIRTUALENVS_CREATE=False
 RUN pip install --no-cache-dir poetry pytest pytest-cov
 
 COPY /search/pyproject.toml /search/poetry.lock /
-RUN cd /search; poetry install
+RUN cd /search; poetry install -vvv
 
 COPY /search /search/
 RUN pip install /search

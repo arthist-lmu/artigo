@@ -9,10 +9,10 @@ RUN pip install pip --upgrade
 RUN pip install --no-cache-dir poetry pytest pytest-cov
 
 COPY /api/pyproject.toml /api/poetry.lock /api/
-RUN cd /api; poetry install
+RUN cd /api; poetry install -vvv
 
 COPY /search/pyproject.toml /search/poetry.lock /search/
-RUN cd /search; poetry install
+RUN cd /search; poetry install -vvv
 
 COPY /api /api/
 COPY /search /search/
