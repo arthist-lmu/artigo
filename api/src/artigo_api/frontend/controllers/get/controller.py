@@ -51,7 +51,7 @@ class GameController:
             except ObjectDoesNotExist:
                 return {
                     'type': 'error',
-                    'message': 'invalid_gamesession',
+                    'message': 'gamesession_is_invalid',
                 }
         else:
             result = self.create_gamesession(params, user)
@@ -64,7 +64,7 @@ class GameController:
         if gamesession_data is None:
             return {
                 'type': 'error',
-                'message': 'outdated_gamesession',
+                'message': 'gamesession_is_outdated',
             }
 
         if len(gamesession_data['game']) == 0:
@@ -72,7 +72,7 @@ class GameController:
 
             return {
                 'type': 'error',
-                'message': 'finished_gamesession',
+                'message': 'gamesession_is_outdated',
             }
 
         gameround_data = list(gamesession_data['game'].values())[0]
@@ -124,13 +124,13 @@ class GameController:
 
             return {
                 'type': 'error',
-                'message': 'invalid_game_options',
+                'message': 'game_options_are_invalid',
             }
 
         if resource_ids is None or len(resource_ids) == 0:
             return {
                 'type': 'error',
-                'message': 'invalid_resources',
+                'message': 'resources_are_invalid',
             }
 
         result = {}
@@ -151,7 +151,7 @@ class GameController:
 
                     return {
                         'type': 'error',
-                        'message': f'invalid_{plugin_name}s',
+                        'message': f'{plugin_name}s_are_invalid',
                     }
 
         game = self.merge_to_game(
@@ -179,7 +179,7 @@ class GameController:
 
             return {
                 'type': 'error',
-                'message': 'invalid_game_options',
+                'message': 'game_options_are_invalid',
             }
 
         timeout = None

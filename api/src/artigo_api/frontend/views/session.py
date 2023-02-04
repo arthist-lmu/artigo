@@ -30,19 +30,19 @@ class SessionView(APIView):
         params = request.query_params
 
         if not params.get('id'):
-            raise ParseError('session_id_required')
+            raise ParseError('session_id_is_required')
 
         try:
             gamesession = Gamesession.objects.get(id=params['id'])
         except Gamesession.DoesNotExist:
-            raise NotFound('unknown_gamesession')
+            raise NotFound('gamesession_is_unknown')
 
         if gamesession.game_type.name.lower() == 'tagging':
             taggings = UserTagging.objects
         elif gamesession.game_type.name.lower() == 'roi':
             taggings = UserROI.objects
         else:
-            raise ParseError('game_type_not_implemented')
+            raise ParseError('game_type_is_not_implemented')
 
         gamerounds = Gameround.objects.filter(gamesession=gamesession)
         resource_ids = gamerounds.values_list('resource_id', flat=True)

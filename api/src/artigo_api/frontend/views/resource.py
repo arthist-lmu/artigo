@@ -118,7 +118,7 @@ class ResourceView(ResourceViewHelper):
         params = request.query_params
 
         if not params.get('id'):
-            raise ParseError('resource_id_required')
+            raise ParseError('resource_id_is_required')
 
         result = self.rpc_get(params, multiple=False)
 
