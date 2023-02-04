@@ -61,6 +61,35 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         return self.email
 
 
+class Collection(models.Model):
+    user = models.ForeignKey(
+        CustomUser,
+        on_delete=models.CASCADE,
+        related_name='collections',
+    )
+    hash_id = models.CharField(max_length=256)
+    name = models.CharField(max_length=256)
+    access = models.CharField(
+        max_length=2,
+        choices=[
+            ('O', 'Open'),
+            ('R', 'Restricted'),
+        ],
+        default='R',
+    )
+    status = models.CharField(
+        max_length=2,
+        choices=[
+            ('U', 'Uploading'),
+            ('F', 'Finished'),
+            ('E', 'Error'),
+        ],
+        default='U',
+    )
+    progress = models.FloatField(default=0.0)
+    date = models.DateTimeField(auto_now_add=True)
+
+
 class Source(models.Model):
     name = models.CharField(max_length=256)
     url = models.URLField(max_length=256)
@@ -86,11 +115,20 @@ class Title(models.Model):
 
 
 class Resource(models.Model):
+    collection = models.ForeignKey(
+        Collection,
+        on_delete=models.CASCADE,
+        null=True,
+    )
     wikidata_id = models.CharField(max_length=256, blank=True)
     hash_id = models.CharField(max_length=256)
     creators = models.ManyToManyField(Creator)
     titles = models.ManyToManyField(Title)
-    source = models.ForeignKey(Source, on_delete=models.CASCADE)
+    source = models.ForeignKey(
+        Source,
+        on_delete=models.CASCADE,
+        null=True,
+    )
     created_start = models.IntegerField(null=True)
     created_end = models.IntegerField(null=True)
     location = models.CharField(max_length=512, blank=True)
