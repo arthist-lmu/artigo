@@ -8,4 +8,4 @@ logger = logging.getLogger(__name__)
 
 @shared_task(ignore_result=True)
 def export_data():
-    call_command('export', format='jsonl', output='/dump')
+    call_command('export_data', format='jsonl', output='/dump')

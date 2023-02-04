@@ -13,8 +13,7 @@ from django.apps import apps
 from django.utils import timezone
 from django.core.management import BaseCommand, CommandError
 from django.core.management.color import no_style
-from django.core.validators import URLValidator
-from django.core.exceptions import ValidationError
+from frontend.utils import to_url, to_int
 
 OBJ_MAPPING = {}
 
@@ -22,45 +21,16 @@ DATE_FORMAT = '%Y-%m-%d %H:%M:%S.%f'
 TZINFO = pytz.timezone(settings.TIME_ZONE)
 
 
-def toInt(x):
-    if isinstance(x, str):
-        try:
-            return int(float(x))
-        except:
-            pass
-
-    return None
-
-
-def toScore(x):
-    x = toInt(x)
+def to_score(x, default=0):
+    x = to_int(x, default=None)
 
     if x:
         return x
 
-    return 0
+    return default
 
 
-def isURL(x):
-    try:
-        validate = URLValidator()
-        validate(x)
-
-        return True
-    except ValidationError:
-        pass
-
-    return False
-
-
-def toURL(x):
-    if isURL(x):
-        return x
-
-    return ''
-
-
-def toDatetime(x):
+def to_datetime(x):
     if x:
         if '.' not in x: x += '.0'  # convert to proper date format
 
@@ -121,13 +91,13 @@ class CreateUser(Create):
             row['password'] = hashlib.sha256(password).hexdigest()
 
         return self.obj(
-            id = toInt(row.get('id')),
+            id = to_int(row.get('id'), default=None),
             username = row.get('username'),
             email = row.get('email'),
             password = row.get('password'),
             first_name = row.get('first_name'),
             last_name = row.get('last_name'),
-            date_joined = toDatetime(row.get('date_joined')),
+            date_joined = to_datetime(row.get('date_joined')),
             is_anonymous = row.get('is_anonymous') == 'True',
         )
 
@@ -141,9 +111,9 @@ class CreateSource(Create):
 
     def convert(self, row):
         return self.obj(
-            id = toInt(row.get('id')),
+            id = to_int(row.get('id'), default=None),
             name = row.get('name'),
-            url = toURL(row.get('url')),
+            url = to_url(row.get('url'), default=''),
         )
 
 
@@ -156,7 +126,7 @@ class CreateCreator(Create):
 
     def convert(self, row):
         return self.obj(
-            id = toInt(row.get('id')),
+            id = to_int(row.get('id'), default=None),
             name = row.get('name'),
         )
 
@@ -170,14 +140,14 @@ class CreateResource(Create):
 
     def convert(self, row):
         return self.obj(
-            id = toInt(row.get('id')),
+            id = to_int(row.get('id'), default=None),
             hash_id = row.get('hash_id'),
-            source_id = toInt(row.get('source_id')),
-            created_start = toInt(row.get('created_start')),
-            created_end = toInt(row.get('created_end')),
+            source_id = to_int(row.get('source_id'), default=None),
+            created_start = to_int(row.get('created_start'), default=None),
+            created_end = to_int(row.get('created_end'), default=None),
             location = row.get('location'),
             institution = row.get('institution'),
-            origin = toURL(row.get('origin')),
+            origin = to_url(row.get('origin'), default=''),
             enabled = row.get('enabled'),
         )
 
@@ -191,7 +161,7 @@ class CreateTitle(Create):
 
     def convert(self, row):
         return self.obj(
-            id = toInt(row.get('id')),
+            id = to_int(row.get('id'), default=None),
             name = row.get('name'),
             language = row.get('language'),
         )
@@ -206,11 +176,11 @@ class CreateGamesession(Create):
 
     def convert(self, row):
         obj = self.obj(
-            id = toInt(row.get('id')),
-            created = toDatetime(row.get('created')),
-            user_id = toInt(row.get('user_id')),
-            rounds = toInt(row.get('rounds')),
-            round_duration = toInt(row.get('round_duration')),
+            id = to_int(row.get('id'), default=None),
+            created = to_datetime(row.get('created')),
+            user_id = to_int(row.get('user_id'), default=None),
+            rounds = to_int(row.get('rounds'), default=None),
+            round_duration = to_int(row.get('round_duration'), default=None),
         )
 
         if row.get('game_type'):
@@ -233,12 +203,12 @@ class CreateGameround(Create):
 
     def convert(self, row):
         obj = self.obj(
-            id = toInt(row.get('id')),
-            user_id = toInt(row.get('user_id')),
-            gamesession_id = toInt(row.get('gamesession_id')),
-            resource_id = toInt(row.get('resource_id')),
-            created = toDatetime(row.get('created')),
-            score = toScore(row.get('score')),
+            id = to_int(row.get('id'), default=None),
+            user_id = to_int(row.get('user_id'), default=None),
+            gamesession_id = to_int(row.get('gamesession_id'), default=None),
+            resource_id = to_int(row.get('resource_id'), default=None),
+            created = to_datetime(row.get('created')),
+            score = to_score(row.get('score')),
         )
 
         if row.get('opponent_type'):
@@ -269,7 +239,7 @@ class CreateTag(Create):
 
     def convert(self, row):
         return self.obj(
-            id = toInt(row.get('id')),
+            id = to_int(row.get('id'), default=None),
             name = row.get('name'),
             language = row.get('language'),
         )
@@ -284,14 +254,14 @@ class CreateTagging(Create):
 
     def convert(self, row):
         return self.obj(
-            id = toInt(row.get('id')),
-            created = toDatetime(row.get('created')),
-            user_id = toInt(row.get('user_id')),
-            gameround_id = toInt(row.get('gameround_id')),
-            resource_id = toInt(row.get('resource_id')),
-            tag_id = toInt(row.get('tag_id')),
+            id = to_int(row.get('id'), default=None),
+            created = to_datetime(row.get('created')),
+            user_id = to_int(row.get('user_id'), default=None),
+            gameround_id = to_int(row.get('gameround_id'), default=None),
+            resource_id = to_int(row.get('resource_id'), default=None),
+            tag_id = to_int(row.get('tag_id'), default=None),
             uploaded = not row.get('created'),
-            score = toScore(row.get('score')),
+            score = to_score(row.get('score')),
         )
 
 
@@ -305,8 +275,8 @@ class CreateResourceTitle(Create):
     def convert(self, row):
         if row.get('resource_id'):
             return self.obj(
-                resource_id = toInt(row.get('resource_id')),
-                title_id = toInt(row.get('id')),
+                resource_id = to_int(row.get('resource_id'), default=None),
+                title_id = to_int(row.get('id'), default=None),
             )
 
 
@@ -320,8 +290,8 @@ class CreateResourceCreator(Create):
     def convert(self, row):
         if row.get('creator_id'):
             return self.obj(
-                resource_id = toInt(row.get('id')),
-                creator_id = toInt(row.get('creator_id')),
+                resource_id = to_int(row.get('id'), default=None),
+                creator_id = to_int(row.get('creator_id'), default=None),
             )
 
 

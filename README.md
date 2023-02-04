@@ -47,7 +47,7 @@ Copy the contents of `.env.example` to `.env` and adjust the settings.
 
 5. Import the data into `api` and `search`:
 	```sh
-	sudo docker-compose exec api python3 manage.py import
+	sudo docker-compose exec api python3 manage.py import_data
 	sudo docker-compose exec search python3 -m artigo_search --mode client --task insert
 	```
 
