@@ -1,9 +1,31 @@
 import json
 
+from django.core.validators import URLValidator
+from django.core.exceptions import ValidationError
+
+
+def is_url(x):
+    try:
+        validate = URLValidator()
+        validate(x)
+
+        return True
+    except ValidationError:
+        pass
+
+    return False
+
+
+def to_url(x, default=''):
+    if is_url(x):
+        return x
+
+    return default
+
 
 def to_int(value, default=0):
     try:
-        return int(value)
+        return int(float(value))
     except:
         pass
 
@@ -113,3 +135,32 @@ def get_iou(roi_1, roi_2):
     iou = overlap / (area_1 + area_2 - overlap)
 
     return iou
+
+
+def unflat_dict(data, parse_json=False):
+    result_map = {}
+
+    if parse_json:
+        data_new = {}
+
+        for key, value in data.items():
+            try:
+                data_new[key] = json.loads(value)
+            except:
+                data_new[key] = value
+
+        data = data_new
+
+    for key, value in data.items():
+        path = key.split('.')
+        prev = result_map
+
+        for p in path[:-1]:
+            if p not in prev:
+                prev[p] = {}
+
+            prev = prev[p]
+
+        prev[path[-1]] = value
+
+    return result_map
