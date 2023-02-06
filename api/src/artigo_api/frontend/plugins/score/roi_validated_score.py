@@ -28,7 +28,7 @@ class ROIValidatedScore(ScorePlugin):
 
     def __call__(self, tags, gameround, params):
         valid_tags = UserROI.objects.filter(
-                resource_id=params.get('resource_id'),
+                resource_id=gameround.resource,
                 tag__name__iregex=to_iregex(tags, 'name'),
                 tag__language=params.get('language', 'de'),
             ) \

@@ -28,7 +28,7 @@ class TagValidatedScore(ScorePlugin):
 
     def __call__(self, tags, gameround, params):
         valid_tags = UserTagging.objects.filter(
-                resource_id=params.get('resource_id'),
+                resource=gameround.resource,
                 tag__name__iregex=to_iregex(tags, 'name'),
                 tag__language=params.get('language', 'de'),
             ) \

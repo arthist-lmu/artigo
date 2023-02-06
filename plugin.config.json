@@ -219,6 +219,17 @@
             }
         },
         {
+            "name": "first_annotation_score",
+            "type": "TagFirstAnnotationScore",
+            "game_types": ["tagging"],
+            "disabled": false,
+            "default": true,
+            "params": {
+                "point_value": 5,
+                "min_taggings": 5
+            }
+        },
+        {
             "name": "annotation_validated_score",
             "type": "ROIValidatedScore",
             "game_types": ["roi"],
@@ -237,6 +248,16 @@
             "default": false,
             "params": {
                 "iou_value": 0.5,
+                "point_value": 5
+            }
+        },
+        {
+            "name": "first_annotation_score",
+            "type": "ROIFirstAnnotationScore",
+            "game_types": ["roi"],
+            "disabled": false,
+            "default": true,
+            "params": {
                 "point_value": 5
             }
         }
