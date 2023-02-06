@@ -3,8 +3,8 @@ FROM python:3.10
 ENV PYTHONPATH=/api/src/
 ENV POETRY_VIRTUALENVS_CREATE=False
 
-RUN addgroup --system django \
-    && adduser --system --ingroup django django
+RUN addgroup --system artigo \
+    && adduser --system --ingroup artigo artigo
 
 RUN apt update && apt install -y build-essential python-dev
 RUN pip install --no-cache-dir poetry
@@ -21,15 +21,13 @@ RUN cd /api; poetry install
 COPY /search/pyproject.toml /search/poetry.lock /search/
 RUN cd /search; poetry install
 
-COPY --chown=django:django /api /api
-COPY --chown=django:django /search /search/
+COPY --chown=artigo:artigo /api /api/
+COPY --chown=artigo:artigo /search /search/
 RUN pip install /search
 
-COPY --chown=django:django plugin.config.json /config.json
+COPY --chown=artigo:artigo plugin.config.json /config.json
 
 WORKDIR /api/src/artigo_api
-
-USER django
 
 COPY /api/docker-entrypoint.sh /api/docker-entrypoint.sh
 ENTRYPOINT ["/api/docker-entrypoint.sh"]

@@ -43,12 +43,8 @@ services:
       context: .
       dockerfile: ./search/Dockerfile.dev
     volumes:
-      - type: bind
-        source: ./dump/
-        target: /dump
-      - type: bind
-        source: ./search/
-        target: /search
+      - ./dump/:/dump
+      - ./search/:/search
     working_dir: /search/src/artigo_search
     environment:
       - POETRY_VIRTUALENVS_CREATE=False
@@ -64,21 +60,11 @@ services:
       context: .
       dockerfile: ./api/Dockerfile.dev
     volumes:
-      - type: bind
-        source: ./media/
-        target: /media
-      - type: bind
-        source: ./upload/
-        target: /upload
-      - type: bind
-        source: ./dump/
-        target: /dump
-      - type: bind
-        source: ./api/
-        target: /api
-      - type: bind
-        source: ./plugin.config.json
-        target: /config.json
+      - ./media/:/media
+      - ./upload/:/upload
+      - ./dump/:/dump
+      - ./api/:/api
+      - ./plugin.config.json:/config.json
     working_dir: /api/src/artigo_api
     environment:
       - POETRY_VIRTUALENVS_CREATE=False
@@ -99,12 +85,8 @@ services:
       context: .
       dockerfile: ./web/Dockerfile
     volumes:
-      - type: bind
-        source: ./web/
-        target: /web
-      - type: bind
-        source: ./plugin.config.json
-        target: /config.json
+      - ./web/:/web
+      - ./plugin.config.json:/config.json
     working_dir: /web
     depends_on:
       - api

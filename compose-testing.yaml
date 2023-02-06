@@ -50,9 +50,7 @@ services:
     image: arthistlmu/artigo_search:master
     restart: always
     volumes:
-      - type: bind
-        source: ./dump_testing/
-        target: /dump
+      - ./dump_testing/:/dump
     working_dir: /search/src/artigo_search
     environment:
       - POETRY_VIRTUALENVS_CREATE=False
@@ -67,12 +65,8 @@ services:
     image: arthistlmu/artigo_api:master
     restart: always
     volumes:
-      - type: bind
-        source: ./media/
-        target: /media
-      - type: bind
-        source: ./dump_testing/
-        target: /dump
+      - ./media/:/media
+      - ./dump_testing/:/dump
     working_dir: /api/src/artigo_api
     depends_on:
       - db
@@ -87,6 +81,7 @@ services:
     image: nginx:latest
     restart: always
     volumes:
+      - ./media/:/media
       - type: bind
         source: ./api-proxy/api-proxy-nginx.conf
         target: /etc/nginx/conf.d/api-proxy-nginx.conf
@@ -95,9 +90,6 @@ services:
         source: ./api-proxy/uwsgi_params
         target: /uwsgi_params
         read_only: true
-      - type: bind
-        source: ./media
-        target: /media
       - type: bind
         source: ./api/src/artigo_api/static
         target: /static
