@@ -48,7 +48,7 @@
     }
   },
   "collection": {
-    "title": "Own collections",
+    "title": "Collections",
     "fields": {
       "name": "Collection name",
       "date": "Date",
@@ -288,6 +288,7 @@
     "copied_to_clipboard": "The link was successfully copied to the clipboard.",
     "collection_name_is_required": "Please enter a collection name.",
     "an_image_file_is_required": "Please enter an image file.",
+    "file_could_not_be_written": "The file could not be written.",
     "this_name_is_too_short": "Your name contains too few characters.",
     "this_name_is_too_long": "Your name contains too many characters.",
     "no_valid_colnames_found": "No valid colnames were found.",

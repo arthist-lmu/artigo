@@ -48,7 +48,7 @@
     }
   },
   "collection": {
-    "title": "Eigene Sammlungen",
+    "title": "Sammlungen",
     "fields": {
       "name": "Sammlungsname",
       "date": "Datum",
@@ -289,6 +289,7 @@
     "copied_to_clipboard": "Der Link wurde erfolgreich in die Zwischenablage kopiert.",
     "collection_name_is_required": "Bitte gib einen Sammlungsnamen ein.",
     "an_image_file_is_required": "Bitte gib eine Bilddatei ein.",
+    "file_could_not_be_written": "Die Datei konnte nicht abgespeichert werden.",
     "this_name_is_too_short": "Dein Name enthält zu wenig Zeichen.",
     "this_name_is_too_long": "Dein Name enthält zu viele Zeichen.",
     "no_valid_colnames_found": "Es wurden keine gültigen Spaltennamen gefunden.",

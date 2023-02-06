@@ -1,11 +1,13 @@
 import os
+import logging
+import traceback
 
 import numpy as np
 
 from PIL import Image
 from pathlib import Path
 
-Image.MAX_IMAGE_PIXELS = 10000 * 10000
+logger = logging.getLogger(__name__)
 
 
 def resize_image(img, max_dim=None, min_dim=None):
@@ -17,6 +19,8 @@ def resize_image(img, max_dim=None, min_dim=None):
         scale = max(1, min_dim / min(shape))
     else:
         return img
+
+    Image.MAX_IMAGE_PIXELS = 10000 * 10000
         
     shape = np.asarray(shape * scale, dtype=np.int32)
     img = Image.fromarray(img).resize(size=shape[::-1])
@@ -39,49 +43,51 @@ def check_extension(file_path, extensions=None):
 
 
 def download_file(file, output_dir, output_name=None, max_size=None, extensions=None):
-    try:
-        file_name = file.name
-        file_path = Path(file_name)
+    file_name = file.name
+    file_path = Path(file_name)
 
-        if output_name is not None:
-            file_extension = ''.join(file_path.suffixes).lower()
-            file_name = f'{output_name}{file_extension}'
+    if output_name is not None:
+        file_extension = ''.join(file_path.suffixes).lower()
+        file_name = f'{output_name}{file_extension}'
             
-        output_path = os.path.join(output_dir, f'{file_name}')
+    output_path = os.path.join(output_dir, f'{file_name}')
 
-        if extensions is not None:
-            if not check_extension(file_path, extensions):
-                return {
-                    'status': 'error',
-                    'error': {
-                        'type': 'file_extension_is_invalid',
-                    },
-                }
+    if extensions is not None:
+        if not check_extension(file_path, extensions):
+            return {
+                'status': 'error',
+                'error': {
+                    'type': 'file_extension_is_invalid',
+                },
+            }
 
-        if max_size is not None:
-            if file.size > max_size:
-                return {
-                    'status': 'error',
-                    'error': {
-                        'type': 'file_is_too_large',
-                    },
-                }
+    if max_size is not None:
+        if file.size > max_size:
+            return {
+                'status': 'error',
+                'error': {
+                    'type': 'file_is_too_large',
+                },
+            }
 
+    try:
         os.makedirs(output_dir, exist_ok=True)
 
         with open(output_path, 'wb') as file_obj:
             for chunk in file.chunks():
                 file_obj.write(chunk)
+    except Exception as error:
+        logger.error(traceback.format_exc())
 
-        return {
-            'status': 'ok',
-            'path': Path(output_path),
-            'origin': file.name,
-        }
-    except:
         return {
             'status': 'error',
             'error': {
-                'type': 'unknown_error',
+                'type': 'file_could_not_be_written',
             },
         }
+
+    return {
+        'status': 'ok',
+        'path': Path(output_path),
+        'origin': file.name,
+    }

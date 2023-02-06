@@ -165,6 +165,8 @@ export default {
       handler(visible) {
         if (visible) {
           this.$store.dispatch('collection/post');
+        } else {
+          clearInterval(this.checkInterval);
         }
       },
       immediate: true,

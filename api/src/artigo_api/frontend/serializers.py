@@ -111,14 +111,23 @@ class CustomUserDetailsSerializer(UserDetailsSerializer):
         if hasattr(get_user_model(), 'is_anonymous'):
             fields.append('is_anonymous')
 
-        if hasattr(get_user_model(), 'taggings'):
-            fields.append('taggings')
+        if hasattr(get_user_model(), 'n_rois'):
+            fields.append('n_rois')
 
-        if hasattr(get_user_model(), 'resources'):
-            fields.append('resources')
+        if hasattr(get_user_model(), 'n_taggings'):
+            fields.append('n_taggings')
 
-        if hasattr(get_user_model(), 'game_sessions'):
-            fields.append('game_sessions')
+        if hasattr(get_user_model(), 'n_annotations'):
+            fields.append('n_annotations')
+
+        if hasattr(get_user_model(), 'n_resources'):
+            fields.append('n_resources')
+
+        if hasattr(get_user_model(), 'n_collections'):
+            fields.append('n_collections')
+
+        if hasattr(get_user_model(), 'n_gamesessions'):
+            fields.append('n_gamesessions')
 
         model = get_user_model()
         fields = ('id', *fields)

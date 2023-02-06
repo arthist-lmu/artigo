@@ -39,26 +39,39 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
     objects = CustomUserManager()
 
-    @property
-    def taggings(self):
-        return self.taggings.count()
+    def __str__(self):
+        return self.email
 
-    @property
-    def resources(self):
-        resources = self.taggings.values('resource') \
-            .annotate(count=Count('resource'))
-
-        return len(list(resources))
-
-    @property
-    def game_sessions(self):
-        return self.gamesessions.count()
-    
     def get_username(self):
         return self.username
 
-    def __str__(self):
-        return self.email
+    @property
+    def n_rois(self):
+        return self.rois.count()
+
+    @property
+    def n_taggings(self):
+        return self.taggings.count()
+
+    @property
+    def n_annotations(self):
+        return self.n_rois + self.n_taggings
+
+    @property
+    def n_resources(self):
+        resources = self.taggings.values('resource') \
+            .annotate(count=Count('resource')) \
+            .values_list('resource_id', flat=True)
+
+        return len(set(resources))
+
+    @property
+    def n_collections(self):
+        return self.collections.count()
+
+    @property
+    def n_gamesessions(self):
+        return self.gamesessions.count()
 
 
 class Collection(models.Model):
@@ -376,7 +389,12 @@ class GeneralROI(models.Model):
 
 
 class UserROI(GeneralROI):
-    user = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, null=True)
+    user = models.ForeignKey(
+        CustomUser,
+        on_delete=models.SET_NULL,
+        related_name='rois',
+        null=True,
+    )
     resource = models.ForeignKey(
         Resource,
         on_delete=models.CASCADE,

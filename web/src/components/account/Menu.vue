@@ -59,37 +59,55 @@
         </v-list-item>
       </template>
 
+      <v-list-item
+        v-if="data.n_gamesessions > 0"
+        @click="goTo('sessions')"
+      >
+        <v-list-item-content>
+          {{ $t("sessions.title") }}
+        </v-list-item-content>
+
+        <v-list-item-action>
+          <v-chip
+            class="ml-2"
+            style="cursor: pointer;"
+            outlined
+            small
+          >
+            {{ data.n_gamesessions }}
+          </v-chip>
+        </v-list-item-action>
+      </v-list-item>
+
       <template v-if="!isAnonymous">
         <v-list-item
-          v-if="data.game_sessions > 0"
-          @click="goTo('sessions')"
+          v-if="data.n_collections > 0"
+          @click="dialog.collectionList = true"
         >
           <v-list-item-content>
-            {{ $t("sessions.title") }}
+            {{ $t("collection.title") }}
           </v-list-item-content>
 
           <v-list-item-action>
+            <v-icon
+              @click.stop="dialog.collectionUpload = true"
+              :title="$t('user.upload.title')"
+              color="primary"
+              class="ml-2"
+            >
+              mdi-cloud-upload-outline
+            </v-icon>
+
             <v-chip
+              v-if="data.n_collections > 0"
               class="ml-2"
               style="cursor: pointer;"
               outlined
               small
             >
-              {{ data.game_sessions }}
+              {{ data.n_collections }}
             </v-chip>
           </v-list-item-action>
-        </v-list-item>
-
-        <v-list-item @click="dialog.collectionList = true">
-          <v-list-item-content>
-            {{ $t("collection.title") }}
-          </v-list-item-content>
-        </v-list-item>
-
-        <v-list-item @click="dialog.collectionUpload = true">
-          <v-list-item-content>
-            {{ $t("user.upload.title") }}
-          </v-list-item-content>
         </v-list-item>
 
         <v-list-item @click="logout">
@@ -202,3 +220,9 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.v-list-item__action--stack {
+  flex-direction: row;
+}
+</style>
