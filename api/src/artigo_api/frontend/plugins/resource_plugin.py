@@ -1,5 +1,9 @@
 import logging
 
+from datetime import datetime
+from dateutil.relativedelta import relativedelta
+from django.db.models import Q
+from django.utils.timezone import make_aware
 from .plugin import Plugin
 from .manager import PluginManager
 
@@ -14,6 +18,31 @@ class ResourcePlugin(Plugin):
 
     def __call__(self, params):
         return self.call(params)
+
+    def exclude_last_played(self, resources, params):
+        if params.get('user_id') and self.max_last_played > 0:
+            max_last_played = make_aware(datetime.today()) \
+                - relativedelta(days=self.max_last_played)
+
+            user_resources = self.model.objects \
+                .filter(
+                    user_id=params['user_id'],
+                    created__gt=max_last_played
+                ) \
+                .values('resource')
+
+            resources = resources.exclude(id__in=user_resources)
+
+        return resources
+
+    def filter_collections(self, resources, params):
+        query = Q(collection__isnull=True)
+        query |= Q(collection__access='O')
+
+        if params.get('user_id'):
+            query |= Q(collection__user_id=params['user_id'])
+
+        return resources.filter(query)
 
 
 class ResourcePluginManager(PluginManager):

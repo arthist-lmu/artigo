@@ -15,26 +15,21 @@ from django.core.management import BaseCommand, CommandError
 from django.core.management.color import no_style
 from frontend.utils import to_url, to_int
 
-OBJ_MAPPING = {}
-
-DATE_FORMAT = '%Y-%m-%d %H:%M:%S.%f'
-TZINFO = pytz.timezone(settings.TIME_ZONE)
+MODEL_MAPPING = {}
 
 
 def to_score(x, default=0):
     x = to_int(x, default=None)
 
-    if x:
-        return x
-
-    return default
+    return x if x else default
 
 
 def to_datetime(x):
     if x:
-        if '.' not in x: x += '.0'  # convert to proper date format
+        if '.' not in x: x += '.0'  # to proper date format
 
-        return datetime.strptime(x, DATE_FORMAT).replace(tzinfo=TZINFO)
+        x = datetime.strptime(x, '%Y-%m-%d %H:%M:%S.%f') \
+            .replace(tzinfo=pytz.timezone(settings.TIME_ZONE))
 
     return timezone.now()
 
@@ -50,14 +45,14 @@ class Create:
                 columns = next(data)
 
                 for row in tqdm(data, f'Import {self.name}', file=sys.stdout):
-                    obj = self.convert(dict(zip(columns, row)))
+                    model = self.convert(dict(zip(columns, row)))
 
-                    if obj is not None:
-                        processed_rows.append(obj)
+                    if model is not None:
+                        processed_rows.append(model)
 
                     if len(processed_rows) > 5000:
                         try:
-                            self.obj.objects.bulk_create(processed_rows, **args)
+                            self.model.objects.bulk_create(processed_rows, **args)
                         except Exception as error:
                             print(error)
 
@@ -65,7 +60,7 @@ class Create:
 
                 if processed_rows:
                     try:
-                        self.obj.objects.bulk_create(processed_rows, **args)
+                        self.model.objects.bulk_create(processed_rows, **args)
                     except Exception as error:
                         print(error)
         else:
@@ -77,7 +72,7 @@ class CreateUser(Create):
 
     def __init__(self, folder_path):
         self.file_path = os.path.join(folder_path, 'user.csv')
-        self.obj = CustomUser
+        self.model = CustomUser
 
     def convert(self, row):
         if not row.get('username'):
@@ -90,7 +85,7 @@ class CreateUser(Create):
             password = uuid.uuid4().hex.encode('utf-8')
             row['password'] = hashlib.sha256(password).hexdigest()
 
-        return self.obj(
+        return self.model(
             id = to_int(row.get('id'), default=None),
             username = row.get('username'),
             email = row.get('email'),
@@ -107,10 +102,10 @@ class CreateSource(Create):
 
     def __init__(self, folder_path):
         self.file_path = os.path.join(folder_path, 'source.csv')
-        self.obj = Source
+        self.model = Source
 
     def convert(self, row):
-        return self.obj(
+        return self.model(
             id = to_int(row.get('id'), default=None),
             name = row.get('name'),
             url = to_url(row.get('url'), default=''),
@@ -122,10 +117,10 @@ class CreateCreator(Create):
 
     def __init__(self, folder_path):
         self.file_path = os.path.join(folder_path, 'creator.csv')
-        self.obj = Creator
+        self.model = Creator
 
     def convert(self, row):
-        return self.obj(
+        return self.model(
             id = to_int(row.get('id'), default=None),
             name = row.get('name'),
         )
@@ -136,10 +131,10 @@ class CreateResource(Create):
 
     def __init__(self, folder_path):
         self.file_path = os.path.join(folder_path, 'resource.csv')
-        self.obj = Resource
+        self.model = Resource
 
     def convert(self, row):
-        return self.obj(
+        return self.model(
             id = to_int(row.get('id'), default=None),
             hash_id = row.get('hash_id'),
             source_id = to_int(row.get('source_id'), default=None),
@@ -157,10 +152,10 @@ class CreateTitle(Create):
 
     def __init__(self, folder_path):
         self.file_path = os.path.join(folder_path, 'title.csv')
-        self.obj = Title
+        self.model = Title
 
     def convert(self, row):
-        return self.obj(
+        return self.model(
             id = to_int(row.get('id'), default=None),
             name = row.get('name'),
             language = row.get('language'),
@@ -172,10 +167,10 @@ class CreateGamesession(Create):
 
     def __init__(self, folder_path):
         self.file_path = os.path.join(folder_path, 'gamesession.csv')
-        self.obj = Gamesession
+        self.model = Gamesession
 
     def convert(self, row):
-        obj = self.obj(
+        model = self.model(
             id = to_int(row.get('id'), default=None),
             created = to_datetime(row.get('created')),
             user_id = to_int(row.get('user_id'), default=None),
@@ -184,14 +179,14 @@ class CreateGamesession(Create):
         )
 
         if row.get('game_type'):
-            if not row['game_type'] in OBJ_MAPPING:
-                OBJ_MAPPING[row['game_type']], _ = GameType.objects \
+            if not row['game_type'] in MODEL_MAPPING:
+                MODEL_MAPPING[row['game_type']], _ = GameType.objects \
                     .get_or_create(name=row['game_type'])
-                OBJ_MAPPING[row['game_type']].save()
+                MODEL_MAPPING[row['game_type']].save()
 
-            obj.game_type = OBJ_MAPPING[row['game_type']]
+            model.game_type = MODEL_MAPPING[row['game_type']]
 
-        return obj
+        return model
 
 
 class CreateGameround(Create):
@@ -199,10 +194,10 @@ class CreateGameround(Create):
 
     def __init__(self, folder_path):
         self.file_path = os.path.join(folder_path, 'gameround.csv')
-        self.obj = Gameround
+        self.model = Gameround
 
     def convert(self, row):
-        obj = self.obj(
+        model = self.model(
             id = to_int(row.get('id'), default=None),
             user_id = to_int(row.get('user_id'), default=None),
             gamesession_id = to_int(row.get('gamesession_id'), default=None),
@@ -212,22 +207,22 @@ class CreateGameround(Create):
         )
 
         if row.get('opponent_type'):
-            if not row['opponent_type'] in OBJ_MAPPING:
-                OBJ_MAPPING[row['opponent_type']], _ = OpponentType.objects \
+            if not row['opponent_type'] in MODEL_MAPPING:
+                MODEL_MAPPING[row['opponent_type']], _ = OpponentType.objects \
                     .get_or_create(name=row['opponent_type'])
-                OBJ_MAPPING[row['opponent_type']].save()
+                MODEL_MAPPING[row['opponent_type']].save()
 
-            obj.opponent_type = OBJ_MAPPING[row['opponent_type']]
+            model.opponent_type = MODEL_MAPPING[row['opponent_type']]
 
         if row.get('taboo_type'):
-            if not row['taboo_type'] in OBJ_MAPPING:
-                OBJ_MAPPING[row['taboo_type']], _ = TabooType.objects \
+            if not row['taboo_type'] in MODEL_MAPPING:
+                MODEL_MAPPING[row['taboo_type']], _ = TabooType.objects \
                     .get_or_create(name=row['taboo_type'])
-                OBJ_MAPPING[row['taboo_type']].save()
+                MODEL_MAPPING[row['taboo_type']].save()
 
-            obj.taboo_type = OBJ_MAPPING[row['taboo_type']]
+            model.taboo_type = MODEL_MAPPING[row['taboo_type']]
 
-        return obj
+        return model
 
 
 class CreateTag(Create):
@@ -235,10 +230,10 @@ class CreateTag(Create):
 
     def __init__(self, folder_path):
         self.file_path = os.path.join(folder_path, 'tag.csv')
-        self.obj = Tag
+        self.model = Tag
 
     def convert(self, row):
-        return self.obj(
+        return self.model(
             id = to_int(row.get('id'), default=None),
             name = row.get('name'),
             language = row.get('language'),
@@ -250,10 +245,10 @@ class CreateTagging(Create):
 
     def __init__(self, folder_path):
         self.file_path = os.path.join(folder_path, 'tagging.csv')
-        self.obj = UserTagging
+        self.model = UserTagging
 
     def convert(self, row):
-        return self.obj(
+        return self.model(
             id = to_int(row.get('id'), default=None),
             created = to_datetime(row.get('created')),
             user_id = to_int(row.get('user_id'), default=None),
@@ -270,11 +265,11 @@ class CreateResourceTitle(Create):
 
     def __init__(self, folder_path):
         self.file_path = os.path.join(folder_path, 'title.csv')
-        self.obj = Resource.titles.through
+        self.model = Resource.titles.through
 
     def convert(self, row):
         if row.get('resource_id'):
-            return self.obj(
+            return self.model(
                 resource_id = to_int(row.get('resource_id'), default=None),
                 title_id = to_int(row.get('id'), default=None),
             )
@@ -285,11 +280,11 @@ class CreateResourceCreator(Create):
 
     def __init__(self, folder_path):
         self.file_path = os.path.join(folder_path, 'resource.csv')
-        self.obj = Resource.creators.through
+        self.model = Resource.creators.through
 
     def convert(self, row):
         if row.get('creator_id'):
-            return self.obj(
+            return self.model(
                 resource_id = to_int(row.get('id'), default=None),
                 creator_id = to_int(row.get('creator_id'), default=None),
             )

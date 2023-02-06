@@ -1,10 +1,7 @@
 import random
 import logging
 
-from datetime import datetime
-from dateutil.relativedelta import relativedelta
 from django.db.models import Count
-from django.utils.timezone import make_aware
 from frontend import cache
 from frontend.models import UserROI
 from frontend.plugins import (
@@ -30,29 +27,22 @@ class RandomROIResource(ResourcePlugin):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
+        self.model = UserROI
         self.rounds = self.config['rounds']
         self.min_tags = self.config['min_tags']
         self.min_roi_tags = self.config['min_roi_tags']
         self.max_last_played = self.config['max_last_played']
 
     def __call__(self, params):
-        resources = cache.resource_tagging_count()
+        resources = cache.resource_tagging_count() \
+            .filter(
+                count_tags__gte=self.min_tags,
+                count_roi_tags__gte=self.min_roi_tags
+            )
 
-        resources = resources.filter(
-            count_tags__gte=self.min_tags,
-            count_roi_tags__gte=self.min_roi_tags
-        )
-
-        if params.get('user_id') and self.max_last_played > 0:
-            max_last_played = make_aware(datetime.today()) \
-                - relativedelta(days=self.max_last_played)
-
-            user_resources = UserROI.objects.filter(user_id=params['user_id']) \
-                .filter(created__gt=max_last_played) \
-                .values('resource')
-
-            resources = resources.exclude(id__in=user_resources)
-
-        resource_ids = random_resources(resources, limit=self.rounds)
+        resources = self.exclude_last_played(resources, params)
+        resources = self.filter_collections(resources, params)
+        
+        resource_ids = random_resources(resources, self.rounds)
 
         return resource_ids

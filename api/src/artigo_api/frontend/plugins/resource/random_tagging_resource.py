@@ -1,9 +1,6 @@
 import logging
 
-from datetime import datetime
-from dateutil.relativedelta import relativedelta
 from django.db.models import Count
-from django.utils.timezone import make_aware
 from frontend import cache
 from frontend.models import UserTagging
 from frontend.functions import Percentile
@@ -30,6 +27,7 @@ class RandomTaggingResource(ResourcePlugin):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
+        self.model = UserTagging
         self.rounds = self.config['rounds']
         self.min_tags = self.config['min_tags']
         self.percentile = self.config['percentile']
@@ -45,17 +43,9 @@ class RandomTaggingResource(ResourcePlugin):
             resources = resources.filter(count_taggings__lt=value['x'])
 
         resources = resources.filter(count_tags__gte=self.min_tags)
+        resources = self.exclude_last_played(resources, params)
+        resources = self.filter_collections(resources, params)
 
-        if params.get('user_id') and self.max_last_played > 0:
-            max_last_played = make_aware(datetime.today()) \
-                - relativedelta(days=self.max_last_played)
-
-            user_resources = UserTagging.objects.filter(user_id=params['user_id']) \
-                .filter(created__gt=max_last_played) \
-                .values('resource')
-
-            resources = resources.exclude(id__in=user_resources)
-
-        resource_ids = random_resources(resources, limit=self.rounds)
+        resource_ids = random_resources(resources, self.rounds)
 
         return resource_ids
