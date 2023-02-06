@@ -17,7 +17,7 @@
         <v-spacer />
 
         <v-col
-          v-if="!(hideSearchBar || $vuetify.breakpoint.mobile)"
+          v-if="!(true || hideSearchBar || $vuetify.breakpoint.mobile)"
           cols="4"
         >
           <Bar />
