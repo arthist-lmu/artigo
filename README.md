@@ -83,6 +83,10 @@ Lint can be used to help with standardized formatting:
 sudo docker-compose exec web npm run lint --fix
 ```
 
+### Database schema migration
+```sh
+sudo docker compose -f compose-production.yaml exec api python manage.py migrate
+```
 
 ## Contributing
 
