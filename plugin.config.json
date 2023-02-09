@@ -1,5 +1,5 @@
 {
-    "resources": [
+    "resource": [
         {
             "name": "random_resource",
             "type": "RandomTaggingResource",
@@ -54,7 +54,7 @@
             }
         }
     ],
-    "opponents": [
+    "opponent": [
         {
             "name": "mean_gameround_opponent",
             "type": "MeanGameroundTaggingOpponent",
@@ -90,7 +90,7 @@
             }
         }
     ],
-    "inputs": [
+    "input": [
         {
             "name": "most_annotated_input",
             "type": "MostAnnotatedTaggingInput",
@@ -124,7 +124,7 @@
             }
         }
     ],
-    "taboos": [
+    "taboo": [
         {
             "name": "most_annotated_taboo",
             "type": "MostAnnotatedTaggingTaboo",
@@ -158,7 +158,7 @@
             }
         }
     ],
-    "suggesters": [
+    "suggester": [
         {
             "name": "cooccurrence_suggester",
             "type": "CooccurrenceSuggester",
@@ -170,7 +170,7 @@
             }
         }
     ],
-    "filters": [
+    "filter": [
         {
             "name": "already_annotated_filter",
             "type": "AlreadyAnnotatedTaggingFilter",
@@ -196,7 +196,7 @@
             }
         }
     ],
-    "scores": [
+    "score": [
         {
             "name": "annotation_validated_score",
             "type": "TagValidatedScore",

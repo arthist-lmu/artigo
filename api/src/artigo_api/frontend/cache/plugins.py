@@ -18,25 +18,25 @@ def plugins(**kwargs):
 
         values = {
             'resource': ResourcePluginManager(
-                configs=config.get('resources', []),
+                configs=config.get('resource', []),
             ),
             'opponent': OpponentPluginManager(
-                configs=config.get('opponents', []),
+                configs=config.get('opponent', []),
             ),
             'input': InputPluginManager(
-                configs=config.get('inputs', []),
+                configs=config.get('input', []),
             ),
             'taboo': TabooPluginManager(
-                configs=config.get('taboos', []),
+                configs=config.get('taboo', []),
             ),
             'suggester': SuggesterPluginManager(
-                configs=config.get('suggesters', []),
+                configs=config.get('suggester', []),
             ),
             'filter': FilterPluginManager(
-                configs=config.get('filters', []),
+                configs=config.get('filter', []),
             ),
             'score': ScorePluginManager(
-                configs=config.get('scores', []),
+                configs=config.get('score', []),
             ),
         }
 

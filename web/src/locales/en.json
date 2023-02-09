@@ -38,7 +38,15 @@
       "title": "Register"
     },
     "upload": {
-      "title": "Upload collection"
+      "title": "Upload collection",
+        "fields": {
+        "name": "Collection name",
+        "date": "Date",
+        "count": "Objects",
+        "actions": "Actions",
+        "drag-file": "Drag files to upload or",
+        "browse-file": "Browse files"
+      }
     },
     "logout": {
       "title": "Logout"
@@ -47,15 +55,12 @@
       "title": "Reset password"
     }
   },
-  "collection": {
+  "collections": {
     "title": "Collections",
     "fields": {
-      "name": "Collection name",
-      "date": "Date",
-      "count": "Objects",
-      "actions": "Actions",
-      "drag-file": "Drag files to upload or",
-      "browse-file": "Browse files"
+      "of": "of",
+      "query": "Search for collections",
+      "no-results": "No collections could be found."
     }
   },
   "language": {
@@ -82,10 +87,11 @@
     "title": "Data privacy"
   },
   "search": {
-    "title": "Search for images",
+    "title": "Search",
     "fields": {
       "of": "of",
       "reset": "Reset",
+      "query": "Search for images",
       "no-results": "No results could be found for your search query."
     }
   },
@@ -157,6 +163,11 @@
         "intro": "Do you see the tags above the displayed image? Draw with the mouse over the corresponding image regions."
       }
     },
+    "inputs": {
+      "custom_resource": "Enter image identifiers",
+      "custom_annotated_input": "Enter tags",
+      "custom_annotated_taboo": "Enter tags"
+    },
     "params": {
       "game_type": {
         "title": "Which game mode do you prefer?",
@@ -169,54 +180,47 @@
         "title": "How long does a game round last?",
         "suffix": "{n} seconds|{n} second|{n} second"
       },
-      "resource_rounds": {
-        "title": "How many rounds do you want to play?",
-        "suffix": "{n} rounds|{n} round|{n} rounds"
-      }
-    },
-    "inputs": {
-      "custom_resource": "Enter image identifiers",
-      "custom_annotated_input": "Enter tags",
-      "custom_annotated_taboo": "Enter tags"
-    },
-    "plugins": {
-      "resources": {
+      "resource_type": {
         "title": "Which images do you want to play with?",
         "fields": {
           "random_resource": "Randomly selected images",
           "custom_resource": "Custom images"
         }
       },
-      "opponents": {
+      "resource_rounds": {
+        "title": "How many rounds do you want to play?",
+        "suffix": "{n} rounds|{n} round|{n} rounds"
+      },
+      "opponent_type": {
         "title": "Who do you want to play against?",
         "fields": {
-          "no_opponents": "No one",
+          "no_opponent": "No one",
           "mean_gameround_opponent": "Average opponents",
           "random_gameround_opponent": "Randomly selected opponents"
         }
       },
-      "inputs": {
+      "input_type": {
         "title": "What annotations are displayed at the start of the game?",
         "fields": {
-          "no_inputs": "None",
+          "no_input": "None",
           "most_annotated_input": "Most frequently assigned annotations",
           "random_annotated_input": "Randomly assigned annotations",
           "custom_annotated_input": "Custom annotations"
         }
       },
-      "taboos": {
+      "taboo_type": {
         "title": "Which annotations are taboo?",
         "fields": {
-          "no_taboos": "None",
+          "no_taboo": "None",
           "most_annotated_taboo": "Most frequently assigned annotations",
           "random_annotated_taboo": "Randomly assigned annotations",
           "custom_annotated_taboo": "Custom annotations"
         }
       },
-      "suggesters": {
+      "suggester_type": {
         "title": "Which annotations should be recommended?",
         "fields": {
-          "no_suggesters": "None",
+          "no_suggester": "None",
           "cooccurrence_suggester": "Annotations that frequently occur together"
         }
       }

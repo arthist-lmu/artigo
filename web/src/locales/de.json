@@ -38,7 +38,15 @@
       "title": "Registrieren"
     },
     "upload": {
-      "title": "Sammlung hochladen"
+      "title": "Sammlung hochladen",
+      "fields": {
+        "name": "Sammlungsname",
+        "date": "Datum",
+        "count": "Objekte",
+        "actions": "Aktionen",
+        "drag-file": "Dateien zum Hochladen ziehen oder",
+        "browse-file": "Dateien durchsuchen"
+      }
     },
     "logout": {
       "title": "Abmelden"
@@ -47,15 +55,12 @@
       "title": "Passwort zurücksetzen"
     }
   },
-  "collection": {
+  "collections": {
     "title": "Sammlungen",
     "fields": {
-      "name": "Sammlungsname",
-      "date": "Datum",
-      "count": "Objekte",
-      "actions": "Aktionen",
-      "drag-file": "Dateien zum Hochladen ziehen oder",
-      "browse-file": "Dateien durchsuchen"
+      "of": "von",
+      "query": "Nach Sammlungen suchen",
+      "no-results": "Es konnten keine Sammlungen gefunden werden."
     }
   },
   "language": {
@@ -82,10 +87,11 @@
     "title": "Datenschutz"
   },
   "search": {
-    "title": "Nach Bildern suchen",
+    "title": "Suchen",
     "fields": {
       "of": "von",
       "reset": "Zurücksetzen",
+      "query": "Nach Bildern suchen",
       "no-results": "Für Deine Suchanfrage konnten keine Ergebnisse gefunden werden."
     }
   },
@@ -158,6 +164,11 @@
         "taboo": "Folgende Schlagwörter darfst Du nicht verwenden: {tags}."
       }
     },
+    "inputs": {
+      "custom_resource": "Bildidentifikatoren eingeben",
+      "custom_annotated_input": "Schlagwörter eingeben",
+      "custom_annotated_taboo": "Schlagwörter eingeben"
+    },
     "params": {
       "game_type": {
         "title": "Welchen Spielmodus bevorzugst Du?",
@@ -170,54 +181,47 @@
         "title": "Wie lange dauert eine Spielrunde?",
         "suffix": "{n} Sekunden|{n} Sekunde|{n} Sekunden"
       },
-      "resource_rounds": {
-        "title": "Wie viele Runden möchtest Du spielen?",
-        "suffix": "{n} Runden|{n} Runde|{n} Runden"
-      }
-    },
-    "inputs": {
-      "custom_resource": "Bildidentifikatoren eingeben",
-      "custom_annotated_input": "Schlagwörter eingeben",
-      "custom_annotated_taboo": "Schlagwörter eingeben"
-    },
-    "plugins": {
-      "resources": {
+      "resource_type": {
         "title": "Mit welchen Bildern möchtest Du spielen?",
         "fields": {
           "random_resource": "Zufällig ausgewählte Bilder",
           "custom_resource": "Benutzerdefinierte Bilder"
         }
       },
-      "opponents": {
+      "resource_rounds": {
+        "title": "Wie viele Runden möchtest Du spielen?",
+        "suffix": "{n} Runden|{n} Runde|{n} Runden"
+      },
+      "opponent_type": {
         "title": "Gegen wen möchtest Du spielen?",
         "fields": {
-          "no_opponents": "Niemanden",
+          "no_opponent": "Niemanden",
           "mean_gameround_opponent": "Durchschnittliche Gegner:innen",
           "random_gameround_opponent": "Zufällig ausgewählte Gegner:innen"
         }
       },
-      "inputs": {
+      "input_type": {
         "title": "Welche Annotationen werden bei Spielbeginn angezeigt?",
         "fields": {
-          "no_inputs": "Keine",
+          "no_input": "Keine",
           "most_annotated_input": "Am häufigsten vergebene Annotationen",
           "random_annotated_input": "Zufällig vergebene Annotationen",
           "custom_annotated_input": "Benutzerdefinierte Annotationen"
         }
       },
-      "taboos": {
+      "taboo_type": {
         "title": "Welche Annotationen sind tabu?",
         "fields": {
-          "no_taboos": "Keine",
+          "no_taboo": "Keine",
           "most_annotated_taboo": "Am häufigsten vergebene Annotationen",
           "random_annotated_taboo": "Zufällig vergebene Annotationen",
           "custom_annotated_taboo": "Benutzerdefinierte Annotationen"
         }
       },
-      "suggesters": {
+      "suggester_type": {
         "title": "Welche Annotationen sollen empfohlen werden?",
         "fields": {
-          "no_suggesters": "Keine",
+          "no_suggester": "Keine",
           "cooccurrence_suggester": "Häufig zusammen vorkommende Annotationen"
         }
       }
