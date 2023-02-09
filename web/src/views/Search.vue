@@ -1,6 +1,36 @@
 <template>
   <v-container class="pt-0">
-    <Bar />
+    <SearchBar
+      store="search"
+      :height="height"
+    >
+      <template v-slot:append-item>
+        <v-row
+          v-for="aggregation in aggregations"
+          :key="aggregation.field"
+          class="aggregate"
+        >
+          <v-col v-if="aggregation.entries.length">
+            <v-slide-group show-arrows>
+              <v-slide-item
+                v-for="entry in aggregation.entries"
+                :key="entry.name"
+              >
+                <v-chip
+                  @click="search(entry.name)"
+                  class="mx-1"
+                  depressed
+                  outlined
+                  rounded
+                >
+                  {{ entry.name }}
+                </v-chip>
+              </v-slide-item>
+            </v-slide-group>
+          </v-col>
+        </v-row>
+      </template>
+    </SearchBar>
 
     <v-data-iterator
       :items="entries"
@@ -16,7 +46,7 @@
             :cols="(12 / itemsPerRow)"
             class="pa-1"
           >
-            <ResultCard :entry="entry" />
+            <SearchResultCard :entry="entry" />
           </v-col>
         </v-row>
       </template>
@@ -49,9 +79,29 @@ export default {
       page: 1,
     };
   },
+  methods: {
+    search(value) {
+      const query = { tags: value };
+      this.$store.dispatch('search/post', { query });
+    },
+  },
   computed: {
     entries() {
       return this.$store.state.search.data.entries;
+    },
+    aggregations() {
+      return this.$store.state.search.data.aggregations;
+    },
+    height() {
+      let height = 100;
+      if (this.aggregations.length) {
+        this.aggregations.forEach((aggregation) => {
+          if (aggregation.entries.length) {
+            height += 56;
+          }
+        });
+      }
+      return height;
     },
     itemsPerPage() {
       return this.$store.state.search.itemsPerPage;
@@ -83,8 +133,8 @@ export default {
     };
   },
   components: {
-    Bar: () => import('@/components/search/ExtendedBar.vue'),
-    ResultCard: () => import('@/components/search/ResultCard.vue'),
+    SearchBar: () => import('@/components/utils/ExtendedBar.vue'),
+    SearchResultCard: () => import('@/components/search/SearchResultCard.vue'),
   },
 };
 </script>

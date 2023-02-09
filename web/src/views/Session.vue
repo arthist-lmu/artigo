@@ -2,7 +2,7 @@
   <v-container :class="{ 'px-0': $vuetify.breakpoint.mdAndDown }">
     <v-row class="mt-2 mx-n3">
       <v-col :cols="$vuetify.breakpoint.smAndDown ? 12 : 4">
-        <SetCard
+        <SummaryCard
           icon="mdi-image-outline"
           :title="$t('session.fields.images')"
           :value="entries.length"
@@ -13,7 +13,7 @@
         :cols="$vuetify.breakpoint.smAndDown ? 12 : 4"
         :class="$vuetify.breakpoint.smAndDown ? 'pt-0' : undefined"
       >
-        <SetCard
+        <SummaryCard
           icon="mdi-tag-outline"
           :title="$t('session.fields.tags')"
           :subtitle="$t('session.fields.per-image')"
@@ -26,7 +26,7 @@
         :cols="$vuetify.breakpoint.smAndDown ? 12 : 4"
         :class="$vuetify.breakpoint.smAndDown ? 'pt-0' : undefined"
       >
-        <SetCard
+        <SummaryCard
           icon="mdi-star-outline"
           :title="$t('session.fields.score')"
           :subtitle="$t('session.fields.per-image')"
@@ -96,7 +96,7 @@
             class="pa-1"
             style="width: 300px"
           >
-            <ResultCard
+            <OverviewResultCard
               :entry="entry"
               height="350"
               :opaque="!selectedEntries.includes(entry.resource_id)"
@@ -187,8 +187,8 @@ export default {
     this.get(this.$route.params.id);
   },
   components: {
-    SetCard: () => import('@/components/session/SetCard.vue'),
-    ResultCard: () => import('@/components/session/ResultCard.vue'),
+    SummaryCard: () => import('@/components/session/SummaryCard.vue'),
+    OverviewResultCard: () => import('@/components/session/OverviewResultCard.vue'),
   },
 };
 </script>

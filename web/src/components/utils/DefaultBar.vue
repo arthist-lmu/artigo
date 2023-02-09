@@ -4,8 +4,9 @@
     ref="input"
     @click:prepend-inner="onButton"
     @keyup.enter.native="search"
-    :placeholder="$t('sessions.fields.query')"
+    :placeholder="$t(`${store}.fields.query`)"
     prepend-inner-icon="mdi-magnify"
+    :dense="dense"
     hide-details
     rounded
     solo
@@ -60,6 +61,16 @@
 
 <script>
 export default {
+  props: {
+    store: {
+      type: String,
+      required: true,
+    },
+    dense: {
+      type: Boolean,
+      required: false,
+    },
+  },
   data() {
     return {
       page: 1,
@@ -68,7 +79,7 @@ export default {
   },
   methods: {
     search() {
-      this.$store.dispatch('sessions/get', { 'query': this.query });
+      this.$store.dispatch(`${this.store}/get`, { 'query': this.query });
     },
     onButton() {
       this.blurInput();
@@ -90,16 +101,16 @@ export default {
   },
   computed: {
     total() {
-      return this.$store.state.sessions.data.total;
+      return this.$store.state[this.store].data.total;
     },
     offset() {
-      return this.$store.state.sessions.data.offset;
+      return this.$store.state[this.store].data.offset;
     },
     entries() {
-      return this.$store.state.sessions.data.entries;
+      return this.$store.state[this.store].data.entries;
     },
     itemsPerPage() {
-      return this.$store.state.sessions.itemsPerPage;
+      return this.$store.state[this.store].itemsPerPage;
     },
     numberOfPages() {
       return Math.ceil(this.total / this.itemsPerPage);
