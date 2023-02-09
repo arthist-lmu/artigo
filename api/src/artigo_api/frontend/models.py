@@ -100,8 +100,12 @@ class Collection(models.Model):
         default='U',
     )
     progress = models.FloatField(default=0.0)
-    date = models.DateTimeField(auto_now_add=True)
+    created = models.DateTimeField(auto_now_add=True)
 
+    @property
+    def n_resources(self):
+        return self.resources.count()
+    
 
 class Source(models.Model):
     name = models.CharField(max_length=256)
