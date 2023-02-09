@@ -16,28 +16,30 @@
 
         <v-spacer />
 
-        <v-col
-          v-if="!(true || hideSearchBar || $vuetify.breakpoint.mobile)"
-          cols="4"
+        <v-btn
+          v-if="!(hideSearchBar || $vuetify.breakpoint.mobile)"
+          @click="goTo('search')"
+          :title="$t('search.title')"
+          class="ml-2"
+          :color="dark ? 'accent' : 'primary'"
+          :dark="dark"
+          icon
         >
-          <Bar />
-        </v-col>
+          <v-icon>
+            mdi-magnify
+          </v-icon>
+        </v-btn>
 
-        <v-col
-          cols="4"
-          align="right"
-        >
-          <MobileMenu
-            v-if="$vuetify.breakpoint.mobile"
-            :dark="dark"
-          />
-          <DefaultMenu
-            v-else
-            :dark="dark"
-          />
+        <MobileMenu
+          v-if="$vuetify.breakpoint.mobile"
+          :dark="dark"
+        />
+        <DefaultMenu
+          v-else
+          :dark="dark"
+        />
 
-          <UserMenu :dark="dark" />
-        </v-col>
+        <UserMenu :dark="dark" />
       </v-row>
     </v-container>
   </v-app-bar>
@@ -82,7 +84,6 @@ export default {
     this.$emit('mounted');
   },
   components: {
-    Bar: () => import('@/components/search/Bar.vue'),
     Logo: () => import('@/components/Logo.vue'),
     DefaultMenu: () => import('@/components/menu/Default.vue'),
     MobileMenu: () => import('@/components/menu/Mobile.vue'),
