@@ -79,13 +79,13 @@
         </v-list-item-action>
       </v-list-item>
 
-      <template v-if="!isAnonymous">
+      <template>
         <v-list-item
           v-if="data.n_collections > 0"
-          @click="dialog.collectionList = true"
+          @click="goTo('collections')"
         >
           <v-list-item-content>
-            {{ $t("collection.title") }}
+            {{ $t("collections.title") }}
           </v-list-item-content>
 
           <v-list-item-action>
@@ -137,13 +137,6 @@
     </v-dialog>
 
     <v-dialog
-      v-model="dialog.collectionList"
-      max-width="900"
-    >
-      <CollectionListCard v-model="dialog.collectionList" />
-    </v-dialog>
-
-    <v-dialog
       v-model="dialog.collectionUpload"
       max-width="450"
     >
@@ -166,7 +159,6 @@ export default {
       dialog: {
         login: false,
         register: false,
-        collectionList: false,
         collectionUpload: false,
       },
     };
@@ -214,8 +206,7 @@ export default {
   components: {
     LoginCard: () => import('@/components/account/LoginCard.vue'),
     RegisterCard: () => import('@/components/account/RegisterCard.vue'),
-    CollectionListCard: () => import('@/components/account/CollectionListCard.vue'),
-    CollectionUploadCard: () => import('@/components/account/CollectionUploadCard.vue'),
+    CollectionUploadCard: () => import('@/components/collection/UploadCard.vue'),
     LanguageMenu: () => import('@/components/LanguageMenu.vue'),
   },
 };

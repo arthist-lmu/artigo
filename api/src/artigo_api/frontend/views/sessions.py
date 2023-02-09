@@ -48,14 +48,14 @@ class SessionsView(APIView):
             .annotate(
                 rois=Coalesce(Count('userrois'), 0),
                 taggings=Coalesce(Count('usertaggings'), 0),
-                resources=ArrayAgg('resource__hash_id'),
+                resource_ids=ArrayAgg('resource_id'),
             ) \
             .annotate(annotations=F('rois') + F('taggings')) \
             .order_by('-gamesession__created') \
             .values(
                 'gamesession_id',
                 'gamesession__created',
-                'resources',
+                'resource_ids',
                 'annotations',
             )
 

@@ -4,12 +4,18 @@ import traceback
 
 from collections import defaultdict
 from django.db.models import Count, F
+from django.conf import settings
 from django.core.cache import cache
 from django.core.exceptions import ObjectDoesNotExist
 from frontend.models import *
 from frontend import cache as frontend_cache
-from frontend.utils import to_boolean, to_type, is_in, media_url_to_image
-from frontend.views.utils import ResourceViewHelper
+from frontend.utils import (
+    is_in,
+    to_type,
+    to_boolean,
+    media_url_to_image,
+    upload_url_to_image,
+)
 from ..utils import get_configs
 
 logger = logging.getLogger(__name__)
@@ -154,11 +160,7 @@ class GameController:
                         'message': f'{plugin_name}s_are_invalid',
                     }
 
-        game = self.merge_to_game(
-            result,
-            resource_ids,
-            query['retrieve_metadata'],
-        )
+        game = self.merge_to_game(result, resource_ids)
         
         # logger.info(f'[Game Controller] Game: {game}')
 
@@ -322,34 +324,31 @@ class GameController:
                         if key.lower() != 'type':
                             result[plugin_options][key] = to_type(value)
 
-        value = query.get('retrieve_metadata', False)
-        result['retrieve_metadata'] = to_boolean(value)
-
         return dict(result)
 
-    def merge_to_game(self, result, resource_ids, retrieve_metadata=False):
+    def merge_to_game(self, result, resource_ids):
         game = defaultdict(dict)
 
-        if retrieve_metadata:
-            resources = ResourceView()(resource_ids)
-        else:
-            resources = Resource.objects \
-                .filter(id__in=resource_ids) \
-                .values(
-                    'id',
-                    'hash_id',
-                )
+        resources = Resource.objects \
+            .filter(id__in=resource_ids) \
+            .values(
+                'id',
+                'hash_id',
+                'collection_id',
+            )
 
-            resources = {
-                str(x['id']): {
-                    'resource_id': str(x['id']),
-                    'path': media_url_to_image(x['hash_id']),
-                }
-                for x in list(resources)
+        resources = {
+            str(x['id']): {
+                'resource_id': str(x['id']),
+                'path': upload_url_to_image(x['hash_id']) \
+                    if x['collection_id'] and settings.DEBUG \
+                    else media_url_to_image(x['hash_id']),
             }
+            for x in list(resources)
+        }
 
-        # if there is no plugin-based information only
-        # return information about resources
+        # if there is no plugin-specific information
+        # only return information about resources
         if not result:
             return resources
 
@@ -369,10 +368,3 @@ class GameController:
                 game[resource_id].update(resources[resource_id])
 
         return dict(game)
-
-
-class ResourceView(ResourceViewHelper):
-    def __call__(self, resource_ids):
-        params = {'ids': map(str, resource_ids)}
-
-        return self.rpc_get(params)

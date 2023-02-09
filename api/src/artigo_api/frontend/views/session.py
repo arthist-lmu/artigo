@@ -10,12 +10,16 @@ from rest_framework.exceptions import (
 )
 from drf_spectacular.utils import extend_schema
 from frontend.models import (
+    Resource,
     Gamesession,
     Gameround,
     UserROI,
     UserTagging,
 )
-from frontend.serializers import SessionSerializer as Serializer
+from frontend.serializers import (
+    SessionSerializer,
+    ResourceSerializer,
+)
 from .utils import ResourceViewHelper
 
 logger = logging.getLogger(__name__)
@@ -56,7 +60,7 @@ class SessionView(APIView):
             )
 
         session = ResourceView()(resource_ids)
-        taggings = Serializer(
+        taggings = SessionSerializer(
             taggings,
             many=True,
             context={'ids': resource_ids},
@@ -67,6 +71,29 @@ class SessionView(APIView):
             
             if session.get(resource_id):
                 session[resource_id].update(tagging)
+            else:
+                resource = Resource.objects.get(id=resource_id)
+                resource = ResourceSerializer(resource).data
+
+                session[resource_id] = tagging
+                session[resource_id]['meta'] = []
+                session[resource_id]['path'] = resource['path']
+
+                for key, values in resource.items():
+                    if isinstance(values, (list, set)):
+                        for value in values:
+                            session[resource_id]['meta'].append({
+                                'name': key,
+                                'value_str': value['name'],
+                            })
+                    else:
+                        if not isinstance(values, dict):
+                            values = { 'name': values }
+
+                        session[resource_id]['meta'].append({
+                            'name': key,
+                            'value_str': values['name'],
+                        })
 
         return Response(session.values())
 

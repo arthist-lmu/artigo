@@ -72,7 +72,7 @@
           :cols="$vuetify.breakpoint.mdAndDown ? 12 : 10"
         >
           <v-btn
-            @click="goToGame()"
+            @click="goTo('game')"
             outlined
             x-large
             rounded
@@ -82,7 +82,7 @@
           </v-btn>
 
           <v-btn
-            @click="search('', 'all-text')"
+            @click="goTo('search')"
             :title="$t('search.title')"
             class="ml-2"
             x-large
@@ -126,12 +126,14 @@ export default {
       const query = { [field]: value };
       this.$store.dispatch('search/post', { query });
     },
-    goToGame() {
-      if (!this.$vuetify.breakpoint.mdAndDown) {
-        this.$store.commit('game/updateDialog', { params: {} });
-        this.$router.push({ name: 'game' });
+    goTo(name) {
+      if (name === 'game') {
+        if (!this.$vuetify.breakpoint.mdAndDown) {
+          this.$store.commit('game/updateDialog', { params: {} });
+        }
+        this.drawer = true;
       }
-      this.drawer = true;
+      this.$router.push({ name });
     },
   },
   computed: {

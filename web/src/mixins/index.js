@@ -13,6 +13,14 @@ export default {
       }
       return array;
     },
+    rsplit(x, delimiter, maxsplit) {
+      x = x.split(delimiter || /s+/);
+      if (x.length - 1 > maxsplit) {
+        x = x.slice(0, -maxsplit).join(delimiter);
+        x = [x].concat(x.slice(-maxsplit));
+      }
+      return x;
+    },
     isEqual(x, y) {
       return JSON.stringify(x) === JSON.stringify(y);
     },

@@ -10,7 +10,6 @@ import traceback
 from pathlib import Path
 from django.conf import settings
 from django.db.models import Count
-from rest_framework import permissions
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.exceptions import APIException
@@ -22,36 +21,8 @@ from frontend.utils import (
     check_extension,
 )
 from frontend.models import Collection, Resource
-from frontend.serializers import CollectionCountSerializer as Serializer
 
 logger = logging.getLogger(__name__)
-
-
-@extend_schema(methods=['POST'], exclude=True)
-class CollectionView(APIView):
-    def post(self, request, format=None):
-        if not request.user.is_authenticated:
-            raise APIException('not_authenticated')
-
-        try:
-            collections = Collection.objects.filter(user=request.user) \
-                .annotate(count=Count('resources')) \
-                .values(
-                    'hash_id',
-                    'name',
-                    'status',
-                    'progress',
-                    'date',
-                    'count',
-                )
-
-            collections = Serializer(collections, many=True).data
-
-            return Response({'collections': collections})
-        except Exception as error:
-            logger.error(traceback.format_exc())
-
-        raise APIException('unknown_error')
 
 
 @extend_schema(methods=['POST'], exclude=True)

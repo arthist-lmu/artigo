@@ -6,112 +6,60 @@
     flat
   >
     <div
-      v-for="(name, i) in Object.keys(params)"
+      v-for="(name, i) in Object.keys(data)"
       :key="name"
+      :class="{
+        'border-left': (i < (3 - 1) && !showMore) || (i < Object.keys(data).length - 1 && showMore),
+        active: stepper === i + 1
+      }"
     >
-      <v-stepper-step
-        edit-icon="mdi-check"
-        :complete="stepper > getStep(i)"
-        :step="getStep(i)"
-        editable
-      >
-        {{ $t('game.params')[name].title }}
-
-        <small class="mt-1">
-          <span v-if="typeof params[name].default === 'string'">
-            {{ $t(`game.params.${name}.fields.${params[name].default}`) }}
-          </span>
-
-          <span v-if="typeof params[name].default === 'number'">
-            {{ $tc(`game.params.${name}.suffix`, params[name].default) }}
-          </span>
-        </small>
-      </v-stepper-step>
-
-      <v-stepper-content
-        :step="getStep(i)"
-        :class="stepper === getStep(i) ? 'active' : undefined"
-      >
-        <v-select
-          v-if="typeof params[name].default === 'string'"
-          v-model="params[name].default"
-          :items="params[name].items"
-          class="mt-1"
-          hide-details
-          single-line
-          outlined
-          rounded
-          dense
-        >
-          <template v-slot:item="{ item }">
-            {{ $t(`game.params.${name}.fields.${item}`) }}
-          </template>
-
-          <template v-slot:selection="{ item }">
-            {{ $t(`game.params.${name}.fields.${item}`) }}
-          </template>
-        </v-select>
-
-        <v-slider
-          v-if="typeof params[name].default === 'number'"
-          v-model="params[name].default"
-          :min="params[name].min"
-          :max="params[name].max"
-          :step="params[name].step"
-          append-icon="mdi-chevron-right"
-          prepend-icon="mdi-chevron-left"
-          hide-details
-          dense
-        />
-      </v-stepper-content>
-    </div>
-
-    <template v-if="showMore">
-      <div
-        v-for="(config, i) in configs"
-        :key="config.name"
-      >
+      <template v-if="i < 3 || showMore">
         <v-stepper-step
-          :class="{ disabled: items[config.name].length > 1 }"
-          :complete="stepper > getStep(i, isPlugin = true)"
-          :step="getStep(i, isPlugin = true)"
-          :editable="items[config.name].length > 1"
-          edit-icon="mdi-check"
+          :class="{ disabled: data[name].default === undefined }"
+          :complete="stepper > i + 1"
+          :step="i + 1"
+          :editable="data[name].default !== undefined"
           complete-icon="mdi-check"
+          edit-icon="mdi-check"
         >
-          {{ $t(`game.plugins.${config.name}.title`) }}
+          {{ $t('game.params')[name].title }}
 
           <small class="mt-1">
-            {{ $t(`game.plugins.${config.name}.fields.${data[config.name]}`) }}
+            <span v-if="typeof data[name].default === 'string'">
+              {{ $t(`game.params.${name}.fields.${data[name].default}`) }}
+            </span>
+
+            <span v-if="typeof data[name].default === 'number'">
+              {{ $tc(`game.params.${name}.suffix`, data[name].default) }}
+            </span>
           </small>
         </v-stepper-step>
 
-        <v-stepper-content :step="getStep(i, isPlugin = true)">
-          <v-select
-            v-model="data[config.name]"
-            :items="items[config.name]"
-            item-value="name"
-            class="mt-1"
-            hide-details
-            single-line
-            outlined
-            rounded
-            dense
-          >
-            <template v-slot:item="{ item }">
-              {{ $t(`game.plugins.${config.name}.fields.${item.name}`) }}
-            </template>
+        <v-stepper-content :step="i + 1">
+          <template v-if="typeof data[name].default === 'string'">
+            <v-select
+              v-model="data[name].default"
+              :items="data[name].items"
+              class="mt-1"
+              hide-details
+              single-line
+              outlined
+              rounded
+              dense
+            >
+              <template v-slot:item="{ item }">
+                {{ $t(`game.params.${name}.fields.${item}`) }}
+              </template>
 
-            <template v-slot:selection="{ item }">
-              {{ $t(`game.plugins.${config.name}.fields.${item.name}`) }}
-            </template>
-          </v-select>
+              <template v-slot:selection="{ item }">
+                {{ $t(`game.params.${name}.fields.${item}`) }}
+              </template>
+            </v-select>
 
-          <template v-if="typeof data[config.name] === 'string'">
             <v-combobox
-              v-if="data[config.name].startsWith('custom_')"
-              v-model="data[`${config.name.slice(0, -1)}_inputs`]"
-              :placeholder="$t(`game.inputs.${data[config.name]}`)"
+              v-if="data[name].default.startsWith('custom_')"
+              v-model="data[name].params[`${data[name].default.split('_')[1]}_inputs`]"
+              :placeholder="$t(`game.inputs.${data[name].default}`)"
               class="mt-2"
               hide-details
               single-line
@@ -123,9 +71,10 @@
             >
               <template v-slot:selection="{ item }">
                 <v-chip
-                  class="my-1"
+                  class="mr-1 ml-0"
                   color="primary"
                   outlined
+                  dense
                   close
                   small
                 >
@@ -134,13 +83,26 @@
               </template>
             </v-combobox>
           </template>
+
+          <v-slider
+            v-if="typeof data[name].default === 'number'"
+            v-model="data[name].default"
+            :min="settings[name].min"
+            :max="settings[name].max"
+            :step="settings[name].step"
+            append-icon="mdi-chevron-right"
+            prepend-icon="mdi-chevron-left"
+            hide-details
+            dense
+          />
         </v-stepper-content>
-      </div>
-    </template>
+      </template>
+    </div>
   </v-stepper>
 </template>
 
 <script>
+// eslint-disable-next-line
 import configs from '/config.json';
 
 export default {
@@ -153,51 +115,35 @@ export default {
   },
   data() {
     return {
-      plugins: {
-        resources: {
-          icon: 'mdi-image-text',
-          multiple: false,
-        },
-        opponents: {
-          icon: 'mdi-account-outline',
-          multiple: false,
-          setDefault: true,
-        },
-        inputs: {
-          icon: 'mdi-tag-outline',
-          multiple: false,
-          setDefault: true,
-        },
-        taboos: {
-          icon: 'mdi-tag-off-outline',
-          multiple: false,
-          setDefault: true,
-        },
-        suggesters: {
-          icon: 'mdi-tag-check-outline',
-          multiple: true,
-          setDefault: true,
-        },
-      },
-      params: {
+      settings: {
         game_type: {
-          icon: 'mdi-gamepad-outline',
           default: 'tagging',
-          items: [],
+        },
+        game_round_duration: {
+          min: 20,
+          max: 600,
+          step: 20,
+          default: 60,
         },
         resource_rounds: {
-          icon: 'mdi-sort-numeric-variant',
-          default: 5,
           min: 1,
           max: 25,
           step: 1,
         },
-        game_round_duration: {
-          icon: 'mdi-alarm',
-          default: 60,
-          min: 10,
-          max: 60 * 60,
-          step: 10,
+        resource_type: {
+
+        },
+        opponent_type: {
+
+        },
+        input_type: {
+
+        },
+        taboo_type: {
+
+        },
+        suggester_type: {
+          multiple: true,
         },
       },
       configs: [],
@@ -207,130 +153,152 @@ export default {
   },
   methods: {
     update() {
-      const values = {
+      const input = {
         score_type: [
           'annotation_validated_score',
           'opponent_validated_score',
         ],
         language: this.$i18n.locale,
       };
-      Object.keys(this.params).forEach((name) => {
-        values[name] = this.params[name].default;
-      });
-      if (values.game_type === 'roi') {
-        values.resource_min_roi_tags = 0;
-      }
-      Object.keys(this.data).forEach((name) => {
-        if (this.isArray(this.data[name])) {
-          values[name] = this.data[name];
-        } else if (
-          typeof this.data[name] === 'string'
-          && !this.data[name].startsWith('no_')
-        ) {
-          const pluginType = `${name.slice(0, -1)}_type`;
-          values[pluginType] = this.data[name];
+      Object.entries(this.data).forEach(([pluginType, { default: defaultValue, params }]) => {
+        if (defaultValue !== undefined) {
+          input[pluginType] = defaultValue;
+          if (params !== undefined) {
+            Object.entries(params).forEach(([configParam, values]) => {
+              if (!this.keyInObj(configParam, this.data)) {
+                if (
+                  (typeof values === 'string' && values.length)
+                  || (typeof values === 'number')
+                  || (this.isArray(values) && values.length)
+                ) {
+                  input[configParam] = values;
+                }
+              }
+            });
+          }
         }
       });
-      this.$emit('input', values);
-    },
-    getStep(i, isPlugin = false) {
-      if (isPlugin) {
-        return i + 1 + Object.keys(this.params).length;
+      if (this.data.game_type.default === 'roi') {
+        input.resource_min_roi_tags = 0;
       }
-      return i + 1;
+      console.log(input);
+      this.$emit('input', input);
     },
     setDefault(params) {
       if (params && Object.keys(params).length) {
-        Object.keys(params).forEach((name) => {
-          let field = `${name.split('_')[0]}s`;
-          if (this.keyInObj(name, this.params)) {
-            this.params[name].default = params[name];
-          } else if (this.keyInObj(field, this.data)) {
-            this.data[field] = params[name];
-            if (
-              typeof params[name] === 'string'
-              && params[name].startsWith('custom_')
-            ) {
-              field = `${field.slice(0, -1)}_inputs`;
-              this.data[field] = params[field];
+        Object.entries(params).forEach(([name, values]) => {
+          if (this.keyInObj(name, this.data)) {
+            this.$set(this.data[name], 'default', values);
+          } else {
+            const configName = name.split('_')[0];
+            const pluginType = `${configName}_type`;
+            if (this.keyInObj(pluginType, this.data)) {
+              if (!this.keyInObj('params', this.data[pluginType])) {
+                this.$set(this.data[pluginType], 'params', {});
+              }
+              if (this.isArray(values)) {
+                this.$set(this.data[pluginType].params, name, []);
+                values.forEach((value, i) => {
+                  this.$set(this.data[pluginType].params[name], i, value);
+                });
+              } else {
+                this.$set(this.data[pluginType].params, name, values);
+              }
             }
           }
         });
       }
     },
   },
-  computed: {
-    items() {
-      const items = {};
-      const game_type = this.params.game_type.default;
-      this.configs.forEach(({ name, plugins }) => {
-        if (this.plugins[name].setDefault) {
-          items[name] = [{
-            name: `no_${name}`,
-            default: true,
-          }];
-        }
-        plugins.forEach((plugin) => {
-          if (plugin.game_types.includes(game_type)) {
-            if (this.keyInObj(name, items)) {
-              items[name].push(plugin);
-            } else {
-              items[name] = [plugin];
-            }
-          }
-        });
-      });
-      return items;
-    },
-  },
   watch: {
-    defaultParams(values) {
-      this.setDefault(values);
-    },
-    items: {
-      handler(values) {
-        this.data = {};
-        Object.keys(values).forEach((name) => {
-          values[name].forEach((plugin) => {
-            if (plugin.default) {
-              this.$set(this.data, name, plugin.name);
-            }
-          });
-        });
-        this.setDefault(this.defaultParams);
-      },
-      deep: true,
-    },
-    params: {
-      handler() {
-        this.update();
-      },
-      deep: true,
-    },
     data: {
       handler() {
         this.update();
       },
       deep: true,
     },
+    defaultParams(values) {
+      this.setDefault(values);
+    },
+    'data.game_type.default': {
+      handler(gameType) {
+        Object.keys(this.$data.data).forEach((configParam) => {
+          if (configParam.split('_')[0] !== 'game') {
+            this.$delete(this.data, configParam);
+          }
+        });
+        this.configs.forEach(({ name: configName, plugins }) => {
+          const pluginType = `${configName}_type`;
+          plugins.forEach((plugin) => {
+            if (
+              plugin.game_types.includes(gameType)
+              && this.keyInObj(pluginType, this.settings)
+            ) {
+              if (!this.keyInObj(pluginType, this.data)) {
+                this.$set(this.data, pluginType, {});
+              }
+              if (!this.keyInObj('params', this.data[pluginType])) {
+                this.$set(this.data[pluginType], 'params', {});
+              }
+              if (!this.keyInObj('items', this.data[pluginType])) {
+                this.$set(this.data[pluginType], 'items', []);
+              }
+              this.data[pluginType].items.push(plugin.name);
+              if (plugin.default) {
+                this.$set(this.data[pluginType], 'default', plugin.name);
+              }
+              if (plugin.params !== undefined) {
+                Object.entries(plugin.params).forEach(([param, values]) => {
+                  const configParam = `${configName}_${param}`;
+                  if (this.keyInObj(configParam, this.settings)) {
+                    if (!this.keyInObj(configParam, this.data)) {
+                      this.$set(this.data, configParam, {});
+                    }
+                    this.$set(this.data[configParam], 'default', values);
+                  } else {
+                    this.$set(this.data[pluginType].params, configParam, values);
+                  }
+                });
+              }
+            }
+          });
+          if (
+            this.keyInObj(pluginType, this.data)
+            && this.keyInObj('items', this.data[pluginType])
+            && !this.keyInObj('default', this.data[pluginType])
+          ) {
+            this.$set(this.data[pluginType], 'default', `no_${configName}`);
+            this.data[pluginType].items.unshift(`no_${configName}`);
+          }
+        });
+        this.setDefault(this.defaultParams);
+      },
+    },
   },
   created() {
     this.configs = [];
-    const values = new Set();
-    Object.keys(configs).forEach((name) => {
-      if (this.keyInObj(name, this.$t('game.plugins'))) {
-        this.configs.push({
-          name,
-          plugins: configs[name],
+    let gameItems = new Set();
+    Object.keys(configs).forEach((configName) => {
+      const plugins = configs[configName];
+      this.configs.push({
+        name: configName,
+        plugins,
+      });
+      plugins.forEach(({ game_types }) => {
+        game_types.forEach((value) => {
+          gameItems.add(value);
         });
-        configs[name].forEach(({ game_types }) => {
-          game_types.forEach((value) => {
-            values.add(value);
-          });
-        });
+      });
+    });
+    gameItems = Array.from(gameItems);
+    this.$set(this.settings.game_type, 'items', gameItems);
+    Object.entries(this.settings).forEach(([configParam, values]) => {
+      this.$set(this.data, configParam, {});
+      if (this.keyInObj('default', values)) {
+        this.$set(this.data[configParam], 'default', values.default);
       }
     });
-    this.params.game_type.items = Array.from(values);
+    this.$set(this.data.game_type, 'items', gameItems);
   },
 };
 </script>

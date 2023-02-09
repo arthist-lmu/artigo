@@ -22,7 +22,7 @@
       </v-col>
     </v-card-title>
 
-    <v-card-text class="pt-4">
+    <v-card-text class="my-4 pb-0">
       <SelectStepper
         v-model="params"
         :showMore="showMore"

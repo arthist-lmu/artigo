@@ -59,6 +59,10 @@ span.clip.w100 {
   background-color: rgb(247, 248, 251);
 }
 
+.v-toolbar.search .v-toolbar__content {
+  align-items: start;
+}
+
 .v-toolbar__content .v-btn.v-btn--icon.v-size--default {
   height: 36px !important;
   width: 36px !important;
@@ -121,6 +125,7 @@ span.clip.w100 {
 .v-select.v-select--chips.v-input--dense .v-select__selections {
   overflow-x: hidden;
   overflow-y: auto;
+  min-height: 30px !important;
   max-height: 73px;
 }
 
@@ -154,13 +159,21 @@ span.clip.w100 {
   padding-top: 8px;
 }
 
-.v-stepper--vertical > div:not(:last-child) .v-stepper__content {
+.v-stepper--vertical .border-left .v-stepper__content {
   border-left: 1px solid rgba(0, 0, 0, 0.12) !important;
 }
 
 .v-stepper__step.disabled .v-stepper__step__step {
   background-color: rgba(0, 0, 0, 0.16) !important;
   border-color: rgba(0, 0, 0, 0.16) !important;
+}
+
+.v-stepper--vertical :not(.active):not(.border-left) > .v-stepper__content {
+  display: none;
+}
+
+.v-stepper--vertical .active > .v-stepper__content .v-stepper__wrapper {
+  overflow: inherit !important;
 }
 
 .v-stepper__step__step .v-stepper__label,
@@ -175,10 +188,6 @@ span.clip.w100 {
 
 .v-text-field--single-line .v-select__selections {
   margin: 5px 0;
-}
-
-.v-stepper__content.active .v-stepper__wrapper {
-  overflow: inherit !important;
 }
 
 .v-slide-group__prev--disabled,

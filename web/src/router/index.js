@@ -63,7 +63,6 @@ const router = new VueRouter({
             title: 'about.title',
             layout: DefaultLayout,
             dark: true,
-            hideSearchBar: true,
           },
         },
         {
@@ -74,6 +73,15 @@ const router = new VueRouter({
             title: 'search.title',
             layout: DefaultLayout,
             hideSearchBar: true,
+          },
+        },
+        {
+          path: 'collections',
+          name: 'collections',
+          component: () => import('@/views/Collections.vue'),
+          meta: {
+            title: 'collections.title',
+            layout: DefaultLayout,
           },
         },
         {

@@ -21,7 +21,7 @@
       <v-form v-model="isFormValid">
         <v-text-field
           v-model="collection.name"
-          :placeholder="$t('collection.fields.name')"
+          :placeholder="$t('user.upload.fields.name')"
           :rules="[checkLength]"
           class="mb-1"
           tabindex="0"
@@ -55,13 +55,6 @@
         {{ $t("user.upload.title") }}
       </v-btn>
     </v-card-actions>
-
-    <v-dialog
-      v-model="dialog.collectionList"
-      max-width="900"
-    >
-      <CollectionListCard v-model="dialog.collectionList" />
-    </v-dialog>
   </v-card>
 </template>
 
@@ -78,9 +71,6 @@ export default {
     return {
       collection: {},
       isFormValid: false,
-      dialog: {
-        collectionList: false,
-      },
     };
   },
   methods: {
@@ -126,13 +116,12 @@ export default {
   watch: {
     timestamp() {
       if (this.isFormValid && this.status) {
-        this.dialog.collectionList = true;
+        this.$router.push({ name: 'collections' });
       }
     },
   },
   components: {
-    DropFileInput: () => import('@/components/account/DropFileInput.vue'),
-    CollectionListCard: () => import('@/components/account/CollectionListCard.vue'),
+    DropFileInput: () => import('@/components/collection/DropFileInput.vue'),
   },
 };
 </script>

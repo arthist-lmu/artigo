@@ -27,7 +27,7 @@
             mdi-cloud-upload-outline
           </v-icon>
 
-          <div>{{ $t("collection.fields.drag-file") }}</div>
+          <div>{{ $t("user.upload.fields.drag-file") }}</div>
 
           <v-btn
             @click="$refs.input.click();"
@@ -36,7 +36,7 @@
             outlined
             rounded
           >
-            {{ $t("collection.fields.browse-file") }}
+            {{ $t("user.upload.fields.browse-file") }}
           </v-btn>
         </div>
       </label>
