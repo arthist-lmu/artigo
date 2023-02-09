@@ -51,6 +51,12 @@ Copy the contents of `.env.example` to `.env` and adjust the settings.
 	sudo docker-compose exec search python3 -m artigo_search --mode client --task insert
 	```
 
+6. Create the unprivileged artigo user and group to own the files:
+	```sh
+	addgroup --system --gid 1998 artigo \
+    && adduser --system --uid 1999 --ingroup artigo artigo
+	```
+
 
 ## Miscellaneous
 
