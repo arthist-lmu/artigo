@@ -1,7 +1,9 @@
+import random
 import logging
 
 from itertools import groupby
 from rest_framework import serializers
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from dj_rest_auth.serializers import (
     UserDetailsSerializer,
@@ -11,6 +13,7 @@ from dj_rest_auth.registration.serializers import RegisterSerializer
 from frontend.models import *
 from frontend.utils import (
     media_url_to_image,
+    upload_url_to_image,
     CustomAllAuthPasswordResetForm,
 )
 
@@ -173,7 +176,7 @@ class CustomPasswordResetSerializer(PasswordResetSerializer):
 
 
 class CollectionCountSerializer(serializers.ModelSerializer):
-    count = serializers.IntegerField()
+    resources = serializers.ReadOnlyField(source='resource_ids')
 
     class Meta:
         model = Collection
@@ -182,10 +185,23 @@ class CollectionCountSerializer(serializers.ModelSerializer):
             'name',
             'status',
             'progress',
-            'date',
-            'count',
+            'created',
+            'resources',
         )
         list_serializer_class = ListSerializer
+
+    def to_representation(self, data):
+        data = super().to_representation(data)
+
+        random.shuffle(data['resources'])
+        resource = Resource.objects.get(id=data['resources'][0])
+
+        if settings.DEBUG:
+            data['path'] = upload_url_to_image(resource.hash_id)
+        else:
+            data['path'] = media_url_to_image(resource.hash_id)
+
+        return data
 
 
 class SourceSerializer(serializers.ModelSerializer):
@@ -226,6 +242,7 @@ class ResourceSerializer(serializers.ModelSerializer):
         model = Resource
         fields = (
             'id',
+            'collection_id',
             'hash_id',
             'titles',
             'creators',
@@ -241,7 +258,14 @@ class ResourceSerializer(serializers.ModelSerializer):
 
     def to_representation(self, data):
         data = super().to_representation(data)
-        data['source']['name'] = data['source']['name'].title()
+
+        if data.get('source') is not None:
+            data['source']['name'] = data['source']['name'].title()
+
+        if settings.DEBUG and data.get('collection_id'):
+            data['path'] = upload_url_to_image(data['hash_id'])
+        else:
+            data['path'] = media_url_to_image(data['hash_id'])
 
         return data
 
@@ -430,6 +454,7 @@ class TagROISerializer(serializers.ModelSerializer):
 
 
 class SessionSerializer(serializers.ModelSerializer):
+    collection_id = serializers.ReadOnlyField(source='resource__collection_id')
     resource_id = serializers.ReadOnlyField()
     id = serializers.ReadOnlyField(source='tag_id')
     name = serializers.ReadOnlyField(source='tag__name')
@@ -438,6 +463,7 @@ class SessionSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserTagging
         fields = (
+            'collection_id',
             'resource_id',
             'id',
             'name',
@@ -449,7 +475,7 @@ class SessionSerializer(serializers.ModelSerializer):
 class SessionCountSerializer(serializers.ModelSerializer):
     id = serializers.ReadOnlyField(source='gamesession_id')
     created = serializers.ReadOnlyField(source='gamesession__created')
-    resources = serializers.ReadOnlyField()
+    resources = serializers.ReadOnlyField(source='resource_ids')
     annotations = serializers.ReadOnlyField()
 
     class Meta:
@@ -465,7 +491,14 @@ class SessionCountSerializer(serializers.ModelSerializer):
     def to_representation(self, data):
         data = super().to_representation(data)
 
-        resource_id = data.pop('resources')[0]
-        data['path'] = media_url_to_image(resource_id)
+        resource_ids = data.pop('resources')
+        random.shuffle(resource_ids)
+
+        resource = Resource.objects.get(id=resource_ids[0])
+
+        if settings.DEBUG and resource.collection_id:
+            data['path'] = upload_url_to_image(resource.hash_id)
+        else:
+            data['path'] = media_url_to_image(resource.hash_id)
 
         return data
