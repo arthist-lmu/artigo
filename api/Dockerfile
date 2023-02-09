@@ -4,7 +4,7 @@ ENV PYTHONPATH=/api/src/
 ENV POETRY_VIRTUALENVS_CREATE=False
 
 RUN addgroup --system --gid 1998 artigo \
-    && adduser --system --ingroup --uid 1999 artigo artigo
+    && adduser --system --ingroup artigo --uid 1999 artigo
 
 RUN apt update && apt install -y build-essential python-dev
 RUN pip install --no-cache-dir poetry

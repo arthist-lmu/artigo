@@ -5,7 +5,7 @@ ENV POETRY_VIRTUALENVS_CREATE=False
 RUN pip install --no-cache-dir poetry
 
 RUN addgroup --system --gid 1998 artigo \
-    && adduser --system --ingroup --uid 1999 artigo artigo
+    && adduser --system --ingroup artigo --uid 1999 artigo
 
 COPY /search/pyproject.toml /search/poetry.lock /
 RUN cd /search; poetry install
