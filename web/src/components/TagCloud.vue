@@ -28,7 +28,7 @@ export default {
   },
   computed: {
     tagSizes() {
-      const tags = [];
+      let tags = {};
       this.tags.forEach(({
         id, language, name, count,
       }) => {
@@ -44,9 +44,12 @@ export default {
           language === this.$i18n.locale
           || language === undefined
         ) {
-          tags.push({ id, name, size });
+          if (!this.keyInObj(id, tags)) {
+            tags[id] = { id, name, size };
+          }
         }
       });
+      tags = Object.values(tags);
       if (tags.length > 10) {
         return tags.slice(0, 10);
       }

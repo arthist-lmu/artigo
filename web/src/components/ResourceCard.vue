@@ -243,7 +243,7 @@ export default {
       return [this.$t('resource.default.creator')];
     },
     tags() {
-      const tags = [];
+      let tags = {};
       if (this.keyInObj('tags', this.entry)) {
         this.entry.tags.forEach(({
           id, language, name, count,
@@ -253,9 +253,12 @@ export default {
             || language === undefined
           ) {
             if (count === undefined) count = 1;
-            tags.push({ id, name, count });
+            if (!this.keyInObj(id, tags)) {
+              tags[id] = { id, name, count };
+            }
           }
         });
+        tags = Object.values(tags);
         tags.sort((a, b) => b.count - a.count);
         if (this.moreTags && tags.length > 15) {
           return tags.slice(0, 15);
