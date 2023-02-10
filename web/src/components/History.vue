@@ -18,7 +18,7 @@
               <template v-slot:activator="{ on, attrs }">
                 <v-card
                   v-if="item.image"
-                  class="grid-item"
+                  class="history-item"
                   flat
                 >
                   <img
@@ -112,12 +112,12 @@ export default {
 </style>
 
 <style scoped>
-.grid-item {
+.history-item {
   position: relative;
   overflow: hidden;
 }
 
-.grid-item > img {
+.history-item > img {
   transition: all 0.5s ease;
   filter: grayscale(100%);
   transform: scale(1.05);
@@ -129,7 +129,7 @@ export default {
   height: 100%;
 }
 
-.grid-item:hover > img {
+.history-item:hover > img {
   transform: scale(1.3);
   filter: grayscale(0%);
 }

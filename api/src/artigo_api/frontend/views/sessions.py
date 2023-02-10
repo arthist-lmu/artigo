@@ -35,6 +35,8 @@ class SessionsView(APIView):
         except:
             params['offset'] = 0
 
+        params['limit'] += params['offset']
+
         gamerounds = Gameround.objects.filter(user=request.user)
 
         if params.get('query'):
@@ -61,8 +63,7 @@ class SessionsView(APIView):
 
         result = {'total': len(gamerounds)}
 
-        limit = params['offset'] + params['limit']
-        gamerounds = gamerounds[params['offset']:limit]
+        gamerounds = gamerounds[params['offset']:params['limit']]
         gamerounds = Serializer(gamerounds, many=True).data
 
         result['offset'] = params['offset']

@@ -16,6 +16,15 @@
 
         <v-spacer />
 
+        <MobileMenu
+          v-if="$vuetify.breakpoint.mobile"
+          :dark="dark"
+        />
+        <DefaultMenu
+          v-else
+          :dark="dark"
+        />
+
         <v-btn
           v-if="!(hideSearchBar || $vuetify.breakpoint.mobile)"
           @click="goTo('search')"
@@ -29,15 +38,6 @@
             mdi-magnify
           </v-icon>
         </v-btn>
-
-        <MobileMenu
-          v-if="$vuetify.breakpoint.mobile"
-          :dark="dark"
-        />
-        <DefaultMenu
-          v-else
-          :dark="dark"
-        />
 
         <UserMenu :dark="dark" />
       </v-row>

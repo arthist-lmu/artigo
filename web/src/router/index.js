@@ -38,7 +38,6 @@ const router = new VueRouter({
           meta: {
             layout: DefaultLayout,
             dark: true,
-            hideSearchBar: true,
           },
         },
         {

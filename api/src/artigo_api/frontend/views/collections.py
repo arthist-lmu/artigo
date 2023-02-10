@@ -32,6 +32,8 @@ class CollectionsView(APIView):
         except:
             params['offset'] = 0
 
+        params['limit'] += params['offset']
+
         collections = Collection.objects.filter(user=request.user)
 
         if params.get('query'):
@@ -60,8 +62,7 @@ class CollectionsView(APIView):
 
         result = {'total': len(collections)}
 
-        limit = params['offset'] + params['limit']
-        collections = collections[params['offset']:limit]
+        collections = collections[params['offset']:params['limit']]
         collections = Serializer(collections, many=True).data
 
         result['offset'] = params['offset']

@@ -50,6 +50,35 @@ span.clip.w100 {
   width: 100%;
 }
 
+.grid-item {
+  border-radius: 28px;
+  position: relative;
+  overflow: hidden;
+  min-width: 80px;
+  cursor: pointer;
+  display: block;
+  height: 225px;
+  flex-grow: 1;
+}
+
+.grid-item[disabled] {
+  display: none;
+}
+
+.grid-item > img {
+  transition: transform 0.5s ease;
+  transform: scale(1.05);
+  object-position: top;
+  object-fit: cover;
+  min-width: 100%;
+  max-width: 100%;
+  height: 100%;
+}
+
+.grid-item:hover > img {
+  transform: scale(1.3);
+}
+
 .v-application.dark-variant a {
   text-decoration: none;
   color: #ffffff;
@@ -163,17 +192,17 @@ span.clip.w100 {
   border-left: 1px solid rgba(0, 0, 0, 0.12) !important;
 }
 
-.v-stepper__step.disabled .v-stepper__step__step {
-  background-color: rgba(0, 0, 0, 0.16) !important;
-  border-color: rgba(0, 0, 0, 0.16) !important;
-}
-
 .v-stepper--vertical :not(.active):not(.border-left) > .v-stepper__content {
   display: none;
 }
 
 .v-stepper--vertical .active > .v-stepper__content .v-stepper__wrapper {
   overflow: inherit !important;
+}
+
+.v-stepper__step.disabled .v-stepper__step__step {
+  background-color: rgba(0, 0, 0, 0.16) !important;
+  border-color: rgba(0, 0, 0, 0.16) !important;
 }
 
 .v-stepper__step__step .v-stepper__label,
@@ -193,4 +222,8 @@ span.clip.w100 {
 .v-slide-group__prev--disabled,
 .v-slide-group__next--disabled {
   display: none !important;
+}
+
+.theme--dark.v-sheet--outlined.transparent {
+  border: 2px solid rgb(255, 255, 255) !important;
 }

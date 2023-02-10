@@ -8,15 +8,12 @@
         align="right"
       >
         <v-btn
-          @click="showMore = !showMore;"
-          :title="$t('game.fields.settings')"
+          @click="goTo('about')"
+          :title="$t('about.title')"
           icon
         >
-          <v-icon v-if="showMore">
-            mdi-cog-off-outline
-          </v-icon>
-          <v-icon v-else>
-            mdi-cog-outline
+          <v-icon>
+            mdi-help-circle-outline
           </v-icon>
         </v-btn>
       </v-col>
@@ -53,7 +50,7 @@ export default {
   data() {
     return {
       params: {},
-      showMore: false,
+      showMore: true,
     };
   },
   methods: {
@@ -65,6 +62,10 @@ export default {
     },
     close() {
       this.$emit('input', false);
+    },
+    goTo(name) {
+      const route = this.$router.resolve({ name });
+      window.open(route.href, '_blank');
     },
   },
   components: {

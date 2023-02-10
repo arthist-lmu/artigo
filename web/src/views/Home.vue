@@ -82,15 +82,15 @@
           </v-btn>
 
           <v-btn
-            @click="goTo('search')"
-            :title="$t('search.title')"
+            @click="goTo('about')"
+            :title="$t('about.title')"
             class="ml-2"
             x-large
             icon
             dark
           >
             <v-icon>
-              mdi-magnify
+              mdi-help-circle-outline
             </v-icon>
           </v-btn>
         </v-col>

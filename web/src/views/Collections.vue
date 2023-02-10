@@ -5,6 +5,7 @@
     <DataIterator
       :component="component"
       store="collections"
+      :reload="true"
     />
   </v-container>
 </template>

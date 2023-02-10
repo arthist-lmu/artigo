@@ -79,7 +79,7 @@
         </v-list-item-action>
       </v-list-item>
 
-      <template>
+      <template v-if="!isAnonymous">
         <v-list-item
           v-if="data.n_collections > 0"
           @click="goTo('collections')"
@@ -115,9 +115,9 @@
             {{ $t("user.logout.title") }}
           </v-list-item-content>
         </v-list-item>
-
-        <v-divider />
       </template>
+
+      <v-divider />
 
       <LanguageMenu />
     </v-list>

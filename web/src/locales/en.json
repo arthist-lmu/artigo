@@ -110,6 +110,19 @@
       "summary": "Since 2010, {images} images were annotated with {taggings} tags by {users} players."
     }
   },
+  "description": {
+    "title": "Description",
+    "fields": {
+      "score-validated": "You get {n} points if the tag for this image was already given in an earlier game round",
+      "score-opponent": "You get {n} more points if you are playing with another player, and you use the same tag",
+      "score-first": "If you are the first to describe an image, you always get {n} points for each tag"
+    },
+    "texts": {
+      "preface": "Art history thrives on working with artworks and their digital reproductions. These are collected online in image catalogues, some of which contain several million objects. To search for images in such directories, descriptive texts are needed: a task you can help us with in a playful way—and learn a lot about art at the same time!",
+      "principle": "ARTigo is a collaborative platform and an example of open university research in which you participate as a player. As so-called <i>Games witha Purpose</i>, the games are not only fun, but also generate valuable data about images. All ARTigo games work like this: You are presented with an image. The goal is to describe this image within a certain time with keywords (<i>tags</i>) in such a way that as many points as possible are scored:",
+      "motivation": "The images you see during the game come from the Rijksmuseum in the Netherlands, for example. After you have played a predefined number of rounds, the metadata for the images become visible. In this way, you not only generate art-historical knowledge, but also collect it. Every tag you enter is saved and improves the search for artworks—a win-win situation. So, go for it!"
+    }
+  },
   "contributors": {
     "title": "Contributors",
     "fields": {

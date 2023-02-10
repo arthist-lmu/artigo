@@ -181,7 +181,6 @@ export default {
       if (this.data.game_type.default === 'roi') {
         input.resource_min_roi_tags = 0;
       }
-      console.log(input);
       this.$emit('input', input);
     },
     setDefault(params) {

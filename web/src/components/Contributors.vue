@@ -96,6 +96,7 @@ export default {
             { name: 'Fabian Bross' },
             { name: 'Laura Commare' },
             { name: 'Stefanie Schneider', url: 'https://www.kunstgeschichte.uni-muenchen.de/personen/wiss_ma/schneider/index.html', leader: true },
+            { name: 'Ricarda Vollmer' },
           ],
         },
         {

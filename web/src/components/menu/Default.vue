@@ -1,7 +1,6 @@
 <template>
-  <span>
+  <span v-if="isAnonymous">
     <v-dialog
-      v-if="isAnonymous"
       v-model="dialog.login"
       max-width="450"
     >
@@ -24,7 +23,6 @@
     </v-dialog>
 
     <v-dialog
-      v-if="isAnonymous"
       v-model="dialog.register"
       max-width="450"
     >
@@ -60,8 +58,8 @@ export default {
   data() {
     return {
       dialog: {
-        register: false,
         login: false,
+        register: false,
       },
     };
   },

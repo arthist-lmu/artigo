@@ -110,6 +110,19 @@
       "summary": "Seit 2010 wurden {images} Bilder von {users} Spieler:innen mit {taggings} Schlagwörtern annotiert."
     }
   },
+  "description": {
+    "title": "Beschreibung",
+    "fields": {
+      "score-validated": "{n} Punkte erhältst Du, wenn der Tag für dieses Bild bereits in einer früheren Spielrunde vergeben wurde",
+      "score-opponent": "{n} weitere Punkte gibt es, wenn Du mit einem:r Mitspieler:in spielst und ihr denselben Tag verwendet",
+      "score-first": "Wenn Du als Erster ein Bild beschreibst, erhältst Du immer {n} Punkte für jeden Tag"
+    },
+    "texts": {
+      "preface": "Kunstgeschichte lebt von der Arbeit mit Kunstwerken und ihren digitalen Reproduktionen. Diese werden online in Bildkatalogen gesammelt, die teilweise mehrere Millionen Objekte umfassen. Um Bilder in solchen Verzeichnissen suchen zu können, braucht es beschreibende Texte: eine Aufgabe, bei der Du uns spielerisch helfen kannst – und gleichzeitig viel über Kunst lernst!",
+      "principle": "ARTigo ist eine kollaborative Plattform und ein Beispiel für offene universitäre Forschung, an der Du als Spieler:in teilnimmst. Als sogenannte <i>Games with a Purpose</i> machen die Spiele nicht nur Spaß, sondern generieren auch wertvolle Daten über Bilder. Alle ARTigo-Spiele funktionieren so: Dir wird ein Bild vorgelegt. Ziel ist es, dieses Bild innerhalb einer bestimmten Zeit mit Schlagwörtern (<i>Tags</i>) so zu beschreiben, dass möglichst viele Punkte erzielt werden:",
+      "motivation": "Die Bilder, die du während des Spiels siehst, stammen zum Beispiel aus dem niederländischen Rijksmuseum. Nach einer von Dir festgelegten Anzahl von Spielrunden werden die Metadaten zu den Bildern sichtbar. So generierst Du nicht nur kunsthistorisches Wissen, sondern sammelst es auch. Jeder Tag, den Du eingibst, wird gespeichert und verbessert die Suche nach Kunstwerken – eine Win-Win-Situation. Also, nichts wie ran!"
+    }
+  },
   "contributors": {
     "title": "Mitwirkende",
     "fields": {

@@ -14,7 +14,7 @@
       />
 
       <v-fade-transition>
-        <v-container v-if="hover">
+        <v-container v-if="hover && entry.status === 'F'">
           <v-row
             justify="center"
             align="center"
@@ -53,6 +53,18 @@
 
               <span>{{ date }}</span>
             </div>
+          </v-col>
+
+          <v-col cols="auto">
+            <v-btn
+              @click.stop="remove"
+              color="white"
+              icon
+            >
+              <v-icon>
+                mdi-close
+              </v-icon>
+            </v-btn>
           </v-col>
         </v-row>
 
@@ -107,6 +119,11 @@ export default {
       this.$store.commit('game/updateDialog', { params });
       this.$router.push({ name: 'game' });
     },
+    remove() {
+      this.$store.dispatch('collection/remove', this.entry).then(() => {
+        this.$store.dispatch('collection/post');
+      });
+    },
     onError() {
       this.isDisabled = true;
     },
@@ -124,39 +141,22 @@ export default {
       return created.toLocaleTimeString(this.lang);
     },
   },
+  watch: {
+    'entry.status': {
+      handler(value) {
+        if (value === 'F') {
+          this.isDisabled = false;
+        } else {
+          this.isDisabled = true;
+        }
+      },
+      immediate: true,
+    },
+  },
 };
 </script>
 
 <style scoped>
-.grid-item {
-  border-radius: 28px;
-  position: relative;
-  overflow: hidden;
-  min-width: 80px;
-  cursor: pointer;
-  display: block;
-  height: 225px;
-  flex-grow: 1;
-}
-
-.grid-item[disabled] {
-  display: none;
-}
-
-.grid-item > img {
-  transition: transform 0.5s ease;
-  transform: scale(1.05);
-  object-position: top;
-  object-fit: cover;
-  min-width: 100%;
-  max-width: 100%;
-  height: 100%;
-}
-
-.grid-item:hover > img {
-  transform: scale(1.3);
-}
-
 .container {
   position: absolute;
   width: 100%;

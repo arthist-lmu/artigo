@@ -2,22 +2,23 @@
   <v-container>
     <GameDrawer />
 
-    <v-row
-      v-if="!$vuetify.breakpoint.mdAndDown"
-      ref="filler"
-    />
-
     <v-row ref="summary">
-      <v-col :class="$vuetify.breakpoint.mdAndDown ? 'px-1 py-6' : 'pa-12'">
-        <div :class="textSize">
+      <v-col :class="paddingClass">
+        <div :class="textClass">
           {{ $t("about.fields.summary", { images, taggings, users }) }}
         </div>
       </v-col>
     </v-row>
 
     <v-row>
-      <v-col :class="$vuetify.breakpoint.mdAndDown ? 'px-1 py-6' : 'pa-12'">
-        <div :class="textSize">
+      <v-col :class="paddingClass">
+        <Description />
+      </v-col>
+    </v-row>
+
+    <v-row>
+      <v-col :class="paddingClass">
+        <div :class="textClass">
           {{ $t("contributors.title") }}
         </div>
 
@@ -26,8 +27,8 @@
     </v-row>
 
     <v-row>
-      <v-col :class="$vuetify.breakpoint.mdAndDown ? 'px-1 py-6' : 'pa-12'">
-        <div :class="textSize">
+      <v-col :class="paddingClass">
+        <div :class="textClass">
           {{ $t("history.title") }}
         </div>
 
@@ -36,8 +37,8 @@
     </v-row>
 
     <v-row>
-      <v-col :class="$vuetify.breakpoint.mdAndDown ? 'px-1 py-6' : 'pa-12'">
-        <div :class="textSize">
+      <v-col :class="paddingClass">
+        <div :class="textClass">
           {{ $t("publications.title") }}
         </div>
 
@@ -50,7 +51,7 @@
 <script>
 export default {
   computed: {
-    textSize() {
+    textClass() {
       const values = ['accent--text', 'mb-6'];
       switch (this.$vuetify.breakpoint.name) {
         case 'xs':
@@ -64,6 +65,12 @@ export default {
           break;
       }
       return values;
+    },
+    paddingClass() {
+      if (this.$vuetify.breakpoint.mdAndDown) {
+        return ['px-1', 'py-6'];
+      }
+      return ['pa-12'];
     },
     data() {
       return this.$store.state.statistics.data;
@@ -100,6 +107,7 @@ export default {
   },
   components: {
     GameDrawer: () => import('@/components/game/Drawer.vue'),
+    Description: () => import('@/components/Description.vue'),
     Contributors: () => import('@/components/Contributors.vue'),
     History: () => import('@/components/History.vue'),
     Publications: () => import('@/components/Publications.vue'),

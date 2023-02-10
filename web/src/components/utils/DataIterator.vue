@@ -6,7 +6,7 @@
     hide-default-footer
   >
     <template v-slot:default="props">
-      <v-row :class="$vuetify.breakpoint.mdAndUp ? 'ma-n1' : undefined">
+      <v-row :class="{ 'ma-n1': $vuetify.breakpoint.mdAndUp }">
         <v-col
           v-for="entry in props.items"
           :key="entry.resource_id"
@@ -51,10 +51,16 @@ export default {
       type: String,
       required: true,
     },
+    reload: {
+      type: Boolean,
+      default: false,
+      required: false,
+    },
   },
   data() {
     return {
       page: 1,
+      checkInterval: null,
     };
   },
   computed: {
@@ -82,6 +88,19 @@ export default {
         default: return 3;
       }
     },
+  },
+  watch: {
+    entries() {
+      clearInterval(this.checkInterval);
+      if (this.reload) {
+        this.checkInterval = setInterval(() => {
+          this.$store.dispatch(`${this.store}/get`, {});
+        }, 10 * 1000);
+      }
+    },
+  },
+  beforeDestroy() {
+    clearInterval(this.checkInterval);
   },
   created() {
     this.$store.dispatch(`${this.store}/get`, {});
