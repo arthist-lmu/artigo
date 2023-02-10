@@ -1,11 +1,12 @@
 <template>
   <v-combobox
-    v-model="query"
+    v-model="query['all-text']"
     ref="input"
     @click:prepend-inner="onButton"
     @keyup.enter.native="search"
     :placeholder="$t(`${store}.fields.query`)"
     prepend-inner-icon="mdi-magnify"
+    :menu-props="{ maxHeight: 400, value: openMenu }"
     :dense="dense"
     hide-details
     rounded
@@ -13,10 +14,98 @@
     flat
   >
     <template v-slot:no-data>
+      <v-container
+        v-click-outside="onClickOutside"
+        class="pa-8"
+      >
+        <v-row
+          v-for="item in items"
+          :key="item.key"
+          class="mb-2"
+        >
+          <v-combobox
+            v-model="query[item.key]"
+            :ref="item.key"
+            :placeholder="$t('resource.metadata.fields')[item.key]"
+            append-icon=""
+            hide-details
+            single-line
+            outlined
+            multiple
+            rounded
+            dense
+            chips
+          >
+            <template v-slot:selection="{ attrs, item, selected }">
+              <v-chip
+                v-bind="attrs"
+                :input-value="selected"
+                color="primary"
+                outlined
+                close
+                small
+              >
+                {{ item }}
+              </v-chip>
+            </template>
+          </v-combobox>
+        </v-row>
 
+        <v-row>
+          <v-col
+            class="pa-0 pt-2"
+            align="right"
+          >
+            <v-btn
+              @click="search"
+              color="primary"
+              depressed
+              rounded
+            >
+              {{ $t('search.title') }}
+            </v-btn>
+
+            <v-btn
+              @click="reset"
+              :title="$t('search.fields.reset')"
+              color="grey"
+              class="ml-2"
+              icon
+            >
+              <v-icon>mdi-restore</v-icon>
+            </v-btn>
+          </v-col>
+        </v-row>
+      </v-container>
     </template>
 
     <template v-slot:append>
+      <template v-if="store === 'search'">
+        <v-badge
+          v-if="numberOfQueries > 0"
+          :content="numberOfQueries"
+          inline
+        >
+          <v-btn
+            @click="toggle"
+            icon
+          >
+            <v-icon>
+              mdi-tune-variant
+            </v-icon>
+          </v-btn>
+        </v-badge>
+        <v-btn
+          v-else
+          @click="toggle"
+          icon
+        >
+          <v-icon>
+            mdi-tune-variant
+          </v-icon>
+        </v-btn>
+      </template>
+
       <template v-if="total > 0">
         <v-divider
           class="mx-4"
@@ -74,12 +163,28 @@ export default {
   data() {
     return {
       page: 1,
-      query: null,
+      query: {},
+      openMenu: false,
+      items: [
+        { key: 'titles' },
+        { key: 'creators' },
+        { key: 'location' },
+        { key: 'institution' },
+        { key: 'tags' },
+      ],
     };
   },
   methods: {
+    reset() {
+      this.query = {};
+    },
+    toggle() {
+      this.openMenu = !this.openMenu;
+    },
     search() {
-      this.$store.dispatch(`${this.store}/get`, { 'query': this.query });
+      this.$store.dispatch(`${this.store}/get`, { 'query': this.query }).then(() => {
+        this.closeMenu();
+      });
     },
     onButton() {
       this.blurInput();
@@ -87,10 +192,21 @@ export default {
         this.search();
       });
     },
+    onClickOutside({ target }) {
+      if (this.$refs.input !== undefined) {
+        const input = this.$refs.input.$el;
+        if (!input.contains(target)) {
+          this.closeMenu();
+        }
+      }
+    },
     blurInput() {
       if (this.$refs.input !== undefined) {
         this.$refs.input.blur();
       }
+    },
+    closeMenu() {
+      this.openMenu = false;
     },
     nextPage() {
       this.page += 1;
@@ -100,6 +216,9 @@ export default {
     },
   },
   computed: {
+    params() {
+      return this.$store.state.search.params;
+    },
     total() {
       return this.$store.state[this.store].data.total;
     },
@@ -115,6 +234,15 @@ export default {
     numberOfPages() {
       return Math.ceil(this.total / this.itemsPerPage);
     },
+    numberOfQueries() {
+      let counter = 0;
+      Object.values(this.query).forEach((values) => {
+        if (values instanceof Array) {
+          counter += values.length;
+        }
+      });
+      return counter;
+    },
   },
   watch: {
     page(value) {
@@ -128,8 +256,35 @@ export default {
         this.$store.dispatch('sessions/get', { offset });
       }
     },
+    params: {
+      handler({ query }) {
+        this.query = {};
+        if (query) {
+          Object.keys(query).forEach((key) => {
+            let values = query[key];
+            if (!this.isArray(values)) {
+              values = [values];
+            }
+            if (key === 'all-text') {
+              [values] = values;
+            }
+            this.query[key] = values;
+          });
+        }
+      },
+      immediate: true,
+    },
     entries() {
       window.scrollTo(0, 0);
+    },
+    openMenu(value) {
+      if (value) {
+        this.blurInput();
+        this.$nextTick(() => {
+          // TODO: why doesn't this work?
+          this.$refs.titles[0].focus();
+        });
+      }
     },
   },
 };

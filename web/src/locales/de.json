@@ -115,7 +115,7 @@
     "fields": {
       "score-validated": "{n} Punkte erhältst Du, wenn der Tag für dieses Bild bereits in einer früheren Spielrunde vergeben wurde",
       "score-opponent": "{n} weitere Punkte gibt es, wenn Du mit einem:r Mitspieler:in spielst und ihr denselben Tag verwendet",
-      "score-first": "Wenn Du als Erster ein Bild beschreibst, erhältst Du immer {n} Punkte für jeden Tag"
+      "score-first": "Wenn Du als Erste:r ein Bild beschreibst, erhältst Du immer {n} Punkte für jeden Tag"
     },
     "texts": {
       "preface": "Kunstgeschichte lebt von der Arbeit mit Kunstwerken und ihren digitalen Reproduktionen. Diese werden online in Bildkatalogen gesammelt, die teilweise mehrere Millionen Objekte umfassen. Um Bilder in solchen Verzeichnissen suchen zu können, braucht es beschreibende Texte: eine Aufgabe, bei der Du uns spielerisch helfen kannst – und gleichzeitig viel über Kunst lernst!",

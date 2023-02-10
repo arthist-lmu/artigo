@@ -1,3 +1,4 @@
+import json
 import logging
 import traceback
 
@@ -37,13 +38,8 @@ class CollectionsView(APIView):
         collections = Collection.objects.filter(user=request.user)
 
         if params.get('query'):
-            if not isinstance(params['query'], (list, set)):
-                params['query'] = [params['query']]
-
-            query = Q()
-
-            for name in params['query']:
-                query |= Q(name__icontains=name)
+            name = json.loads(params['query'][0])['all-text']
+            query = Q(name__icontains=name.strip().lower())
 
             collections = collections.filter(query)
 

@@ -53,8 +53,7 @@ Copy the contents of `.env.example` to `.env` and adjust the settings.
 
 6. Create the unprivileged artigo user and group to own the files:
 	```sh
-	addgroup --system --gid 1998 artigo \
-    && adduser --system --uid 1999 --ingroup artigo artigo
+	addgroup --system --gid 1998 artigo && adduser --system --uid 1999 --ingroup artigo artigo
 	```
 
 
@@ -84,8 +83,9 @@ sudo docker-compose exec web npm run lint --fix
 ```
 
 ### Database schema migration
+To generate database schema migration files, use the following command:
 ```sh
-sudo docker compose -f compose-production.yaml exec api python manage.py migrate
+sudo docker-compose exec api python3 manage.py migrate
 ```
 
 ## Contributing
