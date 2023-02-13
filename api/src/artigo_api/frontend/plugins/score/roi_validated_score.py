@@ -45,8 +45,6 @@ class ROIValidatedScore(ScorePlugin):
         valid_tags = {x['tag_name']: x['data'] for x in valid_tags}
 
         for tag in tags:
-            tag['score'] = tag.get('score', 0)
-
             for roi in valid_tags.get(tag['name'], []):
                 if tag['valid'] and get_iou(tag, roi) >= self.iou_value:
                     tag['score'] += self.point_value

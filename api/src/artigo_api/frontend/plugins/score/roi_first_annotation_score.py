@@ -30,7 +30,5 @@ class ROIFirstAnnotationScore(ScorePlugin):
 
         if len(set(users)) == 0:
             for tag in tags:
-                tag['score'] = tag.get('score', 0)
-
                 if tag['valid']:
                     tag['score'] += self.point_value

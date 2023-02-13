@@ -36,11 +36,11 @@ def switch(request):
 
         gameround = gameround.latest('created')
     except ObjectDoesNotExist:
-        return {'type': 'error', 'message': 'outdated_gameround'}
+        return {'type': 'error', 'message': 'gameround_is_outdated'}
     except Exception as error:
         logger.error(traceback.format_exc())
 
-        return {'type': 'error', 'message': 'invalid_resource'}
+        return {'type': 'error', 'message': 'resource_is_invalid'}
 
     game_type = gameround.gamesession.game_type.name
 

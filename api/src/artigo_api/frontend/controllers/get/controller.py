@@ -290,31 +290,31 @@ class GameController:
                 if not key in ['type', 'type[]']:
                     result['game_options'][key] = to_type(value)
 
-        for plugin_name, plugin_manager in self.plugins.items():
-            plugin_type = f'{plugin_name}_type'
-            plugin_options = f'{plugin_name}_options'
+        for config_name, plugin_manager in self.plugins.items():
+            config_type = f'{config_name}_type'
+            config_options = f'{config_name}_options'
 
             if plugin_manager:
                 for plugin in plugin_manager.plugin_list:
                     config = plugin.get('config', {})
 
                     if is_in(self._type, config['game_types']):
-                        values = query.get(plugin_type)
+                        values = query.get(config_type)
 
                         if values is None:
-                            values = query.getlist(f'{plugin_type}[]')
+                            values = query.getlist(f'{config_type}[]')
                             
                         if values is not None:
                             if is_in(config['name'], values):
-                                result[plugin_type].append(config['type'])
+                                result[config_type].append(config['type'])
                         elif config.get('default', False):
-                            result[plugin_type].append(config['type'])
+                            result[config_type].append(config['type'])
 
-            if result.get(plugin_type):
-                result[plugin_options] = {}
+            if result.get(config_type):
+                result[config_options] = {}
 
                 for key, value in query.items():
-                    if key.startswith(f'{plugin_name}_'):
+                    if key.startswith(f'{config_name}_'):
                         if key.endswith('[]'):
                             value = query.getlist(key)
                             key = key.strip()[:-2]
@@ -322,7 +322,7 @@ class GameController:
                         key = key.split('_', 1)[-1]
 
                         if key.lower() != 'type':
-                            result[plugin_options][key] = to_type(value)
+                            result[config_options][key] = to_type(value)
 
         return dict(result)
 
@@ -347,24 +347,22 @@ class GameController:
             for x in list(resources)
         }
 
-        # if there is no plugin-specific information
-        # only return information about resources
-        if not result:
-            return resources
+        if result:
+            for key, values in result.items():
+                for value in values:
+                    if value.get('resource_id') is None:
+                        continue
 
-        for key, values in result.items():
-            for value in values:
-                if value.get('resource_id') is None:
-                    continue
+                    resource_id = str(value.pop('resource_id'))
 
-                resource_id = str(value.pop('resource_id'))
+                    for field, v in value.items():
+                        game[resource_id][f'{key}_{field}'] = v
 
-                for field, v in value.items():
-                    game[resource_id][f'{key}_{field}'] = v
+                    if game.get(resource_id) is None:
+                        game[resource_id] = {}
 
-                if game.get(resource_id) is None:
-                    game[resource_id] = {}
+                    game[resource_id].update(resources[resource_id])
 
-                game[resource_id].update(resources[resource_id])
+            return dict(game)
 
-        return dict(game)
+        return resources

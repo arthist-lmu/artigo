@@ -43,8 +43,8 @@ class InputController:
             # TODO: change handling of model_to_dict
             gameround = model_to_dict(gameround)
 
-        for plugin_name, plugin_manager in self.plugins.items():
-            plugin_type = f'{plugin_name}_type'
+        for config_name, plugin_manager in self.plugins.items():
+            config_type = f'{config_name}_type'
 
             if plugin_manager:
                 for plugin in plugin_manager.plugin_list:
@@ -54,10 +54,12 @@ class InputController:
                         parent_name = config['name'].split('_', 1)[0]
 
                         if config.get('default', False):
-                            result[plugin_type].append(config['type'])
+                            result[config_type].append(config['type'])
+                        elif gameround.get(f'{parent_name}_type'):
+                            result[config_type].append(config['type'])
 
-                        for child in gameround.get(f'{plugin_type}s', []):
+                        for child in gameround.get(f'{config_type}s', []):
                             if child.name == config['type']:
-                                result[plugin_type].append(child.name)
+                                result[config_type].append(child.name)
 
         return dict(result)

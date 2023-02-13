@@ -45,7 +45,5 @@ class TagFirstAnnotationScore(ScorePlugin):
             valid_tags = set(x.lower() for x in valid_tags)
 
             for tag in tags:
-                tag['score'] = tag.get('score', 0)
-
                 if tag['valid'] and tag['name'] in valid_tags:
                     tag['score'] += self.point_value
