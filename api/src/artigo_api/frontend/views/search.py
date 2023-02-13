@@ -49,6 +49,8 @@ class SearchView(RPCView):
                 for field, queries in query.items():
                     if isinstance(queries, str):
                         queries = queries.split()
+                    elif isinstance(queries, bool):
+                        continue
                     elif not isinstance(queries, (set, list)):
                         queries = [queries]
 

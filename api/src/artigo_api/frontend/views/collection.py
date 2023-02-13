@@ -229,16 +229,16 @@ class CollectionAddView(APIView):
                 params['metadata'] = file
 
         if not params.get('images'):
-            raise APIException('an_image_file_is_required')
+            raise APIException('image_file_is_required')
 
         collection_id = uuid.uuid4().hex
         collection_name = params['name']
 
         if len(collection_name) < 4:
-            raise APIException('this_name_is_too_short')
+            raise APIException('name_is_too_short')
 
         if len(collection_name) > 75:
-            raise APIException('this_name_is_too_long')
+            raise APIException('name_is_too_long')
 
         if settings.DEBUG:
             output_dir = os.path.join(
@@ -333,10 +333,10 @@ class CollectionRemoveView(APIView):
         if not hash_id:
             raise APIException('hash_id_is_required')
 
-        try:
-            collection = Collection.objects.get(hash_id=hash_id)
-            resources = Resource.objects.filter(collection=collection)
+        collection = Collection.objects.get(hash_id=hash_id)
+        resources = Resource.objects.filter(collection=collection)
 
+        try:
             if resources.count():
                 for resource in resources.values('hash_id'):
                     hash_id = resource['hash_id']
@@ -369,3 +369,45 @@ class CollectionRemoveView(APIView):
             logger.error(traceback.format_exc())
 
         raise APIException('unknown_error')
+
+
+@extend_schema(methods=['POST'], exclude=True)
+class CollectionChangeView(APIView):
+    def post(self, request, format=None):
+        if not request.user.is_authenticated:
+            raise APIException('not_authenticated')
+
+        params = request.data['params']
+
+        if not params.get('hash_id'):
+            raise APIException('hash_id_is_required')
+
+        collection = Collection.objects.get(hash_id=params['hash_id'])
+
+        if params.get('name'):
+            collection_name = params['name']
+
+            if len(collection_name) < 4:
+                raise APIException('name_is_too_short')
+
+            if len(collection_name) > 75:
+                raise APIException('name_is_too_long')
+
+            collection.name = collection_name
+
+        if params.get('access'):
+            collection_access = params['access']
+
+            if collection_access.lower() == 'open':
+                collection_access = 'O'
+            elif collection_access.lower() == 'restricted':
+                collection_access = 'R'
+
+            try:
+                collection.access = collection_access
+            except:
+                raise APIException('access_is_invalid')
+
+        collection.save()
+
+        return Response()

@@ -3,7 +3,7 @@
     ref="container"
     style="position: relative;"
   >
-    <slot name="prepend-item"></slot>
+    <slot name="prepend-item" />
 
     <Canvas
       :key="key"

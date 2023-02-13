@@ -41,7 +41,7 @@
       "title": "Sammlung hochladen",
       "fields": {
         "name": "Sammlungsname",
-        "date": "Datum",
+        "access": "Zugriff",
         "count": "Objekte",
         "actions": "Aktionen",
         "drag-file": "Dateien zum Hochladen ziehen oder",
@@ -60,7 +60,12 @@
     "fields": {
       "of": "von",
       "query": "Nach Sammlungen suchen",
-      "no-results": "Es konnten keine Sammlungen gefunden werden."
+      "remove": "Sammlung entfernen",
+      "change": "Sammlung ändern",
+      "hide-empty": "Blende Ergebnisse ohne Bilder aus",
+      "no-results": "Es konnten keine Sammlungen gefunden werden.",
+      "access-open": "Offen",
+      "access-restricted": "Eingeschränkt"
     }
   },
   "language": {
@@ -71,6 +76,7 @@
     }
   },
   "field": {
+    "abort": "Abbrechen",
     "required": "Dies ist ein Pflichtfeld."
   },
   "rules": {
@@ -92,6 +98,7 @@
       "of": "von",
       "reset": "Zurücksetzen",
       "query": "Nach Bildern suchen",
+      "hide-empty": "Blende Ergebnisse ohne Annotationen aus",
       "no-results": "Für Deine Suchanfrage konnten keine Ergebnisse gefunden werden."
     }
   },
@@ -119,8 +126,8 @@
     },
     "texts": {
       "preface": "Kunstgeschichte lebt von der Arbeit mit Kunstwerken und ihren digitalen Reproduktionen. Diese werden online in Bildkatalogen gesammelt, die teilweise mehrere Millionen Objekte umfassen. Um Bilder in solchen Verzeichnissen suchen zu können, braucht es beschreibende Texte: eine Aufgabe, bei der Du uns spielerisch helfen kannst – und gleichzeitig viel über Kunst lernst!",
-      "principle": "ARTigo ist eine kollaborative Plattform und ein Beispiel für offene universitäre Forschung, an der Du als Spieler:in teilnimmst. Als sogenannte <i>Games with a Purpose</i> machen die Spiele nicht nur Spaß, sondern generieren auch wertvolle Daten über Bilder. Alle ARTigo-Spiele funktionieren so: Dir wird ein Bild vorgelegt. Ziel ist es, dieses Bild innerhalb einer bestimmten Zeit mit Schlagwörtern (<i>Tags</i>) so zu beschreiben, dass möglichst viele Punkte erzielt werden:",
-      "motivation": "Die Bilder, die du während des Spiels siehst, stammen zum Beispiel aus dem niederländischen Rijksmuseum. Nach einer von Dir festgelegten Anzahl von Spielrunden werden die Metadaten zu den Bildern sichtbar. So generierst Du nicht nur kunsthistorisches Wissen, sondern sammelst es auch. Jeder Tag, den Du eingibst, wird gespeichert und verbessert die Suche nach Kunstwerken – eine Win-Win-Situation. Also, nichts wie ran!"
+      "principle": "ARTigo ist eine kollaborative Plattform und ein Beispiel für offene universitäre Forschung, an der Du als Spieler:in teilnimmst. Alle ARTigo-Spiele funktionieren so: Dir wird ein Bild vorgelegt. Ziel ist es, dieses Bild innerhalb einer bestimmten Zeit mit Schlagwörtern (<i>Tags</i>) so zu beschreiben, dass möglichst viele Punkte erzielt werden:",
+      "motivation": "Nach einer von Dir festgelegten Anzahl von Spielrunden werden die Metadaten zu den Bildern sichtbar. So generierst Du nicht nur kunsthistorisches Wissen, sondern sammelst es auch. Jeder Tag, den Du eingibst, wird gespeichert und verbessert die Suche nach Kunstwerken – eine Win-Win-Situation. Also, nichts wie ran!"
     }
   },
   "contributors": {
@@ -284,6 +291,7 @@
     "fields": {
       "of": "von",
       "query": "Nach Spielsitzungen suchen",
+      "hide-empty": "Blende Ergebnisse ohne Annotationen aus",
       "no-results": "Es konnten keine Spielsitzungen gefunden werden."
     }
   },

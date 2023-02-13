@@ -25,11 +25,10 @@ class ROIFirstAnnotationScore(ScorePlugin):
     def __call__(self, tags, gameround, params):
         users = UserROI.objects \
             .filter(resource=gameround.resource) \
+            .exclude(gameround=gameround) \
             .values_list('user_id', flat=True)
 
-        users = set(users) - set([gameround.user.id])
-
-        if len(users) == 0:
+        if len(set(users)) == 0:
             for tag in tags:
                 tag['score'] = tag.get('score', 0)
 

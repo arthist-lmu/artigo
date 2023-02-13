@@ -8,6 +8,7 @@ from .reconcile import (
 from .collection import (
     CollectionAddView,
     CollectionRemoveView,
+    CollectionChangeView,
 )
 from .collections import CollectionsView
 from .resource import ResourceView

@@ -1,114 +1,99 @@
 <template>
-  <v-card
-    max-width="900"
-    flat
+  <Card
+    v-bind="$props"
+    v-on="$listeners"
+    :title="$t('user.register.title')"
   >
-    <v-card-title :class="{ 'pt-6 px-6': !isDialog }">
-      {{ $t("user.register.title") }}
+    <v-form v-model="isFormValid">
+      <v-text-field
+        v-model="user.username"
+        :placeholder="$t('user.fields.username')"
+        :rules="[checkLength]"
+        tabindex="0"
+        counter="75"
+        clearable
+        outlined
+        rounded
+        dense
+      />
 
-      <v-btn
-        v-if="isDialog"
-        @click="close"
-        absolute
-        right
-        icon
+      <v-text-field
+        v-model="user.email"
+        :placeholder="$t('user.fields.email')"
+        :rules="[checkLength]"
+        tabindex="0"
+        counter="75"
+        clearable
+        outlined
+        rounded
+        dense
+      />
+
+      <v-text-field
+        v-model="user.password1"
+        @click:append="showPassword = !showPassword"
+        :type="showPassword ? 'text' : 'password'"
+        :placeholder="$t('user.fields.password')"
+        :rules="[checkLength]"
+        :append-icon="
+          showPassword ? 'mdi-eye-outline' : 'mdi-eye-off-outline'
+        "
+        tabindex="0"
+        counter="75"
+        clearable
+        outlined
+        rounded
+        dense
+      />
+
+      <v-text-field
+        v-model="user.password2"
+        @click:append="showPassword = !showPassword"
+        :type="showPassword ? 'text' : 'password'"
+        :placeholder="$t('user.fields.password-repeat')"
+        :rules="[checkLength, checkPasswordRepeat]"
+        :append-icon="
+          showPassword ? 'mdi-eye-outline' : 'mdi-eye-off-outline'
+        "
+        tabindex="0"
+        counter="75"
+        clearable
+        outlined
+        rounded
+        dense
+      />
+
+      <v-checkbox
+        v-model="user.privacy_policy"
+        :rules="[checkTrue]"
+        class="mt-0"
+        on-icon="mdi-check-circle-outline"
+        off-icon="mdi-checkbox-blank-circle-outline"
+        tabindex="0"
+        color="primary"
+        hide-details
+        dense
       >
-        <v-icon>mdi-close</v-icon>
-      </v-btn>
-    </v-card-title>
+        <template v-slot:label>
+          {{ $t('user.fields.privacy-policy') }}
 
-    <v-card-text :class="[isDialog ? undefined : 'px-6', 'pt-4']">
-      <v-form v-model="isFormValid">
-        <v-text-field
-          v-model="user.username"
-          :placeholder="$t('user.fields.username')"
-          :rules="[checkLength]"
-          tabindex="0"
-          counter="75"
-          clearable
-          outlined
-          rounded
-          dense
-        />
+          <v-btn
+            @click.stop
+            class="ml-1"
+            href="https://www.kunstgeschichte.uni-muenchen.de/funktionen/datenschutz/index.html"
+            target="_blank"
+            small
+            icon
+          >
+            <v-icon>
+              mdi-link-variant
+            </v-icon>
+          </v-btn>
+        </template>
+      </v-checkbox>
+    </v-form>
 
-        <v-text-field
-          v-model="user.email"
-          :placeholder="$t('user.fields.email')"
-          :rules="[checkLength]"
-          tabindex="0"
-          counter="75"
-          clearable
-          outlined
-          rounded
-          dense
-        />
-
-        <v-text-field
-          v-model="user.password1"
-          @click:append="showPassword = !showPassword"
-          :type="showPassword ? 'text' : 'password'"
-          :placeholder="$t('user.fields.password')"
-          :rules="[checkLength]"
-          :append-icon="
-            showPassword ? 'mdi-eye-outline' : 'mdi-eye-off-outline'
-          "
-          tabindex="0"
-          counter="75"
-          clearable
-          outlined
-          rounded
-          dense
-        />
-
-        <v-text-field
-          v-model="user.password2"
-          @click:append="showPassword = !showPassword"
-          :type="showPassword ? 'text' : 'password'"
-          :placeholder="$t('user.fields.password-repeat')"
-          :rules="[checkLength, checkPasswordRepeat]"
-          :append-icon="
-            showPassword ? 'mdi-eye-outline' : 'mdi-eye-off-outline'
-          "
-          tabindex="0"
-          counter="75"
-          clearable
-          outlined
-          rounded
-          dense
-        />
-
-        <v-checkbox
-          v-model="user.privacy_policy"
-          :rules="[checkTrue]"
-          class="mt-0"
-          on-icon="mdi-check-circle-outline"
-          off-icon="mdi-checkbox-blank-circle-outline"
-          tabindex="0"
-          color="primary"
-          hide-details
-          dense
-        >
-          <template v-slot:label>
-            {{ $t('user.fields.privacy-policy') }}
-
-            <v-btn
-              @click.stop
-              class="ml-1"
-              href="https://www.kunstgeschichte.uni-muenchen.de/funktionen/datenschutz/index.html"
-              target="_blank"
-              small
-              icon
-            >
-              <v-icon>
-                mdi-link-variant
-              </v-icon>
-            </v-btn>
-          </template>
-        </v-checkbox>
-      </v-form>
-    </v-card-text>
-
-    <v-card-actions class="pb-6 px-6">
+    <template v-slot:actions>
       <v-btn
         @click="register"
         :disabled="!isFormValid"
@@ -120,18 +105,17 @@
       >
         {{ $t("user.register.title") }}
       </v-btn>
-    </v-card-actions>
-  </v-card>
+    </template>
+  </Card>
 </template>
 
 <script>
+import Card from '@/components/utils/Card.vue';
+
 export default {
+  extends: Card,
   props: {
-    isDialog: {
-      type: Boolean,
-      default: true,
-    },
-    value: Boolean,
+    ...Card.props,
   },
   data() {
     return {
@@ -143,9 +127,6 @@ export default {
   methods: {
     register() {
       this.$store.dispatch('user/register', this.user);
-    },
-    close() {
-      this.$emit('input', false);
     },
     checkTrue(value) {
       if (value) {
@@ -172,15 +153,6 @@ export default {
       return this.$t('rules.password-repeat');
     },
   },
-  computed: {
-    status() {
-      const { error, loading } = this.$store.state.utils.status;
-      return !loading && !error;
-    },
-    timestamp() {
-      return this.$store.state.utils.status.timestamp;
-    },
-  },
   watch: {
     timestamp() {
       if (this.isFormValid && this.status) {
@@ -191,6 +163,9 @@ export default {
         }
       }
     },
+  },
+  components: {
+    Card,
   },
 };
 </script>

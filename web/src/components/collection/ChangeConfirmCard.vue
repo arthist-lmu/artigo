@@ -2,14 +2,13 @@
   <Card
     v-bind="$props"
     v-on="$listeners"
-    :title="$t('user.upload.title')"
+    :title="$t('collections.fields.change')"
   >
     <v-form v-model="isFormValid">
       <v-text-field
-        v-model="collection.name"
+        v-model="params.name"
         :placeholder="$t('user.upload.fields.name')"
         :rules="[checkLength]"
-        class="mb-1"
         tabindex="0"
         counter="75"
         clearable
@@ -18,15 +17,22 @@
         dense
       />
 
-      <UploadInput
-        v-model="collection.files"
-        :rules="[checkFiles]"
+      <v-select
+        v-model="params.access"
+        :placeholder="$t('user.upload.fields.access')"
+        :items="items.access"
+        item-text="name"
+        item-value="value"
+        hide-details
+        outlined
+        rounded
+        dense
       />
     </v-form>
 
     <template v-slot:actions>
       <v-btn
-        @click="upload"
+        @click="change"
         :disabled="!isFormValid"
         tabindex="0"
         color="primary"
@@ -34,7 +40,7 @@
         rounded
         block
       >
-        {{ $t("user.upload.title") }}
+        {{ $t("collections.fields.change") }}
       </v-btn>
     </template>
   </Card>
@@ -46,17 +52,25 @@ import Card from '@/components/utils/Card.vue';
 export default {
   extends: Card,
   props: {
+    entry: Object,
     ...Card.props,
   },
   data() {
     return {
-      collection: {},
+      params: {
+        name: this.entry.name,
+        access: this.entry.access,
+      },
       isFormValid: false,
     };
   },
   methods: {
-    upload() {
-      this.$store.dispatch('collection/add', this.collection);
+    change() {
+      const entry = { hash_id: this.entry.hash_id, ...this.params };
+      this.$store.dispatch('collection/change', entry).then(() => {
+        this.$store.dispatch('collections/post', {});
+        this.close();
+      });
     },
     checkLength(value) {
       if (value) {
@@ -68,29 +82,26 @@ export default {
         }
         return true;
       }
-      return this.$t('field.required');
-    },
-    checkFiles(value) {
-      if (value && value.length) {
-        for (let i = 0; i < value.length; i += 1) {
-          if (value[i].size >= (50 * 1024 * 1024)) {
-            return this.$tc('rules.file-size', 50);
-          }
-        }
-        return true;
-      }
-      return this.$t('field.required');
+      return true;
     },
   },
-  watch: {
-    timestamp() {
-      if (this.isFormValid && this.status) {
-        this.$router.push({ name: 'collections' });
-      }
+  computed: {
+    items() {
+      return {
+        access: [
+          {
+            name: this.$t('collections.fields.access-open'),
+            value: 'O',
+          },
+          {
+            name: this.$t('collections.fields.access-restricted'),
+            value: 'R',
+          },
+        ],
+      };
     },
   },
   components: {
-    UploadInput: () => import('@/components/collection/UploadInput.vue'),
     Card,
   },
 };

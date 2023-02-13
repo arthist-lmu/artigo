@@ -49,7 +49,7 @@ class GameController:
             except:
                 return {
                     'type': 'error',
-                    'message': 'no_valid_gamesessions',
+                    'message': 'gamesessions_are_invalid',
                 }
         elif params.get('session_id'):
             try:

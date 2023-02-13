@@ -41,7 +41,7 @@
       "title": "Upload collection",
         "fields": {
         "name": "Collection name",
-        "date": "Date",
+        "access": "Access",
         "count": "Objects",
         "actions": "Actions",
         "drag-file": "Drag files to upload or",
@@ -60,7 +60,12 @@
     "fields": {
       "of": "of",
       "query": "Search for collections",
-      "no-results": "No collections could be found."
+      "remove": "Remove collection",
+      "change": "Change collection",
+      "hide-empty": "Hide results without images",
+      "no-results": "No collections could be found.",
+      "access-open": "Open",
+      "access-restricted": "Restricted"
     }
   },
   "language": {
@@ -71,6 +76,7 @@
     }
   },
   "field": {
+    "abort": "Abort",
     "required": "This is a required field."
   },
   "rules": {
@@ -92,6 +98,7 @@
       "of": "of",
       "reset": "Reset",
       "query": "Search for images",
+      "hide-empty": "Hide results without annotations",
       "no-results": "No results could be found for your search query."
     }
   },
@@ -118,9 +125,9 @@
       "score-first": "If you are the first to describe an image, you always get {n} points for each tag"
     },
     "texts": {
-      "preface": "Art history thrives on working with artworks and their digital reproductions. These are collected online in image catalogues, some of which contain several million objects. To search for images in such directories, descriptive texts are needed: a task you can help us with in a playful way—and learn a lot about art at the same time!",
-      "principle": "ARTigo is a collaborative platform and an example of open university research in which you participate as a player. As so-called <i>Games witha Purpose</i>, the games are not only fun, but also generate valuable data about images. All ARTigo games work like this: You are presented with an image. The goal is to describe this image within a certain time with keywords (<i>tags</i>) in such a way that as many points as possible are scored:",
-      "motivation": "The images you see during the game come from the Rijksmuseum in the Netherlands, for example. After you have played a predefined number of rounds, the metadata for the images become visible. In this way, you not only generate art-historical knowledge, but also collect it. Every tag you enter is saved and improves the search for artworks—a win-win situation. So, go for it!"
+      "preface": "Art history thrives on working with artworks and their digital reproductions. These are collected online in image catalogues, some of which contain several million objects. To search for images in such directories, descriptive texts are needed: a task you can help us with in a playful way—and at the same time learn a lot about art!",
+      "principle": "ARTigo is a collaborative platform and an example of open university research in which you participate as a player. All ARTigo games work like this: You are presented with an image. The goal is to describe this image within a certain time with keywords (<i>tags</i>) in such a way that as many points as possible are scored:",
+      "motivation": "After you have played a predefined number of rounds, the metadata for the images become visible. In this way, you not only generate art-historical knowledge, but also collect it. Every tag you enter is saved and improves the search for artworks—a win-win situation. So, go for it!"
     }
   },
   "contributors": {
@@ -283,6 +290,7 @@
     "fields": {
       "of": "of",
       "query": "Search for game sessions",
+      "hide-empty": "Hide results without annotations",
       "no-results": "No game sessions could be found."
     }
   },

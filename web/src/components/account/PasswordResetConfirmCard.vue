@@ -1,61 +1,46 @@
 <template>
-  <v-card
-    max-width="900"
-    flat
+  <Card
+    v-bind="$props"
+    v-on="$listeners"
+    :title="$t('user.password-reset.title')"
   >
-    <v-card-title :class="{ 'pt-6 px-6': !isDialog }">
-      {{ $t("user.password-reset.title") }}
+    <v-form v-model="isFormValid">
+      <v-text-field
+        v-model="user.new_password1"
+        @click:append="showPassword = !showPassword"
+        :type="showPassword ? 'text' : 'password'"
+        :placeholder="$t('user.fields.password')"
+        :rules="[checkLength]"
+        :append-icon="
+          showPassword ? 'mdi-eye-outline' : 'mdi-eye-off-outline'
+        "
+        tabindex="0"
+        counter="75"
+        clearable
+        outlined
+        rounded
+        dense
+      />
 
-      <v-btn
-        v-if="isDialog"
-        @click="close"
-        absolute
-        right
-        icon
-      >
-        <v-icon>mdi-close</v-icon>
-      </v-btn>
-    </v-card-title>
-
-    <v-card-text :class="[isDialog ? undefined : 'px-6', 'pt-4']">
-      <v-form v-model="isFormValid">
-        <v-text-field
-          v-model="user.new_password1"
-          @click:append="showPassword = !showPassword"
-          :type="showPassword ? 'text' : 'password'"
-          :placeholder="$t('user.fields.password')"
-          :rules="[checkLength]"
-          :append-icon="
-            showPassword ? 'mdi-eye-outline' : 'mdi-eye-off-outline'
-          "
-          tabindex="0"
-          counter="75"
-          clearable
-          outlined
-          rounded
-          dense
-        />
-
-        <v-text-field
-          v-model="user.new_password2"
-          @click:append="showPassword = !showPassword"
-          :type="showPassword ? 'text' : 'password'"
-          :placeholder="$t('user.fields.password-repeat')"
-          :rules="[checkLength, checkPasswordRepeat]"
-          :append-icon="
-            showPassword ? 'mdi-eye-outline' : 'mdi-eye-off-outline'
-          "
-          tabindex="0"
-          counter="75"
-          clearable
-          outlined
-          rounded
-          dense
-        />
+      <v-text-field
+        v-model="user.new_password2"
+        @click:append="showPassword = !showPassword"
+        :type="showPassword ? 'text' : 'password'"
+        :placeholder="$t('user.fields.password-repeat')"
+        :rules="[checkLength, checkPasswordRepeat]"
+        :append-icon="
+          showPassword ? 'mdi-eye-outline' : 'mdi-eye-off-outline'
+        "
+        tabindex="0"
+        counter="75"
+        clearable
+        outlined
+        rounded
+        dense
+      />
       </v-form>
-    </v-card-text>
 
-    <v-card-actions class="pb-6 px-6">
+    <template v-slot:actions>
       <v-btn
         @click="resetPassword"
         :disabled="!isFormValid"
@@ -67,18 +52,17 @@
       >
         {{ $t("user.password-reset.title") }}
       </v-btn>
-    </v-card-actions>
-  </v-card>
+    </template>
+  </Card>
 </template>
 
 <script>
+import Card from '@/components/utils/Card.vue';
+
 export default {
+  extends: Card,
   props: {
-    isDialog: {
-      type: Boolean,
-      default: true,
-    },
-    value: Boolean,
+    ...Card.props,
   },
   data() {
     return {
@@ -140,6 +124,9 @@ export default {
       uid: path[path.length - 2],
       token: path[path.length - 1],
     };
+  },
+  components: {
+    Card,
   },
 };
 </script>

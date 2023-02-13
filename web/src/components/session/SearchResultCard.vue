@@ -42,10 +42,7 @@
               color="primary"
               style="min-width: 50px !important;"
               depressed
-              absolute
               rounded
-              bottom
-              right
             >
               <v-icon left>
                 mdi-tag-outline

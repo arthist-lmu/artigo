@@ -32,6 +32,7 @@ class ROIValidatedScore(ScorePlugin):
                 tag__name__iregex=to_iregex(tags, 'name'),
                 tag__language=params.get('language', 'de'),
             ) \
+            .exclude(user=gameround.user) \
             .values(
                 'tag__name',
                 'x',

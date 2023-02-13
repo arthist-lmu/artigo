@@ -11,10 +11,9 @@ const collections = {
     itemsPerPage: 96,
   },
   actions: {
-    get({ commit, rootState, state }, params) {
+    post({ commit, rootState, state }, params) {
       params.limit = state.itemsPerPage;
-      axios.get('/collections/', {
-        params,
+      axios.post('/collections/', { params }, {
         headers: {
           'Authorization': `Token ${rootState.user.token}`,
         },

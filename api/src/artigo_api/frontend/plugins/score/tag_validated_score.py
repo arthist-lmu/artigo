@@ -32,6 +32,7 @@ class TagValidatedScore(ScorePlugin):
                 tag__name__iregex=to_iregex(tags, 'name'),
                 tag__language=params.get('language', 'de'),
             ) \
+            .exclude(user=gameround.user) \
             .values('resource', 'tag') \
             .annotate(count_taggings=Count('tag')) \
             .filter(count_taggings__gte=self.min_taggings) \

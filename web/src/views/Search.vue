@@ -3,6 +3,7 @@
     <SearchBar
       store="search"
       :height="height"
+      :filter="true"
     >
       <template v-slot:append-item>
         <v-row

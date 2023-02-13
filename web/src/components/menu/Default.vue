@@ -16,10 +16,7 @@
         </v-btn>
       </template>
 
-      <LoginCard
-        v-model="dialog.login"
-        :isDialog="true"
-      />
+      <LoginCard v-model="dialog.login" />
     </v-dialog>
 
     <v-dialog
@@ -39,10 +36,7 @@
         </v-btn>
       </template>
 
-      <RegisterCard
-        v-model="dialog.register"
-        :isDialog="true"
-      />
+      <RegisterCard v-model="dialog.register" />
     </v-dialog>
   </span>
 </template>

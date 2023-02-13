@@ -94,7 +94,7 @@ export default {
       clearInterval(this.checkInterval);
       if (this.reload) {
         this.checkInterval = setInterval(() => {
-          this.$store.dispatch(`${this.store}/get`, {});
+          this.$store.dispatch(`${this.store}/post`, {});
         }, 10 * 1000);
       }
     },
@@ -103,7 +103,7 @@ export default {
     clearInterval(this.checkInterval);
   },
   created() {
-    this.$store.dispatch(`${this.store}/get`, {});
+    this.$store.dispatch(`${this.store}/post`, {});
   },
 };
 </script>

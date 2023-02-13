@@ -26,6 +26,7 @@ urlpatterns = [
     path('schema/redoc/', RedocView.as_view(url_name='schema'), name='redoc'),
     path('collection/add/', CollectionAddView.as_view(), name='collection_add'),
     path('collection/remove/', CollectionRemoveView.as_view(), name='collection_remove'),
+    path('collection/change/', CollectionChangeView.as_view(), name='collection_change'),
     path('collections/', CollectionsView.as_view(), name='collections'),
     path('auth/login/', LoginView.as_view(), name='login'),
     path('auth/logout/', LogoutView.as_view(), name='logout'),

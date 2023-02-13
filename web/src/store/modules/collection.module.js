@@ -23,6 +23,13 @@ const collection = {
         },
       });
     },
+    change({ rootState }, params) {
+      axios.post('/collection/change/', { params }, {
+        headers: {
+          'Authorization': `Token ${rootState.user.token}`,
+        },
+      });
+    },
   },
 };
 

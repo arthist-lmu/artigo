@@ -13,7 +13,7 @@
           <slot>
             <DefaultBar
               :store="store"
-              :dense="dense"
+              :filter="filter"
             />
           </slot>
         </v-col>
@@ -33,15 +33,14 @@ export default {
       type: String,
       required: true,
     },
-    dense: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
     height: {
       type: Number,
       required: false,
       default: 114,
+    },
+    filter: {
+      type: Boolean,
+      required: false,
     },
   },
   computed: {

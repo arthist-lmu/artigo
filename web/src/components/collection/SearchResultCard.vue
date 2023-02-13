@@ -36,9 +36,33 @@
 
       <v-container class="overlay">
         <v-row style="flex: 0;">
-          <v-col class="pa-4">
+          <v-col
+            @click.stop="dialog.change = true"
+            :title="$t('collections.fields.change')"
+            class="pa-4"
+          >
             <div class="text-subtitle-1 white--text">
               <b>{{ entry.name }}</b>
+
+              <v-icon
+                v-if="entry.access === 'O'"
+                :title="$t('collections.fields.access-open')"
+                class="ml-2 mb-1"
+                color="white"
+                small
+              >
+                mdi-lock-open-outline
+              </v-icon>
+
+              <v-icon
+                v-if="entry.access === 'R'"
+                :title="$t('collections.fields.access-restricted')"
+                class="ml-2 mb-1"
+                color="white"
+                small
+              >
+                mdi-lock-outline
+              </v-icon>
             </div>
 
             <div class="text-caption">
@@ -57,7 +81,8 @@
 
           <v-col cols="auto">
             <v-btn
-              @click.stop="remove"
+              @click.stop="dialog.remove = true"
+              :title="$t('collections.fields.remove')"
               color="white"
               icon
             >
@@ -73,13 +98,11 @@
         <v-row style="flex: 0;">
           <v-col class="pa-4" align="right">
             <v-btn
+              @click.stop=""
               color="primary"
               style="min-width: 50px !important;"
               depressed
-              absolute
               rounded
-              bottom
-              right
             >
               <v-icon left>
                 mdi-file-image-outline
@@ -90,6 +113,26 @@
           </v-col>
         </v-row>
       </v-container>
+
+      <v-dialog
+        v-model="dialog.remove"
+        max-width="450"
+      >
+        <RemoveConfirmCard
+          v-model="dialog.remove"
+          :entry="entry"
+        />
+      </v-dialog>
+
+      <v-dialog
+        v-model="dialog.change"
+        max-width="450"
+      >
+        <ChangeConfirmCard
+          v-model="dialog.change"
+          :entry="entry"
+        />
+      </v-dialog>
     </v-card>
   </v-hover>
 </template>
@@ -106,6 +149,10 @@ export default {
   data() {
     return {
       isDisabled: false,
+      dialog: {
+        remove: false,
+        change: false,
+      },
     };
   },
   methods: {
@@ -118,11 +165,6 @@ export default {
       };
       this.$store.commit('game/updateDialog', { params });
       this.$router.push({ name: 'game' });
-    },
-    remove() {
-      this.$store.dispatch('collection/remove', this.entry).then(() => {
-        this.$store.dispatch('collection/post');
-      });
     },
     onError() {
       this.isDisabled = true;
@@ -152,6 +194,10 @@ export default {
       },
       immediate: true,
     },
+  },
+  components: {
+    ChangeConfirmCard: () => import('@/components/collection/ChangeConfirmCard.vue'),
+    RemoveConfirmCard: () => import('@/components/collection/RemoveConfirmCard.vue'),
   },
 };
 </script>

@@ -10,6 +10,7 @@ from rest_framework.exceptions import APIException
 from drf_spectacular.utils import extend_schema
 from frontend.models import (
     Gameround,
+    UserROI,
     UserTagging,
 )
 from frontend.serializers import SessionCountSerializer as Serializer
@@ -17,22 +18,21 @@ from frontend.serializers import SessionCountSerializer as Serializer
 logger = logging.getLogger(__name__)
 
 
-@extend_schema(methods=['GET'], exclude=True)
+@extend_schema(methods=['POST'], exclude=True)
 class SessionsView(APIView):
-    def get(self, request, format=None):
+    def post(self, request, format=None):
         if not request.user.is_authenticated:
             raise APIException('not_authenticated')
 
-        params = dict(request.query_params)
+        if request.data.get('params'):
+            params = request.data['params']
+        else:
+            params = request.query_params
 
-        try:
-            params['limit'] = int(params['limit'][0])
-        except:
+        if not isinstance(params.get('limit'), int):
             params['limit'] = 96
 
-        try:
-            params['offset'] = int(params['offset'][0])
-        except:
+        if not isinstance(params.get('offset'), int):
             params['offset'] = 0
 
         params['limit'] += params['offset']
@@ -40,11 +40,26 @@ class SessionsView(APIView):
         gamerounds = Gameround.objects.filter(user=request.user)
 
         if params.get('query'):
-            gameround_ids = UserTagging.objects \
-                .filter(tag__name__in=params['query']) \
-                .values_list('gameround_id', flat=True)
+            gameround_ids = set()
 
-            gamerounds = gamerounds.filter(id__in=gameround_ids)
+            if params['query'].get('all-text'):
+                tag_name = params['query']['all-text']
+
+                for model in (UserROI, UserTagging):
+                    ids = model.objects.filter(user=request.user) \
+                        .filter(tag__name__icontains=tag_name) \
+                        .values_list('gameround_id', flat=True)
+
+                    gameround_ids.update(ids)
+            elif params['query'].get('hide-empty'):
+                for model in (UserROI, UserTagging):
+                    ids = model.objects.filter(user=request.user) \
+                        .values_list('gameround_id', flat=True)
+
+                    gameround_ids.update(ids)
+
+            if gameround_ids:
+                gamerounds = gamerounds.filter(id__in=gameround_ids)
 
         gamerounds = gamerounds.values('gamesession') \
             .annotate(
@@ -61,12 +76,12 @@ class SessionsView(APIView):
                 'annotations',
             )
 
-        result = {'total': len(gamerounds)}
+        result = {
+            'total': len(gamerounds),
+            'offset': params['offset'],
+        }
 
         gamerounds = gamerounds[params['offset']:params['limit']]
-        gamerounds = Serializer(gamerounds, many=True).data
-
-        result['offset'] = params['offset']
-        result['entries'] = gamerounds
+        result['entries'] = Serializer(gamerounds, many=True).data
 
         return Response(result)

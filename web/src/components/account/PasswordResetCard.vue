@@ -1,38 +1,24 @@
 <template>
-  <v-card
-    max-width="900"
-    flat
+  <Card
+    v-bind="$props"
+    v-on="$listeners"
+    :title="$t('user.password-reset.title')"
   >
-    <v-card-title v-if="isDialog">
-      {{ $t("user.password-reset.title") }}
+    <v-form v-model="isFormValid">
+      <v-text-field
+        v-model="user.email"
+        :placeholder="$t('user.fields.email')"
+        :rules="[checkLength]"
+        tabindex="0"
+        counter="75"
+        clearable
+        outlined
+        rounded
+        dense
+      />
+    </v-form>
 
-      <v-btn
-        @click="close"
-        absolute
-        right
-        icon
-      >
-        <v-icon>mdi-close</v-icon>
-      </v-btn>
-    </v-card-title>
-
-    <v-card-text :class="isDialog ? 'pt-4' : 'pt-0 px-0'">
-      <v-form v-model="isFormValid">
-        <v-text-field
-          v-model="user.email"
-          :placeholder="$t('user.fields.email')"
-          :rules="[checkLength]"
-          tabindex="0"
-          counter="75"
-          clearable
-          outlined
-          rounded
-          dense
-        />
-      </v-form>
-    </v-card-text>
-
-    <v-card-actions :class="isDialog ? 'pb-6 px-6' : 'pb-8 px-0'">
+    <template v-slot:actions>
       <v-btn
         @click="resetPassword"
         :disabled="!isFormValid"
@@ -44,18 +30,17 @@
       >
         {{ $t("user.password-reset.title") }}
       </v-btn>
-    </v-card-actions>
-  </v-card>
+    </template>
+  </Card>
 </template>
 
 <script>
+import Card from '@/components/utils/Card.vue';
+
 export default {
+  extends: Card,
   props: {
-    isDialog: {
-      type: Boolean,
-      default: true,
-    },
-    value: Boolean,
+    ...Card.props,
   },
   data() {
     return {
@@ -67,9 +52,6 @@ export default {
     resetPassword() {
       this.user.lang = this.$i18n.locale; // fix locale
       this.$store.dispatch('user/resetPassword', this.user);
-    },
-    close() {
-      this.$emit('input', false);
     },
     checkLength(value) {
       if (value) {
@@ -84,21 +66,15 @@ export default {
       return this.$t('field.required');
     },
   },
-  computed: {
-    status() {
-      const { error, loading } = this.$store.state.utils.status;
-      return !loading && !error;
-    },
-    timestamp() {
-      return this.$store.state.utils.status.timestamp;
-    },
-  },
   watch: {
     timestamp() {
       if (this.status) {
         this.close();
       }
     },
+  },
+  components: {
+    Card,
   },
 };
 </script>

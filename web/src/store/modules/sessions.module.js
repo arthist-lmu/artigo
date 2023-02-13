@@ -11,10 +11,9 @@ const sessions = {
     itemsPerPage: 96,
   },
   actions: {
-    get({ commit, rootState, state }, params) {
+    post({ commit, rootState, state }, params) {
       params.limit = state.itemsPerPage;
-      axios.get('/sessions/', {
-        params,
+      axios.post('/sessions/', { params }, {
         headers: {
           'Authorization': `Token ${rootState.user.token}`,
         },

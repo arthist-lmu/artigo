@@ -1,4 +1,4 @@
-# *ARTigo* – Social Image Tagging
+# ARTigo
 
 <p float="left">
 	<img src="images/home.png" width="250" hspace="10" />
@@ -16,6 +16,12 @@
 [![Web Testing](https://github.com/arthist-lmu/artigo/actions/workflows/build-web-testing.yml/badge.svg)](https://github.com/arthist-lmu/artigo/actions/workflows/build-web-testing.yml)
 [![Api Testing](https://github.com/arthist-lmu/artigo/actions/workflows/build-api-testing.yml/badge.svg)](https://github.com/arthist-lmu/artigo/actions/workflows/build-api-testing.yml)
 [![Search Testing](https://github.com/arthist-lmu/artigo/actions/workflows/build-search-testing.yml/badge.svg)](https://github.com/arthist-lmu/artigo/actions/workflows/build-search-testing.yml)
+
+## Overview
+
+Art history thrives on working with artworks and their digital reproductions. These are collected online in image catalogues, some of which contain several million objects. To search for images in such directories, descriptive texts are needed: a task you can help us with in a playful way—and at the same time learn a lot about art!
+
+ARTigo is a collaborative platform and an example of open university research in which you participate as a player. All ARTigo games work like this: You are presented with an image. The goal is to describe this image within a certain time with keywords (*tags*) in such a way that as many points as possible are scored. After you have played a predefined number of rounds, the metadata for the images become visible. In this way, you not only generate art-historical knowledge, but also collect it. Every tag you enter is saved and improves the search for artworks—a win-win situation.
 
 ## Development setup
 

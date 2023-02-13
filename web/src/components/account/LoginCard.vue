@@ -1,73 +1,55 @@
 <template>
-  <v-card
-    max-width="900"
-    flat
+  <Card
+    v-bind="$props"
+    v-on="$listeners"
+    :title="$t('user.login.title')"
   >
-    <v-card-title :class="{ 'pt-6 px-6': !isDialog }">
-      {{ $t("user.login.title") }}
+    <p class="pb-4">{{ $t('user.login.legacy-note') }}</p>
 
-      <v-btn
-        v-if="isDialog"
-        @click="close"
-        absolute
-        right
-        icon
-      >
-        <v-icon>mdi-close</v-icon>
-      </v-btn>
-    </v-card-title>
+    <v-form v-model="isFormValid">
+      <v-text-field
+        v-model="user.username"
+        :placeholder="$t('user.fields.username')"
+        :rules="[checkLength]"
+        tabindex="0"
+        counter="75"
+        clearable
+        outlined
+        rounded
+        dense
+      />
 
-    <v-card-text :class="[isDialog ? undefined : 'px-6', 'pt-4']">
-      <p class="pb-4">{{ $t('user.login.legacy-note') }}</p>
+      <v-text-field
+        v-model="user.email"
+        :placeholder="$t('user.fields.email')"
+        :rules="[checkLength]"
+        tabindex="0"
+        counter="75"
+        clearable
+        outlined
+        rounded
+        dense
+      />
 
-      <v-form v-model="isFormValid">
-        <v-text-field
-          v-model="user.username"
-          :placeholder="$t('user.fields.username')"
-          :rules="[checkLength]"
-          tabindex="0"
-          counter="75"
-          clearable
-          outlined
-          rounded
-          dense
-        />
+      <v-text-field
+        v-model="user.password"
+        @click:append="showPassword = !showPassword"
+        :type="showPassword ? 'text' : 'password'"
+        :placeholder="$t('user.fields.password')"
+        :rules="[checkLength]"
+        :append-icon="
+          showPassword ? 'mdi-eye-outline' : 'mdi-eye-off-outline'
+        "
+        tabindex="0"
+        counter="75"
+        clearable
+        outlined
+        rounded
+        dense
+      />
+    </v-form>
 
-        <v-text-field
-          v-model="user.email"
-          :placeholder="$t('user.fields.email')"
-          :rules="[checkLength]"
-          tabindex="0"
-          counter="75"
-          clearable
-          outlined
-          rounded
-          dense
-        />
-
-        <v-text-field
-          v-model="user.password"
-          @click:append="showPassword = !showPassword"
-          :type="showPassword ? 'text' : 'password'"
-          :placeholder="$t('user.fields.password')"
-          :rules="[checkLength]"
-          :append-icon="
-            showPassword ? 'mdi-eye-outline' : 'mdi-eye-off-outline'
-          "
-          tabindex="0"
-          counter="75"
-          clearable
-          outlined
-          rounded
-          dense
-        />
-      </v-form>
-    </v-card-text>
-
-    <v-card-actions
-      class="pb-6 px-6"
-      style="display: block;"
-    >
+    <template v-slot:actions>
       <v-btn
         @click="login"
         :disabled="!isFormValid"
@@ -92,25 +74,26 @@
       >
         {{ $t("user.password-reset.title") }}
       </v-btn>
-    </v-card-actions>
+    </template>
 
-    <v-dialog
-      v-model="dialog.passwordReset"
-      max-width="400"
-    >
-      <PasswordResetCard v-model="dialog.passwordReset" />
-    </v-dialog>
-  </v-card>
+    <template v-slot:dialogs>
+      <v-dialog
+        v-model="dialog.passwordReset"
+        max-width="400"
+      >
+        <PasswordResetCard v-model="dialog.passwordReset" />
+      </v-dialog>
+    </template>
+  </Card>
 </template>
 
 <script>
+import Card from '@/components/utils/Card.vue';
+
 export default {
+  extends: Card,
   props: {
-    isDialog: {
-      type: Boolean,
-      default: true,
-    },
-    value: Boolean,
+    ...Card.props,
   },
   data() {
     return {
@@ -125,9 +108,6 @@ export default {
   methods: {
     login() {
       this.$store.dispatch('user/login', this.user);
-    },
-    close() {
-      this.$emit('input', false);
     },
     checkLength(value) {
       if (value) {
@@ -145,15 +125,6 @@ export default {
       this.dialog.passwordReset = true;
     },
   },
-  computed: {
-    status() {
-      const { error, loading } = this.$store.state.utils.status;
-      return !loading && !error;
-    },
-    timestamp() {
-      return this.$store.state.utils.status.timestamp;
-    },
-  },
   watch: {
     timestamp() {
       if (this.isFormValid && this.status) {
@@ -167,6 +138,7 @@ export default {
   },
   components: {
     PasswordResetCard: () => import('./PasswordResetCard.vue'),
+    Card,
   },
 };
 </script>

@@ -7,7 +7,6 @@
     :placeholder="$t(`${store}.fields.query`)"
     prepend-inner-icon="mdi-magnify"
     :menu-props="{ maxHeight: 400, value: openMenu }"
-    :dense="dense"
     hide-details
     rounded
     solo
@@ -80,7 +79,7 @@
     </template>
 
     <template v-slot:append>
-      <template v-if="store === 'search'">
+      <template v-if="filter">
         <v-badge
           v-if="numberOfQueries > 0"
           :content="numberOfQueries"
@@ -102,6 +101,20 @@
         >
           <v-icon>
             mdi-tune-variant
+          </v-icon>
+        </v-btn>
+      </template>
+      <template v-else>
+        <v-btn
+          :title="$t(`${store}.fields.hide-empty`)"
+          @click="hideEmpty"
+          icon
+        >
+          <v-icon v-if="query['hide-empty']">
+            mdi-flask-empty-plus-outline
+          </v-icon>
+          <v-icon v-else>
+            mdi-flask-empty-minus-outline
           </v-icon>
         </v-btn>
       </template>
@@ -155,7 +168,7 @@ export default {
       type: String,
       required: true,
     },
-    dense: {
+    filter: {
       type: Boolean,
       required: false,
     },
@@ -182,9 +195,13 @@ export default {
       this.openMenu = !this.openMenu;
     },
     search() {
-      this.$store.dispatch(`${this.store}/get`, { 'query': this.query }).then(() => {
+      this.$store.dispatch(`${this.store}/post`, { 'query': this.query }).then(() => {
         this.closeMenu();
       });
+    },
+    hideEmpty() {
+      this.query['hide-empty'] = !this.query['hide-empty'];
+      this.search();
     },
     onButton() {
       this.blurInput();
@@ -258,14 +275,13 @@ export default {
     },
     params: {
       handler({ query }) {
-        this.query = {};
+        this.query = { 'hide-empty': false };
         if (query) {
-          Object.keys(query).forEach((key) => {
-            let values = query[key];
+          Object.entries(query).forEach(([key, values]) => {
             if (!this.isArray(values)) {
               values = [values];
             }
-            if (key === 'all-text') {
+            if (['all-text', 'hide-empty'].includes(key)) {
               [values] = values;
             }
             this.query[key] = values;

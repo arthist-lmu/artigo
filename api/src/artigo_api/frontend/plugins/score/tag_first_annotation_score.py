@@ -29,11 +29,10 @@ class TagFirstAnnotationScore(ScorePlugin):
     def __call__(self, tags, gameround, params):
         users = UserTagging.objects \
             .filter(resource=gameround.resource) \
+            .exclude(gameround=gameround) \
             .values_list('user_id', flat=True)
 
-        users = set(users) - set([gameround.user.id])
-
-        if len(users) == 0:
+        if len(set(users)) == 0:
             valid_tags = UserTagging.objects.filter(
                     tag__name__iregex=to_iregex(tags, 'name'),
                     tag__language=params.get('language', 'de'),

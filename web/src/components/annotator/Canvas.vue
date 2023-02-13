@@ -7,7 +7,7 @@
     alt=""
   >
     <template v-slot:placeholder>
-      <slot name="placeholder"></slot>
+      <slot name="placeholder" />
     </template>
 
     <v-avatar

@@ -57,8 +57,12 @@ const search = {
     },
     getURLParams({ dispatch }, urlParams) {
       const query = {};
-      Object.keys(urlParams).forEach((field) => {
-        query[field] = urlParams[field].split(',');
+      Object.entries(urlParams).forEach(([key, values]) => {
+        if (['true', 'false'].includes(values)) {
+          query[key] = values === 'true';
+        } else {
+          query[key] = urlParams[key].split(',');
+        }
       });
       dispatch('post', { query });
     },
@@ -68,15 +72,14 @@ const search = {
         if (typeof params.query === 'string') {
           urlParams.append('all-text', params.query);
         } else if (params.query instanceof Object) {
-          Object.keys(params.query).forEach((field) => {
-            let values = params.query[field];
+          Object.entries(params.query).forEach(([key, values]) => {
             if (values instanceof Set) {
               values = Array.from(values);
             }
             if (values instanceof Array) {
               values = values.join(',');
             }
-            urlParams.append(field, values);
+            urlParams.append(key, values);
           });
         }
       }

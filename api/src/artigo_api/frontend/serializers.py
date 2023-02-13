@@ -1,4 +1,3 @@
-import random
 import logging
 
 from itertools import groupby
@@ -183,6 +182,7 @@ class CollectionCountSerializer(serializers.ModelSerializer):
         fields = (
             'hash_id',
             'name',
+            'access',
             'status',
             'progress',
             'created',
@@ -193,7 +193,6 @@ class CollectionCountSerializer(serializers.ModelSerializer):
     def to_representation(self, data):
         data = super().to_representation(data)
 
-        random.shuffle(data['resources'])
         resource = Resource.objects.get(id=data['resources'][0])
 
         if settings.DEBUG:
@@ -491,10 +490,7 @@ class SessionCountSerializer(serializers.ModelSerializer):
     def to_representation(self, data):
         data = super().to_representation(data)
 
-        resource_ids = data.pop('resources')
-        random.shuffle(resource_ids)
-
-        resource = Resource.objects.get(id=resource_ids[0])
+        resource = Resource.objects.get(id=data.pop('resources')[0])
 
         if settings.DEBUG and resource.collection_id:
             data['path'] = upload_url_to_image(resource.hash_id)
