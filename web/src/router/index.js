@@ -110,7 +110,6 @@ const router = new VueRouter({
             title: 'game.title',
             layout: DefaultLayout,
             opaque: true,
-            hideSearchBar: true,
           },
         },
         {

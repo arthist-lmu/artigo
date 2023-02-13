@@ -25,6 +25,23 @@
         :showMore="showMore"
         :defaultParams="defaultParams"
       />
+
+      <v-row
+        v-if="!showMore"
+        justify="center"
+        no-gutters
+      >
+        <v-col cols="auto">
+          <v-btn
+            @click="showMore = true"
+            icon
+          >
+            <v-icon>
+              mdi-plus-circle-outline
+            </v-icon>
+          </v-btn>
+        </v-col>
+      </v-row>
     </v-card-text>
 
     <v-card-actions class="pb-6 px-6">
@@ -50,7 +67,7 @@ export default {
   data() {
     return {
       params: {},
-      showMore: true,
+      showMore: false,
     };
   },
   methods: {

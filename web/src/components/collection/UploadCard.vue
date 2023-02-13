@@ -56,7 +56,10 @@ export default {
   },
   methods: {
     upload() {
-      this.$store.dispatch('collection/add', this.collection);
+      this.$store.dispatch('collection/add', this.collection).then(() => {
+        this.$store.dispatch('collections/post', {});
+        this.close();
+      });
     },
     checkLength(value) {
       if (value) {

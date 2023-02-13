@@ -46,7 +46,7 @@ export default {
     remove() {
       const entry = { hash_id: this.entry.hash_id };
       this.$store.dispatch('collection/remove', entry).then(() => {
-        this.$store.dispatch('collection/post');
+        this.$store.dispatch('collections/post', {});
         this.close();
       });
     },
