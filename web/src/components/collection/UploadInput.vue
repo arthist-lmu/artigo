@@ -52,7 +52,7 @@
       >
         <template v-slot:[`item.extension`]="{ item }">
           <v-icon small>
-            <template v-if="item.name.endsWith('.zip')">
+            <template v-if="endsWith(item.name, ['.zip', '.tar', '.tar.gz', '.tar.bz2', '.tar.xz', '.gif', '.png', '.jpg', '.jpeg'])">
               mdi-file-image-outline
             </template>
             <template v-else>

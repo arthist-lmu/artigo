@@ -31,6 +31,9 @@ export default {
       if (typeof obj !== 'object') return false;
       return Object.prototype.hasOwnProperty.call(obj, key);
     },
+    endsWith(str, suffixes) {
+      return suffixes.some((suffix) => str.endsWith(suffix));
+    },
     capitalize(str) {
       return str && `${str.charAt(0).toUpperCase()}${str.slice(1)}`;
     },
