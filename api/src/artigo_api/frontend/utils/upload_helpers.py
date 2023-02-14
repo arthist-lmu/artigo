@@ -1,4 +1,6 @@
 import os
+import io
+import uuid
 import logging
 import traceback
 
@@ -74,8 +76,11 @@ def download_file(file, output_dir, output_name=None, max_size=None, extensions=
         os.makedirs(output_dir, exist_ok=True)
 
         with open(output_path, 'wb') as file_obj:
-            for chunk in file.chunks():
-                file_obj.write(chunk)
+            if isinstance(file, io.BufferedIOBase):
+                file_obj.write(file.getbuffer())
+            else:
+                for chunk in file.chunks():
+                    file_obj.write(chunk)
     except Exception as error:
         logger.error(traceback.format_exc())
 
@@ -89,5 +94,4 @@ def download_file(file, output_dir, output_name=None, max_size=None, extensions=
     return {
         'status': 'ok',
         'path': Path(output_path),
-        'origin': file.name,
     }

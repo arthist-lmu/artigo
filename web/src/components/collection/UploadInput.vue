@@ -14,7 +14,7 @@
           type="file"
           name="input"
           ref="input"
-          accept=".zip,.tar,.tar.gz,.tar.bz2,.tar.xz,.csv,.json,.jsonl"
+          accept=".zip,.tar,.tar.gz,.tar.bz2,.tar.xz,.csv,.json,.jsonl,.gif,.png,.jpg,.jpeg"
           multiple
         />
 
@@ -42,7 +42,7 @@
       </label>
 
       <v-data-table
-        v-if="files && files.length && !isDragging"
+        v-if="files && files.length"
         class="mt-4"
         :headers="fileHeaders"
         :items="fileItems"

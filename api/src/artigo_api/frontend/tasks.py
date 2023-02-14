@@ -56,18 +56,28 @@ def upload_collection(self, args):
     except CustomUser.DoesNotExist:
         raise BadRequest('unknown_user')
 
-    # TODO: use old collection if exists
-    collection = Collection.objects.create(
-        user=user,
-        hash_id=args.get('collection_id'),
-        name=args.get('collection_name'),
-        access=access,
-        status='U',
-        progress=0.0,
-    )
-    collection.save()
+    if not args.get('collection_name'):
+        raise BadRequest('collection_name_is_required')
 
-    logger.info(f'Indexing collection {collection.id} with {len(entries)} images')
+    collection = Collection.objects.filter(
+            user=user,
+            name=args['collection_name'],
+        ) \
+        .first()
+
+    if collection is None:
+        if not args.get('collection_id'):
+            raise BadRequest('collection_id_is_required')
+
+        collection = Collection.objects.create(
+            user=user,
+            hash_id=args['collection_id'],
+            name=args['collection_name'],
+            access=access,
+            status='U',
+            progress=0.0,
+        )
+        collection.save()
 
     if check_extension(image_path, ['.zip']):
         archive = ZipArchive(image_path)
@@ -82,12 +92,15 @@ def upload_collection(self, args):
     count, resources = 0, []
     args = {'ignore_conflicts': True}
 
-    with archive as _:
+    with archive as file_obj:
         for entry in entries:
-            img_obj = archive.read(entry['path'])
-            image = imageio.imread(img_obj)
-            hash_id = uuid.uuid4().hex
+            try:
+                img_obj = file_obj.read(entry['path'])
+                image = imageio.imread(img_obj)
+            except:
+                continue
 
+            hash_id = uuid.uuid4().hex
             image_output_file = None
 
             for resolution in settings.IMAGE_RESOLUTIONS:

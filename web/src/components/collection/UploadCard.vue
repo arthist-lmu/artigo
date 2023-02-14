@@ -62,6 +62,7 @@ export default {
     upload() {
       this.$store.dispatch('collection/add', this.collection).then(() => {
         this.$store.dispatch('collections/post', {});
+        this.collection = {};
         this.close();
       });
     },

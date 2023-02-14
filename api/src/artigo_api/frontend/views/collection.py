@@ -1,4 +1,5 @@
 import os
+import io
 import csv
 import json
 import uuid
@@ -212,6 +213,17 @@ class CollectionAddView(APIView):
         if not params.get('name'):
             raise APIException('collection_name_is_required')
 
+        collection_id = uuid.uuid4().hex
+        collection_name = params['name']
+
+        if len(collection_name) < 4:
+            raise APIException('name_is_too_short')
+
+        if len(collection_name) > 75:
+            raise APIException('name_is_too_long')
+
+        image_files = []
+
         for file in params.getlist('files'):
             if check_extension(file.name, extensions=[
                 '.zip',
@@ -227,18 +239,26 @@ class CollectionAddView(APIView):
                 '.jsonl',
             ]):
                 params['metadata'] = file
+            elif check_extension(file.name, extensions=[
+                '.gif',
+                '.png',
+                '.jpg',
+                '.jpeg',
+            ]):
+                image_files.append(file)
 
         if not params.get('images'):
-            raise APIException('image_file_is_required')
+            if not image_files:
+                raise APIException('image_file_is_required')
 
-        collection_id = uuid.uuid4().hex
-        collection_name = params['name']
+            params['images'] = io.BytesIO()
 
-        if len(collection_name) < 4:
-            raise APIException('name_is_too_short')
+            with zipfile.ZipFile(params['images'], 'w') as file_obj:
+                for file in image_files:
+                    file_obj.writestr(file.name, file.read())
 
-        if len(collection_name) > 75:
-            raise APIException('name_is_too_long')
+            params['images'].name = f'{collection_id}.zip'
+            params['images'].size = params['images'].__sizeof__()
 
         if settings.DEBUG:
             output_dir = os.path.join(
