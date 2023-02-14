@@ -94,17 +94,21 @@
     </v-form>
 
     <template v-slot:actions>
-      <v-btn
-        @click="register"
-        :disabled="!isFormValid"
-        tabindex="0"
-        color="primary"
-        depressed
-        rounded
-        block
-      >
-        {{ $t("user.register.title") }}
-      </v-btn>
+      <v-row>
+        <v-col>
+          <v-btn
+            @click="register"
+            :disabled="!isFormValid"
+            tabindex="0"
+            color="primary"
+            depressed
+            rounded
+            block
+          >
+            {{ $t("user.register.title") }}
+          </v-btn>
+        </v-col>
+      </v-row>
     </template>
   </Card>
 </template>

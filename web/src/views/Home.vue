@@ -28,7 +28,7 @@
             appear
           >
             <span
-              v-if="dialog.creator && creator"
+              v-if="typer.creator && creator"
               :key="creator"
               @click="search(creator, 'creators')"
               @keydown="search(creator, 'creators')"
@@ -40,7 +40,7 @@
           </transition>
 
           <Typer
-            v-if="dialog.prefix"
+            v-if="typer.prefix"
             @onComplete="show('examples')"
             class="space"
             :strings="[$t('home.texts.prefix')]"
@@ -48,7 +48,7 @@
           />
 
           <Typer
-            v-if="dialog.examples"
+            v-if="typer.examples"
             @onComplete="show('button')"
             class="space"
             :removeBackspace="false"
@@ -64,7 +64,7 @@
       appear
     >
       <v-row
-        v-if="dialog.button"
+        v-if="typer.button"
         style="flex: 0;"
       >
         <v-col
@@ -96,6 +96,17 @@
         </v-col>
       </v-row>
     </transition>
+
+    <v-dialog
+      v-model="dialog.helper"
+      max-width="400"
+    >
+      <HelperCard
+        v-model="dialog.helper"
+        :text="$t('language.helper')"
+        icon="mdi-account-circle-outline"
+      />
+    </v-dialog>
   </v-container>
 </template>
 
@@ -104,11 +115,14 @@ export default {
   data() {
     return {
       drawer: false,
-      dialog: {
+      typer: {
         creator: false,
         prefix: false,
         examples: false,
         button: true,
+      },
+      dialog: {
+        helper: false,
       },
       creator: null,
     };
@@ -117,7 +131,7 @@ export default {
     show(name) {
       setTimeout(() => {
         this.$nextTick(() => {
-          this.dialog[name] = true;
+          this.typer[name] = true;
           window.scrollTo(0, document.body.scrollHeight);
         });
       }, 250);
@@ -177,14 +191,14 @@ export default {
   },
   watch: {
     locale() {
-      this.dialog = {
+      this.typer = {
         creator: false,
         prefix: false,
         examples: false,
         button: true,
       };
     },
-    dialog: {
+    typer: {
       handler({ creator, prefix }) {
         if (creator && !prefix) {
           let { names } = this.data.creators;
@@ -213,9 +227,16 @@ export default {
     // this.$store.dispatch('statistics/get');
     window.scrollTo(0, document.body.scrollHeight);
   },
+  created() {
+    if (localStorage.getItem('langHelper') === null) {
+      localStorage.setItem('langHelper', true);
+      this.dialog.helper = true;
+    }
+  },
   components: {
     Typer: () => import('@/components/Typer.vue'),
     GameDrawer: () => import('@/components/game/Drawer.vue'),
+    HelperCard: () => import('@/components/HelperCard.vue'),
   },
 };
 </script>

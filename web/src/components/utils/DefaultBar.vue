@@ -106,14 +106,22 @@
       </template>
       <template v-else>
         <v-btn
+          v-if="query['hide-empty']"
+          :title="$t(`${store}.fields.show-empty`)"
+          @click="hideEmpty"
+          icon
+        >
+          <v-icon>
+            mdi-flask-empty-plus-outline
+          </v-icon>
+        </v-btn>
+        <v-btn
+          v-else
           :title="$t(`${store}.fields.hide-empty`)"
           @click="hideEmpty"
           icon
         >
-          <v-icon v-if="query['hide-empty']">
-            mdi-flask-empty-plus-outline
-          </v-icon>
-          <v-icon v-else>
+          <v-icon>
             mdi-flask-empty-minus-outline
           </v-icon>
         </v-btn>

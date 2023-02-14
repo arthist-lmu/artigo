@@ -31,17 +31,21 @@
     </v-form>
 
     <template v-slot:actions>
-      <v-btn
-        @click="change"
-        :disabled="!isFormValid"
-        tabindex="0"
-        color="primary"
-        depressed
-        rounded
-        block
-      >
-        {{ $t("collections.fields.change") }}
-      </v-btn>
+      <v-row>
+        <v-col>
+          <v-btn
+            @click="change"
+            :disabled="!isFormValid"
+            tabindex="0"
+            color="primary"
+            depressed
+            rounded
+            block
+          >
+            {{ $t("collections.fields.change") }}
+          </v-btn>
+        </v-col>
+      </v-row>
     </template>
   </Card>
 </template>

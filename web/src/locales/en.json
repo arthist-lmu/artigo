@@ -68,24 +68,6 @@
       "access-restricted": "Restricted"
     }
   },
-  "language": {
-    "title": "Language",
-    "fields": {
-      "en": "English",
-      "de": "German"
-    }
-  },
-  "field": {
-    "abort": "Abort",
-    "required": "This is a required field."
-  },
-  "rules": {
-    "min": "Min. {n} characters.",
-    "max": "Max. {n} characters.",
-    "file-size": "Max. file size {n} MB.",
-    "file-types": "Supported are the following file types: {n}.",
-    "password-repeat": "Passwords don't match."
-  },
   "imprint": {
     "title": "Imprint"
   },
@@ -158,94 +140,6 @@
       "theses": "Theses and Dissertations"
     }
   },
-  "game": {
-    "title": "Play",
-    "fields": {
-      "new-game-default": "New game",
-      "new-game-search": "Play with these images",
-      "settings": "Settings",
-      "basic": {
-        "skip": "Skip game round",
-        "finish": "Finish game early",
-        "score": "{n} Points|{n} Point|{n} Points",
-        "rounds": "Round {i} of {total}",
-        "suggest": "Click to add similar tags",
-        "invalid": "This tag must not be entered (again)",
-        "seconds-left": "You have {n} seconds left."
-      },
-      "tagging": {
-        "post": "Enter tag",
-        "intro": "What do you see in the displayed image? What feelings does it trigger in you?",
-        "taboo": "You may not use the following tags: {tags}."
-      },
-      "roi": {
-        "post": "Annotate image region",
-        "intro": "Do you see the tags above the displayed image? Draw with the mouse over the corresponding image regions."
-      }
-    },
-    "inputs": {
-      "custom_resource": "Enter image identifiers",
-      "custom_annotated_input": "Enter tags",
-      "custom_annotated_taboo": "Enter tags"
-    },
-    "params": {
-      "game_type": {
-        "title": "Which game mode do you prefer?",
-        "fields": {
-          "tagging": "Annotate images with tags",
-          "roi": "Annotate image regions based on tags"
-        }
-      },
-      "game_round_duration": {
-        "title": "How long does a game round last?",
-        "suffix": "{n} seconds|{n} second|{n} second"
-      },
-      "resource_type": {
-        "title": "Which images do you want to play with?",
-        "fields": {
-          "random_resource": "Randomly selected images",
-          "custom_resource": "Custom images"
-        }
-      },
-      "resource_rounds": {
-        "title": "How many rounds do you want to play?",
-        "suffix": "{n} rounds|{n} round|{n} rounds"
-      },
-      "opponent_type": {
-        "title": "Who do you want to play against?",
-        "fields": {
-          "no_opponent": "No one",
-          "mean_gameround_opponent": "Average opponents",
-          "random_gameround_opponent": "Randomly selected opponents"
-        }
-      },
-      "input_type": {
-        "title": "What annotations are displayed at the start of the game?",
-        "fields": {
-          "no_input": "None",
-          "most_annotated_input": "Most frequently assigned annotations",
-          "random_annotated_input": "Randomly assigned annotations",
-          "custom_annotated_input": "Custom annotations"
-        }
-      },
-      "taboo_type": {
-        "title": "Which annotations are taboo?",
-        "fields": {
-          "no_taboo": "None",
-          "most_annotated_taboo": "Most frequently assigned annotations",
-          "random_annotated_taboo": "Randomly assigned annotations",
-          "custom_annotated_taboo": "Custom annotations"
-        }
-      },
-      "suggester_type": {
-        "title": "Which annotations should be recommended?",
-        "fields": {
-          "no_suggester": "None",
-          "cooccurrence_suggester": "Annotations that frequently occur together"
-        }
-      }
-    }
-  },
   "home": {
     "title": "Home",
     "fields": {
@@ -300,24 +194,5 @@
       "not-exist": "The page you were looking for does not (yet) exist",
       "go-home": "Get me out of here"
     }
-  },
-  "messages": {
-    "unknown_error": "An unknown error occurred. Please try again.",
-    "enter_a_valid_email_address": "Please enter a valid e-mail address.",
-    "unable_to_log_in_with_provided_credentials": "Please check your credentials.",
-    "this_password_is_too_common": "Your password is too common.",
-    "this_password_is_too_short_it_must_contain_at_least_8_characters": "Your password must contain at least 8 characters.",
-    "a_user_is_already_registered_with_this_e-mail_address": "A user is already registered with this e-mail address.",
-    "not_authenticated": "Please login to proceed.",
-    "invalid_token": "Please login to proceed.",
-    "copied_to_clipboard": "The link was successfully copied to the clipboard.",
-    "collection_name_is_required": "Please enter a collection name.",
-    "an_image_file_is_required": "Please enter an image file.",
-    "file_could_not_be_written": "The file could not be written.",
-    "this_name_is_too_short": "Your name contains too few characters.",
-    "this_name_is_too_long": "Your name contains too many characters.",
-    "no_valid_colnames_found": "No valid colnames were found.",
-    "corrupt_archives_file": "Please enter a valid archives file.",
-    "no_matching_images_found": "No matching images were found."
   }
 }

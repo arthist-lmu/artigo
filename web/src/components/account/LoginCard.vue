@@ -50,30 +50,34 @@
     </v-form>
 
     <template v-slot:actions>
-      <v-btn
-        @click="login"
-        :disabled="!isFormValid"
-        tabindex="0"
-        color="primary"
-        depressed
-        rounded
-        block
-      >
-        {{ $t("user.login.title") }}
-      </v-btn>
+      <v-row>
+        <v-col>
+          <v-btn
+            @click="login"
+            :disabled="!isFormValid"
+            tabindex="0"
+            color="primary"
+            depressed
+            rounded
+            block
+          >
+            {{ $t("user.login.title") }}
+          </v-btn>
 
-      <v-btn
-        @click="resetPassword"
-        class="mt-2 ml-0"
-        tabindex="0"
-        rounded
-        small
-        plain
-        block
-        text
-      >
-        {{ $t("user.password-reset.title") }}
-      </v-btn>
+          <v-btn
+            @click="resetPassword"
+            class="mt-2 ml-0"
+            tabindex="0"
+            rounded
+            small
+            plain
+            block
+            text
+          >
+            {{ $t("user.password-reset.title") }}
+          </v-btn>
+        </v-col>
+      </v-row>
     </template>
 
     <template v-slot:dialogs>

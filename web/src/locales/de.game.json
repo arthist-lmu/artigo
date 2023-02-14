@@ -1,0 +1,92 @@
+{
+  "game": {
+    "title": "Spielen",
+    "helper": "Kennst Du ARTigo bereits? Wenn nicht, lerne zunächst das Projekt kennen.",
+    "fields": {
+      "new-game-default": "Neues Spiel",
+      "new-game-search": "Spiele mit diesen Bildern",
+      "settings": "Einstellungen",
+      "basic": {
+        "skip": "Spielrunde überspringen",
+        "finish": "Spiel vorzeitig beenden",
+        "score": "{n} Punkte|{n} Punkt|{n} Punkte",
+        "rounds": "Runde {i} von {total}",
+        "suggest": "Füge ähnliche Schlagwörter hinzu",
+        "invalid": "Dieses Schlagwort darf nicht (nochmal) eingegeben werden",
+        "seconds-left": "Du hast noch {n} Sekunden."
+      },
+      "tagging": {
+        "post": "Schlagwort eingeben",
+        "intro": "Was siehst Du auf dem angezeigten Bild? Welche Gefühle löst es bei Dir aus?",
+        "taboo": "Folgende Schlagwörter darfst Du nicht verwenden: {tags}."
+      },
+      "roi": {
+        "post": "Bildregion annotieren",
+        "intro": "Siehst Du die Schlagwörter über dem angezeigten Bild? Zeichne mit der Maus über die zugehörigen Bildregionen.",
+        "taboo": "Folgende Schlagwörter darfst Du nicht verwenden: {tags}."
+      }
+    },
+    "inputs": {
+      "custom_resource": "Bildidentifikatoren eingeben",
+      "custom_annotated_input": "Schlagwörter eingeben",
+      "custom_annotated_taboo": "Schlagwörter eingeben"
+    },
+    "params": {
+      "game_type": {
+        "title": "Welchen Spielmodus bevorzugst Du?",
+        "fields": {
+          "tagging": "Bilder mit Schlagwörtern annotieren",
+          "roi": "Bildregionen auf Basis von Schlagwörtern annotieren"
+        }
+      },
+      "game_round_duration": {
+        "title": "Wie lange dauert eine Spielrunde?",
+        "suffix": "{n} Sekunden|{n} Sekunde|{n} Sekunden"
+      },
+      "resource_type": {
+        "title": "Mit welchen Bildern möchtest Du spielen?",
+        "fields": {
+          "random_resource": "Zufällig ausgewählte Bilder",
+          "custom_resource": "Benutzerdefinierte Bilder"
+        }
+      },
+      "resource_rounds": {
+        "title": "Wie viele Runden möchtest Du spielen?",
+        "suffix": "{n} Runden|{n} Runde|{n} Runden"
+      },
+      "opponent_type": {
+        "title": "Gegen wen möchtest Du spielen?",
+        "fields": {
+          "no_opponent": "Niemanden",
+          "mean_gameround_opponent": "Durchschnittliche Gegner:innen",
+          "random_gameround_opponent": "Zufällig ausgewählte Gegner:innen"
+        }
+      },
+      "input_type": {
+        "title": "Welche Annotationen werden bei Spielbeginn angezeigt?",
+        "fields": {
+          "no_input": "Keine",
+          "most_annotated_input": "Am häufigsten vergebene Annotationen",
+          "random_annotated_input": "Zufällig vergebene Annotationen",
+          "custom_annotated_input": "Benutzerdefinierte Annotationen"
+        }
+      },
+      "taboo_type": {
+        "title": "Welche Annotationen sind tabu?",
+        "fields": {
+          "no_taboo": "Keine",
+          "most_annotated_taboo": "Am häufigsten vergebene Annotationen",
+          "random_annotated_taboo": "Zufällig vergebene Annotationen",
+          "custom_annotated_taboo": "Benutzerdefinierte Annotationen"
+        }
+      },
+      "suggester_type": {
+        "title": "Welche Annotationen sollen empfohlen werden?",
+        "fields": {
+          "no_suggester": "Keine",
+          "cooccurrence_suggester": "Häufig zusammen vorkommende Annotationen"
+        }
+      }
+    }
+  }
+}

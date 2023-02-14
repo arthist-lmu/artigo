@@ -63,28 +63,11 @@
       "remove": "Sammlung entfernen",
       "change": "Sammlung ändern",
       "hide-empty": "Blende Ergebnisse ohne Bilder aus",
+      "show-empty": "Zeige Ergebnisse ohne Bilder",
       "no-results": "Es konnten keine Sammlungen gefunden werden.",
       "access-open": "Offen",
       "access-restricted": "Eingeschränkt"
     }
-  },
-  "language": {
-    "title": "Sprache",
-    "fields": {
-      "en": "Englisch",
-      "de": "Deutsch"
-    }
-  },
-  "field": {
-    "abort": "Abbrechen",
-    "required": "Dies ist ein Pflichtfeld."
-  },
-  "rules": {
-    "min": "Min. {n} Zeichen.",
-    "max": "Max. {n} Zeichen.",
-    "file-size": "Max. Dateigröße {n} MB.",
-    "file-types": "Unterstützt werden folgende Dateitypen: {n}.",
-    "password-repeat": "Passwörter stimmen nicht überein."
   },
   "imprint": {
     "title": "Impressum"
@@ -99,6 +82,7 @@
       "reset": "Zurücksetzen",
       "query": "Nach Bildern suchen",
       "hide-empty": "Blende Ergebnisse ohne Annotationen aus",
+      "show-empty": "Zeige Ergebnisse ohne Annotationen",
       "no-results": "Für Deine Suchanfrage konnten keine Ergebnisse gefunden werden."
     }
   },
@@ -158,95 +142,6 @@
       "theses": "Abschlussarbeiten und Dissertationen"
     }
   },
-  "game": {
-    "title": "Spielen",
-    "fields": {
-      "new-game-default": "Neues Spiel",
-      "new-game-search": "Spiele mit diesen Bildern",
-      "settings": "Einstellungen",
-      "basic": {
-        "skip": "Spielrunde überspringen",
-        "finish": "Spiel vorzeitig beenden",
-        "score": "{n} Punkte|{n} Punkt|{n} Punkte",
-        "rounds": "Runde {i} von {total}",
-        "suggest": "Füge ähnliche Schlagwörter hinzu",
-        "invalid": "Dieses Schlagwort darf nicht (nochmal) eingegeben werden",
-        "seconds-left": "Du hast noch {n} Sekunden."
-      },
-      "tagging": {
-        "post": "Schlagwort eingeben",
-        "intro": "Was siehst Du auf dem angezeigten Bild? Welche Gefühle löst es bei Dir aus?",
-        "taboo": "Folgende Schlagwörter darfst Du nicht verwenden: {tags}."
-      },
-      "roi": {
-        "post": "Bildregion annotieren",
-        "intro": "Siehst Du die Schlagwörter über dem angezeigten Bild? Zeichne mit der Maus über die zugehörigen Bildregionen.",
-        "taboo": "Folgende Schlagwörter darfst Du nicht verwenden: {tags}."
-      }
-    },
-    "inputs": {
-      "custom_resource": "Bildidentifikatoren eingeben",
-      "custom_annotated_input": "Schlagwörter eingeben",
-      "custom_annotated_taboo": "Schlagwörter eingeben"
-    },
-    "params": {
-      "game_type": {
-        "title": "Welchen Spielmodus bevorzugst Du?",
-        "fields": {
-          "tagging": "Bilder mit Schlagwörtern annotieren",
-          "roi": "Bildregionen auf Basis von Schlagwörtern annotieren"
-        }
-      },
-      "game_round_duration": {
-        "title": "Wie lange dauert eine Spielrunde?",
-        "suffix": "{n} Sekunden|{n} Sekunde|{n} Sekunden"
-      },
-      "resource_type": {
-        "title": "Mit welchen Bildern möchtest Du spielen?",
-        "fields": {
-          "random_resource": "Zufällig ausgewählte Bilder",
-          "custom_resource": "Benutzerdefinierte Bilder"
-        }
-      },
-      "resource_rounds": {
-        "title": "Wie viele Runden möchtest Du spielen?",
-        "suffix": "{n} Runden|{n} Runde|{n} Runden"
-      },
-      "opponent_type": {
-        "title": "Gegen wen möchtest Du spielen?",
-        "fields": {
-          "no_opponent": "Niemanden",
-          "mean_gameround_opponent": "Durchschnittliche Gegner:innen",
-          "random_gameround_opponent": "Zufällig ausgewählte Gegner:innen"
-        }
-      },
-      "input_type": {
-        "title": "Welche Annotationen werden bei Spielbeginn angezeigt?",
-        "fields": {
-          "no_input": "Keine",
-          "most_annotated_input": "Am häufigsten vergebene Annotationen",
-          "random_annotated_input": "Zufällig vergebene Annotationen",
-          "custom_annotated_input": "Benutzerdefinierte Annotationen"
-        }
-      },
-      "taboo_type": {
-        "title": "Welche Annotationen sind tabu?",
-        "fields": {
-          "no_taboo": "Keine",
-          "most_annotated_taboo": "Am häufigsten vergebene Annotationen",
-          "random_annotated_taboo": "Zufällig vergebene Annotationen",
-          "custom_annotated_taboo": "Benutzerdefinierte Annotationen"
-        }
-      },
-      "suggester_type": {
-        "title": "Welche Annotationen sollen empfohlen werden?",
-        "fields": {
-          "no_suggester": "Keine",
-          "cooccurrence_suggester": "Häufig zusammen vorkommende Annotationen"
-        }
-      }
-    }
-  },
   "home": {
     "title": "Startseite",
     "fields": {
@@ -292,6 +187,7 @@
       "of": "von",
       "query": "Nach Spielsitzungen suchen",
       "hide-empty": "Blende Ergebnisse ohne Annotationen aus",
+      "show-empty": "Zeige Ergebnisse ohne Annotationen",
       "no-results": "Es konnten keine Spielsitzungen gefunden werden."
     }
   },
@@ -301,24 +197,5 @@
       "not-exist": "Die gesuchte Seite existiert (noch) nicht",
       "go-home": "Bring mich weg von hier"
     }
-  },
-  "messages": {
-    "unknown_error": "Ein unbekannter Fehler ist aufgetreten. Bitte versuche es erneut.",
-    "enter_a_valid_email_address": "Bitte gib eine gültige E-Mail-Adresse ein.",
-    "unable_to_log_in_with_provided_credentials": "Bitte überprüfe Deine Zugangsdaten.",
-    "this_password_is_too_common": "Dein Passwort ist zu unsicher.",
-    "this_password_is_too_short_it_must_contain_at_least_8_characters": "Dein Passwort muss mindestens 8 Zeichen enthalten.",
-    "a_user_is_already_registered_with_this_e-mail_address": "Ein:e Benutzer:in ist bereits mit dieser E-Mail-Adresse registriert.",
-    "not_authenticated": "Bitte melde dich an, um fortzufahren.",
-    "invalid_token": "Bitte melde dich an, um fortzufahren.",
-    "copied_to_clipboard": "Der Link wurde erfolgreich in die Zwischenablage kopiert.",
-    "collection_name_is_required": "Bitte gib einen Sammlungsnamen ein.",
-    "an_image_file_is_required": "Bitte gib eine Bilddatei ein.",
-    "file_could_not_be_written": "Die Datei konnte nicht abgespeichert werden.",
-    "this_name_is_too_short": "Dein Name enthält zu wenig Zeichen.",
-    "this_name_is_too_long": "Dein Name enthält zu viele Zeichen.",
-    "no_valid_colnames_found": "Es wurden keine gültigen Spaltennamen gefunden.",
-    "corrupt_archives_file": "Bitte gib eine gültige Archivdatei ein.",
-    "no_matching_images_found": "Es wurden keine passenden Bilder gefunden."
   }
 }

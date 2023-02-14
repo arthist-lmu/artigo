@@ -1,9 +1,9 @@
 <template>
-  <v-card
-    max-width="900"
-    flat
+  <Card
+    v-bind="$props"
+    v-on="$listeners"
   >
-    <v-card-actions class="pa-0">
+    <template v-slot:actions>
       <v-col cols="6">
         <v-btn
           @click="remove"
@@ -28,19 +28,18 @@
           {{ $t("field.abort") }}
         </v-btn>
       </v-col>
-    </v-card-actions>
-  </v-card>
+    </template>
+  </Card>
 </template>
 
 <script>
+import Card from '@/components/utils/Card.vue';
+
 export default {
+  extends: Card,
   props: {
     entry: Object,
-    value: Boolean,
-    isDialog: {
-      type: Boolean,
-      default: true,
-    },
+    ...Card.props,
   },
   methods: {
     remove() {
@@ -50,9 +49,9 @@ export default {
         this.close();
       });
     },
-    close() {
-      this.$emit('input', false);
-    },
+  },
+  components: {
+    Card,
   },
 };
 </script>

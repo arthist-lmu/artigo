@@ -3,9 +3,7 @@
     :class="[$vuetify.breakpoint.mdAndDown ? 'mobile px-1' : undefined, 'mt-8']"
     style="position: relative; height: calc(100% - 22px);"
   >
-    <SelectDialog v-model="dialog" />
-
-    <template v-if="!dialog">
+    <template v-if="!dialog.inital">
       <v-fade-transition>
         <Countdown
           v-if="countdown"
@@ -73,6 +71,20 @@
         </v-card>
       </v-fade-transition>
     </template>
+
+    <SelectDialog v-model="dialog.inital" />
+
+    <v-dialog
+      v-model="dialog.helper"
+      max-width="400"
+    >
+      <HelperCard
+        v-model="dialog.helper"
+        :text="$t('game.helper')"
+        icon="mdi-help-circle-outline"
+        page="about"
+      />
+    </v-dialog>
   </v-container>
 </template>
 
@@ -84,14 +96,17 @@ export default {
     return {
       path: null,
       seconds: 0,
-      dialog: false,
+      dialog: {
+        inital: false,
+        helper: false,
+      },
       loading: true,
       countdown: false,
     };
   },
   methods: {
     get() {
-      this.dialog = true;
+      this.dialog.inital = true;
     },
     next() {
       if (this.roundId === this.rounds) {
@@ -139,8 +154,16 @@ export default {
         this.loading = false;
       });
     },
-    dialog(value) {
+    'dialog.inital'(value) {
       if (value) {
+        if (localStorage.getItem('gameHelper') === null) {
+          localStorage.setItem('gameHelper', true);
+          setTimeout(() => {
+            this.$nextTick(() => {
+              this.dialog.helper = true;
+            });
+          }, 250);
+        }
         this.loading = true;
       }
     },
@@ -172,6 +195,7 @@ export default {
     DefaultSidebar: () => import('@/components/game/sidebar/Default.vue'),
     TaggingSidebar: () => import('@/components/game/sidebar/Tagging.vue'),
     SelectDialog: () => import('@/components/game/SelectDialog.vue'),
+    HelperCard: () => import('@/components/HelperCard.vue'),
   },
 };
 </script>

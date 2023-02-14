@@ -20,13 +20,16 @@
       </v-btn>
     </v-card-title>
 
-    <v-card-text :class="[isDialog ? undefined : 'px-6', 'pt-4']">
+    <v-card-text
+      v-if="$slots.default"
+      :class="[isDialog ? undefined : 'px-6', 'pt-4']"
+    >
       <slot />
     </v-card-text>
 
     <v-card-actions
-      class="pb-6 px-6"
-      style="display: block;"
+      v-if="$slots.actions"
+      :class="[$slots.default ? 'pb-6 px-6' : 'pa-0']"
     >
       <slot name="actions" />
     </v-card-actions>

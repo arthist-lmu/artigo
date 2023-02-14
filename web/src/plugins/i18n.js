@@ -13,7 +13,10 @@ function loadLocaleMessages() {
   locales.keys().forEach((key) => {
     const matched = key.match(/([A-Za-z0-9-_]+)\./i);
     if (matched && matched.length > 1) {
-      messages[matched[1]] = locales(key);
+      messages[matched[1]] = {
+        ...messages[matched[1]],
+        ...locales(key),
+      };
     }
   });
   return messages;

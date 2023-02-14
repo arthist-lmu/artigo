@@ -1,0 +1,43 @@
+{
+  "language": {
+    "title": "Sprache",
+    "helper": "ARTigo ist auf Deutsch und Englisch verfügbar. Wähle Deine gewünschte Sprache in der Navigation aus.",
+    "fields": {
+      "en": "Englisch",
+      "de": "Deutsch"
+    }
+  },
+  "field": {
+    "okay": "Okay",
+    "abort": "Abbrechen",
+    "required": "Dies ist ein Pflichtfeld."
+  },
+  "rules": {
+    "min": "Min. {n} Zeichen.",
+    "max": "Max. {n} Zeichen.",
+    "file-size": "Max. Dateigröße {n} MB.",
+    "file-types": "Unterstützt werden folgende Dateitypen: {n}.",
+    "password-repeat": "Passwörter stimmen nicht überein."
+  },
+  "messages": {
+    "unknown_error": "Ein unbekannter Fehler ist aufgetreten. Bitte versuche es erneut.",
+    "enter_a_valid_email_address": "Bitte gib eine gültige E-Mail-Adresse ein.",
+    "unable_to_log_in_with_provided_credentials": "Bitte überprüfe Deine Zugangsdaten.",
+    "this_password_is_too_common": "Dein Passwort ist zu unsicher.",
+    "this_password_is_too_short_it_must_contain_at_least_8_characters": "Dein Passwort muss mindestens 8 Zeichen enthalten.",
+    "a_user_is_already_registered_with_this_e-mail_address": "Ein:e Benutzer:in ist bereits mit dieser E-Mail-Adresse registriert.",
+    "not_authenticated": "Bitte melde dich an, um fortzufahren.",
+    "invalid_token": "Bitte melde dich an, um fortzufahren.",
+    "copied_to_clipboard": "Der Link wurde erfolgreich in die Zwischenablage kopiert.",
+    "collection_name_is_required": "Bitte gib einen Sammlungsnamen ein.",
+    "image_file_is_required": "Bitte gib eine Bilddatei ein.",
+    "file_could_not_be_written": "Die Datei konnte nicht abgespeichert werden.",
+    "name_is_too_short": "Dein Name enthält zu wenig Zeichen.",
+    "name_is_too_long": "Dein Name enthält zu viele Zeichen.",
+    "this_name_is_too_short": "Dein Name enthält zu wenig Zeichen.",
+    "this_name_is_too_long": "Dein Name enthält zu viele Zeichen.",
+    "no_valid_colnames_found": "Es wurden keine gültigen Spaltennamen gefunden.",
+    "corrupt_archives_file": "Bitte gib eine gültige Archivdatei ein.",
+    "no_matching_images_found": "Es wurden keine passenden Bilder gefunden."
+  }
+}

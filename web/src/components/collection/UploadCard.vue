@@ -25,17 +25,21 @@
     </v-form>
 
     <template v-slot:actions>
-      <v-btn
-        @click="upload"
-        :disabled="!isFormValid"
-        tabindex="0"
-        color="primary"
-        depressed
-        rounded
-        block
-      >
-        {{ $t("user.upload.title") }}
-      </v-btn>
+      <v-row>
+        <v-col>
+          <v-btn
+            @click="upload"
+            :disabled="!isFormValid"
+            tabindex="0"
+            color="primary"
+            depressed
+            rounded
+            block
+          >
+            {{ $t("user.upload.title") }}
+          </v-btn>
+        </v-col>
+      </v-row>
     </template>
   </Card>
 </template>
