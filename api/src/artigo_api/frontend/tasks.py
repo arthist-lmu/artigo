@@ -109,7 +109,7 @@ def upload_collection(self, args):
 
                 resized_image = resize_image(image, min_dim=min_size)
 
-                if settings.DEBUG:
+                if settings.IS_DEV:
                     image_output_dir = os.path.join(
                         settings.UPLOAD_ROOT,
                         hash_id[0:2],

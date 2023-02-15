@@ -13,19 +13,21 @@ env = environ.Env(
     DEBUG=(bool, False),
 )
 
+IS_DEV = False
+
 try:
-    if os.getenv('WHERE') in ('dev', 'development'):
-        logger.warning('Running in development environment')
-        environ.Env.read_env(ENV_PATH, overwrite=False)
-    elif env('WHERE') in ('prod', 'production'):
-        logger.warning('Running in production environment')
-    elif env('WHERE') == 'testing':
-        logger.warning('Running in testing environment')
-    else:
-        logger.warning('Running unconfined environment')
-        environ.Env.read_env(ENV_PATH, overwrite=False)
+    WHERE = env('WHERE')
 except:
-    logger.warning('No .env file specified, continuing without')
+    WHERE = 'unconfined'
+
+if WHERE in ('prod', 'production'):
+    logger.warning('Running in production environment')
+elif WHERE == 'testing':
+    logger.warning('Running in testing environment')
+else:
+    logger.warning('Running in development environment')
+    environ.Env.read_env(ENV_PATH, overwrite=False)
+    IS_DEV = True
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.1/howto/deployment/checklist/
@@ -35,8 +37,6 @@ SECRET_KEY = env('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env('DEBUG')
-
-FORCE_SCRIPT_NAME = '/'
 
 try:
     API = env('VUE_APP_API')
@@ -248,15 +248,13 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
+FORCE_SCRIPT_NAME = '/'
 STATIC_URL = FORCE_SCRIPT_NAME + 'static/'
 
 if DEBUG:
-    try:
-        if env('WHERE') == 'testing':
-            STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
-        else:
-            raise ValueError
-    except:
+    if env('WHERE') == 'testing':
+        STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
+    else:
         STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 else:
     STATIC_ROOT = os.path.join(BASE_DIR, 'static')

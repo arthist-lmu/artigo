@@ -492,7 +492,7 @@ class SessionCountSerializer(serializers.ModelSerializer):
 
         resource = Resource.objects.get(id=data.pop('resources')[0])
 
-        if settings.DEBUG and resource.collection_id:
+        if settings.IS_DEV and resource.collection_id:
             data['path'] = upload_url_to_image(resource.hash_id)
         else:
             data['path'] = media_url_to_image(resource.hash_id)

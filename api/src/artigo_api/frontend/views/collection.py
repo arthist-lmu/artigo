@@ -260,7 +260,7 @@ class CollectionAddView(APIView):
             params['images'].name = f'{collection_id}.zip'
             params['images'].size = params['images'].__sizeof__()
 
-        if settings.DEBUG:
+        if settings.IS_DEV:
             output_dir = os.path.join(
                 settings.UPLOAD_ROOT,
                 collection_id[0:2],
@@ -364,7 +364,7 @@ class CollectionRemoveView(APIView):
                     for resolution in settings.IMAGE_RESOLUTIONS:
                         suffix = resolution.get('suffix', '')
 
-                        if settings.DEBUG:
+                        if settings.IS_DEV:
                             file_path = os.path.join(
                                 settings.UPLOAD_ROOT,
                                 hash_id[0:2],

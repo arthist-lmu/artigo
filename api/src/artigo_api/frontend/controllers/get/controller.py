@@ -341,7 +341,7 @@ class GameController:
             str(x['id']): {
                 'resource_id': str(x['id']),
                 'path': upload_url_to_image(x['hash_id']) \
-                    if x['collection_id'] and settings.DEBUG \
+                    if x['collection_id'] and settings.IS_DEV \
                     else media_url_to_image(x['hash_id']),
             }
             for x in list(resources)
