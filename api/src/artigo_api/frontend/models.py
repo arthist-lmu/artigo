@@ -86,6 +86,7 @@ class Collection(models.Model):
         max_length=2,
         choices=[
             ('O', 'Open'),
+            ('P', 'Pending'),
             ('R', 'Restricted'),
         ],
         default='R',
