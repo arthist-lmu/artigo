@@ -80,10 +80,7 @@
       </v-list-item>
 
       <template v-if="!isAnonymous">
-        <v-list-item
-          v-if="data.n_collections > 0"
-          @click="goTo('collections')"
-        >
+        <v-list-item @click="goTo('collections')">
           <v-list-item-content>
             {{ $t("collections.title") }}
           </v-list-item-content>
