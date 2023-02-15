@@ -112,6 +112,12 @@
       "motivation": "After you have played a predefined number of rounds, the metadata for the images become visible. In this way, you not only generate art-historical knowledge, but also collect it. Every tag you enter is saved and improves the search for artworks—a win-win situation. So, go for it!"
     }
   },
+  "contact": {
+    "title": "Contact",
+    "texts": {
+      "cooperate": "Do you work for a cultural institution and would like to integrate your collections into ARTigo? Feel free to contact us with cooperation requests:"
+    }
+  },
   "contributors": {
     "title": "Contributors",
     "fields": {

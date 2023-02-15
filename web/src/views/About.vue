@@ -19,6 +19,16 @@
     <v-row>
       <v-col :class="paddingClass">
         <div :class="textClass">
+          {{ $t("contact.title") }}
+        </div>
+
+        <Contact />
+      </v-col>
+    </v-row>
+
+    <v-row>
+      <v-col :class="paddingClass">
+        <div :class="textClass">
           {{ $t("contributors.title") }}
         </div>
 
@@ -107,10 +117,11 @@ export default {
   },
   components: {
     GameDrawer: () => import('@/components/game/Drawer.vue'),
-    Description: () => import('@/components/Description.vue'),
-    Contributors: () => import('@/components/Contributors.vue'),
-    History: () => import('@/components/History.vue'),
-    Publications: () => import('@/components/Publications.vue'),
+    Description: () => import('@/components/about/Description.vue'),
+    Contact: () => import('@/components/about/Contact.vue'),
+    Contributors: () => import('@/components/about/Contributors.vue'),
+    History: () => import('@/components/about/History.vue'),
+    Publications: () => import('@/components/about/Publications.vue'),
   },
 };
 </script>

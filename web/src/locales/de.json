@@ -114,6 +114,12 @@
       "motivation": "Nach einer von Dir festgelegten Anzahl von Spielrunden werden die Metadaten zu den Bildern sichtbar. So generierst Du nicht nur kunsthistorisches Wissen, sondern sammelst es auch. Jeder Tag, den Du eingibst, wird gespeichert und verbessert die Suche nach Kunstwerken – eine Win-Win-Situation. Also, nichts wie ran!"
     }
   },
+  "contact": {
+    "title": "Kontakt",
+    "texts": {
+      "cooperate": "Du arbeitest für eine kulturelle Institution und möchtest Deine Sammlungen in ARTigo integrieren? Wende Dich gerne mit Kooperationsanfragen an uns:"
+    }
+  },
   "contributors": {
     "title": "Mitwirkende",
     "fields": {
