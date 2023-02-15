@@ -59,7 +59,7 @@ Copy the contents of `.env.example` to `.env` and adjust the settings.
 
 6. Create the unprivileged artigo user and group to own the files:
 	```sh
-	addgroup --system --gid 1998 artigo && adduser --system --uid 1999 --ingroup artigo artigo
+	sudo addgroup --system --gid 1998 artigo && sudo adduser --system --uid 1999 --ingroup artigo artigo
 	```
 
 
