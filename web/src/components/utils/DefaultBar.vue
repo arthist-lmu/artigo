@@ -278,7 +278,7 @@ export default {
         || (value * this.itemsPerPage <= this.offset)
       ) {
         const offset = (value - 1) * this.itemsPerPage;
-        this.$store.dispatch('sessions/get', { offset });
+        this.$store.dispatch(`${this.store}/post`, { offset });
       }
     },
     params: {
@@ -304,10 +304,11 @@ export default {
     openMenu(value) {
       if (value) {
         this.blurInput();
-        this.$nextTick(() => {
-          // TODO: why doesn't this work?
-          this.$refs.titles[0].focus();
-        });
+        setTimeout(() => {
+          this.$nextTick(() => {
+            this.$refs.titles[0].focus();
+          });
+        }, 250);
       }
     },
   },

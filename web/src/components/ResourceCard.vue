@@ -36,12 +36,24 @@
         <span
           v-for="creator in creators"
           :key="creator"
-          @click="search(creator, 'creators')"
-          @keydown="search(creator, 'creators')"
           class="creator"
-          style="cursor: pointer;"
         >
           {{ creator }}
+
+          <v-btn
+            @click="search(creator, 'creators')"
+            @keydown="search(creator, 'creators')"
+            class="ml-1"
+            color="grey lighten-2"
+            height="32"
+            depressed
+            small
+            icon
+          >
+            <v-icon>
+              mdi-magnify
+            </v-icon>
+          </v-btn>
 
           <ReconcileButton
             :entries="[entry]"
