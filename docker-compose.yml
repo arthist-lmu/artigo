@@ -83,7 +83,7 @@ services:
     image: artigo/web
     build:
       context: .
-      dockerfile: ./web/Dockerfile
+      dockerfile: ./web/Dockerfile.dev
     volumes:
       - ./web/:/web
       - ./plugin.config.json:/config.json
