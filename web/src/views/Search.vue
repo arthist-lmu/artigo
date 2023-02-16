@@ -40,7 +40,7 @@
       hide-default-footer
     >
       <template v-slot:default="props">
-        <v-row :class="$vuetify.breakpoint.mdAndUp ? 'ma-n1' : undefined">
+        <v-row class="ma-n1">
           <v-col
             v-for="entry in props.items"
             :key="entry.resource_id"

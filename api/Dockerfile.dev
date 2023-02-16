@@ -3,8 +3,8 @@ FROM python:3.10
 ENV PYTHONPATH=/api/src/
 ENV POETRY_VIRTUALENVS_CREATE=False
 
-RUN addgroup --system artigo \
-    && adduser --system --ingroup artigo artigo
+RUN addgroup --system --gid 1998 artigo \
+    && adduser --system --ingroup artigo --uid 1999 artigo
 
 RUN apt update && apt install -y build-essential python-dev
 RUN pip install --no-cache-dir poetry pytest pytest-cov

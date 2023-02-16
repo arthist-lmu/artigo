@@ -76,3 +76,4 @@ addopts = "--cov=frontend --cov-report=html"
 [build-system]
 requires = ["poetry>=0.12"]
 build-backend = "poetry.masonry.api"
+

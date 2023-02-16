@@ -35,31 +35,36 @@ Copy the contents of `.env.example` to `.env` and adjust the settings.
 ### Setup process
 1. To import data, `.csv` and `.jsonl` files should be stored in the `./dump` and corresponding `.jpg` files in the `./media` folder.
 
-2. Build and start the container:
+2. For the OpenSearch container to run properly, increase the virtual memory:
+	```sh
+	sudo sysctl -w vm.max_map_count=262144
+	```
+
+3. Create an unprivileged `artigo` user and group to own the files:
+	```sh
+	sudo addgroup --system --gid 1998 artigo && sudo adduser --system --uid 1999 --ingroup artigo artigo
+	```
+
+4. Build and start the container:
 	```sh
 	sudo docker-compose up --build
 	```
 
-3. Install `npm`:
+5. Install `npm`:
 	```sh
 	sudo docker-compose exec web npm install
 	```
 
-4. Apply necessary Django operations and import fixtures:
+6. Apply necessary Django operations and import fixtures:
 	```sh
 	sudo docker-compose exec api python3 manage.py migrate
 	sudo docker-compose exec api python3 manage.py loaddata sites.json
 	```
 
-5. Import the data into `api` and `search`:
+7. Import the data into `api` and `search`:
 	```sh
 	sudo docker-compose exec api python3 manage.py import_data
 	sudo docker-compose exec search python3 -m artigo_search --mode client --task insert
-	```
-
-6. Create the unprivileged artigo user and group to own the files:
-	```sh
-	sudo addgroup --system --gid 1998 artigo && sudo adduser --system --uid 1999 --ingroup artigo artigo
 	```
 
 

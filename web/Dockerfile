@@ -12,6 +12,6 @@ COPY /web /web/
 EXPOSE 80
 WORKDIR /web
 
-RUN npm update && npm run build && npm prune --production
+RUN npm install && npm run build && npm prune --production
 
 CMD ["nginx", "-g", "daemon off;"]

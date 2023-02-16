@@ -252,7 +252,7 @@ FORCE_SCRIPT_NAME = '/'
 STATIC_URL = FORCE_SCRIPT_NAME + 'static/'
 
 if DEBUG:
-    if env('WHERE') == 'testing':
+    if WHERE == 'testing':
         STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
     else:
         STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
