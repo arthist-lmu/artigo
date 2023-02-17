@@ -27,9 +27,9 @@ def to_score(x, default=0):
 def to_datetime(x):
     if x:
         if '.' not in x: x += '.0'  # to proper date format
+        x = datetime.strptime(x.strip(), '%Y-%m-%d %H:%M:%S.%f')
 
-        x = datetime.strptime(x, '%Y-%m-%d %H:%M:%S.%f') \
-            .replace(tzinfo=pytz.timezone(settings.TIME_ZONE))
+        return x.replace(tzinfo=pytz.timezone(settings.TIME_ZONE))
 
     return timezone.now()
 

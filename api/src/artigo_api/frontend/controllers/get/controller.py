@@ -103,8 +103,6 @@ class GameController:
         gamesession_data['game'].pop(gameround.resource_id)
         cache.set(f'gamesession_{gamesession.id}', gamesession_data)
 
-        time.sleep(3)
-
         return {
             'type': 'ok',
             'session_id': gamesession.id,

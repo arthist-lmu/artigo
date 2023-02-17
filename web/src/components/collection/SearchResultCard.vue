@@ -36,11 +36,7 @@
 
       <v-container class="overlay">
         <v-row style="flex: 0;">
-          <v-col
-            @click.stop="dialog.change = true"
-            :title="$t('collections.fields.change')"
-            class="pa-4"
-          >
+          <v-col class="pa-4">
             <div class="text-subtitle-1 white--text">
               <b>{{ entry.name }}</b>
 
@@ -90,16 +86,34 @@
           </v-col>
 
           <v-col cols="auto">
-            <v-btn
-              @click.stop="dialog.remove = true"
-              :title="$t('collections.fields.remove')"
-              color="white"
-              icon
-            >
-              <v-icon>
-                mdi-close
-              </v-icon>
-            </v-btn>
+            <v-menu @click.native.stop.prevent>
+              <template v-slot:activator="{ attrs, on }">
+                <v-btn
+                  v-bind="attrs"
+                  v-on="on"
+                  color="white"
+                  icon
+                >
+                  <v-icon>
+                    mdi-dots-vertical
+                  </v-icon>
+                </v-btn>
+              </template>
+
+              <v-list>
+                <v-list-item @click="dialog.change = true">
+                  <v-list-item-content>
+                    {{ $t('collections.fields.change') }}
+                  </v-list-item-content>
+                </v-list-item>
+
+                <v-list-item @click="dialog.remove = true">
+                  <v-list-item-content>
+                    {{ $t('collections.fields.remove') }}
+                  </v-list-item-content>
+                </v-list-item>
+              </v-list>
+            </v-menu>
           </v-col>
         </v-row>
 
