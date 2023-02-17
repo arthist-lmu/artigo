@@ -31,7 +31,7 @@ class MostAnnotatedTaggingTaboo(TabooPlugin):
             ) \
             .values('resource', 'tag') \
             .annotate(count_taggings=Count('tag')) \
-            .order_by('resource', 'count_taggings', '?') \
+            .order_by('resource', 'count_taggings') \
             .values(
                 'resource_id',
                 'tag_id',

@@ -193,12 +193,13 @@ class CollectionCountSerializer(serializers.ModelSerializer):
     def to_representation(self, data):
         data = super().to_representation(data)
 
-        resource = Resource.objects.get(id=data['resources'][0])
+        if data.get('resources'):
+            resource = Resource.objects.get(id=data['resources'][0])
 
-        if settings.DEBUG:
-            data['path'] = upload_url_to_image(resource.hash_id)
-        else:
-            data['path'] = media_url_to_image(resource.hash_id)
+            if settings.IS_DEV:
+                data['path'] = upload_url_to_image(resource.hash_id)
+            else:
+                data['path'] = media_url_to_image(resource.hash_id)
 
         return data
 
@@ -261,7 +262,7 @@ class ResourceSerializer(serializers.ModelSerializer):
         if data.get('source') is not None:
             data['source']['name'] = data['source']['name'].title()
 
-        if settings.DEBUG and data.get('collection_id'):
+        if settings.IS_DEV and data.get('collection_id'):
             data['path'] = upload_url_to_image(data['hash_id'])
         else:
             data['path'] = media_url_to_image(data['hash_id'])

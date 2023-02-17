@@ -139,9 +139,7 @@ export default {
   watch: {
     value: {
       handler(value) {
-        if (value) {
-          this.files = value;
-        }
+        this.files = value;
       },
       deep: true,
     },

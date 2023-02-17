@@ -35,16 +35,17 @@
             dense
             chips
           >
-            <template v-slot:selection="{ attrs, item, selected }">
+            <template v-slot:selection="{ attrs, item: value, selected }">
               <v-chip
                 v-bind="attrs"
                 :input-value="selected"
+                @click:close="removeItem(value, item.key)"
                 color="primary"
                 outlined
                 close
                 small
               >
-                {{ item }}
+                {{ value }}
               </v-chip>
             </template>
           </v-combobox>
@@ -217,17 +218,21 @@ export default {
         this.search();
       });
     },
+    blurInput() {
+      if (this.$refs.input !== undefined) {
+        this.$refs.input.blur();
+      }
+    },
+    removeItem(value, key) {
+      const index = this.query[key].indexOf(value);
+      this.query[key].splice(index, 1);
+    },
     onClickOutside({ target }) {
       if (this.$refs.input !== undefined) {
         const input = this.$refs.input.$el;
         if (!input.contains(target)) {
           this.closeMenu();
         }
-      }
-    },
-    blurInput() {
-      if (this.$refs.input !== undefined) {
-        this.$refs.input.blur();
       }
     },
     closeMenu() {

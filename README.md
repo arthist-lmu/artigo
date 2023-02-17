@@ -40,10 +40,17 @@ Copy the contents of `.env.example` to `.env` and adjust the settings.
 	sudo sysctl -w vm.max_map_count=262144
 	```
 
-3. Create an unprivileged `artigo` user and group to own the files:
+3. Create an unprivileged `artigo` user and group:
 	```sh
 	sudo addgroup --system --gid 1998 artigo && sudo adduser --system --uid 1999 --ingroup artigo artigo
 	```
+
+4. Change the permissions for the `dump` and `upload` folders:
+	```sh
+	sudo chown -R 1999:1998 dump
+	sudo chown -R 1999:1998 upload
+	```
+	In testing and production environments, change the `media` instead of the `upload` folder.
 
 4. Build and start the container:
 	```sh

@@ -3,10 +3,9 @@ import json
 import logging
 import traceback
 
-from django.db.models import Count
 from django.utils import timezone
 from django.core.management import BaseCommand, CommandError
-from frontend.models import *
+from frontend.models import Resource
 from frontend.serializers import ResourceWithTaggingsSerializer
 
 logger = logging.getLogger(__name__)
