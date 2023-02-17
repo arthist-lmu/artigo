@@ -32,13 +32,15 @@
     },
     "login": {
       "title": "Anmelden",
-      "legacy-note": "Wenn Du bereits mit der alten Version von ARTigo registriert warst, setze bitte zunächst Dein Passwort zurück."
+      "note": "Wenn Du bereits mit der alten Version von ARTigo registriert warst, setze bitte zunächst Dein Passwort zurück."
     },
     "register": {
       "title": "Registrieren"
     },
     "upload": {
       "title": "Sammlung hochladen",
+      "note-name": "Um Bilder zu einer bestehenden Sammlung hinzuzufügen, gebe den Namen der Sammlung ein.",
+      "note-access": "Jede Sammlung, die der Öffentlichkeit zugänglich gemacht werden soll, wird zunächst von uns geprüft.",
       "fields": {
         "name": "Sammlungsname",
         "access": "Zugriff",
@@ -63,9 +65,10 @@
       "remove": "Sammlung entfernen",
       "change": "Sammlung ändern",
       "hide-empty": "Blende Ergebnisse ohne Bilder aus",
-      "show-empty": "Zeige Ergebnisse ohne Bilder",
+      "show-empty": "Zeige Ergebnisse ohne Bilder an",
       "no-results": "Es konnten keine Sammlungen gefunden werden.",
-      "access-open": "Offen",
+      "access-open": "Öffentlich",
+      "access-pending": "Ausstehend",
       "access-restricted": "Eingeschränkt"
     }
   },
@@ -82,7 +85,7 @@
       "reset": "Zurücksetzen",
       "query": "Nach Bildern suchen",
       "hide-empty": "Blende Ergebnisse ohne Annotationen aus",
-      "show-empty": "Zeige Ergebnisse ohne Annotationen",
+      "show-empty": "Zeige Ergebnisse ohne Annotationen an",
       "no-results": "Für Deine Suchanfrage konnten keine Ergebnisse gefunden werden."
     }
   },
@@ -193,7 +196,7 @@
       "of": "von",
       "query": "Nach Spielsitzungen suchen",
       "hide-empty": "Blende Ergebnisse ohne Annotationen aus",
-      "show-empty": "Zeige Ergebnisse ohne Annotationen",
+      "show-empty": "Zeige Ergebnisse ohne Annotationen an",
       "no-results": "Es konnten keine Spielsitzungen gefunden werden."
     }
   },

@@ -51,7 +51,17 @@
                 color="white"
                 small
               >
-                mdi-lock-open-outline
+                mdi-lock-open-variant-outline
+              </v-icon>
+
+              <v-icon
+                v-if="entry.access === 'P'"
+                :title="$t('collections.fields.access-pending')"
+                class="ml-2 mb-1"
+                color="white"
+                small
+              >
+                mdi-progress-pencil
               </v-icon>
 
               <v-icon

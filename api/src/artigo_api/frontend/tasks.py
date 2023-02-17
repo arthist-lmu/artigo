@@ -48,6 +48,8 @@ def upload_collection(self, args):
     
     if access.lower() == 'open':
         access = 'O'
+    elif access.lower() == 'pending':
+        access = 'P'
     elif access.lower() == 'restricted':
         access = 'R'
 

@@ -4,6 +4,8 @@
     v-on="$listeners"
     :title="$t('user.upload.title')"
   >
+    <p class="pb-4">{{ $t('user.upload.note-name') }}</p>
+
     <v-form v-model="isFormValid">
       <v-text-field
         v-model="collection.name"
@@ -55,6 +57,7 @@ export default {
   data() {
     return {
       collection: {},
+      uploaded: false,
       isFormValid: false,
     };
   },
@@ -62,8 +65,7 @@ export default {
     upload() {
       this.$store.dispatch('collection/add', this.collection).then(() => {
         this.$store.dispatch('collections/post', {});
-        this.collection = {};
-        this.close();
+        this.uploaded = true;
       });
     },
     checkLength(value) {
@@ -92,8 +94,11 @@ export default {
   },
   watch: {
     timestamp() {
-      if (this.isFormValid && this.status) {
+      if (this.isFormValid && this.status && this.uploaded) {
         this.$router.push({ name: 'collections' });
+        this.collection = {};
+        this.uploaded = true;
+        this.close();
       }
     },
   },

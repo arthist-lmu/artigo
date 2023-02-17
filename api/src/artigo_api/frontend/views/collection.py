@@ -420,8 +420,13 @@ class CollectionChangeView(APIView):
 
             if collection_access.lower() == 'open':
                 collection_access = 'O'
+            elif collection_access.lower() == 'pending':
+                collection_access = 'P'
             elif collection_access.lower() == 'restricted':
                 collection_access = 'R'
+
+            if collection_access == 'O' and not request.user.is_staff:
+                collection_access = 'P'
 
             try:
                 collection.access = collection_access

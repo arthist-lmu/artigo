@@ -32,14 +32,16 @@
     },
     "login": {
       "title": "Login",
-      "legacy-note": "If you were already registered on the old version of ARTigo, please reset your password first."
+      "note": "If you were already registered on the old version of ARTigo, please reset your password first."
     },
     "register": {
       "title": "Register"
     },
     "upload": {
       "title": "Upload collection",
-        "fields": {
+      "note-name": "To add images to an existing collection, enter the name of that collection.",
+      "note-access": "Every collection that is to be made accessible to the public is first checked by us.",
+      "fields": {
         "name": "Collection name",
         "access": "Access",
         "count": "Objects",
@@ -64,7 +66,8 @@
       "change": "Change collection",
       "hide-empty": "Hide results without images",
       "no-results": "No collections could be found.",
-      "access-open": "Open",
+      "access-open": "Public",
+      "access-pending": "Pending",
       "access-restricted": "Restricted"
     }
   },

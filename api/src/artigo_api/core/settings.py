@@ -249,15 +249,12 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
 FORCE_SCRIPT_NAME = '/'
+
+STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
 STATIC_URL = FORCE_SCRIPT_NAME + 'static/'
 
 if DEBUG:
-    if WHERE == 'testing':
-        STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
-    else:
-        STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
-else:
-    STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+    STATICFILES_DIRS = []
 
 MEDIA_ROOT = os.path.join('/media/')
 MEDIA_URL = FORCE_SCRIPT_NAME + 'media/'

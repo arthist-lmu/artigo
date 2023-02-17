@@ -4,7 +4,7 @@
     v-on="$listeners"
     :title="$t('user.login.title')"
   >
-    <p class="pb-4">{{ $t('user.login.legacy-note') }}</p>
+    <p class="pb-4">{{ $t('user.login.note') }}</p>
 
     <v-form v-model="isFormValid">
       <v-text-field

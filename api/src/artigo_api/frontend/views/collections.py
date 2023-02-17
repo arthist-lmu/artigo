@@ -2,7 +2,7 @@ import json
 import logging
 import traceback
 
-from django.db.models import Count
+from django.db.models import Count, Q
 from django.db.models.functions import Coalesce
 from django.contrib.postgres.aggregates import ArrayAgg
 from rest_framework.views import APIView
@@ -34,7 +34,12 @@ class CollectionsView(APIView):
 
         params['limit'] += params['offset']
 
-        collections = Collection.objects.filter(user=request.user) \
+        filter_users = Q(user=request.user)
+
+        if request.user.is_staff:
+            filter_users |= Q(access__in=('O', 'P'))
+
+        collections = Collection.objects.filter(filter_users) \
             .annotate(
                 n_resources=Coalesce(Count('resources__id'), 0),
                 resource_ids=ArrayAgg('resources__id'),
