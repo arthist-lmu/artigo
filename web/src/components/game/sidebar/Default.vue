@@ -103,7 +103,6 @@ export default {
       if (element !== undefined && element !== null) {
         const { bottom } = element.getBoundingClientRect();
         const { top } = this.$refs.container.getBoundingClientRect();
-        console.log(bottom, top);
         if (bottom - 25 <= top) {
           const texts = this.highlights.map(({ text }) => text);
           messages.forEach((message) => {

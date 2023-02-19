@@ -65,15 +65,19 @@ export default {
   },
   methods: {
     add(message) {
+      const values = {
+        from: message.from,
+        messages: this.messages.filter(({ highlight }) => highlight),
+      };
       if (message.from === 'user') {
         this.messages.push({
           timestamp: this.seconds,
           ...message,
         });
-        this.$emit('update');
+        this.$emit('update', values);
       } else {
         this.waiter = true;
-        this.$emit('update');
+        this.$emit('update', values);
         setTimeout(() => {
           this.$nextTick(() => {
             this.waiter = false;
@@ -81,7 +85,7 @@ export default {
               timestamp: this.seconds,
               ...message,
             });
-            this.$emit('update');
+            this.$emit('update', values);
           });
         }, 750);
       }
