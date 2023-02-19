@@ -267,8 +267,8 @@ GRPC_PORT = env('GRPC_PORT')
 
 IMAGE_EXT = 'jpg'
 IMAGE_RESOLUTIONS = [
-    {'min_dim': 200, 'suffix': '_m'},
-    {'min_dim': 1080, 'suffix': ''},
+    # {'max_dim': 200, 'suffix': '_m'},
+    {'max_dim': 1080, 'suffix': ''},
 ]
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

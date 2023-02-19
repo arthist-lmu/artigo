@@ -107,7 +107,7 @@
     "fields": {
       "score-validated": "You get {n} points if the tag for this image was already given in an earlier game round",
       "score-opponent": "You get {n} more points if you are playing with another player, and you use the same tag",
-      "score-first": "If you are the first to describe an image, you always get {n} points for each tag"
+      "score-first": "If you are the first to describe an image, you always get {n} points per tag"
     },
     "texts": {
       "preface": "Art history thrives on working with artworks and their digital reproductions. These are collected online in image catalogues, some of which contain several million objects. To search for images in such directories, descriptive texts are needed: a task you can help us with in a playful way—and at the same time learn a lot about art!",
@@ -118,7 +118,8 @@
   "contact": {
     "title": "Contact",
     "texts": {
-      "cooperate": "Do you work for a cultural institution and would like to integrate your collections into ARTigo? Feel free to contact us with cooperation requests:"
+      "cooperate": "Do you work for a cultural institution and would like to integrate your collections into ARTigo? Feel free to contact us with cooperation requests:",
+      "bugs": "You can easily report bugs and feature requests via our GitHub:"
     }
   },
   "contributors": {

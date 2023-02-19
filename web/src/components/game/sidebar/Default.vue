@@ -30,6 +30,20 @@
       </v-col>
     </v-row>
 
+    <v-row v-if="highlights && highlights.length">
+      <v-col class="pt-0">
+        <transition-group name="fade">
+          <template v-for="(message, i) in highlights">
+            <DefaultMessage
+              v-if="message.from === 'default'"
+              :key="i"
+              :message="message"
+            />
+          </template>
+        </transition-group>
+      </v-col>
+    </v-row>
+
     <v-row
       ref="container"
       class="mb-0 align-end"
@@ -44,7 +58,7 @@
       </v-col>
     </v-row>
 
-    <slot name="append-item"></slot>
+    <slot name="append-item" />
   </v-container>
 </template>
 
@@ -63,6 +77,8 @@ export default {
   data() {
     return {
       focus: false,
+      scrollTop: 0,
+      highlights: [],
     };
   },
   methods: {
@@ -72,12 +88,31 @@ export default {
     finish() {
       this.$emit('finish');
     },
-    scroll() {
-      this.$nextTick(() => {
-        const { scrollHeight } = this.$refs.container;
-        this.$refs.container.scrollTop = scrollHeight;
-        this.focusInput();
-      });
+    scroll({ from, messages }) {
+      // only scroll down if the user has not scrolled up
+      const { scrollHeight, scrollTop } = this.$refs.container;
+      if (from === 'user' || scrollTop + 50 >= this.scrollTop) {
+        this.$nextTick(() => {
+          this.$refs.container.scrollTop = scrollHeight;
+          this.scrollTop = this.$refs.container.scrollTop;
+          this.focusInput();
+        });
+      }
+      // highlight messages that are outside the viewport
+      const element = this.$refs.container.querySelector('.highlight');
+      if (element !== undefined && element !== null) {
+        const { bottom } = element.getBoundingClientRect();
+        const { top } = this.$refs.container.getBoundingClientRect();
+        console.log(bottom, top);
+        if (bottom - 25 <= top) {
+          const texts = this.highlights.map(({ text }) => text);
+          messages.forEach((message) => {
+            if (texts.indexOf(message.text) === -1) {
+              this.highlights.push(message);
+            }
+          });
+        }
+      }
     },
     onBlur() {
       this.$nextTick(() => {
@@ -110,6 +145,7 @@ export default {
   },
   components: {
     Messages: () => import('@/components/game/messages/Default.vue'),
+    DefaultMessage: () => import('@/components/game/messages/message/Default.vue'),
   },
 };
 </script>
@@ -128,5 +164,15 @@ export default {
   overflow-y: auto;
   margin-right: 0;
   height: 0;
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: all 1s ease;
+}
+
+.fade-enter,
+.fade-leave-to {
+  opacity: 0;
 }
 </style>

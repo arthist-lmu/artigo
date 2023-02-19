@@ -44,6 +44,9 @@ export default {
           if (this.keyInObj('suggest', tag)) {
             message.suggest = tag.suggest;
           }
+          if (this.keyInObj('highlight', tag)) {
+            message.highlight = tag.highlight;
+          }
           this.$emit('add', message);
         });
       }

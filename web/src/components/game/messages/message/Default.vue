@@ -1,6 +1,6 @@
 <template>
   <v-row
-    :class="message.from"
+    :class="[{ highlight: message.highlight }, message.from]"
     justify="start"
   >
     <v-col>

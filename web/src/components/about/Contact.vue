@@ -1,9 +1,8 @@
 <template>
-  <div>
-    <div
+  <div class="white--text">
+    <span
       v-for="(item, i) in items"
       :key="i"
-      class="white--text"
     >
       <span
         v-html="item.text"
@@ -21,8 +20,7 @@
       >
         {{ person.name }}
       </v-chip>
-      .
-    </div>
+    </span>
   </div>
 </template>
 
@@ -42,8 +40,20 @@ export default {
             { name: 'Stefanie Schneider', url: 'https://www.kunstgeschichte.uni-muenchen.de/personen/wiss_ma/schneider/index.html' },
           ],
         },
+        {
+          text: this.$t('contact.texts.bugs'),
+          values: [
+            { name: 'GitHub', url: 'https://github.com/arthist-lmu/artigo/issues' },
+          ],
+        },
       ];
     },
   },
 };
 </script>
+
+<style scoped>
+div > span:after {
+  content: ' . ';
+}
+</style>

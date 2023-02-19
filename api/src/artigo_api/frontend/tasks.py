@@ -106,10 +106,10 @@ def upload_collection(self, args):
             image_output_file = None
 
             for resolution in settings.IMAGE_RESOLUTIONS:
-                min_size = resolution.get('min_size', 200)
+                max_dim = resolution.get('max_dim', 200)
                 suffix = resolution.get('suffix', '')
 
-                resized_image = resize_image(image, min_dim=min_size)
+                resized_image = resize_image(image, max_dim=max_dim)
 
                 if settings.IS_DEV:
                     image_output_dir = os.path.join(

@@ -35,6 +35,10 @@ def to_datetime(x):
 
 
 class Create:
+    def __init__(self, model, file_path):
+        self.model = model
+        self.file_path = file_path
+
     def process(self):
         args = {'ignore_conflicts': True}
 
@@ -71,8 +75,9 @@ class CreateUser(Create):
     name = 'User'
 
     def __init__(self, folder_path):
-        self.file_path = os.path.join(folder_path, 'user.csv')
-        self.model = CustomUser
+        file_path = os.path.join(folder_path, 'user.csv')
+        
+        super().__init__(CustomUser, file_path)
 
     def convert(self, row):
         if not row.get('username'):
@@ -101,8 +106,9 @@ class CreateSource(Create):
     name = 'Source'
 
     def __init__(self, folder_path):
-        self.file_path = os.path.join(folder_path, 'source.csv')
-        self.model = Source
+        file_path = os.path.join(folder_path, 'source.csv')
+
+        super().__init__(Source, file_path)
 
     def convert(self, row):
         return self.model(
@@ -116,8 +122,9 @@ class CreateCreator(Create):
     name = 'Creator'
 
     def __init__(self, folder_path):
-        self.file_path = os.path.join(folder_path, 'creator.csv')
-        self.model = Creator
+        file_path = os.path.join(folder_path, 'creator.csv')
+
+        super().__init__(Creator, file_path)
 
     def convert(self, row):
         return self.model(
@@ -130,8 +137,9 @@ class CreateResource(Create):
     name = 'Resource'
 
     def __init__(self, folder_path):
-        self.file_path = os.path.join(folder_path, 'resource.csv')
-        self.model = Resource
+        file_path = os.path.join(folder_path, 'resource.csv')
+
+        super().__init__(Resource, file_path)
 
     def convert(self, row):
         return self.model(
@@ -151,8 +159,9 @@ class CreateTitle(Create):
     name = 'Title'
 
     def __init__(self, folder_path):
-        self.file_path = os.path.join(folder_path, 'title.csv')
-        self.model = Title
+        file_path = os.path.join(folder_path, 'title.csv')
+
+        super().__init__(Title, file_path)
 
     def convert(self, row):
         return self.model(
@@ -166,8 +175,9 @@ class CreateGamesession(Create):
     name = 'Gamesession'
 
     def __init__(self, folder_path):
-        self.file_path = os.path.join(folder_path, 'gamesession.csv')
-        self.model = Gamesession
+        file_path = os.path.join(folder_path, 'gamesession.csv')
+
+        super().__init__(Gamesession, file_path)
 
     def convert(self, row):
         model = self.model(
@@ -193,8 +203,9 @@ class CreateGameround(Create):
     name = 'Gameround'
 
     def __init__(self, folder_path):
-        self.file_path = os.path.join(folder_path, 'gameround.csv')
-        self.model = Gameround
+        file_path = os.path.join(folder_path, 'gameround.csv')
+
+        super().__init__(Gameround, file_path)
 
     def convert(self, row):
         model = self.model(
@@ -229,8 +240,9 @@ class CreateTag(Create):
     name = 'Tag'
 
     def __init__(self, folder_path):
-        self.file_path = os.path.join(folder_path, 'tag.csv')
-        self.model = Tag
+        file_path = os.path.join(folder_path, 'tag.csv')
+
+        super().__init__(Tag, file_path)
 
     def convert(self, row):
         return self.model(
@@ -244,8 +256,9 @@ class CreateTagging(Create):
     name = 'Tagging'
 
     def __init__(self, folder_path):
-        self.file_path = os.path.join(folder_path, 'tagging.csv')
-        self.model = UserTagging
+        file_path = os.path.join(folder_path, 'tagging.csv')
+
+        super().__init__(UserTagging, file_path)
 
     def convert(self, row):
         return self.model(
@@ -264,8 +277,9 @@ class CreateResourceTitle(Create):
     name = 'Resource title'
 
     def __init__(self, folder_path):
-        self.file_path = os.path.join(folder_path, 'title.csv')
-        self.model = Resource.titles.through
+        file_path = os.path.join(folder_path, 'title.csv')
+
+        super().__init__(Resource.titles.through, file_path)
 
     def convert(self, row):
         if row.get('resource_id'):
@@ -279,8 +293,9 @@ class CreateResourceCreator(Create):
     name = 'Resource creator'
 
     def __init__(self, folder_path):
-        self.file_path = os.path.join(folder_path, 'resource.csv')
-        self.model = Resource.creators.through
+        file_path = os.path.join(folder_path, 'resource.csv')
+
+        super().__init__(Resource.creators.through, file_path)
 
     def convert(self, row):
         if row.get('creator_id'):
@@ -294,12 +309,24 @@ class Command(BaseCommand):
     def add_arguments(self, parser):
         parser.add_argument('-f', '--format', choices=['csv'], default='csv')
         parser.add_argument('--input', type=str, default='/dump')
+        parser.add_argument('--clean', action='store_true')
 
     def handle(self, *args, **options):
         start_time = timezone.now()
 
         if not os.path.isdir(options['input']):
             raise CommandError('Input is not a directory.')
+
+        if options['clean']:
+            CustomUser.objects.all().delete()
+            Source.objects.all().delete()
+            Creator.objects.all().delete()
+            Resource.objects.all().delete()
+            Title.objects.all().delete()
+            Gamesession.objects.all().delete()
+            Gameround.objects.all().delete()
+            Tag.objects.all().delete()
+            UserTagging.objects.all().delete()
 
         if options['format'] == 'csv':
             CreateUser(options['input']).process()
