@@ -35,7 +35,8 @@ export default {
       if (this.message.highlight) {
         return `highlight-${this.message.highlight}`;
       }
-    }
+      return undefined;
+    },
   },
 };
 </script>
