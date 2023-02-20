@@ -1,6 +1,7 @@
 <template>
   <v-row
-    :class="[{ highlight: message.highlight }, message.from]"
+    :id="messageId"
+    :class="message.from"
     justify="start"
   >
     <v-col>
@@ -28,6 +29,13 @@ export default {
       type: Boolean,
       default: false,
     },
+  },
+  computed: {
+    messageId() {
+      if (this.message.highlight) {
+        return `highlight-${this.message.highlight}`;
+      }
+    }
   },
 };
 </script>

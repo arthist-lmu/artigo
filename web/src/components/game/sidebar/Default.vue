@@ -99,19 +99,20 @@ export default {
         });
       }
       // highlight messages that are outside the viewport
-      const element = this.$refs.container.querySelector('.highlight');
-      if (element !== undefined && element !== null) {
-        const { bottom } = element.getBoundingClientRect();
-        const { top } = this.$refs.container.getBoundingClientRect();
-        if (bottom - 25 <= top) {
-          const texts = this.highlights.map(({ text }) => text);
-          messages.forEach((message) => {
-            if (texts.indexOf(message.text) === -1) {
+      const texts = this.highlights.map(({ text }) => text);
+      messages.forEach((message) => {
+        if (texts.indexOf(message.text) === -1) {
+          const messageId = `#highlight-${message.highlight}`;
+          const element = this.$refs.container.querySelector(messageId);
+          if (element !== undefined && element !== null) {
+            const { bottom } = element.getBoundingClientRect();
+            const { top } = this.$refs.container.getBoundingClientRect();
+            if (bottom - 25 <= top) {
               this.highlights.push(message);
             }
-          });
+          }
         }
-      }
+      });
     },
     onBlur() {
       this.$nextTick(() => {

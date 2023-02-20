@@ -47,7 +47,7 @@ export default {
           { tags: this.tabooTags.join(', ') },
         ),
         created_after: 0,
-        highlight: true,
+        highlight: 1,
       });
     }
     const { game_round_duration: duration } = this.params;
