@@ -58,6 +58,8 @@ class CollectionAddView(APIView):
         'origin_url': 'origin',
         'url': 'origin',
         'tags': 'tags',
+        'tags_en': 'tags_en',
+        'tags_de': 'tags_de',
     }
 
     def parse_header(self, header):
@@ -339,6 +341,7 @@ class CollectionAddView(APIView):
                     'image_path': str(images['path']),
                     'entries': list(map(unflat_dict, parsed_images)),
                     'user_id': request.user.id,
+                    'lang': params.get('lang', 'de'),
                 },
             )
         )

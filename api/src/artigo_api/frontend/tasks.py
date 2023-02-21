@@ -39,7 +39,7 @@ def upload_collection(self, args):
     entries = args.get('entries')
     user_id = args.get('user_id')
     access = args.get('access', 'R')
-    language = args.get('language', 'de')
+    lang = args.get('lang', 'de')
     
     if access.lower() == 'open':
         access = 'O'
@@ -200,7 +200,7 @@ def upload_collection(self, args):
                         if tag is None:
                             tag = Tag.objects.create(
                                 name=tag_name,
-                                language=language,
+                                language=lang,
                             )
                             tag.save()
 

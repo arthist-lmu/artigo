@@ -1,4 +1,5 @@
 import axios from '@/plugins/axios';
+import i18n from '@/plugins/i18n';
 
 const collection = {
   namespaced: true,
@@ -6,6 +7,7 @@ const collection = {
     add({ rootState }, params) {
       const formData = new FormData();
       formData.append('name', params.name);
+      formData.append('lang', i18n.locale);
       params.files.forEach((file) => {
         formData.append('files', file);
       });
