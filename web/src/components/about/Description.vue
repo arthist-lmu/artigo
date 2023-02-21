@@ -28,7 +28,7 @@
           </v-list-item-avatar>
 
           <v-list-item-content>
-            {{ field }}
+            <span>{{ field }}</span>
           </v-list-item-content>
         </v-list-item>
       </v-list>
@@ -62,11 +62,15 @@ export default {
 </script>
 
 <style scoped>
-.v-list-item .v-list-item__content:after {
+.v-list-item .v-list-item__content span {
+  line-height: 24px;
+}
+
+.v-list-item .v-list-item__content span:after {
   content: ";";
 }
 
-.v-list-item:last-child .v-list-item__content:after {
+.v-list-item:last-child .v-list-item__content span:after {
   content: ".";
 }
 </style>

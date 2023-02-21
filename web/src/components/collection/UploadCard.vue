@@ -57,16 +57,12 @@ export default {
   data() {
     return {
       collection: {},
-      uploaded: false,
       isFormValid: false,
     };
   },
   methods: {
     upload() {
-      this.$store.dispatch('collection/add', this.collection).then(() => {
-        this.$store.dispatch('collections/post', {});
-        this.uploaded = true;
-      });
+      this.$store.dispatch('collection/add', this.collection);
     },
     checkLength(value) {
       if (value) {
@@ -94,11 +90,11 @@ export default {
   },
   watch: {
     timestamp() {
-      if (this.isFormValid && this.status && this.uploaded) {
+      if (this.isFormValid && this.status) {
         this.$router.push({ name: 'collections' });
-        this.collection = {};
-        this.uploaded = true;
-        this.close();
+        if (this.isDialog) {
+          this.close();
+        }
       }
     },
   },

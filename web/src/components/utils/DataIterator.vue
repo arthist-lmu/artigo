@@ -63,6 +63,16 @@ export default {
       checkInterval: null,
     };
   },
+  methods: {
+    setReload() {
+      this.checkInterval = setInterval(() => {
+        this.$store.dispatch(`${this.store}/post`, {});
+      }, 10 * 1000);
+    },
+    removeReload() {
+      clearInterval(this.checkInterval);
+    },
+  },
   computed: {
     entries() {
       return this.$store.state[this.store].data.entries;
@@ -90,19 +100,34 @@ export default {
     },
   },
   watch: {
-    entries() {
-      clearInterval(this.checkInterval);
-      if (this.reload) {
-        this.checkInterval = setInterval(() => {
-          this.$store.dispatch(`${this.store}/post`, {});
-        }, 10 * 1000);
-      }
+    reload: {
+      handler(value) {
+        if (value) {
+          this.setReload();
+        } else {
+          this.removeReload();
+        }
+      },
+      immediate: true,
     },
   },
   beforeDestroy() {
-    clearInterval(this.checkInterval);
+    this.observer.disconnect();
+    this.removeReload();
   },
   mounted() {
+    this.observer = new MutationObserver(() => {
+      const overlay = document.querySelector('.v-overlay');
+      if (overlay !== undefined && overlay !== null) {
+        this.removeReload();
+      } else {
+        this.setReload();
+      }
+    });
+    const app = document.querySelector('#app');
+    this.observer.observe(app, {
+      childList: true,
+    });
     window.scrollTo(0, 0);
   },
   created() {

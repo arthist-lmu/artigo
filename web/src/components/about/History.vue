@@ -123,6 +123,7 @@ export default {
   transform: scale(1.05);
   object-position: top;
   object-fit: cover;
+  width: 100%;
   min-width: 100%;
   max-width: 100%;
   display: block;

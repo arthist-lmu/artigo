@@ -1,4 +1,5 @@
 import os
+import re
 import uuid
 import imageio
 import logging
@@ -15,14 +16,7 @@ from frontend.utils import (
     resize_image,
     check_extension,
 )
-from frontend.models import (
-    Title,
-    Source,
-    Creator,
-    Resource,
-    Collection,
-    CustomUser,
-)
+from frontend.models import *
 
 logger = logging.getLogger(__name__)
 
@@ -45,6 +39,7 @@ def upload_collection(self, args):
     entries = args.get('entries')
     user_id = args.get('user_id')
     access = args.get('access', 'R')
+    language = args.get('language', 'de')
     
     if access.lower() == 'open':
         access = 'O'
@@ -98,7 +93,7 @@ def upload_collection(self, args):
         for entry in entries:
             try:
                 img_obj = file_obj.read(entry['path'])
-                image = imageio.imread(img_obj)
+                image = imageio.imread(img_obj, pilmode='RGB')
             except:
                 continue
 
@@ -130,8 +125,11 @@ def upload_collection(self, args):
                     f'{hash_id}{suffix}.jpg',
                 )
 
-                logger.info(f'Created image {image_output_file}')
-                imageio.imwrite(image_output_file, resized_image)
+                try:
+                    imageio.imwrite(image_output_file, resized_image)
+                    logger.info(f'Created image {image_output_file}')
+                except:
+                    continue
 
             if image_output_file is not None:
                 resource = Resource.objects.create(
@@ -163,8 +161,8 @@ def upload_collection(self, args):
                     if source is None:
                         source = Source.objects.create(name=entry['source_name'])
 
-                        if entry.get('entry_url'):
-                            source.url = entry['entry_url']
+                        if entry.get('source_url'):
+                            source.url = entry['source_url']
 
                         source.save()
 
@@ -186,6 +184,40 @@ def upload_collection(self, args):
 
                 if entry.get('origin'):
                     resource.origin = entry['origin']
+
+                if entry.get('tags'):
+                    if isinstance(entry['tags'], str):
+                        entry['tags'] = re.split(';|,', entry['tags'])
+
+                    if not isinstance(entry['tags'], (list, set)):
+                        entry['tags'] = [entry['tags']]
+
+                    taggings = []
+
+                    for tag_name in entry['tags']:
+                        tag = Tag.objects.filter(name=tag_name).first()
+
+                        if tag is None:
+                            tag = Tag.objects.create(
+                                name=tag_name,
+                                language=language,
+                            )
+                            tag.save()
+
+                        tagging = UserTagging.objects.create(
+                            user=user,
+                            resource=resource,
+                            tag=tag,
+                            uploaded=True,
+                        )
+
+                        taggings.append(tagging)
+                    
+                    if len(taggings) > 0:
+                        try:
+                            UserTagging.objects.bulk_create(taggings, **args)
+                        except:
+                           logger.error(traceback.format_exc()) 
 
                 resources.append(resource)
                 count += 1

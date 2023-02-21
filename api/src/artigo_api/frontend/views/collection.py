@@ -29,6 +29,9 @@ logger = logging.getLogger(__name__)
 @extend_schema(methods=['POST'], exclude=True)
 class CollectionAddView(APIView):
     mapping = {
+        'file': 'file',
+        'path': 'file',
+        'file_path': 'file',
         'title': 'title_name',
         'titel': 'title_name',
         'titles': 'title_name',
@@ -54,6 +57,7 @@ class CollectionAddView(APIView):
         'origin': 'origin',
         'origin_url': 'origin',
         'url': 'origin',
+        'tags': 'tags',
     }
 
     def parse_header(self, header):
@@ -74,8 +78,8 @@ class CollectionAddView(APIView):
             if fields.get(key):
                 entry[fields[key]] = value
 
-        if not entry.get('file'):
-            entry['file'] = f'{entry["id"]}.jpg'
+        if not entry.get('file') and row.get('id'):
+            entry['file'] = f'{row["id"]}.jpg'
 
         return entry
 

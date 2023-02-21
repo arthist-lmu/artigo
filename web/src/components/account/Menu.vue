@@ -163,9 +163,11 @@ export default {
   methods: {
     goTo(name) {
       this.$router.push({ name });
+      this.menu = false;
     },
     logout() {
       this.$store.dispatch('user/logout');
+      this.menu = false;
     },
   },
   computed: {
@@ -191,9 +193,14 @@ export default {
     },
   },
   watch: {
+    menu(value) {
+      if (value) {
+        this.$store.dispatch('user/get');
+      }
+    },
     dialog: {
-      handler({ register, login }) {
-        if (register || login) {
+      handler(values) {
+        if (Object.values(values).some((x) => x)) {
           this.menu = false;
         }
       },

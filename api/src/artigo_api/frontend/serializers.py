@@ -1,4 +1,5 @@
 import logging
+import traceback
 
 from itertools import groupby
 from rest_framework import serializers
@@ -193,13 +194,15 @@ class CollectionCountSerializer(serializers.ModelSerializer):
     def to_representation(self, data):
         data = super().to_representation(data)
 
-        if data.get('resources'):
+        try:
             resource = Resource.objects.get(id=data['resources'][0])
 
             if settings.IS_DEV:
                 data['path'] = upload_url_to_image(resource.hash_id)
             else:
                 data['path'] = media_url_to_image(resource.hash_id)
+        except Exception as error:
+            logger.error(traceback.format_exc())
 
         return data
 
