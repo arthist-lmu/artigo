@@ -6,7 +6,10 @@
   >
     <p class="pb-4">{{ $t('user.upload.note-access') }}</p>
 
-    <v-form v-model="isFormValid">
+    <v-form
+      v-model="isFormValid"
+      @submit.prevent="change"
+    >
       <v-text-field
         v-model="params.name"
         :placeholder="$t('user.upload.fields.name')"
@@ -38,6 +41,7 @@
           <v-btn
             @click="change"
             :disabled="!isFormValid"
+            type="submit"
             tabindex="0"
             color="primary"
             depressed
@@ -72,11 +76,13 @@ export default {
   },
   methods: {
     change() {
-      const entry = { hash_id: this.entry.hash_id, ...this.params };
-      this.$store.dispatch('collection/change', entry).then(() => {
-        this.$store.dispatch('collections/post', {});
-        this.close();
-      });
+      if (this.isFormValid) {
+        const entry = { hash_id: this.entry.hash_id, ...this.params };
+        this.$store.dispatch('collection/change', entry).then(() => {
+          this.$store.dispatch('collections/post', {});
+          this.close();
+        });
+      }
     },
     checkLength(value) {
       if (value) {

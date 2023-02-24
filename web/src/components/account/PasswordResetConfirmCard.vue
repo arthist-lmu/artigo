@@ -4,12 +4,15 @@
     v-on="$listeners"
     :title="$t('user.password-reset.title')"
   >
-    <v-form v-model="isFormValid">
+    <v-form
+      v-model="isFormValid"
+      @submit.prevent="resetPassword"
+    >
       <v-text-field
         v-model="user.new_password1"
         @click:append="showPassword = !showPassword"
         :type="showPassword ? 'text' : 'password'"
-        :placeholder="$t('user.fields.password')"
+        :placeholder="$t('user.fields.new-password')"
         :rules="[checkLength]"
         :append-icon="
           showPassword ? 'mdi-eye-outline' : 'mdi-eye-off-outline'
@@ -46,6 +49,7 @@
           <v-btn
             @click="resetPassword"
             :disabled="!isFormValid"
+            type="submit"
             tabindex="0"
             color="primary"
             depressed
@@ -77,7 +81,9 @@ export default {
   },
   methods: {
     resetPassword() {
-      this.$store.dispatch('user/resetPasswordConfirm', this.user);
+      if (this.isFormValid) {
+        this.$store.dispatch('user/resetPasswordConfirm', this.user);
+      }
     },
     close() {
       this.$emit('input', false);

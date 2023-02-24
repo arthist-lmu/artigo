@@ -23,6 +23,7 @@
       "username": "Username",
       "email": "E-Mail",
       "password": "Password",
+      "new-password": "New password",
       "password-repeat": "Repeat password",
       "privacy-policy": "Agree to privacy policy"
     },
@@ -54,7 +55,8 @@
       "title": "Logout"
     },
     "password-reset": {
-      "title": "Reset password"
+      "title": "Reset password",
+      "note": "Please note that for security reasons, no error will be raised if the email address is not linked to an account."
     }
   },
   "collections": {
@@ -157,7 +159,7 @@
       "color": "Play it {value}",
       "epoch": "{value} everywhere",
       "creator": "Get to know {value}",
-      "try-out": "Try a game"
+      "try-out": "Try it out"
     },
     "texts": {
       "intro": "We show you an image by",

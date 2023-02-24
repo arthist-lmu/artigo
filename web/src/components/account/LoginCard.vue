@@ -6,19 +6,10 @@
   >
     <p class="pb-4">{{ $t('user.login.note') }}</p>
 
-    <v-form v-model="isFormValid">
-      <v-text-field
-        v-model="user.username"
-        :placeholder="$t('user.fields.username')"
-        :rules="[checkLength]"
-        tabindex="0"
-        counter="75"
-        clearable
-        outlined
-        rounded
-        dense
-      />
-
+    <v-form
+      v-model="isFormValid"
+      @submit.prevent="login"
+    >
       <v-text-field
         v-model="user.email"
         :placeholder="$t('user.fields.email')"
@@ -55,6 +46,7 @@
           <v-btn
             @click="login"
             :disabled="!isFormValid"
+            type="submit"
             tabindex="0"
             color="primary"
             depressed
@@ -111,7 +103,9 @@ export default {
   },
   methods: {
     login() {
-      this.$store.dispatch('user/login', this.user);
+      if (this.isFormValid) {
+        this.$store.dispatch('user/login', this.user);
+      }
     },
     checkLength(value) {
       if (value) {

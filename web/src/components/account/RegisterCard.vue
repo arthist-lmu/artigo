@@ -4,7 +4,10 @@
     v-on="$listeners"
     :title="$t('user.register.title')"
   >
-    <v-form v-model="isFormValid">
+    <v-form
+      v-model="isFormValid"
+      @submit.prevent="register"
+    >
       <v-text-field
         v-model="user.username"
         :placeholder="$t('user.fields.username')"
@@ -99,6 +102,7 @@
           <v-btn
             @click="register"
             :disabled="!isFormValid"
+            type="submit"
             tabindex="0"
             color="primary"
             depressed
@@ -130,7 +134,9 @@ export default {
   },
   methods: {
     register() {
-      this.$store.dispatch('user/register', this.user);
+      if (this.isFormValid) {
+        this.$store.dispatch('user/register', this.user);
+      }
     },
     checkTrue(value) {
       if (value) {

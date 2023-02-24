@@ -6,7 +6,10 @@
   >
     <p class="pb-4">{{ $t('user.upload.note-name') }}</p>
 
-    <v-form v-model="isFormValid">
+    <v-form
+      v-model="isFormValid"
+      @submit.prevent="upload"
+    >
       <v-text-field
         v-model="collection.name"
         :placeholder="$t('user.upload.fields.name')"
@@ -32,6 +35,7 @@
           <v-btn
             @click="upload"
             :disabled="!isFormValid"
+            type="submit"
             tabindex="0"
             color="primary"
             depressed
@@ -62,7 +66,9 @@ export default {
   },
   methods: {
     upload() {
-      this.$store.dispatch('collection/add', this.collection);
+      if (this.isFormValid) {
+        this.$store.dispatch('collection/add', this.collection);
+      }
     },
     checkLength(value) {
       if (value) {

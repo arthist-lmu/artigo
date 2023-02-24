@@ -33,9 +33,16 @@
               @click="search(creator, 'creators')"
               @keydown="search(creator, 'creators')"
               class="creator space"
-              style="cursor: pointer;"
             >
               <span>{{ creator }}</span>
+
+              <v-icon
+                class="ml-4"
+                color="white"
+                style="opacity: 0.5"
+              >
+                mdi-magnify
+              </v-icon>
             </span>
           </transition>
 
@@ -143,7 +150,13 @@ export default {
     goTo(name) {
       if (name === 'game') {
         if (!this.$vuetify.breakpoint.mdAndDown) {
-          this.$store.commit('game/updateDialog', { params: {} });
+          let params = {};
+          this.entries.forEach((entry) => {
+            if (entry.type === 'creator') {
+              params = { ...params, ...entry.params };
+            }
+          });
+          this.$store.commit('game/updateDialog', { params });
         }
         this.drawer = true;
       }
@@ -252,12 +265,24 @@ export default {
   line-height: 4.75rem;
 }
 
+.text-h2 .v-icon {
+  font-size: 60px;
+}
+
 .text-h3 {
   line-height: 3.75rem;
 }
 
+.text-h3 .v-icon {
+  font-size: 48px;
+}
+
 .text-h4 {
   line-height: 2.75rem;
+}
+
+.text-h4 .v-icon {
+  font-size: 34px;
 }
 
 span.space::before {
@@ -270,6 +295,7 @@ span.space::before {
 
 .creator > span {
   border-bottom: 2px rgb(247, 248, 251) solid;
+  cursor: pointer;
 }
 
 .fade-enter-active,

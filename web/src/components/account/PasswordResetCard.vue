@@ -4,7 +4,12 @@
     v-on="$listeners"
     :title="$t('user.password-reset.title')"
   >
-    <v-form v-model="isFormValid">
+    <p class="pb-4">{{ $t('user.password-reset.note') }}</p>
+
+    <v-form
+      v-model="isFormValid"
+      @submit.prevent="resetPassword"
+    >
       <v-text-field
         v-model="user.email"
         :placeholder="$t('user.fields.email')"
@@ -24,6 +29,7 @@
           <v-btn
             @click="resetPassword"
             :disabled="!isFormValid"
+            type="submit"
             tabindex="0"
             color="primary"
             depressed
@@ -54,8 +60,10 @@ export default {
   },
   methods: {
     resetPassword() {
-      this.user.lang = this.$i18n.locale; // fix locale
-      this.$store.dispatch('user/resetPassword', this.user);
+      if (this.isFormValid) {
+        this.user.lang = this.$i18n.locale; // fix locale
+        this.$store.dispatch('user/resetPassword', this.user);
+      }
     },
     checkLength(value) {
       if (value) {

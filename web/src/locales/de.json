@@ -23,6 +23,7 @@
       "username": "Benutzername",
       "email": "E-Mail",
       "password": "Passwort",
+      "new-password": "Neues Passwort",
       "password-repeat": "Passwort wiederholen",
       "privacy-policy": "Datenschutzerklärung zustimmen"
     },
@@ -54,7 +55,8 @@
       "title": "Abmelden"
     },
     "password-reset": {
-      "title": "Passwort zurücksetzen"
+      "title": "Passwort zurücksetzen",
+      "note": "Bitte beachte, dass aus Sicherheitsgründen kein Fehler ausgelöst wird, wenn die E-Mail-Adresse nicht mit einem Konto verknüpft ist."
     }
   },
   "collections": {
@@ -159,7 +161,7 @@
       "color": "Treib’s mal {value}",
       "epoch": "{value} überall",
       "creator": "Lerne {value} kennen",
-      "try-out": "Probiere ein Spiel aus"
+      "try-out": "Probiere es aus"
     },
     "texts": {
       "intro": "Wir zeigen Dir ein Bild von",
