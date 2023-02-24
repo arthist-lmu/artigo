@@ -19,7 +19,7 @@ class CustomROIResource(ResourcePlugin):
         'inputs': [],
         'rounds': 5,
         'min_tags': 5,
-        'min_roi_tags': 5,
+        'min_roi_tags': 0,
         'max_last_played': 0,
     }
 

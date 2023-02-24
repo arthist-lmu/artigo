@@ -6,8 +6,10 @@ const collection = {
   actions: {
     add({ rootState }, params) {
       const formData = new FormData();
-      formData.append('name', params.name);
       formData.append('lang', i18n.locale);
+      Object.entries(params.title).forEach(([lang, name]) => {
+        formData.append(`title_${lang}`, name);
+      });
       params.files.forEach((file) => {
         formData.append('files', file);
       });

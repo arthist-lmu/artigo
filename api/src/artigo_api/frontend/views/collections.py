@@ -41,27 +41,18 @@ class CollectionsView(APIView):
 
         collections = Collection.objects.filter(filter_users) \
             .annotate(
-                n_resources=Coalesce(Count('resources__id'), 0),
+                count_resources=Coalesce(Count('resources__id'), 0),
                 resource_ids=ArrayAgg('resources__id'),
             )
 
         if params.get('query'):
             if params['query'].get('all-text'):
                 name = params['query']['all-text'].strip()
-                collections = collections.filter(name__icontains=name)
+                collections = collections.filter(titles__name__icontains=name)
             elif params['query'].get('hide-empty'):
-                collections = collections.filter(n_resources__gt=0)
+                collections = collections.filter(count_resources__gt=0)
 
-        collections = collections.order_by('-created') \
-            .values(
-                'hash_id',
-                'name',
-                'access',
-                'status',
-                'progress',
-                'created',
-                'resource_ids',
-            )
+        collections = collections.order_by('-created')
 
         result = {
             'total': len(collections),

@@ -130,6 +130,7 @@ def random_game_parameters(**kwargs):
                 {
                     'params': {
                         'game_type': 'roi',
+                        'min_roi_tags': 0,
                     },
                 },
                 {

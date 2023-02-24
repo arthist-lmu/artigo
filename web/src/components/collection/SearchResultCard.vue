@@ -38,7 +38,7 @@
         <v-row style="flex: 0;">
           <v-col class="pa-4">
             <div class="text-subtitle-1 white--text">
-              <b>{{ entry.name }}</b>
+              <b>{{ entry.title[lang] }}</b>
 
               <v-icon
                 v-if="entry.access === 'O'"
@@ -201,10 +201,6 @@ export default {
     date() {
       const created = new Date(this.entry.created);
       return created.toLocaleDateString(this.lang);
-    },
-    time() {
-      const created = new Date(this.entry.created);
-      return created.toLocaleTimeString(this.lang);
     },
   },
   watch: {

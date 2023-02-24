@@ -18,7 +18,7 @@ class RandomROIResource(ResourcePlugin):
     default_config = {
         'rounds': 5,
         'min_tags': 5,
-        'min_roi_tags': 5,
+        'min_roi_tags': 0,
         'max_last_played': 6 * 30,
     }
 

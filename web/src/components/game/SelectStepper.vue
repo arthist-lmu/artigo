@@ -146,6 +146,7 @@ export default {
           multiple: true,
         },
       },
+      isSetup: false,
       configs: [],
       stepper: 1,
       data: {},
@@ -178,9 +179,6 @@ export default {
           }
         }
       });
-      if (this.data.game_type.default === 'roi') {
-        input.resource_min_roi_tags = 0;
-      }
       this.$emit('input', input);
     },
     setDefault(params) {
@@ -221,43 +219,41 @@ export default {
     },
     'data.game_type.default': {
       handler(gameType) {
-        Object.keys(this.$data.data).forEach((configParam) => {
-          if (configParam.split('_')[0] !== 'game') {
-            this.$delete(this.data, configParam);
-          }
-        });
+        const validPluginTypes = new Set();
         this.configs.forEach(({ name: configName, plugins }) => {
           const pluginType = `${configName}_type`;
           plugins.forEach((plugin) => {
-            if (
-              plugin.game_types.includes(gameType)
-              && this.keyInObj(pluginType, this.settings)
-            ) {
-              if (!this.keyInObj(pluginType, this.data)) {
-                this.$set(this.data, pluginType, {});
-              }
-              if (!this.keyInObj('params', this.data[pluginType])) {
-                this.$set(this.data[pluginType], 'params', {});
-              }
-              if (!this.keyInObj('items', this.data[pluginType])) {
-                this.$set(this.data[pluginType], 'items', []);
-              }
-              this.data[pluginType].items.push(plugin.name);
-              if (plugin.default) {
-                this.$set(this.data[pluginType], 'default', plugin.name);
-              }
-              if (plugin.params !== undefined) {
-                Object.entries(plugin.params).forEach(([param, values]) => {
-                  const configParam = `${configName}_${param}`;
-                  if (this.keyInObj(configParam, this.settings)) {
-                    if (!this.keyInObj(configParam, this.data)) {
-                      this.$set(this.data, configParam, {});
+            if (plugin.game_types.includes(gameType)) {
+              validPluginTypes.add(pluginType);
+              if (this.keyInObj(pluginType, this.settings)) {
+                if (!this.keyInObj(pluginType, this.data)) {
+                  this.$set(this.data, pluginType, {});
+                }
+                if (!this.keyInObj('params', this.data[pluginType])) {
+                  this.$set(this.data[pluginType], 'params', {});
+                }
+                if (!this.keyInObj('items', this.data[pluginType])) {
+                  this.$set(this.data[pluginType], 'items', []);
+                }
+                this.data[pluginType].items.push(plugin.name);
+                if (!this.keyInObj('default', this.data[pluginType]) && plugin.default) {
+                  this.$set(this.data[pluginType], 'default', plugin.name);
+                }
+                if (plugin.params !== undefined) {
+                  Object.entries(plugin.params).forEach(([param, values]) => {
+                    const configParam = `${configName}_${param}`;
+                    if (this.keyInObj(configParam, this.settings)) {
+                      if (!this.keyInObj(configParam, this.data)) {
+                        this.$set(this.data, configParam, {});
+                      }
+                      if (!this.keyInObj('default', this.data[configParam])) {
+                        this.$set(this.data[configParam], 'default', values);
+                      }
+                    } else if (!this.keyInObj(configParam, this.data[pluginType].params)) {
+                      this.$set(this.data[pluginType].params, configParam, values);
                     }
-                    this.$set(this.data[configParam], 'default', values);
-                  } else {
-                    this.$set(this.data[pluginType].params, configParam, values);
-                  }
-                });
+                  });
+                }
               }
             }
           });
@@ -270,7 +266,20 @@ export default {
             this.data[pluginType].items.unshift(`no_${configName}`);
           }
         });
-        this.setDefault(this.defaultParams);
+        Object.keys(this.data).forEach((pluginType) => {
+          if (
+            !validPluginTypes.has(pluginType)
+            && pluginType.split('_')[0] !== 'game'
+            && pluginType.split('_')[1] === 'type'
+          ) {
+            this.$delete(this.data, pluginType);
+          }
+        });
+        if (!this.isSetup) {
+          // set default params only on setup
+          this.setDefault(this.defaultParams);
+          this.isSetup = true;
+        }
       },
     },
   },

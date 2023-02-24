@@ -11,16 +11,38 @@
       @submit.prevent="change"
     >
       <v-text-field
-        v-model="params.name"
+        v-model="params.title.de"
         :placeholder="$t('user.upload.fields.name')"
         :rules="[checkLength]"
+        class="mb-1"
         tabindex="0"
         counter="75"
         clearable
         outlined
         rounded
         dense
-      />
+      >
+        <template v-slot:append>
+          <span>DE</span>
+        </template>
+      </v-text-field>
+
+      <v-text-field
+        v-model="params.title.en"
+        :placeholder="$t('user.upload.fields.name')"
+        :rules="[checkLength]"
+        class="mb-1"
+        tabindex="0"
+        counter="75"
+        clearable
+        outlined
+        rounded
+        dense
+      >
+        <template v-slot:append>
+          <span>EN</span>
+        </template>
+      </v-text-field>
 
       <v-select
         v-model="params.access"
@@ -68,7 +90,10 @@ export default {
   data() {
     return {
       params: {
-        name: this.entry.name,
+        title: {
+          de: this.entry.title.de,
+          en: this.entry.title.en,
+        },
         access: this.entry.access,
       },
       isFormValid: false,

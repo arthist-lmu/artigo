@@ -11,7 +11,7 @@
       @submit.prevent="upload"
     >
       <v-text-field
-        v-model="collection.name"
+        v-model="collection.title.de"
         :placeholder="$t('user.upload.fields.name')"
         :rules="[checkLength]"
         class="mb-1"
@@ -21,7 +21,28 @@
         outlined
         rounded
         dense
-      />
+      >
+        <template v-slot:append>
+          <span>DE</span>
+        </template>
+      </v-text-field>
+
+      <v-text-field
+        v-model="collection.title.en"
+        :placeholder="$t('user.upload.fields.name')"
+        :rules="[checkLength]"
+        class="mb-1"
+        tabindex="0"
+        counter="75"
+        clearable
+        outlined
+        rounded
+        dense
+      >
+        <template v-slot:append>
+          <span>EN</span>
+        </template>
+      </v-text-field>
 
       <UploadInput
         v-model="collection.files"
@@ -60,7 +81,12 @@ export default {
   },
   data() {
     return {
-      collection: {},
+      collection: {
+        title: {
+          'de': null,
+          'en': null,
+        },
+      },
       isFormValid: false,
     };
   },
@@ -110,3 +136,12 @@ export default {
   },
 };
 </script>
+
+<style>
+.v-input__append-inner {
+  margin-top: 0 !important;
+  height: 40px !important;
+  align-items: center;
+  display: flex;
+}
+</style>

@@ -175,24 +175,35 @@ class CustomPasswordResetSerializer(PasswordResetSerializer):
         return value
 
 
+class CollectionTitleSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CollectionTitle
+        fields = '__all__'
+
+
 class CollectionCountSerializer(serializers.ModelSerializer):
+    titles = CollectionTitleSerializer(many=True)
     resources = serializers.ReadOnlyField(source='resource_ids')
 
     class Meta:
         model = Collection
         fields = (
             'hash_id',
-            'name',
+            'titles',
             'access',
             'status',
             'progress',
             'created',
             'resources',
         )
-        list_serializer_class = ListSerializer
+        read_only_fields = (
+            'titles',
+        )
 
     def to_representation(self, data):
         data = super().to_representation(data)
+
+        data['title'] = {x['language']: x['name'] for x in data['titles']}
 
         try:
             resource = Resource.objects.get(id=data['resources'][0])
@@ -202,7 +213,7 @@ class CollectionCountSerializer(serializers.ModelSerializer):
             else:
                 data['path'] = media_url_to_image(resource.hash_id)
         except Exception as error:
-            logger.error(traceback.format_exc())
+            pass
 
         return data
 
@@ -210,11 +221,7 @@ class CollectionCountSerializer(serializers.ModelSerializer):
 class SourceSerializer(serializers.ModelSerializer):
     class Meta:
         model = Source
-        fields = (
-            'id',
-            'name',
-            'url',
-        )
+        fields = '__all__'
 
 
 class CreatorSerializer(serializers.ModelSerializer):
@@ -229,11 +236,7 @@ class CreatorSerializer(serializers.ModelSerializer):
 class TitleSerializer(serializers.ModelSerializer):
     class Meta:
         model = Title
-        fields = (
-            'id',
-            'name',
-            'language',
-        )
+        fields = '__all__'
 
 
 class ResourceSerializer(serializers.ModelSerializer):
@@ -276,11 +279,7 @@ class ResourceSerializer(serializers.ModelSerializer):
 class TagSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tag
-        fields = (
-            'id',
-            'name',
-            'language',
-        )
+        fields = '__all__'
 
     def to_representation(self, data):
         data = super().to_representation(data)

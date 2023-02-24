@@ -21,7 +21,11 @@ from frontend.utils import (
     download_file,
     check_extension,
 )
-from frontend.models import Collection, Resource
+from frontend.models import (
+    Collection,
+    CollectionTitle,
+    Resource,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -57,9 +61,9 @@ class CollectionAddView(APIView):
         'origin': 'origin',
         'origin_url': 'origin',
         'url': 'origin',
-        'tags': 'tags',
-        'tags_en': 'tags_en',
-        'tags_de': 'tags_de',
+        'tags': 'tags_name',
+        'tags_en': 'tags_name_en',
+        'tags_de': 'tags_name_de',
     }
 
     def parse_header(self, header):
@@ -215,18 +219,28 @@ class CollectionAddView(APIView):
             raise APIException('not_authenticated')
 
         params = request.data
-
-        if not params.get('name'):
-            raise APIException('collection_name_is_required')
-
+        
         collection_id = uuid.uuid4().hex
-        collection_name = params['name']
+        collection_title = {}
 
-        if len(collection_name) < 4:
-            raise APIException('name_is_too_short')
+        if params.get('title'):
+            lang = params.get('lang', 'de')
+            collection_title[lang] = params['title']
 
-        if len(collection_name) > 75:
-            raise APIException('name_is_too_long')
+        for key, name in params.items():
+            if key.startswith('title_'):
+                lang = key.rsplit('_', 1)[-1]
+                collection_title[lang] = name
+
+        if len(collection_title) == 0:
+            raise APIException('collection_title_is_required')
+
+        for name in collection_title.values():
+            if len(name) < 4:
+                raise APIException('title_is_too_short')
+
+            if len(name) > 75:
+                raise APIException('title_is_too_long')
 
         image_files = []
 
@@ -336,7 +350,7 @@ class CollectionAddView(APIView):
         upload_collection.apply_async(
             (
                 {
-                    'collection_name': collection_name,
+                    'collection_title': collection_title,
                     'collection_id': collection_id,
                     'image_path': str(images['path']),
                     'entries': list(map(unflat_dict, parsed_images)),
@@ -411,16 +425,21 @@ class CollectionChangeView(APIView):
 
         collection = Collection.objects.get(hash_id=params['hash_id'])
 
-        if params.get('name'):
-            collection_name = params['name']
+        if params.get('title'):
+            for lang, name in params['title'].items():
+                if len(name) < 4:
+                    raise APIException('name_is_too_short')
 
-            if len(collection_name) < 4:
-                raise APIException('name_is_too_short')
+                if len(name) > 75:
+                    raise APIException('name_is_too_long')
 
-            if len(collection_name) > 75:
-                raise APIException('name_is_too_long')
+                title = CollectionTitle.objects.create(
+                    name=name,
+                    language=lang,
+                )
+                title.save()
 
-            collection.name = collection_name
+                collection.titles.add(title)
 
         if params.get('access'):
             collection_access = params['access']

@@ -65,12 +65,15 @@ export default {
   },
   methods: {
     setReload() {
-      this.checkInterval = setInterval(() => {
-        this.$store.dispatch(`${this.store}/post`, {});
-      }, 10 * 1000);
+      if (this.checkInterval === null) {
+        this.checkInterval = setInterval(() => {
+          this.$store.dispatch(`${this.store}/post`, {});
+        }, 10 * 1000);
+      }
     },
     removeReload() {
       clearInterval(this.checkInterval);
+      this.checkInterval = null;
     },
   },
   computed: {
@@ -118,7 +121,7 @@ export default {
   mounted() {
     this.observer = new MutationObserver(() => {
       const overlay = document.querySelector('.v-overlay');
-      if (overlay !== undefined && overlay !== null) {
+      if (overlay !== null) {
         this.removeReload();
       } else {
         this.setReload();

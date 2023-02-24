@@ -12,6 +12,26 @@ class CustomModelAdmin(admin.ModelAdmin):
 class UserAdmin(CustomModelAdmin):
     pass
 
+
+@admin.register(Collection)
+class CollectionAdmin(admin.ModelAdmin):
+    fields = [f.name for f in Collection._meta.fields]
+    list_display = ['id', 'title'] + fields[1:]
+
+    def get_queryset(self, request):
+        qs = super().get_queryset(request) \
+            .prefetch_related('titles')
+
+        return qs
+
+    def title(self, obj):
+        return list(obj.titles.all())
+
+
+@admin.register(CollectionTitle)
+class CollectionTitleAdmin(CustomModelAdmin):
+    pass
+
     
 @admin.register(Source)
 class SourceAdmin(CustomModelAdmin):

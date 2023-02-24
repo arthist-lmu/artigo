@@ -35,30 +35,17 @@ def renew_cache(renew=True):
 
 @shared_task(bind=True)
 def upload_collection(self, args):
-    image_path = args.get('image_path')
-    entries = args.get('entries')
-    user_id = args.get('user_id')
-    access = args.get('access', 'R')
-    lang = args.get('lang', 'de')
-    
-    if access.lower() == 'open':
-        access = 'O'
-    elif access.lower() == 'pending':
-        access = 'P'
-    elif access.lower() == 'restricted':
-        access = 'R'
-
     try:
-        user = CustomUser.objects.get(pk=user_id)
+        user = CustomUser.objects.get(id=args.get('user_id'))
     except CustomUser.DoesNotExist:
         raise BadRequest('unknown_user')
 
-    if not args.get('collection_name'):
-        raise BadRequest('collection_name_is_required')
+    if not args.get('collection_title'):
+        raise BadRequest('collection_title_is_required')
 
     collection = Collection.objects.filter(
             user=user,
-            name=args['collection_name'],
+            titles__name__in=args['collection_title'].values(),
         ) \
         .first()
 
@@ -66,15 +53,35 @@ def upload_collection(self, args):
         if not args.get('collection_id'):
             raise BadRequest('collection_id_is_required')
 
+        access = args.get('access', 'R')
+        
+        if access.lower() == 'open':
+            access = 'O'
+        elif access.lower() == 'pending':
+            access = 'P'
+        elif access.lower() == 'restricted':
+            access = 'R'
+
         collection = Collection.objects.create(
             user=user,
             hash_id=args['collection_id'],
-            name=args['collection_name'],
             access=access,
             status='U',
             progress=0.0,
         )
+
+        for lang, name in args['collection_title'].items():
+            title = CollectionTitle.objects.create(
+                name=name,
+                language=lang,
+            )
+            title.save()
+
+            collection.titles.add(title)
+
         collection.save()
+
+    image_path = args.get('image_path')
 
     if check_extension(image_path, ['.zip']):
         archive = ZipArchive(image_path)
@@ -85,9 +92,11 @@ def upload_collection(self, args):
         '.tar.xz',
     ]):
         archive = TarArchive(image_path)
+    else:
+        BadRequest('corrupt_archives_file')
 
     count, resources = 0, []
-    args = {'ignore_conflicts': True}
+    entries = args.get('entries', [])
 
     with archive as file_obj:
         for entry in entries:
@@ -185,46 +194,52 @@ def upload_collection(self, args):
                 if entry.get('origin'):
                     resource.origin = entry['origin']
 
-                if entry.get('tags'):
-                    if isinstance(entry['tags'], str):
-                        entry['tags'] = re.split(';|,', entry['tags'])
+                taggings = []
 
-                    if not isinstance(entry['tags'], (list, set)):
-                        entry['tags'] = [entry['tags']]
+                for key in ['tags_name', 'tags_name_de', 'tags_name_en']:
+                    if entry.get(key):
+                        _, lang = key.rsplit('_', 1)
 
-                    taggings = []
+                        if not lang in ('de', 'en'):
+                            lang = args.get('lang', 'de')
 
-                    for tag_name in entry['tags']:
-                        tag = Tag.objects.filter(name=tag_name).first()
+                        if isinstance(entry[key], str):
+                            entry[key] = re.split(';|,', entry[key])
 
-                        if tag is None:
-                            tag = Tag.objects.create(
-                                name=tag_name,
-                                language=lang,
+                        if not isinstance(entry[key], (list, set)):
+                            entry[key] = [entry[key]]
+
+                        for tag_name in entry[key]:
+                            tag = Tag.objects.filter(name=tag_name).first()
+
+                            if tag is None:
+                                tag = Tag.objects.create(
+                                    name=tag_name,
+                                    language=lang,
+                                )
+                                tag.save()
+
+                            tagging = UserTagging.objects.create(
+                                user=user,
+                                resource=resource,
+                                tag=tag,
+                                uploaded=True,
                             )
-                            tag.save()
 
-                        tagging = UserTagging.objects.create(
-                            user=user,
-                            resource=resource,
-                            tag=tag,
-                            uploaded=True,
-                        )
-
-                        taggings.append(tagging)
-                    
-                    if len(taggings) > 0:
-                        try:
-                            UserTagging.objects.bulk_create(taggings, **args)
-                        except:
-                           logger.error(traceback.format_exc()) 
+                            taggings.append(tagging)
+                        
+                if len(taggings) > 0:
+                    try:
+                        UserTagging.objects.bulk_create(taggings)
+                    except:
+                        logger.error(traceback.format_exc()) 
 
                 resources.append(resource)
                 count += 1
 
                 if len(resources) > 100:
                     try:
-                        Resource.objects.bulk_create(resources, **args)
+                        Resource.objects.bulk_create(resources)
                     except Exception as error:
                         logger.error(traceback.format_exc())
 
@@ -236,7 +251,7 @@ def upload_collection(self, args):
 
         if resources:
             try:
-                Resource.objects.bulk_create(resources, **args)
+                Resource.objects.bulk_create(resources)
             except Exception as error:
                 logger.error(traceback.format_exc())
 

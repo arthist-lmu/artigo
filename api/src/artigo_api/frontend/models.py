@@ -74,6 +74,14 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         return self.gamesessions.count()
 
 
+class CollectionTitle(models.Model):
+    name = models.CharField(max_length=512)
+    language = models.CharField(max_length=256, blank=True)
+
+    def __str__(self):
+        return self.name
+
+
 class Collection(models.Model):
     user = models.ForeignKey(
         CustomUser,
@@ -81,7 +89,7 @@ class Collection(models.Model):
         related_name='collections',
     )
     hash_id = models.CharField(max_length=256)
-    name = models.CharField(max_length=256)
+    titles = models.ManyToManyField(CollectionTitle)
     access = models.CharField(
         max_length=2,
         choices=[
