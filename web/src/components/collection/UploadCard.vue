@@ -121,9 +121,14 @@ export default {
     },
   },
   watch: {
+    value(visible) {
+      if (!visible) {
+        this.$store.dispatch('collections/post', {});
+        this.$router.push({ name: 'collections' });
+      }
+    },
     timestamp() {
       if (this.isFormValid && this.status) {
-        this.$router.push({ name: 'collections' });
         if (this.isDialog) {
           this.close();
         }

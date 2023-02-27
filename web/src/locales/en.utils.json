@@ -30,8 +30,6 @@
     "invalid_token": "Please login to proceed.",
     "copied_to_clipboard": "The link was successfully copied to the clipboard.",
     "collection_title_is_required": "Please enter a collection name.",
-    "title_is_too_short": "Your name contains too few characters.",
-    "title_is_too_long": "Your name contains too many characters.",
     "image_file_is_required": "Please enter an image file.",
     "file_could_not_be_written": "The file could not be written.",
     "name_is_too_short": "Your name contains too few characters.",

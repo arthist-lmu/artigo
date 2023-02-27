@@ -4,8 +4,7 @@
       v-if="type"
       @click="reconcile(type)"
       :title="$t('reconcile.title')"
-      class="ml-1 mr-n2"
-      color="primary"
+      color="grey lighten-2"
       icon
     >
       <v-icon>mdi-wiper</v-icon>

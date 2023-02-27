@@ -13,7 +13,7 @@ from django.apps import apps
 from django.utils import timezone
 from django.core.management import BaseCommand, CommandError
 from django.core.management.color import no_style
-from frontend.utils import to_url, to_int
+from frontend.utils import to_url, to_int, reset_cursor
 
 MODEL_MAPPING = {}
 
@@ -347,12 +347,7 @@ class Command(BaseCommand):
         txt = f'Import took {duration.total_seconds()} seconds.'
         self.stdout.write(self.style.SUCCESS(txt))
 
-        configs = [apps.get_app_config(x) for x in ['frontend']]
-        models = [list(config.get_models()) for config in configs]
+        reset_cursor()
 
-        with connection.cursor() as cursor:
-            for model in models:
-                for sql in connection.ops.sequence_reset_sql(no_style(), model):
-                    cursor.execute(sql)
-
-        self.stdout.write(self.style.SUCCESS('Successfully reset AutoFields.'))
+        txt = 'Successfully reset AutoFields.'
+        self.stdout.write(self.style.SUCCESS(txt))

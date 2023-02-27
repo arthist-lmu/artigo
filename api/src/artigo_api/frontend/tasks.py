@@ -13,6 +13,7 @@ from frontend.utils import (
     to_int,
     TarArchive,
     ZipArchive,
+    reset_cursor,
     resize_image,
     check_extension,
 )
@@ -34,26 +35,26 @@ def renew_cache(renew=True):
 
 
 @shared_task(bind=True)
-def upload_collection(self, args):
+def upload_collection(self, data):
     try:
-        user = CustomUser.objects.get(id=args.get('user_id'))
+        user = CustomUser.objects.get(id=data.get('user_id'))
     except CustomUser.DoesNotExist:
         raise BadRequest('unknown_user')
 
-    if not args.get('collection_title'):
+    if not data.get('collection_title'):
         raise BadRequest('collection_title_is_required')
 
     collection = Collection.objects.filter(
             user=user,
-            titles__name__in=args['collection_title'].values(),
+            titles__name__in=data['collection_title'].values(),
         ) \
         .first()
 
     if collection is None:
-        if not args.get('collection_id'):
+        if not data.get('collection_id'):
             raise BadRequest('collection_id_is_required')
 
-        access = args.get('access', 'R')
+        access = data.get('access', 'R')
         
         if access.lower() == 'open':
             access = 'O'
@@ -64,24 +65,31 @@ def upload_collection(self, args):
 
         collection = Collection.objects.create(
             user=user,
-            hash_id=args['collection_id'],
+            hash_id=data['collection_id'],
             access=access,
             status='U',
             progress=0.0,
         )
 
-        for lang, name in args['collection_title'].items():
-            title = CollectionTitle.objects.create(
-                name=name,
-                language=lang,
-            )
-            title.save()
+        for lang, name in data['collection_title'].items():
+            try:
+                title = CollectionTitle.objects.create(
+                    name=name,
+                    language=lang,
+                )
+                title.save()
+            except:
+                title = CollectionTitle.objects.filter(
+                        name=name,
+                        language=lang,
+                    ) \
+                    .first()
 
             collection.titles.add(title)
 
         collection.save()
 
-    image_path = args.get('image_path')
+    image_path = data.get('image_path')
 
     if check_extension(image_path, ['.zip']):
         archive = ZipArchive(image_path)
@@ -95,8 +103,11 @@ def upload_collection(self, args):
     else:
         BadRequest('corrupt_archives_file')
 
-    count, resources = 0, []
-    entries = args.get('entries', [])
+    count = 0
+    resources = []
+
+    args = {'ignore_conflicts': True}
+    entries = data.get('entries', [])
 
     with archive as file_obj:
         for entry in entries:
@@ -201,7 +212,7 @@ def upload_collection(self, args):
                         _, lang = key.rsplit('_', 1)
 
                         if not lang in ('de', 'en'):
-                            lang = args.get('lang', 'de')
+                            lang = data.get('lang', 'de')
 
                         if isinstance(entry[key], str):
                             entry[key] = re.split(';|,', entry[key])
@@ -228,9 +239,9 @@ def upload_collection(self, args):
 
                             taggings.append(tagging)
                         
-                if len(taggings) > 0:
+                if taggings:
                     try:
-                        UserTagging.objects.bulk_create(taggings)
+                        UserTagging.objects.bulk_create(taggings, **args)
                     except:
                         logger.error(traceback.format_exc()) 
 
@@ -239,7 +250,7 @@ def upload_collection(self, args):
 
                 if len(resources) > 100:
                     try:
-                        Resource.objects.bulk_create(resources)
+                        Resource.objects.bulk_create(resources, **args)
                     except Exception as error:
                         logger.error(traceback.format_exc())
 
@@ -251,7 +262,7 @@ def upload_collection(self, args):
 
         if resources:
             try:
-                Resource.objects.bulk_create(resources)
+                Resource.objects.bulk_create(resources, **args)
             except Exception as error:
                 logger.error(traceback.format_exc())
 
@@ -259,6 +270,7 @@ def upload_collection(self, args):
         collection.save()
 
     os.remove(image_path)
+    reset_cursor()
 
     if count == 0:
         collection.status = 'E'

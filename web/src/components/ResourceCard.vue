@@ -29,6 +29,7 @@
         <ReconcileButton
           :entries="[entry]"
           type="resource"
+          class="ml-1"
         />
       </div>
 

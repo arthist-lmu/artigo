@@ -103,10 +103,7 @@ export default {
     change() {
       if (this.isFormValid) {
         const entry = { hash_id: this.entry.hash_id, ...this.params };
-        this.$store.dispatch('collection/change', entry).then(() => {
-          this.$store.dispatch('collections/post', {});
-          this.close();
-        });
+        this.$store.dispatch('collection/change', entry);
       }
     },
     checkLength(value) {
@@ -136,6 +133,20 @@ export default {
           },
         ],
       };
+    },
+  },
+  watch: {
+    value(visible) {
+      if (!visible) {
+        this.$store.dispatch('collections/post', {});
+      }
+    },
+    timestamp() {
+      if (this.isFormValid && this.status) {
+        if (this.isDialog) {
+          this.close();
+        }
+      }
     },
   },
   components: {

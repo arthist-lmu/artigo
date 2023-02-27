@@ -18,6 +18,7 @@ from drf_spectacular.utils import extend_schema
 from frontend.tasks import upload_collection
 from frontend.utils import (
     unflat_dict,
+    reset_cursor,
     download_file,
     check_extension,
 )
@@ -237,10 +238,10 @@ class CollectionAddView(APIView):
 
         for name in collection_title.values():
             if len(name) < 4:
-                raise APIException('title_is_too_short')
+                raise APIException('name_is_too_short')
 
             if len(name) > 75:
-                raise APIException('title_is_too_long')
+                raise APIException('name_is_too_long')
 
         image_files = []
 
@@ -378,6 +379,8 @@ class CollectionRemoveView(APIView):
         resources = Resource.objects.filter(collection=collection)
 
         try:
+            titles = list(collection.titles.all())
+
             if resources.count():
                 for resource in resources.values('hash_id'):
                     hash_id = resource['hash_id']
@@ -404,6 +407,12 @@ class CollectionRemoveView(APIView):
                             os.remove(file_path)
 
             collection.delete()
+
+            for title in titles:
+                if len(title.collections.all()) == 0:
+                    title.delete()
+
+            reset_cursor()
 
             return Response()
         except Exception as error:
@@ -433,11 +442,24 @@ class CollectionChangeView(APIView):
                 if len(name) > 75:
                     raise APIException('name_is_too_long')
 
-                title = CollectionTitle.objects.create(
-                    name=name,
-                    language=lang,
-                )
-                title.save()
+                for title in collection.titles.filter(language=lang):
+                    collection.titles.remove(title)
+
+                    if len(title.collections.all()) == 0:
+                        title.delete()
+
+                try:
+                    title = CollectionTitle.objects.create(
+                        name=name,
+                        language=lang,
+                    )
+                    title.save()
+                except:
+                    title = CollectionTitle.objects.filter(
+                            name=name,
+                            language=lang,
+                        ) \
+                        .first()
 
                 collection.titles.add(title)
 
