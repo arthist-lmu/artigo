@@ -1,6 +1,7 @@
 {
   "game": {
     "title": "Spielen",
+    "note": "Dein Spiel ist bereits vorkonfiguriert. Ändere aber gerne noch einzelne Parameter ab, um es zu personalisieren.",
     "helper": "Kennst Du ARTigo bereits? Wenn nicht, lerne zunächst das Projekt kennen.",
     "fields": {
       "new-game-default": "Neues Spiel",

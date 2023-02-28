@@ -20,6 +20,13 @@
     </v-card-title>
 
     <v-card-text class="my-4 pb-0">
+      <p
+        v-if="Object.keys(defaultParams).length"
+        class="pb-4"
+      >
+        {{ $t('game.note') }}
+      </p>
+
       <SelectStepper
         v-model="params"
         :showMore="showMore"

@@ -1,6 +1,7 @@
 {
   "game": {
     "title": "Play",
+    "note": "Your game is already pre-configured. However, you are welcome to change individual parameters to personalise it.",
     "helper": "Are you already familiar with ARTigo? If not, get to know the project first.",
     "fields": {
       "new-game-default": "New game",

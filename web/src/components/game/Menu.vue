@@ -30,7 +30,7 @@ export default {
         params.resource_inputs = entries;
         params.resource_type = 'custom_resource';
       }
-      this.$store.commit('/game/updateDialog', { params });
+      this.$store.commit('game/updateDialog', { params });
       if (this.$route.name === 'game') {
         const path = `/${this.$i18n.locale}/game`;
         this.$router.push({ path: `${path}?id=${Date.now()}` });

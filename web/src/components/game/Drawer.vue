@@ -5,8 +5,8 @@
     :width="width"
     app
   >
-    <v-container class="px-6 py-4">
-      <v-row></v-row>
+    <v-container class="pb-8 px-6">
+      <v-row class="ma-0" />
 
       <v-row
         v-for="entry in data"
@@ -18,7 +18,10 @@
         </v-col>
       </v-row>
 
-      <v-row style="flex: 0;">
+      <v-row
+        class="pb-4"
+        style="flex: 0;"
+      >
         <v-col>
           <v-btn
             @click="goTo('game')"
@@ -33,7 +36,7 @@
         </v-col>
       </v-row>
 
-      <v-row></v-row>
+      <v-row class="ma-0" />
     </v-container>
   </v-navigation-drawer>
 </template>
