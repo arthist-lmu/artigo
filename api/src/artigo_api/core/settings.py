@@ -65,6 +65,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'drf_spectacular',
     'dj_rest_auth',
+    'django_extensions',
     'corsheaders',
     'frontend',
     'allauth',

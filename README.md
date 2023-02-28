@@ -94,17 +94,24 @@ To re-generate the OpenAPI 3.0 schema file, use the following command:
 sudo docker-compose exec api python3 manage.py spectacular --file schema.yml
 ```
 
+### Database schema migration
+To generate database schema migration files, use the following command:
+```sh
+sudo docker-compose exec api python3 manage.py migrate
+```
+
 ### Formatting
 Lint can be used to help with standardized formatting:
 ```sh
 sudo docker-compose exec web npm run lint --fix
 ```
 
-### Database schema migration
-To generate database schema migration files, use the following command:
+### UML class diagram
+To create an UML class diagram from the Django models, run:
 ```sh
-sudo docker-compose exec api python3 manage.py migrate
+sudo docker-compose exec api python3 manage.py graph_models frontend --hide-edge-labels -o /dump/models.png
 ```
+
 
 ## Contributing
 
