@@ -8,7 +8,7 @@ const sessions = {
       offset: 0,
       entries: [],
     },
-    itemsPerPage: 96,
+    itemsPerPage: 48,
   },
   actions: {
     post({ commit, rootState, state }, params) {

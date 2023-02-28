@@ -14,7 +14,7 @@ const search = {
     params: {},
     jobId: null,
     backBtn: false,
-    itemsPerPage: 96,
+    itemsPerPage: 48,
   },
   actions: {
     post({ commit, dispatch, state }, params) {

@@ -12,6 +12,7 @@
     >
       <v-text-field
         v-model="params.title.de"
+        @keydown.enter="change"
         :placeholder="$t('user.upload.fields.name')"
         :rules="[checkLength]"
         class="mb-1"
@@ -29,6 +30,7 @@
 
       <v-text-field
         v-model="params.title.en"
+        @keydown.enter="change"
         :placeholder="$t('user.upload.fields.name')"
         :rules="[checkLength]"
         class="mb-1"
@@ -46,6 +48,7 @@
 
       <v-select
         v-model="params.access"
+        @keydown.enter="change"
         :placeholder="$t('user.upload.fields.access')"
         :items="items.access"
         item-text="name"

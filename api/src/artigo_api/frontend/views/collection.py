@@ -409,7 +409,7 @@ class CollectionRemoveView(APIView):
             collection.delete()
 
             for title in titles:
-                if len(title.collections.all()) == 0:
+                if title.collections.count() == 0:
                     title.delete()
 
             reset_cursor()
@@ -445,7 +445,7 @@ class CollectionChangeView(APIView):
                 for title in collection.titles.filter(language=lang):
                     collection.titles.remove(title)
 
-                    if len(title.collections.all()) == 0:
+                    if title.collections.count() == 0:
                         title.delete()
 
                 try:

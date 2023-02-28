@@ -3,6 +3,7 @@ import json
 import logging
 import traceback
 
+from django.db.models import Q
 from django.utils import timezone
 from django.core.management import BaseCommand, CommandError
 from frontend.models import Resource
@@ -21,10 +22,17 @@ class Command(BaseCommand):
         start_time = timezone.now()
 
         if os.path.isdir(options['output']):
-            qs = Resource.objects.prefetch_related('taggings')
+            qs = Resource.objects.filter(
+                    Q(collection__isnull=True)
+                    | Q(collection__access='O')
+                ) \
+                .prefetch_related('taggings')
 
             dump_time = timezone.now().strftime('%Y%m%d%H%M%S')
-            file_path = f"{options['output']}/os-dump_{dump_time}.{options['format']}"
+            file_path = os.path.join(
+                options['output'],
+                f"os-dump_{dump_time}.{options['format']}"
+            )
 
             with open(file_path, 'w', encoding='utf-8') as file_obj:
                 for i in range(0, qs.count(), options['size']):
@@ -34,7 +42,7 @@ class Command(BaseCommand):
                     if options['format'] == 'jsonl':
                         try:
                             for resource in chunk.data:
-                                file_obj.write(f"{json.dumps(resource)}\n")
+                                file_obj.write(f'{json.dumps(resource)}\n')
                         except Exception as error:
                             logger.error(traceback.format_exc())
         else:

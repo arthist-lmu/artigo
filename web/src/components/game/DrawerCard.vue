@@ -62,8 +62,20 @@
             </v-btn>
 
             <v-btn
+              v-if="opponentType === 'no_opponent'"
+              :title="$t(`home.plugins.opponent_type.${'no_opponent'}`)"
+              class="ml-2"
+              x-small
+              fab
+            >
+              <v-icon color="primary">
+                mdi-account-off-outline
+              </v-icon>
+            </v-btn>
+
+            <v-btn
               v-if="tabooType"
-              :title="$t(`home.plugins.taboos.${'most_annotated_taboo'}`)"
+              :title="$t(`home.plugins.taboo_type.${'most_annotated_taboo'}`)"
               class="ml-2"
               x-small
               fab
@@ -80,7 +92,13 @@
         <v-row style="flex: 0;">
           <v-col class="pa-4">
             <div class="text-subtitle-1 white--text">
-              <p v-html="$t(`home.fields.${entry.type}`, { value: `<b>${entry.query}</b>` })"></p>
+              <p v-if="title && title[lang]">
+                {{ title[lang] }}
+              </p>
+              <p
+                v-else
+                v-html="$t(`home.fields.${entry.type}`, { value: `<b>${entry.query}</b>` })"
+              />
             </div>
           </v-col>
         </v-row>
@@ -109,11 +127,20 @@ export default {
     },
   },
   computed: {
+    lang() {
+      return this.$i18n.locale;
+    },
+    title() {
+      return this.entry.title;
+    },
     gameType() {
       return this.entry.params.game_type;
     },
     tabooType() {
       return this.entry.params.taboo_type;
+    },
+    opponentType() {
+      return this.entry.params.opponent_type;
     },
   },
 };

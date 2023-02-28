@@ -122,6 +122,7 @@
     <v-dialog
       v-model="dialog.login"
       max-width="450"
+      scrollable
     >
       <LoginCard v-model="dialog.login" />
     </v-dialog>
@@ -129,6 +130,7 @@
     <v-dialog
       v-model="dialog.register"
       max-width="450"
+      scrollable
     >
       <RegisterCard v-model="dialog.register" />
     </v-dialog>
@@ -136,6 +138,7 @@
     <v-dialog
       v-model="dialog.collectionUpload"
       max-width="450"
+      scrollable
     >
       <CollectionUploadCard v-model="dialog.collectionUpload" />
     </v-dialog>
@@ -166,8 +169,9 @@ export default {
       this.menu = false;
     },
     logout() {
-      this.$store.dispatch('user/logout');
-      this.menu = false;
+      this.$store.dispatch('user/logout').then(() => {
+        this.goTo('home');
+      });
     },
   },
   computed: {

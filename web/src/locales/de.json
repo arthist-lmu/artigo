@@ -177,7 +177,10 @@
       "tagging": "Bilder werden mit Schlagwörtern annotiert"
     },
     "plugins": {
-      "taboos": {
+      "opponent_type": {
+        "no_opponent": "Du spielst gegen keine Gegner:innen"
+      },
+      "taboo_type": {
         "most_annotated_taboo": "Am häufigsten vergebene Annotationen sind tabu"
       }
     }

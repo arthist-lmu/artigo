@@ -10,6 +10,7 @@
     >
       <v-text-field
         v-model="user.username"
+        @keydown.enter="register"
         :placeholder="$t('user.fields.username')"
         :rules="[checkLength]"
         tabindex="0"
@@ -22,6 +23,7 @@
 
       <v-text-field
         v-model="user.email"
+        @keydown.enter="register"
         :placeholder="$t('user.fields.email')"
         :rules="[checkLength]"
         tabindex="0"
@@ -34,6 +36,7 @@
 
       <v-text-field
         v-model="user.password1"
+        @keydown.enter="register"
         @click:append="showPassword = !showPassword"
         :type="showPassword ? 'text' : 'password'"
         :placeholder="$t('user.fields.password')"
@@ -51,6 +54,7 @@
 
       <v-text-field
         v-model="user.password2"
+        @keydown.enter="register"
         @click:append="showPassword = !showPassword"
         :type="showPassword ? 'text' : 'password'"
         :placeholder="$t('user.fields.password-repeat')"

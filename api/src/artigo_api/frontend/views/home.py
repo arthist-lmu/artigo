@@ -13,6 +13,10 @@ logger = logging.getLogger(__name__)
 class HomeView(APIView):
     def get(self, request, format=None):
         lang = request.query_params.get('lang', 'de')
-        games = cache.random_game_parameters(lang=lang)
+
+        games = [
+        	*cache.random_game_parameters(lang=lang),
+        	*cache.collection_game_parameters(lang=lang),
+        ]
 
         return Response(games)

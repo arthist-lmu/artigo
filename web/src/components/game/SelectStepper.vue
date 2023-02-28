@@ -134,7 +134,7 @@ export default {
 
         },
         opponent_type: {
-
+          setNone: true,
         },
         input_type: {
 
@@ -260,10 +260,13 @@ export default {
           if (
             this.keyInObj(pluginType, this.data)
             && this.keyInObj('items', this.data[pluginType])
-            && !this.keyInObj('default', this.data[pluginType])
           ) {
-            this.$set(this.data[pluginType], 'default', `no_${configName}`);
-            this.data[pluginType].items.unshift(`no_${configName}`);
+            if (!this.keyInObj('default', this.data[pluginType])) {
+              this.$set(this.data[pluginType], 'default', `no_${configName}`);
+              this.data[pluginType].items.unshift(`no_${configName}`);
+            } else if (this.settings[pluginType].setNone) {
+              this.data[pluginType].items.unshift(`no_${configName}`);
+            }
           }
         });
         Object.keys(this.data).forEach((pluginType) => {

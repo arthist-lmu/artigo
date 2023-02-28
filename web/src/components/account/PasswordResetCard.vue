@@ -12,6 +12,7 @@
     >
       <v-text-field
         v-model="user.email"
+        @keydown.enter="resetPassword"
         :placeholder="$t('user.fields.email')"
         :rules="[checkLength]"
         tabindex="0"

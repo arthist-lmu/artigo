@@ -12,6 +12,7 @@
     >
       <v-text-field
         v-model="user.email"
+        @keydown.enter="login"
         :placeholder="$t('user.fields.email')"
         :rules="[checkLength]"
         tabindex="0"
@@ -24,6 +25,7 @@
 
       <v-text-field
         v-model="user.password"
+        @keydown.enter="login"
         @click:append="showPassword = !showPassword"
         :type="showPassword ? 'text' : 'password'"
         :placeholder="$t('user.fields.password')"

@@ -12,6 +12,7 @@
     >
       <v-text-field
         v-model="collection.title.de"
+        @keydown.enter="upload"
         :placeholder="$t('user.upload.fields.name')"
         :rules="[checkLength]"
         class="mb-1"
@@ -29,6 +30,7 @@
 
       <v-text-field
         v-model="collection.title.en"
+        @keydown.enter="upload"
         :placeholder="$t('user.upload.fields.name')"
         :rules="[checkLength]"
         class="mb-1"
@@ -124,11 +126,11 @@ export default {
     value(visible) {
       if (!visible) {
         this.$store.dispatch('collections/post', {});
-        this.$router.push({ name: 'collections' });
       }
     },
     timestamp() {
       if (this.isFormValid && this.status) {
+        this.$router.push({ name: 'collections' });
         if (this.isDialog) {
           this.close();
         }

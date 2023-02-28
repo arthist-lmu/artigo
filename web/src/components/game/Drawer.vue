@@ -5,7 +5,7 @@
     :width="width"
     app
   >
-    <v-container class="px-6">
+    <v-container class="px-6 py-4">
       <v-row></v-row>
 
       <v-row

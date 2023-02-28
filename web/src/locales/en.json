@@ -175,7 +175,10 @@
       "tagging": "Images are annotated with tags"
     },
     "plugins": {
-      "taboos": {
+      "opponent_type": {
+        "no_opponent": "You are playing against no opponents"
+      },
+      "taboo_type": {
         "most_annotated_taboo": "Most frequently assigned annotations are taboo"
       }
     }

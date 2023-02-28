@@ -30,11 +30,14 @@
             <span
               v-if="typer.creator && creator"
               :key="creator"
-              @click="search(creator, 'creators')"
-              @keydown="search(creator, 'creators')"
               class="creator space"
             >
-              <span>{{ creator }}</span>
+              <span
+                @click="search(creator, 'creators')"
+                @keydown="search(creator, 'creators')"
+              >
+                {{ creator }}
+              </span>
 
               <v-icon
                 class="ml-4"
