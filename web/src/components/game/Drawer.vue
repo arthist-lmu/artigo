@@ -100,4 +100,8 @@ export default {
   display: flex;
   height: 100%;
 }
+
+.row:first-child + .row {
+  margin-top: 0;
+}
 </style>

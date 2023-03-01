@@ -79,10 +79,6 @@ span.clip.w100 {
   transform: scale(1.3);
 }
 
-.row:first-child + .row {
-  margin-top: 0;
-}
-
 .error--text .v-icon {
   color: #e26162 !important;
 }
