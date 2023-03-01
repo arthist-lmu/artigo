@@ -10,23 +10,23 @@
       </v-col>
     </v-row>
 
-    <v-row>
+    <v-row id="description">
       <v-col :class="paddingClass">
         <Description />
       </v-col>
     </v-row>
 
-    <v-row>
+    <v-row id="collections">
       <v-col :class="paddingClass">
         <div :class="textClass">
-          {{ $t("contact.title") }}
+          {{ $t("collections.title") }}
         </div>
 
-        <Contact />
+        <Collections />
       </v-col>
     </v-row>
 
-    <v-row>
+    <v-row id="contributors">
       <v-col :class="paddingClass">
         <div :class="textClass">
           {{ $t("contributors.title") }}
@@ -36,7 +36,17 @@
       </v-col>
     </v-row>
 
-    <v-row>
+    <v-row id="contact">
+      <v-col :class="paddingClass">
+        <div :class="textClass">
+          {{ $t("contact.title") }}
+        </div>
+
+        <Contact />
+      </v-col>
+    </v-row>
+
+    <v-row id="history">
       <v-col :class="paddingClass">
         <div :class="textClass">
           {{ $t("history.title") }}
@@ -46,7 +56,7 @@
       </v-col>
     </v-row>
 
-    <v-row>
+    <v-row id="publications">
       <v-col :class="paddingClass">
         <div :class="textClass">
           {{ $t("publications.title") }}
@@ -118,8 +128,9 @@ export default {
   components: {
     GameDrawer: () => import('@/components/game/Drawer.vue'),
     Description: () => import('@/components/about/Description.vue'),
-    Contact: () => import('@/components/about/Contact.vue'),
+    Collections: () => import('@/components/about/Collections.vue'),
     Contributors: () => import('@/components/about/Contributors.vue'),
+    Contact: () => import('@/components/about/Contact.vue'),
     History: () => import('@/components/about/History.vue'),
     Publications: () => import('@/components/about/Publications.vue'),
   },

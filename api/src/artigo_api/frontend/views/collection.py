@@ -45,6 +45,7 @@ class CollectionAddView(APIView):
         'künstler': 'creator_name',
         'artist': 'creator_name',
         'meta.creator': 'creator_name',
+        'created': 'created_start',
         'created_start': 'created_start',
         'entstehung_beginn': 'created_start',
         'entstehung': 'created_start',

@@ -70,7 +70,19 @@
       "no-results": "No collections could be found.",
       "access-open": "Public",
       "access-pending": "Pending",
-      "access-restricted": "Restricted"
+      "access-restricted": "Restricted",
+      "file-path": "<code>file</code>, <code>path</code>, or <code>file_path</code>: file path of the image",
+      "title": "<code>title</code>, <code>titles</code>, <code>meta.title</code>, or <code>titel</code>: title of the image",
+      "creator": "<code>creator</code>, <code>artist</code>, <code>meta.creator</code>, or <code>künstler</code>: artist of the image",
+      "created": "<code>date</code>, <code>created</code>, <code>created_start</code>, <code>created_end</code>, <code>meta.created</code>, <code>entstehung</code>, <code>entstehung_beginn</code>, or <code>entstehung_ende</code>: creation date of the image",
+      "location": "<code>location</code> or <code>standort</code>: location of the image",
+      "source": "<code>source</code>, <code>source_name</code>, <code>source_url</code>, or <code>quelle</code>: source of the image",
+      "tags": "<code>tags</code>, <code>tags_en</code>, or <code>tags_de</code>: tags of the image"
+    },
+    "texts": {
+      "preface": "The images you see during the game are from the Staatliche Kunsthalle Karlsruhe, the Rijksmuseum and the Institute for Art History at the University of Cologne, for example.",
+      "principle": "If you are logged in, you can also upload your own collections via the user menu. To add images, simply drag and drop the relevant files onto the interface. Two types of files are supported: images in the formats <code>.jpg</code>, <code>.jpeg</code>, <code>.png</code> and <code>.gif</code>; and metadata for the images in the formats <code>.csv</code>, <code>.json</code> or <code>.jsonl</code>. Images can also be submitted as <code>.zip</code> archives.",
+      "mapping": "For the metadata to be assigned correctly, the column names in the file must correspond to the following:"
     }
   },
   "imprint": {
