@@ -9,15 +9,20 @@
     >
       {{ title }}
 
-      <v-btn
-        v-if="isDialog"
-        @click="close"
-        absolute
-        right
-        icon
+      <v-col
+        class="pa-0"
+        align="right"
       >
-        <v-icon>mdi-close</v-icon>
-      </v-btn>
+        <slot name="helper" />
+
+        <v-btn
+          v-if="isDialog"
+          @click="close"
+          icon
+        >
+          <v-icon>mdi-close</v-icon>
+        </v-btn>
+      </v-col>
     </v-card-title>
 
     <v-card-text

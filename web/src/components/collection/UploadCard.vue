@@ -4,7 +4,7 @@
     v-on="$listeners"
     :title="$t('user.upload.title')"
   >
-    <p class="pb-4">{{ $t('user.upload.note-name') }}</p>
+    <p class="pb-4">{{ $t('user.upload.note') }}</p>
 
     <v-form
       v-model="isFormValid"
@@ -52,6 +52,18 @@
       />
     </v-form>
 
+    <template v-slot:helper>
+      <v-btn
+        @click="goTo('about', '#collections')"
+        :title="$t('user.upload.helper')"
+        icon
+      >
+        <v-icon>
+          mdi-help-circle-outline
+        </v-icon>
+      </v-btn>
+    </template>
+
     <template v-slot:actions>
       <v-row>
         <v-col>
@@ -93,6 +105,11 @@ export default {
     };
   },
   methods: {
+    goTo(name, anchor = '') {
+      const route = this.$router.resolve({ name });
+      window.open(`${route.href}${anchor}`, '_blank');
+      this.close();
+    },
     upload() {
       if (this.isFormValid) {
         this.$store.dispatch('collection/add', this.collection);

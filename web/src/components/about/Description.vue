@@ -47,9 +47,9 @@ export default {
         {
           text: this.$t('description.texts.principle'),
           fields: [
-            this.$tc('description.fields.score-validated', 5),
-            this.$tc('description.fields.score-opponent', 5),
-            this.$tc('description.fields.score-first', 5),
+            this.$tc('description.texts.score-validated', 5),
+            this.$tc('description.texts.score-opponent', 5),
+            this.$tc('description.texts.score-first', 5),
           ],
         },
         {

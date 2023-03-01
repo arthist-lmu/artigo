@@ -4,7 +4,7 @@
     v-on="$listeners"
     :title="$t('collections.fields.change')"
   >
-    <p class="pb-4">{{ $t('user.upload.note-access') }}</p>
+    <p class="pb-4">{{ $t('collections.note') }}</p>
 
     <v-form
       v-model="isFormValid"

@@ -40,8 +40,8 @@
     },
     "upload": {
       "title": "Sammlung hochladen",
-      "note-name": "Um Bilder zu einer bestehenden Sammlung hinzuzufügen, gebe den Namen der Sammlung ein.",
-      "note-access": "Jede Sammlung, die der Öffentlichkeit zugänglich gemacht werden soll, wird zunächst von uns geprüft.",
+      "note": "Um Bilder zu einer bestehenden Sammlung hinzuzufügen, gebe den Namen der Sammlung ein.",
+      "helper": "Weißt Du bereits, wie Du eigene Sammlungen hochladen kannst? Wenn nicht, lies zunächst mehr darüber.",
       "fields": {
         "name": "Sammlungsname",
         "access": "Zugriff",
@@ -61,6 +61,7 @@
   },
   "collections": {
     "title": "Sammlungen",
+    "note": "Jede Sammlung, die der Öffentlichkeit zugänglich gemacht werden soll, wird zunächst von uns geprüft.",
     "fields": {
       "of": "von",
       "query": "Nach Sammlungen suchen",
@@ -71,19 +72,20 @@
       "no-results": "Es konnten keine Sammlungen gefunden werden.",
       "access-open": "Öffentlich",
       "access-pending": "Ausstehend",
-      "access-restricted": "Eingeschränkt",
+      "access-restricted": "Eingeschränkt"
+    },
+    "texts": {
+      "preface": "Die Bilder, die Du während des Spiels siehst, stammen zum Beispiel aus der Staatlichen Kunsthalle Karlsruhe, dem Rijksmuseum und dem Kunsthistorischen Institut der Universität zu Köln.",
+      "principle": "Wenn Du eingeloggt bist, kannst Du über das Benutzermenü auch eigene Sammlungen hochladen. Um Bilder hinzuzufügen, ziehst Du die entsprechenden Dateien einfach per <i>Drag & Drop</i> auf die Oberfläche. Es werden zwei Arten von Dateien unterstützt: Bilder in den Formaten <code>.jpg</code>, <code>.jpeg</code>, <code>.png</code> und <code>.gif</code>; und Metadaten zu den Bildern in den Formaten <code>.csv</code>, <code>.json</code> oder <code>.jsonl</code>. Bilder können auch als <code>.zip</code>-Archive übergeben werden.",
+      "mapping": "Damit die Metadaten richtig zugeordnet werden können, müssen die Spaltennamen in der Datei den folgenden Angaben entsprechen:",
       "file-path": "<code>file</code>, <code>path</code> oder <code>file_path</code>: Dateiname des Bildes",
       "title": "<code>title</code>, <code>titles</code>, <code>meta.title</code> oder <code>titel</code>: Titel des Bildes",
       "creator": "<code>creator</code>, <code>artist</code>, <code>meta.creator</code> oder <code>künstler</code>: Künstler:in des Bildes",
       "created": "<code>date</code>, <code>created</code>, <code>created_start</code>, <code>created_end</code>, <code>meta.created</code>, <code>entstehung</code>, <code>entstehung_beginn</code> oder <code>entstehung_ende</code>: Entstehungszeitpunkt des Bildes",
       "location": "<code>location</code> oder <code>standort</code>: Standort des Bildes",
       "source": "<code>source</code>, <code>source_name</code>, <code>source_url</code> oder <code>quelle</code>: Quelle des Bildes",
-      "tags": "<code>tags</code>, <code>tags_en</code> oder <code>tags_de</code>: Schlagwörter des Bildes"
-    },
-    "texts": {
-      "preface": "Die Bilder, die Du während des Spiels siehst, stammen zum Beispiel aus der Staatlichen Kunsthalle Karlsruhe, dem Rijksmuseum und dem Kunsthistorischen Institut der Universität zu Köln.",
-      "principle": "Wenn Du eingeloggt bist, kannst Du über das Benutzermenü auch eigene Sammlungen hochladen. Um Bilder hinzuzufügen, ziehst Du die entsprechenden Dateien einfach per <i>Drag & Drop</i> auf die Oberfläche. Es werden zwei Arten von Dateien unterstützt: Bilder in den Formaten <code>.jpg</code>, <code>.jpeg</code>, <code>.png</code> und <code>.gif</code>; und Metadaten zu den Bildern in den Formaten <code>.csv</code>, <code>.json</code> oder <code>.jsonl</code>. Bilder können auch als <code>.zip</code>-Archive übergeben werden.",
-      "mapping": "Damit die Metadaten richtig zugeordnet werden können, müssen die Spaltennamen in der Datei den folgenden Angaben entsprechen:"
+      "tags": "<code>tags</code>, <code>tags_en</code> oder <code>tags_de</code>: Schlagwörter des Bildes",
+      "access": "Deine eigenen Sammlungen sind zunächst nur für Dich selbst sichtbar. Du kannst den Zugang jedoch nach dem Hochladen einer Sammlung ändern und sie für alle öffnen. Jede Sammlung, die der Öffentlichkeit zugänglich gemacht werden soll, wird von uns manuell geprüft. Bitte achte darauf, entsprechende Metadaten zu vergeben."
     }
   },
   "imprint": {
@@ -120,14 +122,12 @@
   },
   "description": {
     "title": "Beschreibung",
-    "fields": {
-      "score-validated": "{n} Punkte erhältst Du, wenn der Tag für dieses Bild bereits in einer früheren Spielrunde vergeben wurde",
-      "score-opponent": "{n} weitere Punkte gibt es, wenn Du mit einem:r Mitspieler:in spielst und ihr denselben Tag verwendet",
-      "score-first": "Wenn Du als Erste:r ein Bild beschreibst, erhältst Du immer {n} Punkte pro Tag"
-    },
     "texts": {
       "preface": "Kunstgeschichte lebt von der Arbeit mit Kunstwerken und ihren digitalen Reproduktionen. Diese werden online in Bildkatalogen gesammelt, die teilweise mehrere Millionen Objekte umfassen. Um Bilder in solchen Verzeichnissen suchen zu können, braucht es beschreibende Texte: eine Aufgabe, bei der Du uns spielerisch helfen kannst – und gleichzeitig viel über Kunst lernst!",
       "principle": "ARTigo ist eine kollaborative Plattform und ein Beispiel für offene universitäre Forschung, an der Du als Spieler:in teilnimmst. Alle ARTigo-Spiele funktionieren so: Dir wird ein Bild vorgelegt. Ziel ist es, dieses Bild innerhalb einer bestimmten Zeit mit Schlagwörtern (<i>Tags</i>) so zu beschreiben, dass möglichst viele Punkte erzielt werden:",
+      "score-validated": "{n} Punkte erhältst Du, wenn der Tag für dieses Bild bereits in einer früheren Spielrunde vergeben wurde",
+      "score-opponent": "{n} weitere Punkte gibt es, wenn Du mit einem:r Mitspieler:in spielst und ihr denselben Tag verwendet",
+      "score-first": "Wenn Du als Erste:r ein Bild beschreibst, erhältst Du immer {n} Punkte pro Tag",
       "motivation": "Nach einer von Dir festgelegten Anzahl von Spielrunden werden die Metadaten zu den Bildern sichtbar. So generierst Du nicht nur kunsthistorisches Wissen, sondern sammelst es auch. Jeder Tag, den Du eingibst, wird gespeichert und verbessert die Suche nach Kunstwerken – eine Win-Win-Situation. Also, nichts wie ran!"
     }
   },

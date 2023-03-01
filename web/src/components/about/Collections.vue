@@ -50,14 +50,17 @@ export default {
         {
           text: this.$t('collections.texts.mapping'),
           fields: [
-            this.$t('collections.fields.file-path'),
-            this.$t('collections.fields.title'),
-            this.$t('collections.fields.creator'),
-            this.$t('collections.fields.created'),
-            this.$t('collections.fields.location'),
-            this.$t('collections.fields.source'),
-            this.$t('collections.fields.tags'),
+            this.$t('collections.texts.file-path'),
+            this.$t('collections.texts.title'),
+            this.$t('collections.texts.creator'),
+            this.$t('collections.texts.created'),
+            this.$t('collections.texts.location'),
+            this.$t('collections.texts.source'),
+            this.$t('collections.texts.tags'),
           ],
+        },
+        {
+          text: this.$t('collections.texts.access'),
         },
       ];
     },
