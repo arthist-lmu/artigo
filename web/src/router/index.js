@@ -55,6 +55,13 @@ const router = new VueRouter({
           },
         },
         {
+          path: 'institute',
+          name: 'institute',
+          beforeEnter: () => {
+            window.open(`${instituteUrl}/`, '_blank');
+          },
+        },
+        {
           path: 'about',
           name: 'about',
           component: () => import('@/views/About.vue'),

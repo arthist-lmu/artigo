@@ -38,6 +38,7 @@
 
           <v-chip
             v-if="!$vuetify.breakpoint.mdAndDown"
+            @click="goTo('institute')"
             style="background-color: transparent;"
             class="ml-2"
             small

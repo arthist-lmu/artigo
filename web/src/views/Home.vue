@@ -30,22 +30,9 @@
             <span
               v-if="typer.creator && creator"
               :key="creator"
-              class="creator space"
+              class="dot space"
             >
-              <span
-                @click="search(creator, 'creators')"
-                @keydown="search(creator, 'creators')"
-              >
-                {{ creator }}
-              </span>
-
-              <v-icon
-                class="ml-4"
-                color="white"
-                style="opacity: 0.5"
-              >
-                mdi-magnify
-              </v-icon>
+              {{ creator }}
             </span>
           </transition>
 
@@ -292,13 +279,9 @@ span.space::before {
   content: " ";
 }
 
-.creator::after {
+.dot::after {
+  margin-left: -10px;
   content: ". ";
-}
-
-.creator > span {
-  border-bottom: 2px rgb(247, 248, 251) solid;
-  cursor: pointer;
 }
 
 .fade-enter-active,
