@@ -60,7 +60,7 @@ export default {
       if (this.input) {
         const params = {
           tag: { name: this.input },
-          language: this.$i18n.locale,
+          game_language: this.$i18n.locale,
           resource_id: this.entry.resource_id,
         };
         this.$store.dispatch('game/post', params).then(() => {

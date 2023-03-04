@@ -39,7 +39,9 @@ class CustomROIResource(ResourcePlugin):
             self.inputs = [self.inputs]
 
     def __call__(self, params):
-        resources = cache.resource_tagging_count() \
+        lang = params.get('language', 'de')
+
+        resources = cache.resource_tagging_count(lang=lang) \
             .filter(
                 id__in=self.inputs[:100],
                 count_tags__gte=self.min_tags,

@@ -159,7 +159,7 @@ export default {
           'annotation_validated_score',
           'opponent_validated_score',
         ],
-        language: this.$i18n.locale,
+        game_language: this.$i18n.locale,
       };
       Object.entries(this.data).forEach(([pluginType, { default: defaultValue, params }]) => {
         if (defaultValue !== undefined) {

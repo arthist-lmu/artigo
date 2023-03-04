@@ -34,7 +34,9 @@ class RandomTaggingResource(ResourcePlugin):
         self.max_last_played = self.config['max_last_played']
 
     def __call__(self, params):
-        resources = cache.resource_tagging_count()
+        lang = params.get('language', 'de')
+        
+        resources = cache.resource_tagging_count(lang=lang)
 
         if self.percentile < 1:
             value = resources.aggregate(

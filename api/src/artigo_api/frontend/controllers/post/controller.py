@@ -19,7 +19,7 @@ class InputController:
 
         result['game_options'] = {
             'resource_id': query.get('resource_id'),
-            'language': query.get('language', 'de'),
+            'language': query.get('game_language', 'de'),
         }
 
         if query.get('tag'):

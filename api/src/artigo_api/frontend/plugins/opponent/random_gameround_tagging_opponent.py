@@ -27,12 +27,13 @@ class RandomGameroundTaggingOpponent(OpponentPlugin):
         self.min_tags = self.config['min_tags']
 
     def __call__(self, resource_ids, params):
+        lang = params.get('language', 'de')
         round_duration = params.get('round_duration', 0)
 
         gamerounds = UserTagging.objects.filter(
                 resource_id__in=resource_ids,
                 gameround__gamesession__round_duration__gte=round_duration,
-                tag__language=params.get('language', 'de'),
+                tag__language=lang,
             ) \
             .values('gameround') \
             .annotate(count_tags=Count('tag', distinct=True)) \

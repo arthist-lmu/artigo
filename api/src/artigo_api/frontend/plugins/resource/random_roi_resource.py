@@ -34,7 +34,9 @@ class RandomROIResource(ResourcePlugin):
         self.max_last_played = self.config['max_last_played']
 
     def __call__(self, params):
-        resources = cache.resource_tagging_count() \
+        lang = params.get('language', 'de')
+
+        resources = cache.resource_tagging_count(lang=lang) \
             .filter(
                 count_tags__gte=self.min_tags,
                 count_roi_tags__gte=self.min_roi_tags

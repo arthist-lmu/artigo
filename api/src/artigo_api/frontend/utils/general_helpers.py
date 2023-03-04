@@ -57,6 +57,8 @@ def to_type(value):
         if isinstance(value, (list, set)):
             return value
 
+    return value
+
 
 def to_lower(value):
     if isinstance(value, str):

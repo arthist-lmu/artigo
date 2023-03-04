@@ -118,7 +118,7 @@ class GameController:
         try:
             resource_ids = list(
                 self.plugins['resource'].run(
-                    {'user_id': user.id},
+                    { 'user_id': user.id, **query['game_options'] },
                     query['resource_type'],
                     configs=get_configs(query, 'resource'),
                 )
@@ -159,7 +159,6 @@ class GameController:
                     }
 
         game = self.merge_to_game(result, resource_ids)
-        
         # logger.info(f'[Game Controller] Game: {game}')
 
         try:
@@ -287,6 +286,9 @@ class GameController:
 
                 if not key in ['type', 'type[]']:
                     result['game_options'][key] = to_type(value)
+
+        if not result['game_options'].get('language'):
+            result['game_options']['language'] = 'de'
 
         for config_name, plugin_manager in self.plugins.items():
             config_type = f'{config_name}_type'
