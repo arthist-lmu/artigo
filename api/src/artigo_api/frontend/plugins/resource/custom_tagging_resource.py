@@ -35,9 +35,7 @@ class CustomTaggingResource(ResourcePlugin):
             self.inputs = [self.inputs]
 
     def __call__(self, params):
-        lang = params.get('language', 'de')
-
-        resources = cache.resource_tagging_count(lang=lang) \
+        resources = cache.resource_tagging_count(**params) \
             .filter(
                 id__in=self.inputs[:100],
                 count_tags__gte=self.min_tags,

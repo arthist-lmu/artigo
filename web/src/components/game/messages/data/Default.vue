@@ -24,6 +24,12 @@ export default {
       }
       return [];
     },
+    opponentTags() {
+      if (this.keyInObj('opponent_tags', this.entry)) {
+        return this.entry.opponent_tags.map(({ name }) => name);
+      }
+      return [];
+    },
     filter() {
       if (this.isArray(this.tags)) {
         return this.tags.filter((tag) => (
@@ -40,6 +46,21 @@ export default {
       ),
       created_after: 0,
     });
+    if (this.opponentTags.length) {
+      this.tags.push({
+        name: this.$t(
+          `game.fields.${this.gameType}.opponent`,
+        ),
+        created_after: 0,
+      });
+    } else {
+      this.tags.push({
+        name: this.$t(
+          `game.fields.${this.gameType}.no-opponent`,
+        ),
+        created_after: 0,
+      });
+    }
     if (this.tabooTags.length) {
       this.tags.push({
         name: this.$t(

@@ -185,6 +185,10 @@ export default {
 </script>
 
 <style>
+.v-image.image-wrapper {
+  border-radius: 28px 0 0 28px;
+}
+
 .v-image.image-wrapper .v-image__image {
   display: none;
 }

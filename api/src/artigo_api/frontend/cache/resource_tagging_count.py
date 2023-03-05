@@ -11,7 +11,7 @@ logger = logging.getLogger(__name__)
 
 @name
 def resource_tagging_count(**kwargs):
-    langs = kwargs.get('lang', ['de', 'en'])
+    langs = kwargs.get('language', ['de', 'en'])
 
     if not isinstance(langs, (list, set)):
         langs = [langs]
@@ -30,26 +30,30 @@ def resource_tagging_count(**kwargs):
                             filter=Q(taggings__tag__language=lang),
                             distinct=True
                         ), 
-                    0),
+                        0,
+                    ),
                     count_taggings=Coalesce(
                         Count(
                             'taggings__tag',
                             filter=Q(taggings__tag__language=lang),
                         ),
-                    0),
+                        0,
+                    ),
                     count_roi_tags=Coalesce(
                         Count(
                             'rois__tag',
                             filter=Q(taggings__tag__language=lang),
                             distinct=True,
                         ),
-                    0),
+                        0,
+                    ),
                     count_roi_taggings=Coalesce(
                         Count(
                             'rois__tag',
                             filter=Q(taggings__tag__language=lang),
                         ),
-                    0),
+                        0,
+                    ),
                 )
 
             timeout = kwargs.get('timeout', None)

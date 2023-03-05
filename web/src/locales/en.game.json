@@ -18,12 +18,17 @@
       },
       "tagging": {
         "post": "Enter tag",
-        "intro": "What do you see in the displayed image? What feelings does it trigger in you?",
+        "intro": "How would you describe this image? You can describe what you see, but also what feelings or associations it triggers.",
+        "opponent": "Your opponent’s tags are always displayed on the left.",
+        "no-opponent": "You play without an opponent.",
         "taboo": "You may not use the following tags: {tags}."
       },
       "roi": {
         "post": "Annotate image region",
-        "intro": "Do you see the tags above the displayed image? Draw with the mouse over the corresponding image regions."
+        "intro": "Do you see the tags above the displayed image? Draw with the mouse over the corresponding image regions.",
+        "opponent": "Your opponent’s tags are always displayed on the left.",
+        "no-opponent": "You play without an opponent",
+        "taboo": "You may not use the following tags: {tags}."
       }
     },
     "inputs": {
