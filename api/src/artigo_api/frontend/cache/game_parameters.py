@@ -4,7 +4,7 @@ import logging
 from abc import ABC, abstractmethod
 from itertools import cycle
 from django.core.cache import cache
-from django.db.models import Count
+from django.db.models import Count, Q
 from django.db.models.functions import Coalesce
 from django.contrib.postgres.aggregates import ArrayAgg
 from frontend.utils import media_url_to_image
@@ -68,32 +68,32 @@ class RandomGameParameters(GameParameters):
         game['field'] = variant['field']
 
         if game['field'] == 'tags':
-            if game['type'] == 'color':
+            if game['type'] == 'annotated-color':
                 colors = [
-                    {'de': 'schwarz',           'en': 'black'},
-                    {'de': 'weiß',              'en': 'white'},
-                    {'de': 'grau',              'en': 'grey'},
-                    {'de': 'rot',               'en': 'red'},
-                    {'de': 'blau',              'en': 'blue'},
-                    {'de': 'braun',             'en': 'brown'},
-                    {'de': 'grün',              'en': 'green'},
-                    {'de': 'gelb',              'en': 'yellow'},
+                    { 'de': 'schwarz',           'en': 'black' },
+                    { 'de': 'weiß',              'en': 'white'} ,
+                    { 'de': 'grau',              'en': 'grey' },
+                    { 'de': 'rot',               'en': 'red' },
+                    { 'de': 'blau',              'en': 'blue' },
+                    { 'de': 'braun',             'en': 'brown' },
+                    { 'de': 'grün',              'en': 'green' },
+                    { 'de': 'gelb',              'en': 'yellow' },
                 ]
 
                 game['query'] = random.choice(colors)
-            elif game['type'] == 'epoch':
+            elif game['type'] == 'annotated-epoch':
                 epochs = [
-                    {'de': 'renaissance',       'en': 'renaissance'},
-                    {'de': 'manierismus',       'en': 'mannerism'},
-                    {'de': 'barock',            'en': 'baroque'},
-                    {'de': 'rokoko',            'en': 'rococo'},
-                    {'de': 'romantik',          'en': 'romanticism'},
-                    {'de': 'realismus',         'en': 'realism'},
-                    {'de': 'impressionismus',   'en': 'impressionism'},
-                    {'de': 'pointillismus',     'en': 'pointillism'},
-                    {'de': 'symbolismus',       'en': 'symbolism'},
-                    {'de': 'expressionismus',   'en': 'expressionism'},
-                    {'de': 'kubismus',          'en': 'cubism'},
+                    { 'de': 'renaissance',       'en': 'renaissance' },
+                    { 'de': 'manierismus',       'en': 'mannerism' },
+                    { 'de': 'barock',            'en': 'baroque' },
+                    { 'de': 'rokoko',            'en': 'rococo' },
+                    { 'de': 'romantik',          'en': 'romanticism' },
+                    { 'de': 'realismus',         'en': 'realism' },
+                    { 'de': 'impressionismus',   'en': 'impressionism' },
+                    { 'de': 'pointillismus',     'en': 'pointillism' },
+                    { 'de': 'symbolismus',       'en': 'symbolism' },
+                    { 'de': 'expressionismus',   'en': 'expressionism' },
+                    { 'de': 'kubismus',          'en': 'cubism' },
                 ]
 
                 game['query'] = random.choice(epochs)
@@ -119,9 +119,8 @@ class RandomGameParameters(GameParameters):
                 .values_list('resource', flat=True)
 
             game['query'] = game['query'][lang]
-        elif game['field'] == 'meta.creators':
+        elif game['field'] == 'creators':
             creators = Resource.objects \
-                .exclude(hash_id__exact='') \
                 .values(
                     'creators',
                     'creators__name',
@@ -136,6 +135,25 @@ class RandomGameParameters(GameParameters):
                 .exclude(hash_id__exact='') \
                 .filter(creators=creator['creators']) \
                 .values_list('id', flat=True)
+        elif game['field'] == 'resources':
+            resources = Resource.objects.values('id') \
+                .exclude(hash_id__exact='') \
+                .annotate(
+                    count_taggings=Coalesce(
+                        Count(
+                            'taggings__tag',
+                            filter=Q(taggings__tag__language=lang),
+                        ),
+                        0,
+                    ),
+                ) \
+                .filter(count_taggings=0) \
+                .values_list('id', flat=True)
+
+            game['params']['resource_min_tags'] = 0
+            game['params']['opponent_type'] = 'no_opponent'
+
+            game['params'].pop('taboo_type', None)
 
         resources = list(resources)
         random.shuffle(resources)
@@ -153,7 +171,7 @@ class RandomGameParameters(GameParameters):
             {
                 'params': {
                     'game_type': 'roi',
-                    'min_roi_tags': 0,
+                    'game_min_roi_tags': 0,
                 },
             },
             {
@@ -176,16 +194,20 @@ class RandomGameParameters(GameParameters):
     def get_variants(self):
         values = [
             {
-                'type': 'color',
+                'type': 'annotated-color',
                 'field': 'tags',
             },
             {
-                'type': 'epoch',
+                'type': 'annotated-epoch',
                 'field': 'tags',
             },
             {
-                'type': 'creator',
-                'field': 'meta.creators',
+                'type': 'not-annotated',
+                'field': 'resources',
+            },
+            {
+                'type': 'most-annotated',
+                'field': 'creators',
             },
         ]
 

@@ -170,8 +170,9 @@
     "title": "Startseite",
     "fields": {
       "tag": "{value}? {value}!",
-      "color": "Treib’s mal {value}",
-      "epoch": "{value} überall",
+      "annotated-color": "Treib’s mal {value}",
+      "annotated-epoch": "{value} überall",
+      "not-annotated": "Wer zuerst kommt, malt zuerst",
       "creator": "Lerne {value} kennen",
       "try-out": "Probiere es aus"
     },

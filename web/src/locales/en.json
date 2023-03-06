@@ -168,8 +168,9 @@
     "title": "Home",
     "fields": {
       "tag": "{value}? {value}!",
-      "color": "Play it {value}",
-      "epoch": "{value} everywhere",
+      "annotated-color": "Play it {value}",
+      "annotated-epoch": "{value} everywhere",
+      "not-annotated": "First come, first serve",
       "creator": "Get to know {value}",
       "try-out": "Try it out"
     },

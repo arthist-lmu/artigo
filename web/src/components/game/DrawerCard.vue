@@ -74,7 +74,7 @@
             </v-btn>
 
             <v-btn
-              v-if="tabooType"
+              v-if="tabooType === 'most_annotated_taboo'"
               :title="$t(`home.plugins.taboo_type.${'most_annotated_taboo'}`)"
               class="ml-2"
               x-small
@@ -97,7 +97,7 @@
               </p>
               <p
                 v-else
-                v-html="$t(`home.fields.${entry.type}`, { value: `<b>${entry.query}</b>` })"
+                v-html="$t(`home.fields.${entry.type}`, { value: entry.query })"
               />
             </div>
           </v-col>
