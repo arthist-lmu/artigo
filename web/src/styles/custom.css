@@ -1,3 +1,7 @@
+* {
+  scrollbar-width: thin;
+}
+
 p,
 div {
   hyphens: auto;
@@ -6,17 +10,6 @@ div {
 b,
 strong {
   font-weight: bold;
-}
-
-span.clip {
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  overflow: hidden;
-  max-width: 250px !important;
-}
-
-span.clip.w100 {
-  max-width: 100% !important;
 }
 
 .capitalize {
@@ -28,7 +21,18 @@ span.clip.w100 {
 }
 
 .disabled {
-	display: none;
+  display: none;
+}
+
+span.clip {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  max-width: 250px !important;
+}
+
+span.clip.w100 {
+  max-width: 100% !important;
 }
 
 .blur > span {

@@ -167,11 +167,10 @@
   "home": {
     "title": "Home",
     "fields": {
-      "tag": "{value}? {value}!",
       "annotated-color": "Play it {value}",
       "annotated-epoch": "{value} everywhere",
+      "annotated-creator": "Get to know {value}",
       "not-annotated": "First come, first serve",
-      "creator": "Get to know {value}",
       "try-out": "Try it out"
     },
     "texts": {
@@ -184,8 +183,8 @@
       "example-5": "if it repels you"
     },
     "game_type": {
-      "roi": "Image regions are annotated based on tags",
-      "tagging": "Images are annotated with tags"
+      "tagging": "Images are annotated with tags",
+      "roi": "Image regions are annotated based on tags"
     },
     "plugins": {
       "opponent_type": {
@@ -193,6 +192,9 @@
       },
       "taboo_type": {
         "most_annotated_taboo": "Most frequently assigned annotations are taboo"
+      },
+      "suggester_type": {
+        "cooccurrence_suggester": "Annotations that frequently occur together are recommended"
       }
     }
   },

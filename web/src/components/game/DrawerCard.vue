@@ -63,7 +63,7 @@
 
             <v-btn
               v-if="opponentType === 'no_opponent'"
-              :title="$t(`home.plugins.opponent_type.${'no_opponent'}`)"
+              :title="$t(`home.plugins.opponent_type.${opponentType}`)"
               class="ml-2"
               x-small
               fab
@@ -74,14 +74,26 @@
             </v-btn>
 
             <v-btn
-              v-if="tabooType === 'most_annotated_taboo'"
-              :title="$t(`home.plugins.taboo_type.${'most_annotated_taboo'}`)"
+              v-if="tabooType && !tabooType.startsWith('no_')"
+              :title="$t(`home.plugins.taboo_type.${tabooType}`)"
               class="ml-2"
               x-small
               fab
             >
               <v-icon color="primary">
                 mdi-filter-outline
+              </v-icon>
+            </v-btn>
+
+            <v-btn
+              v-if="suggesterType && !suggesterType.startsWith('no_')"
+              :title="$t(`home.plugins.suggester_type.${suggesterType}`)"
+              class="ml-2"
+              x-small
+              fab
+            >
+              <v-icon color="primary">
+                mdi-lightbulb-variant-outline
               </v-icon>
             </v-btn>
           </v-col>
@@ -136,11 +148,14 @@ export default {
     gameType() {
       return this.entry.params.game_type;
     },
+    opponentType() {
+      return this.entry.params.opponent_type;
+    },
     tabooType() {
       return this.entry.params.taboo_type;
     },
-    opponentType() {
-      return this.entry.params.opponent_type;
+    suggesterType() {
+      return this.entry.params.suggester_type;
     },
   },
 };

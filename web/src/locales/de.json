@@ -169,11 +169,10 @@
   "home": {
     "title": "Startseite",
     "fields": {
-      "tag": "{value}? {value}!",
       "annotated-color": "Treib’s mal {value}",
       "annotated-epoch": "{value} überall",
+      "annotated-creator": "Lerne {value} kennen",
       "not-annotated": "Wer zuerst kommt, malt zuerst",
-      "creator": "Lerne {value} kennen",
       "try-out": "Probiere es aus"
     },
     "texts": {
@@ -186,8 +185,8 @@
       "example-5": "ob es Dich abstößt"
     },
     "game_type": {
-      "roi": "Bildregionen werden auf Basis von Schlagwörtern annotiert",
-      "tagging": "Bilder werden mit Schlagwörtern annotiert"
+      "tagging": "Bilder werden mit Schlagwörtern annotiert",
+      "roi": "Bildregionen werden auf Basis von Schlagwörtern annotiert"
     },
     "plugins": {
       "opponent_type": {
@@ -195,6 +194,9 @@
       },
       "taboo_type": {
         "most_annotated_taboo": "Am häufigsten vergebene Annotationen sind tabu"
+      },
+      "suggester_type": {
+        "cooccurrence_suggester": "Häufig zusammen vorkommende Annotationen werden empfohlen"
       }
     }
   },

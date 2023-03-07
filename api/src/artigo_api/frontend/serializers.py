@@ -153,9 +153,9 @@ class CustomRegisterSerializer(RegisterSerializer):
         if self.cleaned_data.get('password1'):
             try:
                 adapter.clean_password(self.cleaned_data['password1'], user=user)
-            except DjangoValidationError as exc:
+            except DjangoValidationError as error:
                 raise serializers.ValidationError(
-                    detail=serializers.as_serializer_error(exc)
+                    detail=serializers.as_serializer_error(error)
                 )
 
         user.save()
@@ -184,6 +184,8 @@ class CollectionTitleSerializer(serializers.ModelSerializer):
 class CollectionCountSerializer(serializers.ModelSerializer):
     titles = CollectionTitleSerializer(many=True)
     resources = serializers.ReadOnlyField(source='resource_ids')
+    count_taggings = serializers.IntegerField()
+    count_roi_taggings = serializers.IntegerField()
 
     class Meta:
         model = Collection
@@ -195,9 +197,8 @@ class CollectionCountSerializer(serializers.ModelSerializer):
             'progress',
             'created',
             'resources',
-        )
-        read_only_fields = (
-            'titles',
+            'count_taggings',
+            'count_roi_taggings',
         )
 
     def to_representation(self, data):
@@ -212,7 +213,7 @@ class CollectionCountSerializer(serializers.ModelSerializer):
                 data['path'] = upload_url_to_image(resource.hash_id)
             else:
                 data['path'] = media_url_to_image(resource.hash_id)
-        except Exception as error:
+        except:
             pass
 
         return data
@@ -254,11 +255,6 @@ class ResourceSerializer(serializers.ModelSerializer):
             'creators',
             'location',
             'institution',
-            'source',
-        )
-        read_only_fields = (
-            'titles',
-            'creators',
             'source',
         )
 
