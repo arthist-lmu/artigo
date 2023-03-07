@@ -8,6 +8,7 @@ import traceback
 from celery import shared_task
 from django.conf import settings
 from django.core.exceptions import BadRequest
+from django.core.management import call_command
 from frontend import cache
 from frontend.utils import (
     to_int,
@@ -24,14 +25,7 @@ logger = logging.getLogger(__name__)
 
 @shared_task(ignore_result=True)
 def renew_cache(renew=True):
-    for name in dir(cache):
-        item = getattr(cache, name)
-
-        if callable(item):
-            try:
-                item(renew=renew)
-            except:
-                pass
+    call_command('renew_cache', renew=renew)
 
 
 @shared_task(bind=True)

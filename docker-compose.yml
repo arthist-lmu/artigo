@@ -61,7 +61,6 @@ services:
       dockerfile: ./api/Dockerfile.dev
     volumes:
       - ./media/:/media
-      - ./upload/:/upload
       - ./dump/:/dump
       - ./api/:/api
       - ./plugin.config.json:/config.json
