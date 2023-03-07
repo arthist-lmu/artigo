@@ -151,7 +151,7 @@ export default {
               year: 2017,
               journal: 'Artl@s Bulletin 6.3',
               pages: '81–89',
-              url: 'https://www.schefels.de/research/schefels_-_eine_offene_Universitaet_fuer_eine_offene_gesellschaft.pdf',
+              url: 'https://docs.lib.purdue.edu/artlas/vol6/iss3/6/',
             },
             {
               author: 'Shah, Philipp; Wieser, Christoph; Bry, François',
