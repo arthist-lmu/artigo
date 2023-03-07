@@ -282,18 +282,11 @@ class CollectionAddView(APIView):
             params['images'].name = f'{collection_id}.zip'
             params['images'].size = params['images'].__sizeof__()
 
-        if settings.IS_DEV:
-            output_dir = os.path.join(
-                settings.UPLOAD_ROOT,
-                collection_id[0:2],
-                collection_id[2:4],
-            )
-        else:
-            output_dir = os.path.join(
-                settings.MEDIA_ROOT,
-                collection_id[0:2],
-                collection_id[2:4],
-            )
+        output_dir = os.path.join(
+            settings.MEDIA_ROOT,
+            collection_id[0:2],
+            collection_id[2:4],
+        )
 
         parsed_metadata = None
 

@@ -260,9 +260,6 @@ if DEBUG:
 MEDIA_ROOT = os.path.join('/media/')
 MEDIA_URL = FORCE_SCRIPT_NAME + 'media/'
 
-UPLOAD_ROOT = os.path.join('/upload/')
-UPLOAD_URL = FORCE_SCRIPT_NAME + 'upload/'
-
 GRPC_HOST = env('GRPC_HOST')
 GRPC_PORT = env('GRPC_PORT')
 

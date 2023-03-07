@@ -9,12 +9,11 @@ from django.core.cache import cache
 from django.core.exceptions import ObjectDoesNotExist
 from frontend.models import *
 from frontend import cache as frontend_cache
+from frontend.serializers import ResourceSerializer
 from frontend.utils import (
     is_in,
     to_type,
     to_boolean,
-    media_url_to_image,
-    upload_url_to_image,
 )
 from ..utils import get_configs
 
@@ -337,14 +336,14 @@ class GameController:
                 'collection_id',
             )
 
+        resources = ResourceSerializer(resources, many=True).data
+
         resources = {
-            str(x['id']): {
-                'resource_id': str(x['id']),
-                'path': upload_url_to_image(x['hash_id']) \
-                    if x['collection_id'] and settings.IS_DEV \
-                    else media_url_to_image(x['hash_id']),
+            str(resource['id']): {
+                'resource_id': str(resource['id']),
+                **resource,
             }
-            for x in list(resources)
+            for resource in resources
         }
 
         if result:

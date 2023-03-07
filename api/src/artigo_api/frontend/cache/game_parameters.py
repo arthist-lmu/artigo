@@ -247,6 +247,7 @@ class CollectionGameParameters(GameParameters):
         game['params'] = self.get_params(**annotations)
         game['params']['resource_inputs'] = resources[:100]
         game['params']['resource_type'] = 'custom_resource'
+        game['params']['resource_max_last_played'] = 0
 
         return game
 

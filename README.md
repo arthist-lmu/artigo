@@ -48,27 +48,26 @@ Copy the contents of `.env.example` to `.env` and adjust the settings.
 4. Change the permissions for the `dump` and `upload` folders:
 	```sh
 	sudo chown -R 1999:1998 dump
-	sudo chown -R 1999:1998 upload
+	sudo chown -R 1999:1998 media
 	```
-	In testing and production environments, change the `media` instead of the `upload` folder.
 
-4. Build and start the container:
+5. Build and start the container:
 	```sh
 	sudo docker-compose up --build
 	```
 
-5. Install `npm`:
+6. Install `npm`:
 	```sh
 	sudo docker-compose exec web npm install
 	```
 
-6. Apply necessary Django operations and import fixtures:
+7. Apply necessary Django operations and import fixtures:
 	```sh
 	sudo docker-compose exec api python3 manage.py migrate
 	sudo docker-compose exec api python3 manage.py loaddata sites.json
 	```
 
-7. Import the data into `api` and `search`:
+8. Import the data into `api` and `search`:
 	```sh
 	sudo docker-compose exec api python3 manage.py import_data
 	sudo docker-compose exec search python3 -m artigo_search --mode client --task insert

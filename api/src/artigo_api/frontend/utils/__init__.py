@@ -3,8 +3,6 @@ from .database import reset_cursor
 from .urls import (
     media_url_to_image,
     media_url_to_preview,
-    upload_url_to_image,
-    upload_url_to_preview,
 )
 from .archives import (
     TarArchive,

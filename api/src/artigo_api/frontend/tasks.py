@@ -126,18 +126,11 @@ def upload_collection(self, data):
 
                 resized_image = resize_image(image, max_dim=max_dim)
 
-                if settings.IS_DEV:
-                    image_output_dir = os.path.join(
-                        settings.UPLOAD_ROOT,
-                        hash_id[0:2],
-                        hash_id[2:4],
-                    )
-                else:
-                    image_output_dir = os.path.join(
-                        settings.MEDIA_ROOT,
-                        hash_id[0:2],
-                        hash_id[2:4],
-                    )
+                image_output_dir = os.path.join(
+                    settings.MEDIA_ROOT,
+                    hash_id[0:2],
+                    hash_id[2:4],
+                )
 
                 os.makedirs(image_output_dir, exist_ok=True)
                 image_output_file = os.path.join(

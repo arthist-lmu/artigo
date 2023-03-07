@@ -1,5 +1,8 @@
 <template>
-  <v-hover v-slot="{ hover }">
+  <v-hover
+    v-if="!isDisabled"
+    v-slot="{ hover }"
+  >
     <v-card
       @click="play"
       @keydown="play"

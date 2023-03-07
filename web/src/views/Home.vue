@@ -207,7 +207,7 @@ export default {
           let { names } = this.data.creators;
           names = this.shuffle(names).slice(0, 4);
           this.entries.forEach((entry) => {
-            if (entry.type === 'creator') {
+            if (entry.type === 'annotated-creator') {
               names.push(entry.query);
             }
           });

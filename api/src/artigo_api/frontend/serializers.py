@@ -13,7 +13,6 @@ from dj_rest_auth.registration.serializers import RegisterSerializer
 from frontend.models import *
 from frontend.utils import (
     media_url_to_image,
-    upload_url_to_image,
     CustomAllAuthPasswordResetForm,
 )
 
@@ -184,8 +183,8 @@ class CollectionTitleSerializer(serializers.ModelSerializer):
 class CollectionCountSerializer(serializers.ModelSerializer):
     titles = CollectionTitleSerializer(many=True)
     resources = serializers.ReadOnlyField(source='resource_ids')
-    count_taggings = serializers.IntegerField()
-    count_roi_taggings = serializers.IntegerField()
+    count_taggings = serializers.IntegerField(required=False)
+    count_roi_taggings = serializers.IntegerField(required=False)
 
     class Meta:
         model = Collection
@@ -208,11 +207,7 @@ class CollectionCountSerializer(serializers.ModelSerializer):
 
         try:
             resource = Resource.objects.get(id=data['resources'][0])
-
-            if settings.IS_DEV:
-                data['path'] = upload_url_to_image(resource.hash_id)
-            else:
-                data['path'] = media_url_to_image(resource.hash_id)
+            data['path'] = media_url_to_image(resource.hash_id)
         except:
             pass
 
@@ -241,9 +236,9 @@ class TitleSerializer(serializers.ModelSerializer):
 
 
 class ResourceSerializer(serializers.ModelSerializer):
-    creators = CreatorSerializer(many=True)
-    titles = TitleSerializer(many=True)
-    source = SourceSerializer()
+    creators = CreatorSerializer(many=True, required=False)
+    titles = TitleSerializer(many=True, required=False)
+    source = SourceSerializer(required=False)
 
     class Meta:
         model = Resource
@@ -264,10 +259,7 @@ class ResourceSerializer(serializers.ModelSerializer):
         if data.get('source') is not None:
             data['source']['name'] = data['source']['name'].title()
 
-        if settings.IS_DEV and data.get('collection_id'):
-            data['path'] = upload_url_to_image(data['hash_id'])
-        else:
-            data['path'] = media_url_to_image(data['hash_id'])
+        data['path'] = media_url_to_image(data['hash_id'])
 
         return data
 
@@ -490,10 +482,6 @@ class SessionCountSerializer(serializers.ModelSerializer):
         data = super().to_representation(data)
 
         resource = Resource.objects.get(id=data.pop('resources')[0])
-
-        if settings.IS_DEV and resource.collection_id:
-            data['path'] = upload_url_to_image(resource.hash_id)
-        else:
-            data['path'] = media_url_to_image(resource.hash_id)
+        data['path'] = media_url_to_image(resource.hash_id)
 
         return data
