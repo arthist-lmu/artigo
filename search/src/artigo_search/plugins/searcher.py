@@ -167,9 +167,14 @@ class Searcher:
                         )
                     elif field_path[0] == 'collection':
                         term = Q(
-                            'multi_match',
-                            fields=['collection.name'],
-                            query=x['query'],
+                            'nested',
+                            path='collection',
+                            query=Q(
+                                'bool',
+                                must=[
+                                    Q('match', collection__name=x['query']),
+                                ],
+                            ),
                         )
                 elif len(field_path) == 2:
                     if field_path[0].startswith('meta'):

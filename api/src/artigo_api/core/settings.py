@@ -97,6 +97,8 @@ MIDDLEWARE = [
     'frontend.middleware.QueryPrintMiddleware',
 ]
 
+X_FRAME_OPTIONS = 'SAMEORIGIN'
+
 ALLOWED_HOSTS = [
     '127.0.0.1',
 ]

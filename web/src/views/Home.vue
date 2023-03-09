@@ -142,7 +142,7 @@ export default {
         if (!this.$vuetify.breakpoint.mdAndDown) {
           let params = {};
           this.entries.forEach((entry) => {
-            if (entry.type === 'creator') {
+            if (entry.type === 'annotated-creator') {
               params = { ...params, ...entry.params };
             }
           });
