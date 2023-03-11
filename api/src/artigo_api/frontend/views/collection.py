@@ -382,20 +382,12 @@ class CollectionRemoveView(APIView):
                     for resolution in settings.IMAGE_RESOLUTIONS:
                         suffix = resolution.get('suffix', '')
 
-                        if settings.IS_DEV:
-                            file_path = os.path.join(
-                                settings.UPLOAD_ROOT,
-                                hash_id[0:2],
-                                hash_id[2:4],
-                                f'{hash_id}{suffix}.{settings.IMAGE_EXT}',
-                            )
-                        else:
-                            file_path = os.path.join(
-                                settings.MEDIA_ROOT,
-                                hash_id[0:2],
-                                hash_id[2:4],
-                                f'{hash_id}{suffix}.{settings.IMAGE_EXT}',
-                            )
+                        file_path = os.path.join(
+                            settings.MEDIA_ROOT,
+                            hash_id[0:2],
+                            hash_id[2:4],
+                            f'{hash_id}{suffix}.{settings.IMAGE_EXT}',
+                        )
 
                         if os.path.exists(file_path):
                             os.remove(file_path)

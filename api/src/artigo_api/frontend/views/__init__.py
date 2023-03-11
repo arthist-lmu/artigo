@@ -1,9 +1,7 @@
-from .game import GameView
-from .home import HomeView
-from .reconcile import (
-    ReconcileView,
-    ReconcileAddView,
-    ReconcileRemoveView,
+from .api import (
+    CustomSchemaView as SchemaView,
+    CustomRedocView as RedocView,
+    CustomSwaggerView as SwaggerView,
 )
 from .collection import (
     CollectionAddView,
@@ -11,6 +9,13 @@ from .collection import (
     CollectionChangeView,
 )
 from .collections import CollectionsView
+from .game import GameView
+from .home import HomeView
+from .reconcile import (
+    ReconcileView,
+    ReconcileAddView,
+    ReconcileRemoveView,
+)
 from .resource import ResourceView
 from .search import SearchView
 from .session import SessionView

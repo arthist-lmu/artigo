@@ -181,6 +181,9 @@ class Resource(models.Model):
 
     objects = ResourceManager()
 
+    def __str__(self):
+        return str(self.id)
+
     @property
     def tags(self):
         tags = self.taggings.values('tag') \
@@ -252,6 +255,9 @@ class Gamesession(models.Model):
         ],
     )
 
+    def __str__(self):
+        return str(self.id)
+
     def save(self, *args, **kwargs):
         if not self.id:
             self.created = timezone.now()
@@ -290,6 +296,9 @@ class Gameround(models.Model):
     )
     suggester_types = models.ManyToManyField(SuggesterType)
     score_types = models.ManyToManyField(ScoreType)
+
+    def __str__(self):
+        return str(self.id)
 
     def save(self, *args, **kwargs):
         if not self.id:
@@ -333,6 +342,9 @@ class GeneralTagging(models.Model):
 
     class Meta:
         abstract = True
+
+    def __str__(self):
+        return str(self.id)
 
 
 class UserTagging(GeneralTagging):
@@ -415,6 +427,9 @@ class GeneralROI(models.Model):
 
     class Meta:
         abstract = True
+
+    def __str__(self):
+        return str(self.id)
 
 
 class UserROI(GeneralROI):

@@ -3,11 +3,6 @@ from django.contrib import admin
 from django.conf import settings
 from django.conf.urls import include
 from django.views.generic import TemplateView, RedirectView
-from drf_spectacular.views import (
-    SpectacularAPIView as SchemaView,
-    SpectacularRedocView as RedocView,
-    SpectacularSwaggerView as SwaggerView,
-)
 from .views import *
 
 urlpatterns = [
