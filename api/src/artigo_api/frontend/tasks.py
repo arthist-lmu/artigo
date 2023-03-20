@@ -14,7 +14,6 @@ from frontend.utils import (
     to_int,
     TarArchive,
     ZipArchive,
-    reset_cursor,
     resize_image,
     check_extension,
 )
@@ -83,6 +82,7 @@ def upload_collection(self, data):
 
         collection.save()
 
+    entries = data.get('entries', [])
     image_path = data.get('image_path')
 
     if check_extension(image_path, ['.zip']):
@@ -98,10 +98,6 @@ def upload_collection(self, data):
         BadRequest('corrupt_archives_file')
 
     count = 0
-    resources = []
-
-    args = {'ignore_conflicts': True}
-    entries = data.get('entries', [])
 
     with archive as file_obj:
         for entry in entries:
@@ -144,7 +140,7 @@ def upload_collection(self, data):
                     hash_id=hash_id,
                 )
 
-                if entry.get('creator'):
+                if entry.get('creator_name'):
                     creator = Creator.objects.filter(name=entry['creator_name']).first()
 
                     if creator is None:
@@ -153,14 +149,27 @@ def upload_collection(self, data):
 
                     resource.creators.add(creator)
 
-                if entry.get('title_name'):
-                    title = Title.objects.filter(name=entry['title_name']).first()
+                for key in ['title_name', 'title_name_de', 'title_name_en']:
+                    if entry.get(key):
+                        _, lang = key.rsplit('_', 1)
 
-                    if title is None:
-                        title = Title.objects.create(name=entry['title_name'])
-                        title.save()
-                        
-                    resource.titles.add(title)
+                        if not lang in ('de', 'en'):
+                            lang = data.get('lang', 'de')
+
+                        title = Title.objects.filter(
+                                name=entry[key],
+                                language=lang,
+                            ) \
+                            .first()
+
+                        if title is None:
+                            title = Title.objects.create(
+                                name=entry[key],
+                                language=lang,
+                            )
+                            title.save()
+                            
+                        resource.titles.add(title)
 
                 if entry.get('source_name'):
                     source = Source.objects.filter(name=entry['source_name']).first()
@@ -192,8 +201,6 @@ def upload_collection(self, data):
                 if entry.get('origin'):
                     resource.origin = entry['origin']
 
-                taggings = []
-
                 for key in ['tags_name', 'tags_name_de', 'tags_name_en']:
                     if entry.get(key):
                         _, lang = key.rsplit('_', 1)
@@ -208,11 +215,15 @@ def upload_collection(self, data):
                             entry[key] = [entry[key]]
 
                         for tag_name in entry[key]:
-                            tag = Tag.objects.filter(name=tag_name).first()
+                            tag = Tag.objects.filter(
+                                    name=tag_name.strip(),
+                                    language=lang,
+                                ) \
+                                .first()
 
                             if tag is None:
                                 tag = Tag.objects.create(
-                                    name=tag_name,
+                                    name=tag_name.strip(),
                                     language=lang,
                                 )
                                 tag.save()
@@ -223,41 +234,19 @@ def upload_collection(self, data):
                                 tag=tag,
                                 uploaded=True,
                             )
+                            tagging.save()
 
-                            taggings.append(tagging)
-                        
-                if taggings:
-                    try:
-                        UserTagging.objects.bulk_create(taggings, **args)
-                    except:
-                        logger.error(traceback.format_exc()) 
-
-                resources.append(resource)
+                resource.save()
                 count += 1
-
-                if len(resources) > 100:
-                    try:
-                        Resource.objects.bulk_create(resources, **args)
-                    except Exception as error:
-                        logger.error(traceback.format_exc())
-
-                    resources = []
 
             if count % 10 == 0:
                 collection.progress = count / len(entries)
                 collection.save()
 
-        if resources:
-            try:
-                Resource.objects.bulk_create(resources, **args)
-            except Exception as error:
-                logger.error(traceback.format_exc())
-
         collection.progress = count / len(entries)
         collection.save()
 
     os.remove(image_path)
-    reset_cursor()
 
     if count == 0:
         collection.status = 'E'

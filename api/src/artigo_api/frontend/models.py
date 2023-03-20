@@ -127,6 +127,15 @@ class Collection(models.Model):
     progress = models.FloatField(default=0.0)
     created = models.DateTimeField(auto_now_add=True)
 
+    def __str__(self):
+        return str(self.pk)
+
+    def save(self, *args, **kwargs):
+        if not self.pk:
+            self.created = timezone.now()
+
+        return super().save(*args, **kwargs)
+
     @property
     def n_resources(self):
         return self.resources.count()
@@ -182,7 +191,7 @@ class Resource(models.Model):
     objects = ResourceManager()
 
     def __str__(self):
-        return str(self.id)
+        return str(self.pk)
 
     @property
     def tags(self):
@@ -259,7 +268,7 @@ class Gamesession(models.Model):
         return str(self.id)
 
     def save(self, *args, **kwargs):
-        if not self.id:
+        if not self.pk:
             self.created = timezone.now()
 
         return super().save(*args, **kwargs)
@@ -298,10 +307,10 @@ class Gameround(models.Model):
     score_types = models.ManyToManyField(ScoreType)
 
     def __str__(self):
-        return str(self.id)
+        return str(self.pk)
 
     def save(self, *args, **kwargs):
-        if not self.id:
+        if not self.pk:
             self.created = timezone.now()
 
         return super().save(*args, **kwargs)
@@ -337,6 +346,7 @@ class GeneralTagging(models.Model):
         Gameround,
         on_delete=models.CASCADE,
         related_name='%(class)ss',
+        null=True,
     )
     tag = models.ForeignKey(Tag, on_delete=models.CASCADE)
 
@@ -344,7 +354,7 @@ class GeneralTagging(models.Model):
         abstract = True
 
     def __str__(self):
-        return str(self.id)
+        return str(self.pk)
 
 
 class UserTagging(GeneralTagging):
@@ -365,7 +375,7 @@ class UserTagging(GeneralTagging):
     score = models.PositiveIntegerField(default=0)
 
     def save(self, *args, **kwargs):
-        if not self.id:
+        if not self.pk:
             self.created = timezone.now()
 
         return super().save(*args, **kwargs)    
@@ -429,7 +439,7 @@ class GeneralROI(models.Model):
         abstract = True
 
     def __str__(self):
-        return str(self.id)
+        return str(self.pk)
 
 
 class UserROI(GeneralROI):
@@ -450,7 +460,7 @@ class UserROI(GeneralROI):
     score = models.PositiveIntegerField(default=0)
 
     def save(self, *args, **kwargs):
-        if not self.id:
+        if not self.pk:
             self.created = timezone.now()
 
         return super().save(*args, **kwargs)    

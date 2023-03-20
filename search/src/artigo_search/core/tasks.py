@@ -5,7 +5,6 @@ from celery import shared_task
 from artigo_search.client import Client
 
 logger = logging.getLogger(__name__)
-cache = {'count': 0}  # temporary storage
 
 
 @shared_task()
@@ -16,10 +15,8 @@ def import_data():
         client.insert()
 
         return True
-    except:
-        pass
-
-    return False
+    except Exception as error:
+        raise self.retry(exc=error, countdown=5)
 
 
 @shared_task(ignore_result=True)
@@ -41,10 +38,8 @@ def document_count():
     try:
         result = Client().count()
 
-        if result.count == 0 or result.count < cache['count']:
+        if result.count == 0:
             import_data.delay()
-
-        cache['count'] = result.count
 
         return result.count
     except:

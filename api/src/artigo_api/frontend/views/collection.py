@@ -39,8 +39,11 @@ class CollectionAddView(APIView):
         'file_path': 'file',
         'title': 'title_name',
         'titel': 'title_name',
-        'titles': 'title_name',
         'meta.title': 'title_name',
+        'title_en': 'title_name_en',
+        'titel_en': 'title_name_en',
+        'title_de': 'title_name_de',
+        'titel_de': 'title_name_de',
         'creator': 'creator_name',
         'künstler': 'creator_name',
         'artist': 'creator_name',
@@ -95,7 +98,10 @@ class CollectionAddView(APIView):
         entries = []
 
         with open(file_path, 'r', encoding='utf-8') as file_obj:
-            reader = csv.DictReader(file_obj, delimiter=',')
+            dialect = csv.Sniffer().sniff(file_obj.read(), delimiters=';,|')
+            file_obj.seek(0)
+
+            reader = csv.DictReader(file_obj, dialect=dialect)
             fields = self.parse_header(reader.fieldnames)
 
             if len(fields) == 0:
@@ -341,6 +347,8 @@ class CollectionAddView(APIView):
 
             if parsed_images is None:
                 raise APIException('no_matching_images_found')
+
+        reset_cursor()
 
         upload_collection.apply_async(
             (

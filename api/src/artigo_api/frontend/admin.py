@@ -43,6 +43,7 @@ class CustomModelAdmin(admin.ModelAdmin, ExportCsvMixin):
 
     def __init__(self, model, admin_site):
         self.list_display = [f.name for f in model._meta.fields]
+
         super().__init__(model, admin_site)
 
 
@@ -53,9 +54,14 @@ class UserAdmin(CustomModelAdmin):
 
 @admin.register(Collection)
 class CollectionAdmin(admin.ModelAdmin, ExportCsvMixin):
-    fields = [f.name for f in Collection._meta.fields]
-    list_display = ['id', 'title'] + fields[1:]
+    readonly_fields = ['created']
     actions = ['export_as_csv']
+
+    def __init__(self, model, admin_site):
+        fields = [f.name for f in model._meta.fields]
+        self.list_display = ['id', 'title'] + fields[1:]
+
+        super().__init__(model, admin_site)
 
     def get_queryset(self, request):
         qs = super().get_queryset(request) \
@@ -84,9 +90,13 @@ class CreatorAdmin(CustomModelAdmin):
 
 @admin.register(Resource)
 class ResourceAdmin(admin.ModelAdmin, ExportCsvMixin):
-    fields = [f.name for f in Resource._meta.fields]
-    list_display = ['id', 'creator', 'title'] + fields[1:]
     actions = ['export_as_csv']
+
+    def __init__(self, model, admin_site):
+        fields = [f.name for f in model._meta.fields]
+        self.list_display = ['id', 'creator', 'title'] + fields[1:]
+
+        super().__init__(model, admin_site)
 
     def get_queryset(self, request):
         qs = super().get_queryset(request) \
