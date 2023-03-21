@@ -45,14 +45,15 @@ class CustomLoginView(LoginView):
         current_user = request.user
 
         if previous_user is not None and previous_user.is_anonymous:
-            for x in previous_user._meta.related_objects:
-                if x.related_model._meta.app_label == 'frontend':
-                    try:
-                        x.related_model.objects \
-                            .filter(user=previous_user) \
-                            .update(user=current_user)
-                    except Exception as error:
-                        logger.info(error)
+            if hasattr(previous_user, '_meta'):
+                for x in previous_user._meta.related_objects:
+                    if x.related_model._meta.app_label == 'frontend':
+                        try:
+                            x.related_model.objects \
+                                .filter(user=previous_user) \
+                                .update(user=current_user)
+                        except Exception as error:
+                            pass
 
             CustomUser.objects \
                 .filter(id=previous_user.id) \

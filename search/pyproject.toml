@@ -20,7 +20,7 @@ redis = "^4.3.4"
 black = "^22.10.0"
 flake8 = "^5.0.4"
 isort = "^5.10.1"
-mypy-protobuf = "^3.2.0"
+mypy-protobuf = "3.3.0"
 
 [tool.black]
 line-length = 120
