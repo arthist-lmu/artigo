@@ -7,7 +7,7 @@ from artigo_search.client import Client
 logger = logging.getLogger(__name__)
 
 
-@shared_task()
+@shared_task(acks_late=True, reject_on_worker_lost=True)
 def import_data():
     try:
         client = Client()
@@ -21,9 +21,13 @@ def import_data():
 
 @shared_task(ignore_result=True)
 def delete_data(folder='/dump', limit=2):
-    files, last_modified = [], lambda file: file.stat().st_mtime
+    files = []
 
-    for file in sorted(os.scandir(folder), key=last_modified, reverse=True):
+    for file in sorted(
+        os.scandir(folder),
+        key=lambda file: file.stat().st_mtime,
+        reverse=True,
+    ):
         if file.name.startswith('os-dump_'):
             file_path = os.path.join(folder, file.name)
 

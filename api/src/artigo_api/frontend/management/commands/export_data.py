@@ -21,32 +21,32 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         start_time = timezone.now()
 
-        if os.path.isdir(options['output']):
-            qs = Resource.objects.filter(
-                    Q(collection__isnull=True)
-                    | Q(collection__access='O')
-                ) \
-                .prefetch_related('taggings')
-
-            dump_time = timezone.now().strftime('%Y%m%d%H%M%S')
-            file_path = os.path.join(
-                options['output'],
-                f"os-dump_{dump_time}.{options['format']}"
-            )
-
-            with open(file_path, 'w', encoding='utf-8') as file_obj:
-                for i in range(0, qs.count(), options['size']):
-                    chunk = qs.all()[i:(i + options['size'])]
-                    chunk = ResourceWithTaggingsSerializer(chunk, many=True)
-
-                    if options['format'] == 'jsonl':
-                        try:
-                            for resource in chunk.data:
-                                file_obj.write(f'{json.dumps(resource)}\n')
-                        except Exception as error:
-                            logger.error(traceback.format_exc())
-        else:
+        if not os.path.isdir(options['output']):
             raise CommandError('Output is not a directory.')
+
+        qs = Resource.objects.filter(
+                Q(collection__isnull=True)
+                | Q(collection__access='O')
+            ) \
+            .exclude(hash_id__exact='') \
+            .prefetch_related('taggings')
+
+        file_path = os.path.join(
+            options['output'],
+            f"os-dump_{start_time.strftime('%Y%m%d%H%M%S')}.{options['format']}"
+        )
+
+        with open(file_path, 'w', encoding='utf-8') as file_obj:
+            for i in range(0, qs.count(), options['size']):
+                chunk = qs.all()[i:(i + options['size'])]
+                chunk = ResourceWithTaggingsSerializer(chunk, many=True)
+
+                if options['format'] == 'jsonl':
+                    try:
+                        for resource in chunk.data:
+                            file_obj.write(f'{json.dumps(resource)}\n')
+                    except Exception as error:
+                        logger.error(traceback.format_exc())
 
         end_time = timezone.now()
         duration = end_time - start_time

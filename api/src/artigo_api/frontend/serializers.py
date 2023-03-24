@@ -232,7 +232,10 @@ class CreatorSerializer(serializers.ModelSerializer):
 class TitleSerializer(serializers.ModelSerializer):
     class Meta:
         model = Title
-        fields = '__all__'
+        fields = (
+            'id',
+            'name',
+        )
 
 
 class ResourceSerializer(serializers.ModelSerializer):
@@ -317,6 +320,8 @@ class ResourceWithTaggingsSerializer(ResourceSerializer):
 
     def to_representation(self, data):
         data = super().to_representation(data)
+        data.pop('collection_id', None)
+
         data['tags'] = TagCountSerializer(data['tags'], many=True).data
 
         return data
@@ -481,7 +486,10 @@ class SessionCountSerializer(serializers.ModelSerializer):
     def to_representation(self, data):
         data = super().to_representation(data)
 
-        resource = Resource.objects.get(id=data.pop('resources')[0])
-        data['path'] = media_url_to_image(resource.hash_id)
+        try:
+            resource = Resource.objects.get(id=data['resources'][0])
+            data['path'] = media_url_to_image(resource.hash_id)
+        except:
+            pass
 
         return data

@@ -13,8 +13,6 @@ env = environ.Env(
     DEBUG=(bool, False),
 )
 
-IS_DEV = False
-
 try:
     WHERE = env('WHERE')
 except:
@@ -27,7 +25,6 @@ elif WHERE == 'testing':
 else:
     logger.warning('Running in development environment')
     environ.Env.read_env(ENV_PATH, overwrite=False)
-    IS_DEV = True
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.1/howto/deployment/checklist/
@@ -291,6 +288,18 @@ CELERY_BEAT_SCHEDULE = {
         'schedule': crontab(hour='*/2', minute=0),
     },
 }
+
+# Zenodo configuration
+if WHERE in ('prod', 'production'):
+    try:
+        ZENODO_ACCESS_TOKEN = env('ZENODO_ACCESS_TOKEN')
+
+        CELERY_BEAT_SCHEDULE['upload_data'] = {
+            'task': 'core.tasks.upload_data',
+            'schedule': crontab(day_of_month='1', hour=5, minute=0),
+        }
+    except:
+        pass
 
 # Custom user model
 AUTH_USER_MODEL = 'frontend.CustomUser'
