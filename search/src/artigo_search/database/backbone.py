@@ -72,6 +72,7 @@ class Backbone:
                     resource.add_metadata(meta)
 
                 for tag in x.get('tags', []):
+                    tag['rank'] = tag.get('count', 0)
                     resource.add_tag(tag)
 
                 result = resource.to_dict(True)

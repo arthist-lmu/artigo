@@ -153,8 +153,8 @@ class Client:
 
                             tag_field.id = str(tag['id'])
                             tag_field.name = tag['name']
-                            tag_field.count = tag['count']
                             tag_field.language = tag['language']
+                            tag_field.count = tag['count']
 
                 yield request
 

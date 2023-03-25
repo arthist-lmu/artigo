@@ -38,8 +38,7 @@ class Resource(Document):
                 copy_to=['all_text'],
             ),
             'count': Long(),
-            # TODO: currently not supported
-            # 'count': RankFeature(),
+            'rank': RankFeature(),
         },
     )
 
