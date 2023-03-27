@@ -209,6 +209,7 @@ class SearchView(RPCView):
         return {'job_id': response.id}
 
     @extend_schema(
+        auth=None,
         parameters=[
             OpenApiParameter(
                 name='query',
@@ -399,17 +400,12 @@ class SearchView(RPCView):
             + ' be used in subsequent queries to receive status updates.',
     )
     def post(self, request, format=None):
-        if request.data.get('params'):
-            params = request.data['params']
-        else:
-            params = request.query_params
-
-        job_id = params.get('job_id')
+        job_id = request.data.get('job_id')
 
         if job_id:
             result = self.rpc_check_post(job_id)
         else:
-            result = self.rpc_post(params)
+            result = self.rpc_post(request.data)
 
         if result is None:
             raise APIException('unknown_error')

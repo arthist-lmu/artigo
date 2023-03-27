@@ -1,5 +1,6 @@
 import os
 import json
+import zipfile
 import logging
 import requests
 
@@ -9,11 +10,6 @@ from django.conf import settings
 from django.core.management import call_command
 
 logger = logging.getLogger(__name__)
-
-
-@shared_task(ignore_result=True)
-def export_data(folder='/dump'):
-    call_command('export_data', format='jsonl', output=folder)
 
 
 class Zenodo:
@@ -99,7 +95,7 @@ class Zenodo:
         self.deposition = response.json()
         self.draft_id = self.get_draft_id()
 
-    def delete_file(self, file_name='data'):
+    def delete_files(self, file_name):
         for file in self.deposition['files']:
             if file['filename'].startswith(file_name):
                 response = requests.delete(
@@ -108,40 +104,74 @@ class Zenodo:
                 )
                 response.raise_for_status()
 
-    def upload_file(self, data, file_name='data'):
+    def upload_file(self, data, file_path):
         url = self.deposition['links']['bucket']
 
         response = requests.put(
-            f'{url}/{file_name}.jsonl',
+            f'{url}/{file_path}',
             params=self.params,
             data=data,
         )
         response.raise_for_status()
 
-        return response.json()
+
+def get_latest_dump(dump_folder):
+    dump_files = []
+
+    for file in sorted(
+        os.scandir(dump_folder),
+        key=lambda file: file.stat().st_mtime,
+        reverse=True,
+    ):
+        if file.name.startswith('os-dump'):
+            dump_files.append(file.name)
+
+    return os.path.join(dump_folder, dump_files[0])
 
 
 @shared_task(ignore_result=True)
-def upload_data(folder='/dump'):
+def export_data(output='/dump'):
+    call_command('export_data', format='jsonl', output=output)
+
+
+@shared_task(ignore_result=True)
+def upload_data(dump_folder='/dump', media_folder='/media'):
+    dump_path = get_latest_dump(dump_folder)
+
     zenodo = Zenodo(
         query='ARTigo: Social Image Tagging',
         access_token=settings.ZENODO_ACCESS_TOKEN,
     )
 
     zenodo.new_version()
-    zenodo.delete_file()
 
-    for file in sorted(
-        os.scandir(folder),
-        key=lambda file: file.stat().st_mtime,
-        reverse=True,
-    ):
-        if file.name.startswith('os-dump_'):
-            file_path = os.path.join(folder, file.name)
+    zenodo.delete_files('data')
+    zenodo.delete_files('media')
 
-            with open(file_path, 'r') as file_obj:
-                zenodo.upload_file(file_obj)
+    hash_ids = set()
+    
+    with open(dump_path, 'r') as file_obj:
+        for line in file_obj:
+            entry = json.loads(line)
+            hash_ids.add(entry['hash_id'])
+                    
+        zenodo.upload_file(file_obj, 'data.jsonl')
+                
+    media_path = os.path.join(dump_folder, 'media.zip')
 
-            break
+    with zipfile.ZipFile(media_path, mode='w') as archive:
+        for path, _, files in os.walk(media_folder):
+            for file in files:
+                if file.split('.', 1)[0] in hash_ids:
+                    rel_path = os.path.relpath(path, media_folder)
+                    
+                    archive.write(
+                        os.path.join(path, file),
+                        os.path.join(rel_path, file),
+                        compress_type=zipfile.ZIP_DEFLATED,
+                    )
+                
+    with open(media_path, 'r') as file_obj:
+        zenodo.upload_file(file_obj, 'media.zip')
 
     zenodo.publish()

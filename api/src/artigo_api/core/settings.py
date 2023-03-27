@@ -11,16 +11,12 @@ ENV_PATH = os.path.join(os.path.dirname(os.path.dirname(BASE_DIR)), '.env')
 
 env = environ.Env(
     DEBUG=(bool, False),
+    WHERE=(str, 'unconfined'),
 )
 
-try:
-    WHERE = env('WHERE')
-except:
-    WHERE = 'unconfined'
-
-if WHERE in ('prod', 'production'):
+if env('WHERE') in ('prod', 'production'):
     logger.warning('Running in production environment')
-elif WHERE == 'testing':
+elif env('WHERE') in ('test', 'testing'):
     logger.warning('Running in testing environment')
 else:
     logger.warning('Running in development environment')
@@ -290,7 +286,7 @@ CELERY_BEAT_SCHEDULE = {
 }
 
 # Zenodo configuration
-if WHERE in ('prod', 'production'):
+if env('WHERE') in ('prod', 'production'):
     try:
         ZENODO_ACCESS_TOKEN = env('ZENODO_ACCESS_TOKEN')
 
@@ -299,7 +295,7 @@ if WHERE in ('prod', 'production'):
             'schedule': crontab(day_of_month='1', hour=5, minute=0),
         }
     except:
-        pass
+        logger.warning(f'Zenodo access token not found.')
 
 # Custom user model
 AUTH_USER_MODEL = 'frontend.CustomUser'

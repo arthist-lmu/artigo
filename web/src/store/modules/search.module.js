@@ -33,7 +33,7 @@ const search = {
           commit('toggleBackBtn');
         }
       }
-      axios.post('/search/', { params })
+      axios.post('/search/', params)
         .then(({ data }) => {
           if (data.job_id !== undefined) {
             commit('updateJobId', data.job_id);
@@ -45,7 +45,7 @@ const search = {
     },
     checkPost({ commit, dispatch, state }) {
       const params = { job_id: state.jobId };
-      axios.post('/search/', { params })
+      axios.post('/search/', params)
         .then(({ data }) => {
           if (data.job_id !== undefined) {
             commit('updateJobId', data.job_id);

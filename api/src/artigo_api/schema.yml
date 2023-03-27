@@ -455,6 +455,17 @@ paths:
                 type: object
                 additionalProperties: {}
           description: ''
+  /schema/swagger-ui/:
+    get:
+      operationId: schema_swagger_ui_retrieve
+      tags:
+      - schema
+      security:
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
   /search/:
     post:
       operationId: search_create
