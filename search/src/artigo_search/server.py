@@ -90,11 +90,11 @@ def init_process(config):
 
 class Commune(index_pb2_grpc.IndexServicer):
     def __init__(self, config):
+        if 'cache' not in config:
+            config['cache'] = {}
+
         if 'opensearch' not in config:
             config['opensearch'] = {}
-
-        if 'cache' not in config:
-            config['cache'] = {'cache_dir': '/cache'}
 
         self.futures = []
         self.config = config

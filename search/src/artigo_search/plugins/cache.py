@@ -9,8 +9,7 @@ logger = logging.getLogger(__name__)
 
 class Cache:
     def __init__(self, cache_dir, mode='a'):
-        self.cache_dir = cache_dir
-
+        self.cache_dir = cache_dir if cache_dir else '/cache'
         os.makedirs(self.cache_dir, exist_ok=True)
 
         self.cache_data = {}
