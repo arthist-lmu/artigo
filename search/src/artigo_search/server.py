@@ -187,7 +187,7 @@ class Commune(index_pb2_grpc.IndexServicer):
                 yield entry
 
         backbone = Backbone(config=self.config['opensearch'])
-        cache_dir = self.config['cache']['cache_dir']
+        cache_dir = self.config['cache'].get('cache_dir', '/cache')
 
         request_iter = iter(request)
         db_cache = []
