@@ -11,16 +11,17 @@ logger = logging.getLogger(__name__)
 
 
 def get_latest_dump(dump_folder):
-    dump_paths = []
+    dump_files = []
 
-    for file_path in os.listdir(dump_folder):
-        if file_path.startswith('os-dump'):
-            dump_paths.append(file_path)
+    for file in sorted(
+        os.scandir(dump_folder),
+        key=lambda file: file.stat().st_mtime,
+        reverse=True,
+    ):
+        if file.name.startswith('os-dump'):
+            dump_files.append(file.name)
 
-    if dump_paths:
-        latest_dump = sorted(dump_paths)[-1]
-
-        return os.path.join(dump_folder, latest_dump)
+    return os.path.join(dump_folder, dump_files[0])
 
 
 def extract_from_jsonl(file_path, media_folder):
@@ -56,12 +57,15 @@ class Client:
         if config is None:
             config = {}
 
-        self.host = config.get('host', 'localhost')
-        self.port = config.get('port', 50051)
+        if 'grpc' not in config:
+            config['grpc'] = {}
+
+        host = config['grpc'].get('host', 'localhost')
+        port = config['grpc'].get('port', 50051)
 
         self.channel = grpc.intercept_channel(
             grpc.insecure_channel(
-                f'{self.host}:{self.port}',
+                f'{host}:{port}',
                 options=[
                     ('grpc.max_send_message_length', 50 * 1024 * 1024),
                     ('grpc.max_receive_message_length', 50 * 1024 * 1024),

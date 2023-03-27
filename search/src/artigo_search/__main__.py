@@ -1,5 +1,6 @@
 import sys
 import json
+import environ
 import logging
 import argparse
 import faulthandler
@@ -10,14 +11,19 @@ from .server import Server
 faulthandler.enable()
 PYTHONFAULTHANDLER = 1
 
+env = environ.Env(
+    GRPC_HOST=(str, 'localhost'),
+    GRPC_PORT=(int, 50051),
+    OPENSEARCH_HOST=(str, 'opensearch'),
+    OPENSEARCH_PORT=(int, 9200),
+    OPENSEARCH_INDEX=(str, 'artigo'),
+)
+
 
 def parse_args():
     parser = argparse.ArgumentParser()
 
     parser.add_argument('-c', '--config')
-
-    parser.add_argument('--host')
-    parser.add_argument('--port', type=int)
 
     parser.add_argument('-d', '--debug', action='store_true')
     parser.add_argument('-v', '--verbose', action='store_true')
@@ -49,7 +55,8 @@ def main():
 
     logging.basicConfig(
         format='[%(asctime)s][%(levelname)s] %(message)s', 
-        datefmt='%Y-%m-%dT%H:%M:%S', level=level
+        datefmt='%Y-%m-%dT%H:%M:%S',
+        level=level
     )
 
     if args.config is not None:
@@ -57,13 +64,18 @@ def main():
     else:
         config = {}
 
+    config['grpc'] = {
+        'host': env('GRPC_HOST'),
+        'port': env('GRPC_PORT'),
+    }
+
+    config['opensearch'] = {
+        'host': env('OPENSEARCH_HOST'),
+        'port': env('OPENSEARCH_PORT'),
+        'index': env('OPENSEARCH_INDEX'),
+    }
+
     if args.mode == 'client':
-        if args.host is not None:
-            config['host'] = args.host
-
-        if args.port is not None:
-            config['port'] = args.port
-
         client = Client(config)
 
         if args.task == 'get':

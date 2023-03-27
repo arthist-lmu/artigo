@@ -1,19 +1,4 @@
 {
-    "global": {
-        "tmp_dir": "/tmp"
-    },
-    "cache": {
-        "cache_dir": "/cache"
-    },
-    "grpc": {
-        "host": "search",
-        "port": 50051
-    },
-    "opensearch": {
-        "host": "opensearch",
-        "port": 9200,
-        "index": "artigo"
-    },
     "reconciliators": [
         {
             "type": "WikidataReconciliator",
