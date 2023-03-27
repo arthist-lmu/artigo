@@ -233,6 +233,19 @@ tomli = {version = "*", optional = true, markers = "python_full_version <= \"3.1
 toml = ["tomli"]
 
 [[package]]
+name = "django-environ"
+version = "0.9.0"
+description = "A package that allows you to utilize 12factor inspired environment variables to configure your Django application."
+category = "main"
+optional = false
+python-versions = ">=3.4,<4"
+
+[package.extras]
+testing = ["pytest (>=4.6.11)", "coverage[toml] (>=5.0a4)"]
+docs = ["sphinx-notfound-page", "sphinx (>=3.5.0)", "furo (>=2021.8.17b43,<2021.9.0)"]
+develop = ["sphinx-notfound-page", "sphinx (>=3.5.0)", "furo (>=2021.8.17b43,<2021.9.0)", "pytest (>=4.6.11)", "coverage[toml] (>=5.0a4)"]
+
+[[package]]
 name = "exceptiongroup"
 version = "1.1.1"
 description = "Backport of PEP 654 (exception groups)"
@@ -386,19 +399,19 @@ types-protobuf = ">=3.19.12"
 
 [[package]]
 name = "opensearch-dsl"
-version = "2.0.1"
+version = "2.1.0"
 description = "Python client for OpenSearch"
 category = "main"
 optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
 
 [package.dependencies]
-opensearch-py = ">=2.0.0"
+opensearch-py = ">=2.2.0"
 python-dateutil = "*"
 six = "*"
 
 [package.extras]
-develop = ["sphinx-rtd-theme", "sphinx", "coverage (<5.0.0)", "pytz", "pytest-mock (<3.0.0)", "pytest-cov", "pytest (>=3.0.0)", "mock"]
+develop = ["mock", "pytest (>=3.0.0)", "pytest-cov", "pytest-mock (<4.0.0)", "pytz", "coverage (<7.0.0)", "sphinx", "sphinx-rtd-theme"]
 
 [[package]]
 name = "opensearch-py"
@@ -439,7 +452,7 @@ python-versions = ">=3.7"
 
 [[package]]
 name = "platformdirs"
-version = "3.1.1"
+version = "3.2.0"
 description = "A small Python package for determining appropriate platform-specific dirs, e.g. a \"user data dir\"."
 category = "dev"
 optional = false
@@ -447,7 +460,7 @@ python-versions = ">=3.7"
 
 [package.extras]
 docs = ["furo (>=2022.12.7)", "proselint (>=0.13)", "sphinx-autodoc-typehints (>=1.22,!=1.23.4)", "sphinx (>=6.1.3)"]
-test = ["appdirs (==1.4.4)", "covdefaults (>=2.2.2)", "pytest-cov (>=4)", "pytest-mock (>=3.10)", "pytest (>=7.2.1)"]
+test = ["appdirs (==1.4.4)", "covdefaults (>=2.3)", "pytest-cov (>=4)", "pytest-mock (>=3.10)", "pytest (>=7.2.2)"]
 
 [[package]]
 name = "pluggy"
@@ -544,7 +557,7 @@ six = ">=1.5"
 
 [[package]]
 name = "pytz"
-version = "2022.7.1"
+version = "2023.2"
 description = "World timezone definitions, modern and historical"
 category = "main"
 optional = false
@@ -552,7 +565,7 @@ python-versions = "*"
 
 [[package]]
 name = "redis"
-version = "4.5.2"
+version = "4.5.3"
 description = "Python client for Redis database and key-value store"
 category = "main"
 optional = false
@@ -659,7 +672,7 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "e3be321c947bb99701fda69f81a51fb39541447d45dd69162895f354c4b4b1f5"
+content-hash = "db1d1aae4214181d97bf2d8cb53bb04421fb3293a68a850147687f4386358b8b"
 
 [metadata.files]
 aiohttp = []
@@ -699,6 +712,7 @@ click-repl = [
 ]
 colorama = []
 coverage = []
+django-environ = []
 exceptiongroup = []
 flake8 = []
 frozenlist = []
