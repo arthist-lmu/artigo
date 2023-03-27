@@ -94,7 +94,7 @@ class Commune(index_pb2_grpc.IndexServicer):
             config['opensearch'] = {}
 
         if 'cache' not in config:
-            config['cache'] = {'cache_dir': None}
+            config['cache'] = {'cache_dir': '/cache'}
 
         self.futures = []
         self.config = config
