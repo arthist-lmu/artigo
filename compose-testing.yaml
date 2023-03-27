@@ -58,6 +58,8 @@ services:
     depends_on:
       - api
       - redisai
+    env_file:
+      - ./.testing_api.env
     labels:
       com.centurylinklabs.watchtower.enable: "true"
 
