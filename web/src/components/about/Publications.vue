@@ -154,6 +154,14 @@ export default {
               url: 'https://docs.lib.purdue.edu/artlas/vol6/iss3/6/',
             },
             {
+              author: 'Schneider, Stefanie; Kristen, Maximilian; Vollmer, Ricarda',
+              title: 'Re: ARTigo. Neuentwurf eines Social-Tagging-Frameworks aus funktionalen Programmbausteinen',
+              year: 2023,
+              journal: 'DHd 2023. Open Humanities, Open Culture. Konferenzabstracts',
+              pages: '173–178',
+              url: 'https://doi.org/10.5281/zenodo.7688632',
+            },
+            {
               author: 'Shah, Philipp; Wieser, Christoph; Bry, François',
               title: 'Parallel Higher-Order SVD for Tag-Recommendations',
               year: 2012,
