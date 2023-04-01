@@ -6,6 +6,7 @@ import requests
 
 from datetime import datetime
 from celery import shared_task
+from requests.exceptions import HTTPError
 from django.conf import settings
 from django.core.management import call_command
 
@@ -107,12 +108,17 @@ class Zenodo:
     def upload_file(self, data, file_path):
         url = self.deposition['links']['bucket']
 
-        response = requests.put(
-            f'{url}/{file_path}',
-            params=self.params,
-            data=data,
-        )
-        response.raise_for_status()
+        try:
+            response = requests.put(
+                f'{url}/{file_path}',
+                params=self.params,
+                data=data,
+            )
+            response.raise_for_status()
+        except HTTPError:
+            data = response.json()
+
+            raise HTTPError(f'{response.status_code} Client Error: {data}')
 
 
 def get_latest_dump(dump_folder):
@@ -154,7 +160,8 @@ def upload_data(dump_folder='/dump', media_folder='/media'):
         for line in file_obj:
             entry = json.loads(line)
             hash_ids.add(entry['hash_id'])
-                    
+        
+    with open(dump_path, 'r') as file_obj:
         zenodo.upload_file(file_obj, 'data.jsonl')
                 
     media_path = os.path.join(dump_folder, 'media.zip')
