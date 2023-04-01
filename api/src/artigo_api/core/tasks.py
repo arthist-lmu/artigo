@@ -178,7 +178,7 @@ def upload_data(dump_folder='/dump', media_folder='/media'):
                         compress_type=zipfile.ZIP_DEFLATED,
                     )
                 
-    with open(media_path, 'r') as file_obj:
+    with open(media_path, 'rb') as file_obj:
         zenodo.upload_file(file_obj, 'media.zip')
 
     zenodo.publish()
