@@ -7,8 +7,8 @@ from artigo_search.client import Client
 logger = logging.getLogger(__name__)
 
 
-@shared_task(acks_late=True, reject_on_worker_lost=True)
-def import_data():
+@shared_task(bind=True, acks_late=True, reject_on_worker_lost=True)
+def import_data(self):
     try:
         client = Client()
         client.delete()

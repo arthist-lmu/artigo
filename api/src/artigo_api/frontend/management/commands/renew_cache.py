@@ -15,13 +15,13 @@ class Command(BaseCommand):
         start_time = timezone.now()
 
         for name in dir(cache):
-	        item = getattr(cache, name)
+            item = getattr(cache, name)
 
-	        if callable(item):
-	            try:
-	                item(renew=options['renew'])
-	            except:
-	                pass
+            if callable(item):
+                try:
+                    item(renew=options['renew'])
+                except:
+                    pass
 
         end_time = timezone.now()
         duration = end_time - start_time
