@@ -6,7 +6,7 @@ import traceback
 from django.db.models import Q
 from django.utils import timezone
 from django.core.management import BaseCommand, CommandError
-from frontend.models import Resource
+from frontend.models import Resource, UserROI
 from frontend.serializers import ResourceWithTaggingsSerializer
 
 logger = logging.getLogger(__name__)
@@ -21,24 +21,27 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         start_time = timezone.now()
 
-        if not os.path.isdir(options['output']):
-            raise CommandError('Output is not a directory.')
-
-        qs = Resource.objects.filter(
+        objects = Resource.objects.filter(
                 Q(collection__isnull=True)
                 | Q(collection__access='O')
             ) \
             .exclude(hash_id__exact='') \
-            .prefetch_related('taggings')
+            .prefetch_related(
+                'taggings',
+                'rois',
+            )
 
-        file_path = os.path.join(
-            options['output'],
-            f"os-dump_{start_time.strftime('%Y%m%d%H%M%S')}.{options['format']}"
-        )
+        output = options['output']
 
-        with open(file_path, 'w', encoding='utf-8') as file_obj:
-            for i in range(0, qs.count(), options['size']):
-                chunk = qs.all()[i:(i + options['size'])]
+        if os.path.isdir(output):
+            suffix = start_time.strftime('%Y%m%d%H%M%S')
+            file_name = f"os-dump_{suffix}.{options['format']}"
+
+            output = os.path.join(output, file_name)
+
+        with open(output, 'w', encoding='utf-8') as file_obj:
+            for i in range(0, objects.count(), options['size']):
+                chunk = objects.all()[i:(i + options['size'])]
                 chunk = ResourceWithTaggingsSerializer(chunk, many=True)
 
                 if options['format'] == 'jsonl':

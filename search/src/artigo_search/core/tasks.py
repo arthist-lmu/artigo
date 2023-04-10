@@ -19,24 +19,6 @@ def import_data(self):
         raise self.retry(exc=error, countdown=5)
 
 
-@shared_task(ignore_result=True)
-def delete_data(folder='/dump', limit=2):
-    files = []
-
-    for file in sorted(
-        os.scandir(folder),
-        key=lambda file: file.stat().st_mtime,
-        reverse=True,
-    ):
-        if file.name.startswith('os-dump_'):
-            file_path = os.path.join(folder, file.name)
-
-            if len(files) < limit:
-                files.append(file_path)
-            else:
-                os.remove(file_path)
-
-
 @shared_task()
 def document_count():
     try:

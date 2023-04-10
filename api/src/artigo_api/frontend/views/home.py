@@ -1,3 +1,4 @@
+import random
 import logging
 import traceback
 
@@ -18,5 +19,7 @@ class HomeView(APIView):
         	*cache.random_game_parameters(lang=lang),
         	*cache.collection_game_parameters(lang=lang),
         ]
+
+        random.shuffle(games)
 
         return Response(games)

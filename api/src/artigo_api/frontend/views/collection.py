@@ -11,6 +11,7 @@ import traceback
 from pathlib import Path
 from django.conf import settings
 from django.db.models import Count
+from django.core.mail import send_mail
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.exceptions import APIException
@@ -460,15 +461,25 @@ class CollectionChangeView(APIView):
         if params.get('access'):
             collection_access = params['access']
 
-            if collection_access.lower() == 'open':
+            if collection_access.lower() in ('o', 'open'):
                 collection_access = 'O'
-            elif collection_access.lower() == 'pending':
+            elif collection_access.lower() in ('p', 'pending'):
                 collection_access = 'P'
-            elif collection_access.lower() == 'restricted':
+            elif collection_access.lower() in ('r', 'restricted'):
                 collection_access = 'R'
 
-            if collection_access == 'O' and not request.user.is_staff:
-                collection_access = 'P'
+            if not request.user.is_staff:
+                if collection_access == 'O':
+                    collection_access = 'P'
+
+                if collection_access == 'P':
+                    send_mail(
+                        f'Collection {collection.id} awaits release',
+                        message='Please check the release with an account' \
+                            + 'that has the appropriate permissions.',
+                        recipient_list=[settings.DEFAULT_FROM_EMAIL],
+                        fail_silently=True,
+                    )
 
             try:
                 collection.access = collection_access

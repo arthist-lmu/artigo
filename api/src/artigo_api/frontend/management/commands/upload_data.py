@@ -121,7 +121,7 @@ class Zenodo:
             raise HTTPError(f'{response.status_code} Client Error: {data}')
 
 
-def get_latest_dump(dump_folder):
+def get_latest_dump(dump_folder, raw=False):
     dump_files = []
 
     for file in sorted(
@@ -129,7 +129,9 @@ def get_latest_dump(dump_folder):
         key=lambda file: file.stat().st_mtime,
         reverse=True,
     ):
-        if file.name.startswith('os-dump'):
+        suffix = '-raw' if raw else ''
+
+        if file.name.startswith(f'os-dump{suffix}_'):
             dump_files.append(file.name)
 
     return os.path.join(dump_folder, dump_files[0])
@@ -150,10 +152,10 @@ class Command(BaseCommand):
         if not os.path.isdir(options['media_input']):
             raise CommandError('Media input is not a directory.')
 
-        hash_ids = set()
-
-        dump_path = get_latest_dump(options['dump_input'])
+        dump_path = get_latest_dump(options['dump_input'], raw=False)
         media_path = os.path.join(options['dump_input'], 'media.zip')
+
+        hash_ids = set()
         
         with open(dump_path, 'r') as file_obj:
             for line in file_obj:
@@ -174,7 +176,7 @@ class Command(BaseCommand):
 
         if options['publish']:
             zenodo = Zenodo(
-                query='ARTigo: Social Image Tagging',
+                query='ARTigo (Aggregated Data)',
                 access_token=settings.ZENODO_ACCESS_TOKEN,
             )
 
@@ -186,6 +188,22 @@ class Command(BaseCommand):
                     
             with open(media_path, 'rb') as file_obj:
                 zenodo.upload_file(file_obj, 'media.zip')
+
+            zenodo.publish()
+
+        dump_path = get_latest_dump(options['dump_input'], raw=True)
+
+        if options['publish']:
+            zenodo = Zenodo(
+                query='ARTigo (Raw Data)',
+                access_token=settings.ZENODO_ACCESS_TOKEN,
+            )
+
+            zenodo.new_version()
+            zenodo.delete_files()
+
+            with open(dump_path, 'r') as file_obj:
+                zenodo.upload_file(file_obj, 'data.jsonl')
 
             zenodo.publish()
 

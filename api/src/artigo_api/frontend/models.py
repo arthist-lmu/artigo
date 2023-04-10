@@ -4,6 +4,7 @@ from django.db import models
 from django.db.models import Count, UniqueConstraint
 from django.utils import timezone
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
+from django.contrib.postgres.aggregates import ArrayAgg
 from django.conf import settings
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db.models.signals import post_save
@@ -194,16 +195,34 @@ class Resource(models.Model):
         return str(self.pk)
 
     @property
-    def tags(self):
-        tags = self.taggings.values('tag') \
-            .annotate(count=Count('tag'))
+    def tag_list(self):
+        return self.taggings.values('tag_id') \
+            .annotate(count=Count('tag')) \
+            .values(
+                'tag_id',
+                'tag__name',
+                'tag__language',
+                'count',
+            )
 
-        return tags.values(
-            'tag_id',
-            'tag__name',
-            'tag__language',
-            'count',
-        )
+    @property
+    def roi_list(self):
+        return self.rois.values('tag_id') \
+            .annotate(
+                x=ArrayAgg('x'),
+                y=ArrayAgg('y'),
+                width=ArrayAgg('width'),
+                height=ArrayAgg('height'),
+            ) \
+            .values(
+                'tag_id',
+                'tag__name',
+                'tag__language',
+                'x',
+                'y',
+                'width',
+                'height',
+            ) 
 
 
 class GeneralType(models.Model):
@@ -330,6 +349,9 @@ class GameroundParameter(models.Model):
 class Tag(models.Model):
     name = NameField(max_length=256)
     language = models.CharField(max_length=256)
+    in_dictionary = models.BooleanField(null=True, default=None)
+    color_term = models.BooleanField(null=True, default=None)
+    technical_term = models.BooleanField(null=True, default=None)
 
     def __str__(self):
         return self.name

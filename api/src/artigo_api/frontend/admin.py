@@ -49,7 +49,7 @@ class CustomModelAdmin(admin.ModelAdmin, ExportCsvMixin):
 
 @admin.register(CustomUser)
 class UserAdmin(CustomModelAdmin):
-    pass
+    search_fields = ['email', 'username']
 
 
 @admin.register(Collection)
@@ -80,12 +80,12 @@ class CollectionTitleAdmin(CustomModelAdmin):
     
 @admin.register(Source)
 class SourceAdmin(CustomModelAdmin):
-    pass
+    search_fields = ['name']
 
 
 @admin.register(Creator)
 class CreatorAdmin(CustomModelAdmin):
-    pass
+    search_fields = ['name']
 
 
 @admin.register(Resource)
@@ -113,7 +113,7 @@ class ResourceAdmin(admin.ModelAdmin, ExportCsvMixin):
 
 @admin.register(Title)
 class TitleAdmin(CustomModelAdmin):
-    pass
+    search_fields = ['name']
 
 
 @admin.register(GameType)
@@ -143,13 +143,14 @@ class ScoreTypeAdmin(CustomModelAdmin):
 
 @admin.register(Gamesession)
 class GamesessionAdmin(CustomModelAdmin):
-    pass
+    search_fields = ['user__email', 'user__username']
 
 
 @admin.register(Gameround)
 class GameroundAdmin(admin.ModelAdmin, ExportCsvMixin):
     fields = [f.name for f in Gameround._meta.fields]
     list_display = fields + ['suggester_type', 'score_type']
+    search_fields = ['user__email', 'user__username']
     actions = ['export_as_csv']
 
     def get_queryset(self, request):
@@ -173,34 +174,42 @@ class GameroundParameterAdmin(CustomModelAdmin):
 
 @admin.register(Tag)
 class TagAdmin(CustomModelAdmin):
-    pass
+    search_fields = ['name']
 
 
 @admin.register(UserTagging)
 class UserTaggingAdmin(CustomModelAdmin):
-    pass
+    search_fields = [
+        'tag__name',
+        'user__email',
+        'user__username',
+    ]
 
 
 @admin.register(OpponentTagging)
 class OpponentTaggingAdmin(CustomModelAdmin):
-    pass
+    search_fields = ['tag__name']
 
 
 @admin.register(TabooTagging)
 class TabooTaggingAdmin(CustomModelAdmin):
-    pass
+    search_fields = ['tag__name']
 
 
 @admin.register(UserROI)
 class UserROIAdmin(CustomModelAdmin):
-    pass
+    search_fields = [
+        'tag__name',
+        'user__email',
+        'user__username',
+    ]
 
 
 @admin.register(OpponentROI)
 class OpponentROIAdmin(CustomModelAdmin):
-    pass
+    search_fields = ['tag__name']
 
 
 @admin.register(TabooROI)
 class TabooROIAdmin(CustomModelAdmin):
-    pass
+    search_fields = ['tag__name']

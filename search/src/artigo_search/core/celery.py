@@ -21,10 +21,6 @@ app.conf.beat_schedule = {
         'task': 'core.tasks.import_data',
         'schedule': crontab(day_of_week='1', hour=2, minute=30),
     },
-    'delete_data': {
-        'task': 'core.tasks.delete_data',
-        'schedule': crontab(day_of_week='*', hour=2, minute=0),
-    },
     'document_count': {
         'task': 'core.tasks.document_count',
         'schedule': timedelta(minutes=5),

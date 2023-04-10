@@ -279,6 +279,10 @@ CELERY_BEAT_SCHEDULE = {
         'task': 'core.tasks.export_data',
         'schedule': crontab(day_of_week='*', hour=2, minute=0),
     },
+    'delete_data': {
+        'task': 'core.tasks.delete_data',
+        'schedule': crontab(day_of_week='*', hour=1, minute=30),
+    },
     'renew_cache': {
         'task': 'frontend.tasks.renew_cache',
         'schedule': crontab(hour='*/2', minute=0),
@@ -292,7 +296,7 @@ if env('WHERE') in ('prod', 'production'):
 
         CELERY_BEAT_SCHEDULE['upload_data'] = {
             'task': 'core.tasks.upload_data',
-            'schedule': crontab(day_of_month='1', hour=13, minute=0),
+            'schedule': crontab(day_of_month='1', hour=5, minute=0),
         }
     except:
         logger.warning(f'Zenodo access token not found.')

@@ -10,7 +10,7 @@ from . import index_pb2, index_pb2_grpc
 logger = logging.getLogger(__name__)
 
 
-def get_latest_dump(dump_folder):
+def get_latest_dump(dump_folder, raw=False):
     dump_files = []
 
     for file in sorted(
@@ -18,7 +18,9 @@ def get_latest_dump(dump_folder):
         key=lambda file: file.stat().st_mtime,
         reverse=True,
     ):
-        if file.name.startswith('os-dump'):
+        suffix = '-raw' if raw else ''
+
+        if file.name.startswith(f'os-dump{suffix}_'):
             dump_files.append(file.name)
 
     return os.path.join(dump_folder, dump_files[0])
@@ -162,7 +164,7 @@ class Client:
 
                 yield request
 
-        file_path = get_latest_dump('/dump')
+        file_path = get_latest_dump('/dump', raw=False)
         entries = extract_from_jsonl(file_path, '/media')
 
         blacklist = set()

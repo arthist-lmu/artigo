@@ -313,16 +313,42 @@ class TagCountSerializer(serializers.ModelSerializer):
 
 
 class ResourceWithTaggingsSerializer(ResourceSerializer):
-    tags = serializers.ReadOnlyField()
+    tag_list = serializers.ReadOnlyField()
+    roi_list = serializers.ReadOnlyField()
 
     class Meta(ResourceSerializer.Meta):
-        fields = ResourceSerializer.Meta.fields + ('tags',)
+        fields = ResourceSerializer.Meta.fields
+        fields += ('tag_list', 'roi_list',)
 
     def to_representation(self, data):
         data = super().to_representation(data)
-        data.pop('collection_id', None)
+        
+        roi_list = {roi['tag_id']: roi for roi in data['roi_list']}
+        data['tags'] = TagCountSerializer(data['tag_list'], many=True).data
 
-        data['tags'] = TagCountSerializer(data['tags'], many=True).data
+        for tag in data['tags']:
+            values = roi_list.get(tag['id'])
+
+            if values:
+                tag['regions'] = []
+
+                for value in zip(
+                    values['x'],
+                    values['y'],
+                    values['width'],
+                    values['height'],
+                ):
+                    tag['regions'].append({
+                        'x': value[0],
+                        'y': value[1],
+                        'width': value[2],
+                        'height': value[3],
+                    })
+
+        data.pop('tag_list', None)
+        data.pop('roi_list', None)
+        
+        data.pop('collection_id', None)
 
         return data
 
