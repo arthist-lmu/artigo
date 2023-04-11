@@ -27,6 +27,7 @@ class MeanGameroundTaggingOpponent(OpponentPlugin):
                 resource_id__in=resource_ids,
                 gameround__gamesession__round_duration__gte=round_duration,
                 tag__language=params.get('language', 'de'),
+                uploaded=False,
             )\
             .annotate(created_after_tag=F('created') - F('gameround__created'))
 
@@ -65,10 +66,14 @@ class MeanGameroundTaggingOpponent(OpponentPlugin):
             context={'ids': resource_ids}
         ).data
 
+        logger.info(limits)
+        logger.info(opponents)
+
         for opponent in opponents:
-            limit = limits[opponent['resource_id']]
+            limit = limits.get(opponent['resource_id'], 0)
             
-            opponent['tags'] = opponent['tags'][:int(limit)]
-            opponent['tags'].sort(key=lambda x: x['created_after'])
+            if limit > 0:
+                opponent['tags'] = opponent['tags'][:int(limit)]
+                opponent['tags'].sort(key=lambda x: x['created_after'])
 
         return opponents

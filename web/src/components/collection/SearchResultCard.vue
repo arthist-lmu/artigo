@@ -36,9 +36,12 @@
 
       <v-container class="overlay">
         <v-row style="flex: 0;">
-          <v-col class="pa-4">
+          <v-col
+            cols="9"
+            class="pa-4"
+          >
             <div class="text-subtitle-1 white--text">
-              <b>{{ entry.title[lang] }}</b>
+              <b :title="entry.title[lang]">{{ entry.title[lang] }}</b>
 
               <v-icon
                 v-if="entry.access === 'O'"
@@ -85,7 +88,10 @@
             </div>
           </v-col>
 
-          <v-col cols="auto">
+          <v-col
+            cols="3"
+            align="right"
+          >
             <v-menu @click.native.stop.prevent>
               <template v-slot:activator="{ attrs, on }">
                 <v-btn

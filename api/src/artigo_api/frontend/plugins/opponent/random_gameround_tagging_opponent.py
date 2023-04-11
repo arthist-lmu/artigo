@@ -34,6 +34,7 @@ class RandomGameroundTaggingOpponent(OpponentPlugin):
                 resource_id__in=resource_ids,
                 gameround__gamesession__round_duration__gte=round_duration,
                 tag__language=lang,
+                uploaded=False,
             ) \
             .values('gameround') \
             .annotate(count_tags=Count('tag', distinct=True)) \

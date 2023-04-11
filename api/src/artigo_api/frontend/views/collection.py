@@ -179,12 +179,12 @@ class CollectionAddView(APIView):
 
     def parse_images(self, file_path):
         if check_extension(file_path, extensions=[
-                '.zip',
-                '.tar',
-                '.tar.gz',
-                '.tar.bz2',
-                '.tar.xz',
-            ]):
+            '.zip',
+            '.tar',
+            '.tar.gz',
+            '.tar.bz2',
+            '.tar.xz',
+        ]):
             return self.parse_zip(file_path)
 
     def merge(self, metadata_entries, image_entries):

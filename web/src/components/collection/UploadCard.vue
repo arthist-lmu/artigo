@@ -146,7 +146,7 @@ export default {
       }
     },
     timestamp() {
-      if (this.isFormValid && this.status) {
+      if (this.value && this.isFormValid && this.status) {
         this.$router.push({ name: 'collections' });
         if (this.isDialog) {
           this.close();
