@@ -176,7 +176,7 @@ class Command(BaseCommand):
 
         if options['publish']:
             zenodo = Zenodo(
-                query='ARTigo (Aggregated Data)',
+                query='ARTigo +Aggregated',
                 access_token=settings.ZENODO_ACCESS_TOKEN,
             )
 
@@ -195,14 +195,14 @@ class Command(BaseCommand):
 
         if options['publish']:
             zenodo = Zenodo(
-                query='ARTigo (Raw Data)',
+                query='ARTigo +Raw',
                 access_token=settings.ZENODO_ACCESS_TOKEN,
             )
 
             zenodo.new_version()
             zenodo.delete_files()
 
-            with open(dump_path, 'r') as file_obj:
+            with open(dump_path, 'r', encoding='latin1') as file_obj:
                 zenodo.upload_file(file_obj, 'data.jsonl')
 
             zenodo.publish()
