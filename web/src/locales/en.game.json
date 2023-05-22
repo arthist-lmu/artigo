@@ -18,7 +18,7 @@
       },
       "tagging": {
         "post": "Enter tag",
-        "intro": "How would you describe this image? You can describe what you see, but also what feelings or associations it triggers.",
+        "intro": "How would you describe this image? You can describe what you see, but also what feelings or associations the image triggers.",
         "opponent": "Your opponent’s tags are always displayed on the left.",
         "no-opponent": "You play without an opponent.",
         "taboo": "You may not use the following tags: {tags}."

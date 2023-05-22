@@ -10,6 +10,7 @@
   "field": {
     "okay": "Okay",
     "abort": "Abort",
+    "off-we-go": "Off we go",
     "required": "This is a required field."
   },
   "rules": {

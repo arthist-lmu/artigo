@@ -70,6 +70,8 @@
         </v-row>
       </template>
     </v-data-iterator>
+
+    <Toaster />
   </v-container>
 </template>
 
@@ -134,6 +136,7 @@ export default {
     };
   },
   components: {
+    Toaster: () => import('@/components/search/Toaster.vue'),
     SearchBar: () => import('@/components/utils/ExtendedBar.vue'),
     SearchResultCard: () => import('@/components/search/SearchResultCard.vue'),
   },

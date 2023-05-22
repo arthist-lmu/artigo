@@ -13,7 +13,7 @@
         v-for="person in item.values"
         :key="person.name"
         @click="goTo(person.url)"
-        class="ml-1"
+        class="ml-1 mb-1"
         color="accent"
         outlined
         dark

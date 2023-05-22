@@ -10,6 +10,7 @@
   "field": {
     "okay": "Okay",
     "abort": "Abbrechen",
+    "off-we-go": "Los geht’s",
     "required": "Dies ist ein Pflichtfeld."
   },
   "rules": {

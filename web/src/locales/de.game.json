@@ -18,7 +18,7 @@
       },
       "tagging": {
         "post": "Schlagwort eingeben",
-        "intro": "Wie würdest Du dieses Bild beschreiben? Du kannst beschreiben, was Du siehst, aber auch welche Gefühle oder Assoziationen es weckt.",
+        "intro": "Wie würdest Du dieses Bild beschreiben? Du kannst beschreiben, was Du siehst, aber auch welche Gefühle oder Assoziationen das Bild weckt.",
         "opponent": "Die Schlagwörter Deines:r Gegenspielers:in werden immer auf der linken Seite angezeigt.",
         "no-opponent": "Du spielst ohne Gegenspieler:in.",
         "taboo": "Folgende Schlagwörter darfst Du nicht verwenden: {tags}."

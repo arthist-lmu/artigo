@@ -30,9 +30,8 @@
             <span
               v-if="typer.creator && creator"
               :key="creator"
-              class="dot space"
             >
-              {{ creator }}
+              {{ creator }}.
             </span>
           </transition>
 
@@ -90,6 +89,22 @@
               mdi-help-circle-outline
             </v-icon>
           </v-btn>
+
+          <v-chip
+            style="background-color: transparent;"
+            class="ml-10 pl-6"
+            large
+            dark
+          >
+            <small style="font-size: 12px;">European Union Prize <br>for Citizen Science</small>
+
+            <img
+              height="100%"
+              class="ml-6 py-2"
+              src="/assets/images/eu-citizen-science-prize-logo.png"
+              alt="European Union Prize for Citizen Science Logo"
+            />
+          </v-chip>
         </v-col>
       </v-row>
     </transition>
@@ -277,11 +292,6 @@ export default {
 
 span.space::before {
   content: " ";
-}
-
-.dot::after {
-  margin-left: -10px;
-  content: ". ";
 }
 
 .fade-enter-active,

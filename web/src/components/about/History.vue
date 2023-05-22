@@ -76,28 +76,32 @@ export default {
       return [
         {
           year: '2008–2009',
-          text: this.$t('history.texts.2008'),
+          text: this.$t('history.texts.prototype'),
           image: '/assets/images/artigo-version-2008.png',
         },
         {
           year: '2010–2013',
           icon: 'mdi-rocket-launch-outline',
-          text: this.$t('history.texts.2010'),
+          text: this.$t('history.texts.dfg'),
           image: '/assets/images/artigo-version-2010.png',
         },
         {
           year: '2012',
-          text: this.$t('history.texts.2012'),
+          text: this.$t('history.texts.spiegel'),
         },
         {
           year: '2018–2019',
-          text: this.$t('history.texts.2018'),
+          text: this.$t('history.texts.slb'),
           image: '/assets/images/stadt-land-bild.png',
         },
         {
           year: '2021–2022',
           icon: 'mdi-star-outline',
-          text: this.$t('history.texts.2021'),
+          text: this.$t('history.texts.relaunch'),
+        },
+        {
+          year: '2023',
+          text: this.$t('history.texts.eu'),
         },
       ];
     },
