@@ -57,6 +57,17 @@
     "password-reset": {
       "title": "Passwort zurücksetzen",
       "note": "Bitte beachte, dass aus Sicherheitsgründen kein Fehler ausgelöst wird, wenn die E-Mail-Adresse nicht mit einem Konto verknüpft ist."
+    },
+    "score": {
+      "title": "Bestenliste",
+      "note": "Letzten Monat hat {username} ganze {taggings} Schlagwörter erfasst. Mach's doch nach! Unsere Bestenliste sieht in diesem Monat so aus:",
+      "helper": "Wusstest Du schon? Wenn Du registriert bist und in einem Monat die meisten Schlagwörter vergibst, schenken wir Dir ein Buch.",
+      "headers": {
+        "username": "Name",
+        "is_anonymous": "Anonym",
+        "sum-score": "Punkte",
+        "sum-count": "Schlagwörter"
+      }
     }
   },
   "collections": {

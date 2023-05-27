@@ -57,6 +57,17 @@
     "password-reset": {
       "title": "Reset password",
       "note": "Please note that for security reasons, no error will be raised if the email address is not linked to an account."
+    },
+    "score": {
+      "title": "Leaderboard",
+      "note": "Last month, {username} entered {taggings} taggings. Why don't you do the same? Our leaderboard this month looks like this:",
+      "helper": "Did you know? If you are registered and enter the most taggings in a month, we'll gift you a book.",
+      "headers": {
+        "username": "Name",
+        "is_anonymous": "Anonymous",
+        "sum-score": "Points",
+        "sum-count": "Taggings"
+      }
     }
   },
   "collections": {

@@ -14,10 +14,14 @@
       class="ml-4 mr-n2"
       depressed
       rounded
+      small
     >
       {{ $t('field.off-we-go') }}
 
-      <v-icon class="ml-1 mr-n1">
+      <v-icon
+        class="ml-1 mr-n1"
+        small
+      >
         mdi-play
       </v-icon>
     </v-btn>
@@ -28,20 +32,29 @@
 export default {
   data() {
     return {
-      display: true,
+      display: false,
       timeout: -1,
     };
   },
   methods: {
     goToGame() {
-      let { entries } = this.$store.state.search.data;
-      entries = entries.map(({ resource_id }) => resource_id);
+      const entries = this.entries.map(({ resource_id }) => resource_id);
       const params = {
         resource_inputs: entries,
         resource_type: 'custom_resource',
       };
       this.$store.commit('game/updateDialog', { params });
       this.$router.push({ name: 'game' });
+    },
+  },
+  computed: {
+    entries() {
+      return this.$store.state.search.data.entries;
+    },
+  },
+  watch: {
+    entries() {
+      this.display = true;
     },
   },
 };

@@ -42,7 +42,7 @@ def resource_tagging_count(**kwargs):
                     count_roi_tags=Coalesce(
                         Count(
                             'rois__tag',
-                            filter=Q(taggings__tag__language=lang),
+                            filter=Q(rois__tag__language=lang),
                             distinct=True,
                         ),
                         0,
@@ -50,7 +50,7 @@ def resource_tagging_count(**kwargs):
                     count_roi_taggings=Coalesce(
                         Count(
                             'rois__tag',
-                            filter=Q(taggings__tag__language=lang),
+                            filter=Q(rois__tag__language=lang),
                         ),
                         0,
                     ),

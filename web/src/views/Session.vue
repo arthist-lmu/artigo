@@ -40,7 +40,7 @@
       v-if="tags.length"
       class="mt-0 mb-n2"
     >
-      <v-col :cols="$vuetify.breakpoint.mdAndDown ? 10 : 11">
+      <v-col :cols="$vuetify.breakpoint.mdAndDown ? 9 : 10">
         <v-slide-group
           v-model="slides"
           :title="$t('session.fields.filter-tags')"
@@ -68,11 +68,22 @@
       </v-col>
 
       <v-col
-        :cols="$vuetify.breakpoint.mdAndDown ? 2 : 1"
+        :cols="$vuetify.breakpoint.mdAndDown ? 3 : 2"
         align="right"
       >
         <v-btn
+          @click="dialog.score = true"
+          :title="$t('user.score.title')"
+          icon
+        >
+          <v-icon>
+            mdi-trophy-outline
+          </v-icon>
+        </v-btn>
+
+        <v-btn
           @click="share"
+          class="ml-2"
           icon
         >
           <v-icon>
@@ -105,6 +116,38 @@
         </v-slide-item>
       </v-slide-group>
     </v-row>
+
+    <v-dialog
+      v-model="dialog.score"
+      max-width="450"
+      scrollable
+    >
+      <ScoreCard v-model="dialog.score" />
+    </v-dialog>
+
+    <v-dialog
+      v-model="dialog.helper"
+      max-width="400"
+    >
+      <HelperCard
+        v-model="dialog.helper"
+        :text="$t('user.score.helper')"
+        icon="mdi-account-circle-outline"
+      >
+        <template v-slot:button>
+          <v-btn
+            @click="dialog.score = true; dialog.helper = false"
+            tabindex="0"
+            color="primary"
+            depressed
+            rounded
+            block
+          >
+            {{ $t("user.score.title") }}
+          </v-btn>
+        </template>
+      </HelperCard>
+    </v-dialog>
   </v-container>
 </template>
 
@@ -113,6 +156,10 @@ export default {
   data() {
     return {
       slides: [],
+      dialog: {
+        score: false,
+        helper: false,
+      },
     };
   },
   methods: {
@@ -185,10 +232,16 @@ export default {
   },
   created() {
     this.get(this.$route.params.id);
+    if (localStorage.getItem('scoreHelper') === null) {
+      localStorage.setItem('scoreHelper', true);
+      this.dialog.helper = true;
+    }
   },
   components: {
+    ScoreCard: () => import('@/components/account/ScoreCard.vue'),
     SummaryCard: () => import('@/components/session/SummaryCard.vue'),
     OverviewResultCard: () => import('@/components/session/OverviewResultCard.vue'),
+    HelperCard: () => import('@/components/HelperCard.vue'),
   },
 };
 </script>

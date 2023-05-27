@@ -91,6 +91,7 @@
           </v-btn>
 
           <v-chip
+            v-if="!$vuetify.breakpoint.mdAndDown"
             style="background-color: transparent;"
             class="ml-10 pl-6"
             large

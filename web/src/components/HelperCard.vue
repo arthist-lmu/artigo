@@ -27,28 +27,33 @@
     <template v-slot:actions>
       <v-row>
         <v-col cols="6">
-          <v-btn
-            v-if="page"
-            @click="goTo(page)"
-            tabindex="0"
-            color="primary"
-            depressed
-            rounded
-            block
-          >
-            {{ $t("field.okay") }}
-          </v-btn>
-          <v-btn
-            v-else
-            @click="close"
-            tabindex="0"
-            color="primary"
-            depressed
-            rounded
-            block
-          >
-            {{ $t("field.okay") }}
-          </v-btn>
+          <template v-if="$slots.button">
+            <slot name="button" />
+          </template>
+          <template v-else>
+            <v-btn
+              v-if="page"
+              @click="goTo(page)"
+              tabindex="0"
+              color="primary"
+              depressed
+              rounded
+              block
+            >
+              {{ $t("field.okay") }}
+            </v-btn>
+            <v-btn
+              v-else
+              @click="close"
+              tabindex="0"
+              color="primary"
+              depressed
+              rounded
+              block
+            >
+              {{ $t("field.okay") }}
+            </v-btn>
+          </template>
         </v-col>
 
         <v-col cols="6">

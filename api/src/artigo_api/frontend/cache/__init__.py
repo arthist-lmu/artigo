@@ -1,5 +1,6 @@
 from .plugins import plugins
 from .statistics import statistics
+from .user_scores import user_scores
 from .resource_count import resource_count
 from .resource_tagging_count import resource_tagging_count
 from .game_parameters import (

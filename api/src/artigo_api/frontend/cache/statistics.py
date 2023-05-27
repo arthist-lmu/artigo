@@ -10,6 +10,7 @@ from frontend.models import (
     Resource,
     Gameround,
     Gamesession,
+    UserROI,
     UserTagging,
 )
 from .utils import name
@@ -26,7 +27,7 @@ def statistics(**kwargs):
             'tags': {'n': Tag.objects.count()},
             'users': {'n': CustomUser.objects.count()},
             'creators': {'n': Creator.objects.count()},
-            'taggings': {'n': UserTagging.objects.count()},
+            'taggings': {'n': UserROI.objects.count() + UserTagging.objects.count()},
             'resources': {'n': Resource.objects.count()},
             'gamerounds': {'n': Gameround.objects.count()},
             'gamesessions': {'n': Gamesession.objects.count()},

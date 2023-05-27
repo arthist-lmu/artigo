@@ -114,6 +114,12 @@
         </v-list-item>
       </template>
 
+      <v-list-item @click="dialog.score = true">
+        <v-list-item-content>
+          {{ $t("user.score.title") }}
+        </v-list-item-content>
+      </v-list-item>
+
       <v-divider />
 
       <LanguageMenu />
@@ -133,6 +139,14 @@
       scrollable
     >
       <RegisterCard v-model="dialog.register" />
+    </v-dialog>
+
+    <v-dialog
+      v-model="dialog.score"
+      max-width="450"
+      scrollable
+    >
+      <ScoreCard v-model="dialog.score" />
     </v-dialog>
 
     <v-dialog
@@ -157,6 +171,7 @@ export default {
     return {
       menu: false,
       dialog: {
+        score: false,
         login: false,
         register: false,
         collectionUpload: false,
@@ -212,6 +227,7 @@ export default {
     },
   },
   components: {
+    ScoreCard: () => import('@/components/account/ScoreCard.vue'),
     LoginCard: () => import('@/components/account/LoginCard.vue'),
     RegisterCard: () => import('@/components/account/RegisterCard.vue'),
     CollectionUploadCard: () => import('@/components/collection/UploadCard.vue'),

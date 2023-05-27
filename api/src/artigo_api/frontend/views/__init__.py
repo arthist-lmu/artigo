@@ -21,7 +21,6 @@ from .search import SearchView
 from .session import SessionView
 from .sessions import SessionsView
 from .statistics import (
-    ScoresView,
     StatisticsView,
 )
 from .user import (
