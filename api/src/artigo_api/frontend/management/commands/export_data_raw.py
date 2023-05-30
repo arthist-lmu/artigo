@@ -231,6 +231,8 @@ class Command(BaseCommand):
 
             try:
                 for objects, fields in get_objects():
+                    self.stdout.write(f'Processed fields: {fields}.')
+
                     serializers.serialize(
                         format,
                         objects,
@@ -252,6 +254,8 @@ class Command(BaseCommand):
             txt = f'Export took {duration.total_seconds()} seconds.'
             self.stdout.write(self.style.SUCCESS(txt))
         except Exception as e:
+            self.stdout.write(f'Export failed with error: {e}.')
+
             if show_traceback:
                 raise
 

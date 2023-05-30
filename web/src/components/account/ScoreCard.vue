@@ -19,6 +19,7 @@
             <v-icon
               class="mr-1"
               :color="changeTrophyColor(index)"
+              small
             >
               mdi-trophy-outline
             </v-icon>
@@ -35,6 +36,8 @@
           {{ item.sum_count.toLocaleString() }}
         </template>
       </v-data-table>
+
+      <p class="mb-0 mt-4 text-caption">{{ $t("user.score.helper") }}</p>
     </template>
   </Card>
 </template>
@@ -103,7 +106,31 @@ export default {
 </script>
 
 <style>
+.v-data-table > .v-data-table__wrapper > table > tbody > tr > td {
+  padding: 0 20px;
+}
+
+.v-data-table > .v-data-table__wrapper > table > thead > tr:first-child > th,
+.v-data-table > .v-data-table__wrapper > table > tbody > tr:last-child > td {
+  height: 38px;
+}
+
+.v-data-table > .v-data-table__wrapper > table > thead > tr:first-child > th {
+  padding-top: 6px;
+}
+
+.v-data-table > .v-data-table__wrapper > table > tbody > tr:last-child > td {
+  padding-bottom: 6px;
+}
+
 tr.transparent > td {
   color: rgba(0, 0, 0, 0.25);
+}
+</style>
+
+<style scoped>
+.v-data-table {
+  border: 2px solid rgba(0, 0, 0, 0.15) !important;
+  border-radius: 24px;
 }
 </style>
