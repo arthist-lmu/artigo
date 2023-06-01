@@ -18,58 +18,64 @@ logger = logging.getLogger(__name__)
 
 
 def get(created_gte, created_lt, limit=10):
-    users = CustomUser.objects.filter(is_staff=False) \
-        .annotate(
-            score_taggings=Coalesce(
-                Sum(
-                    'taggings__score',
-                    filter=Q(taggings__created__gte=created_gte) \
-                        & Q(taggings__created__lt=created_lt) \
-                        & Q(taggings__uploaded=False),
-                ), 
-                0,
-            ),
-            count_taggings=Coalesce(
-                Count(
-                    'taggings__tag',
-                    filter=Q(taggings__created__gte=created_gte) \
-                        & Q(taggings__created__lt=created_lt) \
-                        & Q(taggings__uploaded=False),
-                ),
-                0,
-            ),
-            score_roi_taggings=Coalesce(
-                Sum(
-                    'rois__score',
-                    filter=Q(rois__created__gte=created_gte) \
-                        & Q(rois__created__lt=created_lt) \
-                        & Q(rois__uploaded=False),
-                ),
-                0,
-            ),
-            count_roi_taggings=Coalesce(
-                Count(
-                    'rois__tag',
-                    filter=Q(rois__created__gte=created_gte) \
-                        & Q(rois__created__lt=created_lt) \
-                        & Q(rois__uploaded=False),
-                ),
-                0,
-            ),
+    rois = UserROI.objects.values('user') \
+        .filter(
+            created__gte=created_gte,
+            created__lt=created_lt,
+            uploaded=False,
         ) \
         .annotate(
-            sum_score=F('score_taggings') + F('score_roi_taggings'),
-            sum_count=F('count_taggings') + F('count_roi_taggings'),
+            sum_score=Sum('score'),
+            sum_count=Count('tag'),
         ) \
-        .order_by('-sum_count')[:max(1, limit)] \
         .values(
-            'username',
-            'is_anonymous',
+            'user_id',
+            'user__username',
+            'user__is_anonymous',
             'sum_score',
             'sum_count',
         )
 
-    return UserTaggingCountSerializer(users, many=True).data
+    taggings = UserTagging.objects.values('user') \
+        .filter(
+            created__gte=created_gte,
+            created__lt=created_lt,
+            uploaded=False,
+        ) \
+        .annotate(
+            sum_score=Sum('score'),
+            sum_count=Count('tag'),
+        ) \
+        .values(
+            'user_id',
+            'user__username',
+            'user__is_anonymous',
+            'sum_score',
+            'sum_count',
+        )
+
+    rois = UserTaggingCountSerializer(rois, many=True).data
+    rois = {user['id']: user for user in rois}
+
+    taggings = UserTaggingCountSerializer(taggings, many=True).data
+    taggings = {user['id']: user for user in taggings}
+
+    for user_id, tagging in taggings.items():
+        if rois.get(user_id):
+            tagging['sum_score'] += rois[user_id]['sum_score']
+            tagging['sum_count'] += rois[user_id]['sum_count']
+
+    for user_id, roi in rois.items():
+        if not taggings.get(user_id):
+            taggings[user_id] = roi
+
+    taggings = sorted(
+        taggings.values(),
+        key=lambda x: x['sum_count'],
+        reverse=True,
+    ) 
+
+    return taggings
 
 
 @name
@@ -96,7 +102,7 @@ def user_scores(**kwargs):
                 'previous_month': get(
                     previous_month,
                     current_month,
-                    limit=25,
+                    limit=1,
                 ),
             },
         }

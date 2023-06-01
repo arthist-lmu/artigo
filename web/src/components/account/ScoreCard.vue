@@ -132,5 +132,6 @@ tr.transparent > td {
 .v-data-table {
   border: 2px solid rgba(0, 0, 0, 0.15) !important;
   border-radius: 24px;
+  overflow: hidden;
 }
 </style>
