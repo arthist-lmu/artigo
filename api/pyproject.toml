@@ -32,7 +32,7 @@ tqdm = "^4.64.1"
 redis = "^4.3.4"
 uwsgi = "^2.0.21"
 imageio = "^2.9.0"
-urllib3 = "^1.26.9"
+urllib3 = "^2.0.3"
 
 [tool.poetry.dev-dependencies]
 black = "^23.3.0"
