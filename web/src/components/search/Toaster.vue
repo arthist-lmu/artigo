@@ -59,3 +59,9 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.v-snack {
+  z-index: 200;
+}
+</style>

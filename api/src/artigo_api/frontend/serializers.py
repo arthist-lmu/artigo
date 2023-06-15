@@ -355,6 +355,7 @@ class ResourceWithTaggingsSerializer(ResourceSerializer):
 
 class UserTaggingCountSerializer(serializers.ModelSerializer):
     id = serializers.ReadOnlyField(source='user_id')
+    email = serializers.ReadOnlyField(source='user__email')
     username = serializers.ReadOnlyField(source='user__username')
     is_anonymous = serializers.ReadOnlyField(source='user__is_anonymous')
     sum_score = serializers.IntegerField()
@@ -364,6 +365,7 @@ class UserTaggingCountSerializer(serializers.ModelSerializer):
         model = CustomUser
         fields = (
             'id',
+            'email',
             'username',
             'is_anonymous',
             'sum_score',

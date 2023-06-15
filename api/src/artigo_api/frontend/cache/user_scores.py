@@ -30,6 +30,7 @@ def get(created_gte, created_lt, limit=10):
         ) \
         .values(
             'user_id',
+            'user__email',
             'user__username',
             'user__is_anonymous',
             'sum_score',
@@ -48,6 +49,7 @@ def get(created_gte, created_lt, limit=10):
         ) \
         .values(
             'user_id',
+            'user__email',
             'user__username',
             'user__is_anonymous',
             'sum_score',
@@ -97,12 +99,12 @@ def user_scores(**kwargs):
                 'current_month': get(
                     current_month,
                     datetime.today(),
-                    limit=25,
+                    limit=10,
                 ),
                 'previous_month': get(
                     previous_month,
                     current_month,
-                    limit=1,
+                    limit=3,
                 ),
             },
         }

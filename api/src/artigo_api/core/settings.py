@@ -295,6 +295,11 @@ CELERY_BEAT_SCHEDULE = {
 
 # Zenodo configuration
 if env('WHERE') in ('prod', 'production'):
+    CELERY_BEAT_SCHEDULE['send_user_scores'] = {
+        'task': 'frontend.tasks.send_user_scores',
+        'schedule': crontab(day_of_month='1', hour=0, minute=0),
+    }
+
     try:
         ZENODO_ACCESS_TOKEN = env('ZENODO_ACCESS_TOKEN')
 
