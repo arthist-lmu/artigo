@@ -72,10 +72,12 @@ class Client:
                     ('grpc.max_send_message_length', 50 * 1024 * 1024),
                     ('grpc.max_receive_message_length', 50 * 1024 * 1024),
                     ('grpc.keepalive_time_ms', 2 ** 31 - 1),
+                    ('grpc.enable_http_proxy', 0),
                 ],
             ),
         )
 
+        grpc.channel_ready_future(self.channel).result()
         self.stub = index_pb2_grpc.IndexStub(self.channel)
 
     def status(self, job_id):
