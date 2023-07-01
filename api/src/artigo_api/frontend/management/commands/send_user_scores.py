@@ -20,6 +20,7 @@ class Command(BaseCommand):
         send_mail(
             'Monthly user scores are updated',
             message=json.dumps(result['previous_month']),
+            from_email=settings.DEFAULT_FROM_EMAIL,
             recipient_list=[settings.DEFAULT_FROM_EMAIL],
             fail_silently=False,
         )
