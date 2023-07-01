@@ -27,6 +27,11 @@ def renew_cache(renew=True):
     call_command('renew_cache', renew=renew)
 
 
+@shared_task(ignore_result=True)
+def send_user_scores():
+    call_command('send_user_scores')
+
+
 @shared_task(bind=True)
 def upload_collection(self, data):
     try:
