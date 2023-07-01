@@ -184,12 +184,10 @@ class Command(BaseCommand):
         try:
             self.stdout.ending = None
             progress_output = None
-            object_count = 0
 
             # If dumpdata is outputting to stdout, there is no way to display progress
             if output and self.stdout.isatty() and options['verbosity'] > 0:
                 progress_output = self.stdout
-                object_count = sum(get_objects(count_only=True))
 
             if output:
                 file_root, file_ext = os.path.splitext(output)
@@ -229,21 +227,27 @@ class Command(BaseCommand):
             else:
                 stream = None
 
+            object_chunk = 100000
+
             try:
                 for objects, fields in get_objects():
-                    self.stdout.write(f'Processed fields: {fields}.')
+                    object_count = objects.count()
+                    chunks = (object_count / object_chunk) + 1
 
-                    serializers.serialize(
-                        format,
-                        objects,
-                        indent=indent,
-                        use_natural_foreign_keys=use_natural_foreign_keys,
-                        use_natural_primary_keys=use_natural_primary_keys,
-                        stream=stream or self.stdout,
-                        # progress_output=progress_output,
-                        # object_count=object_count,
-                        fields=fields,
-                    )
+                    for chunk in range(0, int(chunks)):
+                        # print(f'Processing chunk {chunk} on {timezone.now()}.')
+
+                        serializers.serialize(
+                            format,
+                            objects[chunk * object_chunk:(chunk + 1) * object_chunk],
+                            indent=indent,
+                            use_natural_foreign_keys=use_natural_foreign_keys,
+                            use_natural_primary_keys=use_natural_primary_keys,
+                            stream=stream or self.stdout,
+                            # progress_output=progress_output,
+                            object_count=object_count,
+                            fields=fields,
+                        )
             finally:
                 if stream:
                     stream.close()
@@ -254,8 +258,6 @@ class Command(BaseCommand):
             txt = f'Export took {duration.total_seconds()} seconds.'
             self.stdout.write(self.style.SUCCESS(txt))
         except Exception as e:
-            self.stdout.write(f'Export failed with error: {e}.')
-
             if show_traceback:
                 raise
 
