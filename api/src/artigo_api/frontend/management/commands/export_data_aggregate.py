@@ -51,8 +51,4 @@ class Command(BaseCommand):
                     except Exception as error:
                         logger.error(traceback.format_exc())
 
-        end_time = timezone.now()
-        duration = end_time - start_time
-
-        txt = f'Export took {duration.total_seconds()} seconds.'
-        self.stdout.write(self.style.SUCCESS(txt))
+        return output

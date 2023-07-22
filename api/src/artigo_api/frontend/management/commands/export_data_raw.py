@@ -84,7 +84,6 @@ class Command(BaseCommand):
                         else:
                             yield queryset, None
 
-
         start_time = timezone.now()
 
         format = options['format']
@@ -235,8 +234,6 @@ class Command(BaseCommand):
                     chunks = (object_count / object_chunk) + 1
 
                     for chunk in range(0, int(chunks)):
-                        # print(f'Processing chunk {chunk} on {timezone.now()}.')
-
                         serializers.serialize(
                             format,
                             objects[chunk * object_chunk:(chunk + 1) * object_chunk],
@@ -252,11 +249,7 @@ class Command(BaseCommand):
                 if stream:
                     stream.close()
 
-            end_time = timezone.now()
-            duration = end_time - start_time
-
-            txt = f'Export took {duration.total_seconds()} seconds.'
-            self.stdout.write(self.style.SUCCESS(txt))
+            return file_path
         except Exception as e:
             if show_traceback:
                 raise

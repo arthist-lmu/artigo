@@ -62,6 +62,6 @@ export default {
 
 <style scoped>
 .v-snack {
-  z-index: 200;
+  z-index: 200 !important;
 }
 </style>
