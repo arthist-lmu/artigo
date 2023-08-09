@@ -95,7 +95,7 @@
       "location": "<code>location</code> or <code>standort</code>: location of the image",
       "source": "<code>source</code>, <code>source_name</code>, <code>source_url</code>, or <code>quelle</code>: source of the image",
       "tags": "<code>tags</code>, <code>tags_en</code>, or <code>tags_de</code>: tags of the image",
-      "access": "Your own collections are initially only visible to yourself. However, you can change the access after uploading a collection and open it for everyone. Every collection that is to be made accessible to the public is checked manually by us. Please make sure to assign appropriate metadata."
+      "access": "Your own collections are initially only visible to yourself. However, you can change the access after uploading a collection and open it for everyone. Every collection that is to be made accessible to the public is checked manually by us."
     }
   },
   "imprint": {
@@ -145,8 +145,9 @@
   "contact": {
     "title": "Contact",
     "texts": {
-      "cooperate": "Do you work for a cultural institution and would like to integrate your collections into ARTigo? Feel free to contact us with cooperation requests:",
-      "bugs": "You can easily report bugs and feature requests via our GitHub:"
+      "cooperate": "Do you work for a cultural institution and would like to integrate your collections into ARTigo? Feel free to contact us with cooperation requests",
+      "bugs": "You can easily report bugs and feature requests via our GitHub",
+      "press": "Also feel free to download our press kit, licensed under a Creative Commons Licence (CC BY-SA 4.0), if you would like to write about ARTigo"
     }
   },
   "contributors": {
@@ -168,7 +169,7 @@
       "spiegel": "Der Spiegel presents ARTigo in the article “<a href=\"https://www.spiegel.de/lebenundlernen/job/lmu-muenchen-laesst-mit-crowdsourcing-bilder-verschlagworten-a-817439.html\" target=\"_blank\">Lass das mal den Schwarm machen</a>”.",
       "slb": "As part of the <a href=\"https://www.volkskundemuseum.at/stadt_land_bild\" target=\"_blank\"><i>Stadt-Land-Bild</i>-project</a>, ARTigo can be played in the Austrian Museum of Folk Life and Folk Art via a multimedia installation consisting of extensive <i>touch-screen</i> walls.",
       "relaunch": "Under the directon of <a href=\"https://www.kunstgeschichte.uni-muenchen.de/personen/wiss_ma/schneider/index.html\" target=\"_blank\">Stefanie Schneider</a> (Institute for Art History), ARTigo is being re-designed and adapted to the technical <i>state-of-the-art</i>.",
-      "eu": "ARTigo is awarded the „<a href=\"https://ars.electronica.art/citizenscience/en/\" target=\"_blank\">European Union Prize for Citizen Science</a>“."
+      "eu": "ARTigo is awarded the „<a href=\"https://ars.electronica.art/citizenscience/en/winners/\" target=\"_blank\">European Union Prize for Citizen Science</a>“."
     }
   },
   "publications": {

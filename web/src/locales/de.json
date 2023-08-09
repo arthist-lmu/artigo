@@ -96,7 +96,7 @@
       "location": "<code>location</code> oder <code>standort</code>: Standort des Bildes",
       "source": "<code>source</code>, <code>source_name</code>, <code>source_url</code> oder <code>quelle</code>: Quelle des Bildes",
       "tags": "<code>tags</code>, <code>tags_en</code> oder <code>tags_de</code>: Schlagwörter des Bildes",
-      "access": "Deine eigenen Sammlungen sind zunächst nur für Dich selbst sichtbar. Du kannst den Zugang jedoch nach dem Hochladen einer Sammlung ändern und sie für alle öffnen. Jede Sammlung, die der Öffentlichkeit zugänglich gemacht werden soll, wird von uns manuell geprüft. Bitte achte darauf, entsprechende Metadaten zu vergeben."
+      "access": "Deine eigenen Sammlungen sind zunächst nur für Dich selbst sichtbar. Du kannst den Zugang jedoch nach dem Hochladen einer Sammlung ändern und sie für alle öffnen. Jede Sammlung, die der Öffentlichkeit zugänglich gemacht werden soll, wird von uns manuell geprüft."
     }
   },
   "imprint": {
@@ -146,8 +146,9 @@
   "contact": {
     "title": "Kontakt",
     "texts": {
-      "cooperate": "Du arbeitest für eine kulturelle Institution und möchtest Deine Sammlungen in ARTigo integrieren? Wende Dich gerne mit Kooperationsanfragen an uns:",
-      "bugs": "Bugs und Funktionswünsche kannst Du einfach über unser GitHub melden:"
+      "cooperate": "Du arbeitest für eine kulturelle Institution und möchtest Deine Sammlungen in ARTigo integrieren? Wende Dich gerne mit Kooperationsanfragen an uns",
+      "bugs": "Bugs und Funktionswünsche kannst Du einfach über unser GitHub melden",
+      "press": "Wenn Du über ARTigo berichten möchtest, kannst Du Dir zudem gerne unsere Pressemappe herunterladen, die unter einer Creative-Commons-Lizenz (CC BY-SA 4.0) steht"
     }
   },
   "contributors": {
@@ -169,7 +170,7 @@
       "spiegel": "Der Spiegel stellt ARTigo im Artikel „<a href=\"https://www.spiegel.de/lebenundlernen/job/lmu-muenchen-laesst-mit-crowdsourcing-bilder-verschlagworten-a-817439.html\" target=\"_blank\">Lass das mal den Schwarm machen</a>“ vor.",
       "slb": "Im Rahmen des Projekts <a href=\"https://www.volkskundemuseum.at/stadt_land_bild\" target=\"_blank\"><i>Stadt-Land-Bild</i></a> ist ARTigo im Österreichischen Museum für Volkskunde über eine multimediale Installation aus weitläufigen <i>Touch-Screen</i>-Wänden spielbar.",
       "relaunch": "Unter der Leitung von <a href=\"https://www.kunstgeschichte.uni-muenchen.de/personen/wiss_ma/schneider/index.html\" target=\"_blank\">Stefanie Schneider</a> (Institut für Kunstgeschichte) wird ARTigo neu konzipiert und an den technischen <i>State-of-the-Art</i> angepasst.",
-      "eu": "ARTigo wird mit dem „<a href=\"https://ars.electronica.art/citizenscience/de/\" target=\"_blank\">European Union Prize for Citizen Science</a>“ ausgezeichnet."
+      "eu": "ARTigo wird mit dem „<a href=\"https://ars.electronica.art/citizenscience/en/winners/\" target=\"_blank\">European Union Prize for Citizen Science</a>“ ausgezeichnet."
     }
   },
   "publications": {

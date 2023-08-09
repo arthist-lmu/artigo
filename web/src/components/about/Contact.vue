@@ -9,17 +9,18 @@
         class="mr-1"
       />
 
-      <v-chip
+      <v-btn
         v-for="person in item.values"
-        :key="person.name"
+        :key="person.url"
         @click="goTo(person.url)"
         class="ml-1 mb-1"
-        color="accent"
-        outlined
-        dark
+        x-small
+        icon
       >
-        {{ person.name }}
-      </v-chip>
+        <v-icon color="accent">
+          {{ person.icon }}
+        </v-icon>
+      </v-btn>
     </span>
   </div>
 </template>
@@ -37,13 +38,19 @@ export default {
         {
           text: this.$t('contact.texts.cooperate'),
           values: [
-            { name: 'Stefanie Schneider', url: 'https://www.kunstgeschichte.uni-muenchen.de/personen/wiss_ma/schneider/index.html' },
+            { url: 'https://www.kunstgeschichte.uni-muenchen.de/personen/wiss_ma/schneider/index.html', icon: 'mdi-email-outline' },
+          ],
+        },
+        {
+          text: this.$t('contact.texts.press'),
+          values: [
+            { url: '/assets/press-kit.zip', icon: 'mdi-folder-outline' },
           ],
         },
         {
           text: this.$t('contact.texts.bugs'),
           values: [
-            { name: 'GitHub', url: 'https://github.com/arthist-lmu/artigo/issues' },
+            { url: 'https://github.com/arthist-lmu/artigo/issues', icon: 'mdi-github' },
           ],
         },
       ];
@@ -54,6 +61,6 @@ export default {
 
 <style scoped>
 div > span:after {
-  content: ' . ';
+  content: '. ';
 }
 </style>
