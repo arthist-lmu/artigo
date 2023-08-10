@@ -31,4 +31,4 @@ def document_count():
     except:
         pass
 
-    return 0
+    return -1

@@ -147,8 +147,8 @@
     "title": "Kontakt",
     "texts": {
       "cooperate": "Du arbeitest für eine kulturelle Institution und möchtest Deine Sammlungen in ARTigo integrieren? Wende Dich gerne mit Kooperationsanfragen an uns",
-      "bugs": "Bugs und Funktionswünsche kannst Du einfach über unser GitHub melden",
-      "press": "Wenn Du über ARTigo berichten möchtest, kannst Du Dir zudem gerne unsere Pressemappe herunterladen, die unter einer Creative-Commons-Lizenz (CC BY-SA 4.0) steht"
+      "bugs": "Bugs und Funktionswünsche meldest Du einfach über unser GitHub",
+      "press": "Wenn Du über ARTigo berichten möchtest, kannst Du Dir unsere Pressemappe herunterladen, die unter einer Creative-Commons-Lizenz (CC BY-SA 4.0) steht"
     }
   },
   "contributors": {

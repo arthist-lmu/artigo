@@ -4,23 +4,20 @@
       v-for="(item, i) in items"
       :key="i"
     >
-      <span
-        v-html="item.text"
-        class="mr-1"
-      />
+      <a :href="item.url" target="_blank">
+        <span
+          v-html="item.text"
+          class="mr-1"
+        />
+      </a>
 
-      <v-btn
-        v-for="person in item.values"
-        :key="person.url"
-        @click="goTo(person.url)"
-        class="ml-1 mb-1"
-        x-small
-        icon
+      <v-icon
+        color="accent"
+        class="ml-1"
+        small
       >
-        <v-icon color="accent">
-          {{ person.icon }}
-        </v-icon>
-      </v-btn>
+        {{ item.icon }}
+      </v-icon>
     </span>
   </div>
 </template>
@@ -37,21 +34,18 @@ export default {
       return [
         {
           text: this.$t('contact.texts.cooperate'),
-          values: [
-            { url: 'https://www.kunstgeschichte.uni-muenchen.de/personen/wiss_ma/schneider/index.html', icon: 'mdi-email-outline' },
-          ],
+          url: 'https://www.kunstgeschichte.uni-muenchen.de/personen/wiss_ma/schneider/index.html',
+          icon: 'mdi-email-outline',
         },
         {
           text: this.$t('contact.texts.press'),
-          values: [
-            { url: '/assets/press-kit.zip', icon: 'mdi-folder-outline' },
-          ],
+          url: '/assets/press-kit.zip',
+          icon: 'mdi-link-variant',
         },
         {
           text: this.$t('contact.texts.bugs'),
-          values: [
-            { url: 'https://github.com/arthist-lmu/artigo/issues', icon: 'mdi-github' },
-          ],
+          url: 'https://github.com/arthist-lmu/artigo/issues',
+          icon: 'mdi-link-variant',
         },
       ];
     },
