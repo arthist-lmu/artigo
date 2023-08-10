@@ -23,7 +23,7 @@ Markdown = "^3.4.1"
 psycopg2-binary = { version = "^2.9.5", platform = "linux" }
 psycopg2 = { version = "^2.9.5", markers = "platform_machine != 'x86_64'"}
 celery = "^5.2.7"
-pandas = "^1.5.2"
+pandas = "^2.0.3"
 pygments-pprint-sql = "^0.1.0"
 pyjwt = "^2.6.0"
 pygraphviz = "^1.10"
