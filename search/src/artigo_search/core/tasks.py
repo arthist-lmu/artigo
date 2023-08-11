@@ -7,22 +7,27 @@ from artigo_search.client import Client
 logger = logging.getLogger(__name__)
 
 
-@shared_task(bind=True, acks_late=True, reject_on_worker_lost=True)
+@shared_task(
+    bind=True,
+    autoretry_for=(Exception,),
+    retry_kwargs={
+        'max_retries': 3,
+        'countdown': 5,
+    },
+)
 def import_data(self):
-    try:
-        client = Client()
-        client.delete()
-        client.insert()
+    client = Client()
+    client.delete()
+    client.insert()
 
-        return True
-    except Exception as error:
-        raise self.retry(exc=error, countdown=5)
+    return True
 
 
 @shared_task()
 def document_count():
     try:
-        result = Client().count()
+        client = Client()
+        result = client.count()
 
         if result.count == 0:
             import_data.delay()
