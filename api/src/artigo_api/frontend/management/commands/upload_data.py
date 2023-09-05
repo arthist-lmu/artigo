@@ -141,7 +141,7 @@ class Command(BaseCommand):
     def add_arguments(self, parser):
         parser.add_argument('--dump_input', type=str, default='/dump')
         parser.add_argument('--media_input', type=str, default='/media')
-        parser.add_argument('--publish', action='store_true')
+        parser.add_argument('--zenodo', choices=['prepare', 'publish'])
 
     def handle(self, *args, **options):
         start_time = timezone.now()
@@ -174,7 +174,7 @@ class Command(BaseCommand):
                             compress_type=zipfile.ZIP_DEFLATED,
                         )
 
-        if options['publish']:
+        if options['zenodo'] in ('prepare', 'publish'):
             zenodo = Zenodo(
                 query='ARTigo +Aggregated',
                 access_token=settings.ZENODO_ACCESS_TOKEN,
@@ -189,11 +189,12 @@ class Command(BaseCommand):
             with open(media_path, 'rb') as file_obj:
                 zenodo.upload_file(file_obj, 'media.zip')
 
-            zenodo.publish()
+            if options['zenodo'] == 'publish':
+                zenodo.publish()
 
         dump_path = get_latest_dump(options['dump_input'], raw=True)
 
-        if options['publish']:
+        if options['zenodo'] in ('prepare', 'publish'):
             zenodo = Zenodo(
                 query='ARTigo +Raw',
                 access_token=settings.ZENODO_ACCESS_TOKEN,
@@ -205,7 +206,8 @@ class Command(BaseCommand):
             with open(dump_path, 'r', encoding='latin1') as file_obj:
                 zenodo.upload_file(file_obj, 'data.jsonl')
 
-            zenodo.publish()
+            if options['zenodo'] == 'publish':
+                zenodo.publish()
 
         end_time = timezone.now()
         duration = end_time - start_time

@@ -65,5 +65,5 @@ def upload_data():
         'upload_data',
         dump_input='/dump',
         media_input='/media',
-        publish=True,
+        zenodo='publish',
     )
