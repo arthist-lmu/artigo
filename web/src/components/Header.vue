@@ -16,17 +16,13 @@
 
         <v-spacer />
 
-        <MobileMenu
-          v-if="$vuetify.breakpoint.mobile"
-          :dark="dark"
-        />
         <DefaultMenu
-          v-else
+          v-if="!$vuetify.breakpoint.mobile"
           :dark="dark"
         />
 
         <v-btn
-          v-if="!(hideSearchBar || $vuetify.breakpoint.mobile)"
+          v-if="!hideSearchBar"
           @click="goTo('search')"
           :title="$t('search.title')"
           class="ml-2"
@@ -86,7 +82,6 @@ export default {
   components: {
     Logo: () => import('@/components/Logo.vue'),
     DefaultMenu: () => import('@/components/menu/Default.vue'),
-    MobileMenu: () => import('@/components/menu/Mobile.vue'),
     UserMenu: () => import('@/components/account/Menu.vue'),
   },
 };
