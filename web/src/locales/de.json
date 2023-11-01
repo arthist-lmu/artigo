@@ -204,7 +204,7 @@
     },
     "plugins": {
       "opponent_type": {
-        "no_opponent": "Du spielst gegen keine Gegner:innen"
+        "no_opponent": "Du spielst ohne Mitspieler:innen"
       },
       "taboo_type": {
         "most_annotated_taboo": "Am häufigsten vergebene Annotationen sind tabu"

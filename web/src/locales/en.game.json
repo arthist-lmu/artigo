@@ -19,15 +19,15 @@
       "tagging": {
         "post": "Enter tag",
         "intro": "How would you describe this image? You can describe what you see, but also what feelings or associations the image triggers.",
-        "opponent": "Your opponent’s tags are always displayed on the left.",
-        "no-opponent": "You play without an opponent.",
+        "opponent": "Your fellow player’s tags are always displayed on the left.",
+        "no-opponent": "You play without another player.",
         "taboo": "You may not use the following tags: {tags}."
       },
       "roi": {
         "post": "Annotate image region",
         "intro": "Do you see the tags above the displayed image? Draw with the mouse over the corresponding image regions.",
-        "opponent": "Your opponent’s tags are always displayed on the left.",
-        "no-opponent": "You play without an opponent",
+        "opponent": "Your fellow player’s tags are always displayed on the left.",
+        "no-opponent": "You play without another player",
         "taboo": "You may not use the following tags: {tags}."
       }
     },
@@ -60,11 +60,11 @@
         "suffix": "{n} rounds|{n} round|{n} rounds"
       },
       "opponent_type": {
-        "title": "Who do you want to play against?",
+        "title": "Who do you want to play with?",
         "fields": {
           "no_opponent": "No one",
-          "mean_gameround_opponent": "Average opponents",
-          "random_gameround_opponent": "Randomly selected opponents"
+          "mean_gameround_opponent": "Average players",
+          "random_gameround_opponent": "Randomly selected players"
         }
       },
       "input_type": {

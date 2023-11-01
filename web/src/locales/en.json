@@ -203,7 +203,7 @@
     },
     "plugins": {
       "opponent_type": {
-        "no_opponent": "You are playing against no opponents"
+        "no_opponent": "You are playing without other players"
       },
       "taboo_type": {
         "most_annotated_taboo": "Most frequently assigned annotations are taboo"

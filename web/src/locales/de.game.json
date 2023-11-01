@@ -19,15 +19,15 @@
       "tagging": {
         "post": "Schlagwort eingeben",
         "intro": "Wie würdest Du dieses Bild beschreiben? Du kannst beschreiben, was Du siehst, aber auch welche Gefühle oder Assoziationen das Bild weckt.",
-        "opponent": "Die Schlagwörter Deines:r Gegenspielers:in werden immer auf der linken Seite angezeigt.",
-        "no-opponent": "Du spielst ohne Gegenspieler:in.",
+        "opponent": "Die Schlagwörter Deines:r Mitspielers:in werden immer auf der linken Seite angezeigt.",
+        "no-opponent": "Du spielst ohne Mitspieler:in.",
         "taboo": "Folgende Schlagwörter darfst Du nicht verwenden: {tags}."
       },
       "roi": {
         "post": "Bildregion annotieren",
         "intro": "Siehst Du die Schlagwörter über dem angezeigten Bild? Zeichne mit der Maus über die zugehörigen Bildregionen.",
-        "opponent": "Die Schlagwörter Deines:r Gegenspielers:in werden immer auf der linken Seite angezeigt.",
-        "no-opponent": "Du spielst ohne Gegenspieler:in.",
+        "opponent": "Die Schlagwörter Deines:r Mitspielers:in werden immer auf der linken Seite angezeigt.",
+        "no-opponent": "Du spielst ohne Mitspieler:in.",
         "taboo": "Folgende Schlagwörter darfst Du nicht verwenden: {tags}."
       }
     },
@@ -60,11 +60,11 @@
         "suffix": "{n} Runden|{n} Runde|{n} Runden"
       },
       "opponent_type": {
-        "title": "Gegen wen möchtest Du spielen?",
+        "title": "Mit wem möchtest Du spielen?",
         "fields": {
-          "no_opponent": "Niemanden",
-          "mean_gameround_opponent": "Durchschnittliche Gegner:innen",
-          "random_gameround_opponent": "Zufällig ausgewählte Gegner:innen"
+          "no_opponent": "Niemandem",
+          "mean_gameround_opponent": "Durchschnittliche Mitspieler:innen",
+          "random_gameround_opponent": "Zufällig ausgewählte Mitspieler:innen"
         }
       },
       "input_type": {
