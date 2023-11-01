@@ -61,6 +61,9 @@ class Zenodo:
         )
         response.raise_for_status()
 
+        version = self.get_version(update=True)
+        publication_date = datetime.today().strftime('%Y-%m-%d')
+
         self.deposition = response.json()
         self.draft_id = self.get_draft_id()
 
@@ -73,9 +76,24 @@ class Zenodo:
         data = response.json()
         data['metadata'] = {
             **data['metadata'],
-            'version': self.get_version(update=True),
-            'publication_date': datetime.today().strftime('%Y-%m-%d'),
+            'version': version,
+            'publication_date': publication_date,
         }
+
+        for key in (
+            'owner',
+            'id',
+            'submitted',
+            'created',
+            'state',
+            'links',
+            'title',
+            'conceptrecid',
+            'record_id',
+            'conceptdoi',
+            'modified',
+        ):
+            data.pop(key)
 
         response = requests.put(
             f'{self.url}/{self.draft_id}',
