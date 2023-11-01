@@ -22,7 +22,7 @@ urllib3 = "^1.26.9"
 black = "^23.3.0"
 flake8 = "^5.0.4"
 isort = "^5.10.1"
-mypy-protobuf = "3.3.0"
+mypy-protobuf = "3.5.0"
 pytz = "~2023"
 
 [tool.black]
