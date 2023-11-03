@@ -6,23 +6,23 @@ authors = ["Your Name <you@example.com>"]
 
 [tool.poetry.dependencies]
 python = "^3.8"
-opensearch-py = "^2.0.0"
-opensearch-dsl = "^2.0.1"
-grpcio = "^1.57.0"
-grpcio-tools = "^1.57.0"
-django-environ = "^0.10.0"
-aiohttp = "^3.8.3"
-celery = "^5.2.7"
-pytest = "^7.3.0"
-pytest-cov = "^4.0.0"
-redis = "^4.6.0"
-urllib3 = "^1.26.9"
+opensearch-py = "2.*"
+opensearch-dsl = "2.*"
+grpcio = "1.*"
+grpcio-tools = "1.*"
+django-environ = "0.*"
+aiohttp = "3.*"
+celery = "5.*"
+pytest = "7.*"
+pytest-cov = "4.*"
+redis = "5.*"
+urllib3 = "1.*"
 
 [tool.poetry.dev-dependencies]
 black = "^23.3.0"
 flake8 = "^5.0.4"
 isort = "^5.10.1"
-mypy-protobuf = "3.3.0"
+mypy-protobuf = "3.*"
 pytz = "~2023"
 
 [tool.black]
