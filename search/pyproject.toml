@@ -16,7 +16,7 @@ celery = "5.*"
 pytest = "7.*"
 pytest-cov = "4.*"
 redis = "5.*"
-urllib3 = "1.*"
+urllib3 = "2.*"
 
 [tool.poetry.dev-dependencies]
 black = "^23.3.0"
