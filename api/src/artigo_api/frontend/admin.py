@@ -90,6 +90,7 @@ class CreatorAdmin(CustomModelAdmin):
 
 @admin.register(Resource)
 class ResourceAdmin(admin.ModelAdmin, ExportCsvMixin):
+    search_fields = ['creators__name', 'titles__name', 'institution']
     actions = ['export_as_csv']
 
     def __init__(self, model, admin_site):
