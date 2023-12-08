@@ -27,13 +27,17 @@ def statistics(**kwargs):
             'tags': {'n': Tag.objects.count()},
             'users': {'n': CustomUser.objects.count()},
             'creators': {'n': Creator.objects.count()},
-            'taggings': {'n': UserROI.objects.count() + UserTagging.objects.count()},
+            'taggings': {
+            	'n': UserROI.objects.filter(uploaded=False).count() + \
+            		UserTagging.objects.filter(uploaded=False).count()
+            },
             'resources': {'n': Resource.objects.count()},
             'gamerounds': {'n': Gameround.objects.count()},
             'gamesessions': {'n': Gamesession.objects.count()},
         }
 
         tags = UserTagging.objects \
+        	.filter(uploaded=False) \
             .values(
                 'tag',
                 'tag__name'

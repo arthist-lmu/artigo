@@ -3,10 +3,10 @@ import json
 import logging
 import traceback
 
-from django.db.models import Q
+from django.db.models import Q, Prefetch
 from django.utils import timezone
 from django.core.management import BaseCommand, CommandError
-from frontend.models import Resource, UserROI
+from frontend.models import Resource, UserROI, UserTagging
 from frontend.serializers import ResourceWithTaggingsSerializer
 
 logger = logging.getLogger(__name__)
@@ -26,9 +26,16 @@ class Command(BaseCommand):
                 | Q(collection__access='O')
             ) \
             .exclude(hash_id__exact='') \
+            .exclude(enabled=False) \
             .prefetch_related(
-                'taggings',
-                'rois',
+                Prefetch(
+                    'taggings',
+                    queryset=UserTagging.objects.filter(uploaded=False),
+                ),
+                Prefetch(
+                    'rois',
+                    queryset=UserROI.objects.filter(uploaded=False),
+                ),
             )
 
         output = options['output']

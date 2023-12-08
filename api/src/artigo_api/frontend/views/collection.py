@@ -477,6 +477,7 @@ class CollectionChangeView(APIView):
                         f'Collection {collection.id} awaits release',
                         message='Please check the release with an account' \
                             + 'that has the appropriate permissions.',
+                        from_email=settings.DEFAULT_FROM_EMAIL,
                         recipient_list=[settings.DEFAULT_FROM_EMAIL],
                         fail_silently=True,
                     )
