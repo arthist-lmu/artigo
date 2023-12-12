@@ -34,9 +34,13 @@ class RandomAnnotatedTaggingTaboo(TabooPlugin):
                 tag__language=params.get('language', 'de'),
             ) \
             .values('resource', 'tag') \
-            .annotate(count_taggings=Count('tag')) \
-            .filter(count_taggings__gte=min_taggings) \
-            .order_by('resource', '?') \
+            .annotate(count_taggings=Count('tag'))
+
+        # prevent errors when there are too few valid taggings
+        if taggings.filter(count_taggings__gte=min_taggings):
+            taggings = taggings.filter(count_taggings__gte=min_taggings)
+
+        taggings = taggings.order_by('resource', '?') \
             .values(
                 'resource_id',
                 'tag_id',

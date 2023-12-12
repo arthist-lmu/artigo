@@ -158,7 +158,9 @@ class GameController:
                     }
 
         game = self.merge_to_game(result, resource_ids)
-        # logger.info(f'[Game Controller] Game: {game}')
+
+        if settings.DEBUG:
+            logger.info(f'[Game Controller] Game: {game}')
 
         try:
             game_type, _ = GameType.objects \

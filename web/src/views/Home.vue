@@ -144,8 +144,10 @@ export default {
     show(name) {
       setTimeout(() => {
         this.$nextTick(() => {
-          this.typer[name] = true;
-          window.scrollTo(0, document.body.scrollHeight);
+          if (this.$route.name === 'home') {
+            this.typer[name] = true;
+            window.scrollTo(0, document.body.scrollHeight);
+          }
         });
       }, 250);
     },

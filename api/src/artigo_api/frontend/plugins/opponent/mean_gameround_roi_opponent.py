@@ -70,9 +70,10 @@ class MeanGameroundROIOpponent(OpponentPlugin):
         ).data
 
         for opponent in opponents:
-            limit = limits[opponent['resource_id']]
-            
-            opponent['tags'] = opponent['tags'][:int(limit)]
-            opponent['tags'].sort(key=lambda x: x['created_after'])
+            limit = limits.get(opponent['resource_id'], 0)
+
+            if limit > 0:
+                opponent['tags'] = opponent['tags'][:int(limit)]
+                opponent['tags'].sort(key=lambda x: x['created_after'])
 
         return opponents
