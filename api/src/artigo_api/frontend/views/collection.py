@@ -475,7 +475,7 @@ class CollectionChangeView(APIView):
                 if collection_access == 'P':
                     send_mail(
                         f'Collection {collection.id} awaits release',
-                        message='Please check the release with an account' \
+                        message='Please check the release with an account ' \
                             + 'that has the appropriate permissions.',
                         from_email=settings.DEFAULT_FROM_EMAIL,
                         recipient_list=[settings.DEFAULT_FROM_EMAIL],

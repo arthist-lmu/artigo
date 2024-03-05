@@ -105,6 +105,10 @@ class RandomGameParameters(GameParameters):
             'roi_tags': 0,
         }
 
+        valid_resources = Resource.objects \
+            .filter(enabled=True) \
+            .exclude(hash_id__exact='')
+
         if game['field'] == 'tags':
             if game['type'] == 'annotated-color':
                 colors = [
@@ -136,8 +140,7 @@ class RandomGameParameters(GameParameters):
 
                 game['query'] = random.choice(epochs)
 
-            resources = Resource.objects.values('id') \
-                .exclude(hash_id__exact='') \
+            resources = valid_resources.values('id') \
                 .annotate(
                     count_taggings=Coalesce(
                         Count(
@@ -152,7 +155,7 @@ class RandomGameParameters(GameParameters):
             game['query'] = game['query'][lang]
             annotations['tags'] = 99
         elif game['field'] == 'creators':
-            creators = Resource.objects \
+            creators = valid_resources \
                 .values(
                     'creators',
                     'creators__name',
@@ -165,8 +168,7 @@ class RandomGameParameters(GameParameters):
             game['query'] = creator['creators__name']
             annotations['tags'] = 99
 
-            resources = Resource.objects.values('id') \
-                .exclude(hash_id__exact='') \
+            resources = valid_resources.values('id') \
                 .filter(creators__name=game['query']) \
                 .annotate(
                     count_taggings=Coalesce(
@@ -179,8 +181,7 @@ class RandomGameParameters(GameParameters):
                 ) \
                 .filter(count_taggings__gt=0)
         elif game['field'] == 'resources':
-            resources = Resource.objects.values('id') \
-                .exclude(hash_id__exact='') \
+            resources = valid_resources.values('id') \
                 .annotate(
                     count_taggings=Coalesce(
                         Count(
@@ -253,6 +254,7 @@ class CollectionGameParameters(GameParameters):
 
     def get_variants(self, lang):
         values = Collection.objects.filter(access='O') \
+            .filter(resources__enabled=True) \
             .annotate(
                 count_resources=Coalesce(
                     Count('resources__id'),

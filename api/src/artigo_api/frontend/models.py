@@ -171,6 +171,7 @@ class Resource(models.Model):
         Collection,
         related_name='resources',
         on_delete=models.CASCADE,
+        blank=True,
         null=True,
     )
     wikidata_id = models.CharField(max_length=256, blank=True)
@@ -180,10 +181,11 @@ class Resource(models.Model):
     source = models.ForeignKey(
         Source,
         on_delete=models.CASCADE,
+        blank=True,
         null=True,
     )
-    created_start = models.IntegerField(null=True)
-    created_end = models.IntegerField(null=True)
+    created_start = models.IntegerField(null=True, blank=True)
+    created_end = models.IntegerField(null=True, blank=True)
     location = models.CharField(max_length=512, blank=True)
     institution = models.CharField(max_length=512, blank=True)
     origin = models.URLField(max_length=256, blank=True)

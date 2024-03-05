@@ -1,3 +1,4 @@
+import random
 import logging
 import traceback
 
@@ -18,9 +19,13 @@ from frontend.utils import (
 
 try:
     from allauth.account.adapter import get_adapter
+except ImportError:
+    raise ImportError('Could not import `allauth.account.adapter`.')
+
+try:
     from allauth.account.utils import setup_user_email
 except ImportError:
-    raise ImportError('`allauth` needs to be installed.')
+    raise ImportError('Could not import `allauth.account.utils`.')
 
 logger = logging.getLogger(__name__)
 
@@ -92,44 +97,23 @@ class CustomUserDetailsSerializer(UserDetailsSerializer):
     class Meta:
         fields = []
 
-        if hasattr(get_user_model(), 'email'):
-            fields.append('email')
-
-        if hasattr(get_user_model(), 'username'):
-            fields.append('username')
-
-        if hasattr(get_user_model(), 'first_name'):
-            fields.append('first_name')
-
-        if hasattr(get_user_model(), 'last_name'):
-            fields.append('last_name')
-
-        if hasattr(get_user_model(), 'date_joined'):
-            fields.append('date_joined')
-
-        if hasattr(get_user_model(), 'is_superuser'):
-            fields.append('is_superuser')
-
-        if hasattr(get_user_model(), 'is_anonymous'):
-            fields.append('is_anonymous')
-
-        if hasattr(get_user_model(), 'n_rois'):
-            fields.append('n_rois')
-
-        if hasattr(get_user_model(), 'n_taggings'):
-            fields.append('n_taggings')
-
-        if hasattr(get_user_model(), 'n_annotations'):
-            fields.append('n_annotations')
-
-        if hasattr(get_user_model(), 'n_resources'):
-            fields.append('n_resources')
-
-        if hasattr(get_user_model(), 'n_collections'):
-            fields.append('n_collections')
-
-        if hasattr(get_user_model(), 'n_gamesessions'):
-            fields.append('n_gamesessions')
+        for field in (
+            'email',
+            'username',
+            'first_name',
+            'last_name',
+            'date_joined',
+            'is_superuser',
+            'is_anonymous',
+            'n_rois',
+            'n_taggings',
+            'n_annotations',
+            'n_resources',
+            'n_collections',
+            'n_gamesessions',
+        ):
+            if hasattr(get_user_model(), field):
+                fields.append(field)
 
         model = get_user_model()
         fields = ('id', *fields)
@@ -206,10 +190,10 @@ class CollectionCountSerializer(serializers.ModelSerializer):
         data['title'] = {x['language']: x['name'] for x in data['titles']}
 
         try:
-            resource = Resource.objects.get(id=data['resources'][0])
+            resource = Resource.objects.get(id=random.choice(data['resources']))
             data['path'] = media_url_to_image(resource.hash_id)
-        except:
-            pass
+        except Exception as error:
+            logger.error(traceback.format_exc())
 
         return data
 
