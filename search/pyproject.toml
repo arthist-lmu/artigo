@@ -19,7 +19,7 @@ redis = "5.*"
 urllib3 = "2.*"
 
 [tool.poetry.dev-dependencies]
-black = "^23.3.0"
+black = "^24.3.0"
 flake8 = "^5.0.4"
 isort = "^5.10.1"
 mypy-protobuf = "3.*"
