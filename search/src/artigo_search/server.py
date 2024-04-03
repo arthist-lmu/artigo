@@ -194,12 +194,12 @@ class Commune(index_pb2_grpc.IndexServicer):
 
         with Cache(cache_dir, mode='r') as cache:
             while True:
-                chunk = read_chunk(translate(cache, request_iter), chunksize=512)
+                chunk = read_chunk(translate(cache, request_iter), chunksize=256)
 
                 if len(chunk) <= 0:
                     break
 
-                results = self.insert_process_pool.map(InsertJob(), chunk, chunksize=64)
+                results = self.insert_process_pool.map(InsertJob(), chunk, chunksize=32)
 
                 for status, entry in results:
                     if status != 'ok':
@@ -210,7 +210,7 @@ class Commune(index_pb2_grpc.IndexServicer):
 
                     db_cache.append(entry)
 
-                    if len(db_cache) > 64:
+                    if len(db_cache) > 32:
                         try_count = 20
 
                         while try_count > 0:
@@ -352,7 +352,7 @@ class Server:
         self.commune = Commune(config)
 
         self.server = grpc.server(
-            futures.ThreadPoolExecutor(max_workers=10),
+            futures.ThreadPoolExecutor(max_workers=8),
             options=[
                 ('grpc.max_send_message_length', 50 * 1024 * 1024),
                 ('grpc.max_receive_message_length', 50 * 1024 * 1024),
