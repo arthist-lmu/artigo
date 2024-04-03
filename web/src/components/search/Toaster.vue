@@ -53,8 +53,10 @@ export default {
     },
   },
   watch: {
-    entries() {
-      this.display = true;
+    entries(values) {
+      if (values) {
+        this.display = true;
+      }
     },
   },
 };
