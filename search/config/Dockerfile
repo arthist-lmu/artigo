@@ -9,7 +9,6 @@ RUN /usr/share/opensearch/bin/opensearch-plugin remove opensearch-notifications
 RUN /usr/share/opensearch/bin/opensearch-plugin remove opensearch-notifications-core
 RUN /usr/share/opensearch/bin/opensearch-plugin remove opensearch-alerting
 RUN /usr/share/opensearch/bin/opensearch-plugin remove opensearch-anomaly-detection
-RUN /usr/share/opensearch/bin/opensearch-plugin remove opensearch-ml
 RUN /usr/share/opensearch/bin/opensearch-plugin remove opensearch-asynchronous-search
 RUN /usr/share/opensearch/bin/opensearch-plugin remove opensearch-neural-search
 RUN /usr/share/opensearch/bin/opensearch-plugin remove opensearch-knn
