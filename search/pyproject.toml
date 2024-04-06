@@ -5,7 +5,7 @@ description = ""
 authors = ["Your Name <you@example.com>"]
 
 [tool.poetry.dependencies]
-python = "^3.8"
+python = "^3.10"
 opensearch-py = "2.*"
 opensearch-dsl = "2.*"
 grpcio = "1.*"
@@ -19,15 +19,15 @@ redis = "5.*"
 urllib3 = "2.*"
 
 [tool.poetry.dev-dependencies]
-black = "^23.3.0"
-flake8 = "^5.0.4"
-isort = "^5.10.1"
+black = "*"
+flake8 = "*"
+isort = "*"
 mypy-protobuf = "3.*"
-pytz = "~2023"
+pytz = "*"
 
 [tool.black]
 line-length = 120
-target-version = ["py38"]
+target-version = ["py310"]
 include = '\.pyi?$'
 exclude = '''
 (

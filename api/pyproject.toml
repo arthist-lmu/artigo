@@ -5,7 +5,7 @@ description = ""
 authors = ["Your Name <you@example.com>"]
 
 [tool.poetry.dependencies]
-python = "^3.8"
+python = "^3.10"
 python-dateutil = "2.*"
 grpcio = "1.*"
 grpcio-tools = "1.*"
@@ -13,8 +13,8 @@ drf-spectacular = "0.*"
 django = "4.*"
 django-allauth = "^0.54.0"
 django-environ = "0.*"
-django-filter = "22.*"
-django-cors-headers = "3.*"
+django-filter = "24.*"
+django-cors-headers = "4.*"
 django-extensions = "3.*"
 djangorestframework = "3.*"
 drf-jwt = "1.*"
@@ -26,7 +26,6 @@ celery = "5.*"
 pandas = "2.*"
 pygments-pprint-sql = "~0.1.0"
 pyjwt = "2.*"
-pygraphviz = "1.*"
 pymemcache = "4.*"
 tqdm = "4.*"
 redis = "5.*"
@@ -37,16 +36,16 @@ aiohttp = "3.*"
 asyncio = "3.*"
 
 [tool.poetry.dev-dependencies]
-black = "^23.3.0"
-flake8 = "^5.0.4"
-isort = "^5.11.4"
+black = "*"
+flake8 = "*"
+isort = "*"
 pytest = "7.*"
 pytest-cov = "4.*"
 pytest-django = "4.*"
 
 [tool.black]
 line-length = 120
-target-version = ["py38"]
+target-version = ["py310"]
 include = '\.pyi?$'
 exclude = '''
 (
