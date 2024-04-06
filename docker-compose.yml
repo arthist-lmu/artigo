@@ -1,5 +1,3 @@
-version: "3.2"
-
 services:
   redisai:
     image: redis:latest
@@ -9,16 +7,13 @@ services:
     command: -I 32m
 
   opensearch:
-    image: opensearchproject/opensearch:2
+    build:
+      context: .
+      dockerfile: ./search/config/Dockerfile
     environment:
-      - node.name=os01
-      - discovery.seed_hosts=os01
-      - cluster.initial_master_nodes=os01
       - "OPENSEARCH_JAVA_OPTS=-Xms512m -Xmx512m"
-      - bootstrap.memory_lock=true
-      - network.host=0.0.0.0
+      - "DISABLE_INSTALL_DEMO_CONFIG=true"
     volumes:
-      # - ./search/config/perf/:/usr/share/opensearch/data/
       - ./search/config/opensearch.yml:/usr/share/opensearch/config/opensearch.yml
     ulimits:
       memlock:

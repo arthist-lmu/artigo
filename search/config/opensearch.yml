@@ -1,10 +1,9 @@
 cluster.name: os-cluster
+cluster.initial_master_nodes: os01
+node.name: os01
+discovery.seed_hosts: os01
 network.host: 0.0.0.0
-
-bootstrap.memory_lock: "true"
-
+bootstrap.memory_lock: true
 cluster.routing.allocation.disk.threshold_enabled: true
 cluster.routing.allocation.disk.watermark.low: 93%
 cluster.routing.allocation.disk.watermark.high: 95%
-
-plugins.security.disabled: true
