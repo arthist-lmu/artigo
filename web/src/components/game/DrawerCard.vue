@@ -4,6 +4,7 @@
     v-slot="{ hover }"
   >
     <v-card
+      v-if="entry.path"
       @click="play"
       @keydown="play"
       class="grid-item"
@@ -119,6 +120,24 @@
         </v-row>
       </v-container>
     </v-card>
+
+    <v-btn
+      v-else
+      @click="play"
+      @keydown="play"
+      color="grey lighten-2"
+      depressed
+      outlined
+      rounded
+      block
+    >
+      <template v-if="title && title[lang]">
+        {{ title[lang] }}
+      </template>
+      <template v-else>
+        {{ $t("game.fields.new-game-default") }}
+      </template>
+    </v-btn>
   </v-hover>
 </template>
 
@@ -134,7 +153,9 @@ export default {
   },
   methods: {
     play() {
-      this.$store.commit('game/updateDialog', { params: this.entry.params });
+      if (this.entry.params) {
+        this.$store.commit('game/updateDialog', { params: this.entry.params });
+      }
       this.$router.push({ name: 'game' });
     },
     onError() {

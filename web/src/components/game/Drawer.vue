@@ -5,7 +5,7 @@
     :width="width"
     app
   >
-    <v-container class="pb-8 px-6">
+    <v-container class="px-6">
       <v-row class="ma-0" />
 
       <v-row
@@ -15,24 +15,6 @@
       >
         <v-col>
           <Card :entry="entry" />
-        </v-col>
-      </v-row>
-
-      <v-row
-        class="pb-4"
-        style="flex: 0;"
-      >
-        <v-col>
-          <v-btn
-            @click="goTo('game')"
-            color="grey lighten-2"
-            depressed
-            outlined
-            rounded
-            block
-          >
-            {{ $t("game.fields.new-game-default") }}
-          </v-btn>
         </v-col>
       </v-row>
 
@@ -55,8 +37,11 @@ export default {
     };
   },
   methods: {
-    goTo(name) {
-      this.$router.push({ name });
+    get(name = null) {
+      this.$store.dispatch('statistics/get').then(() => {
+        const params = { lang: this.$i18n.locale, name };
+        this.$store.dispatch('home/get', params);
+      });
     },
   },
   computed: {
@@ -72,6 +57,9 @@ export default {
     },
   },
   watch: {
+    '$route.query.collection'(name) {
+      this.get(name);
+    },
     value() {
       this.drawer = this.value;
     },
@@ -83,10 +71,7 @@ export default {
     },
   },
   mounted() {
-    this.$store.dispatch('statistics/get').then(() => {
-      const params = { lang: this.$i18n.locale };
-      this.$store.dispatch('home/get', params);
-    });
+    this.get(this.$route.query.collection);
   },
   components: {
     Card: () => import('./DrawerCard.vue'),
@@ -103,5 +88,9 @@ export default {
 
 .row:first-child + .row {
   margin-top: 0;
+}
+
+.row:nth-last-child(2) {
+  padding-bottom: 12px;
 }
 </style>

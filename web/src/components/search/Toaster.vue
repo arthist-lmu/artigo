@@ -54,7 +54,7 @@ export default {
   },
   watch: {
     entries(values) {
-      if (values) {
+      if (values && values.length) {
         this.display = true;
       }
     },

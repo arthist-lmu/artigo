@@ -22,27 +22,43 @@ logger = logging.getLogger(__name__)
 class GameParameters(ABC):
     def run(self, **kwargs):
         langs = kwargs.get('lang', ['de', 'en'])
+        collection_ids = kwargs.get('collection_id', [])
 
         if not isinstance(langs, (list, set)):
             langs = [langs]
 
+        if not isinstance(collection_ids, (list, set)):
+            collection_ids = [collection_ids]
+
+        if not len(collection_ids):
+            values = Collection.objects \
+                .filter(access='O') \
+                .values_list('id', flat=True)
+
+            collection_ids = [None, *values]
+
         for lang in langs:
-            cache_name = f"{kwargs['name']}_{lang}"
-            values = cache.get(cache_name)
+            for collection_id in collection_ids:
+                cache_name = f"{kwargs['name']}_{lang}_{collection_id}"
+                values = cache.get(cache_name)
 
-            if values is None or kwargs.get('renew'):
-                values = []
+                if values is None or kwargs.get('renew'):
+                    values = []
 
-                for variant in self.get_variants(lang):
-                    values.append(self.create_game(variant, lang))
+                    for variant in self.get_variants(lang):
+                        params = (variant, lang, collection_id)
+                        try:
+                            values.append(self.create_game(*params))
+                        except IndexError:
+                            pass
 
-                timeout = kwargs.get('timeout', None)
-                cache.set(cache_name, values, timeout)
+                    timeout = kwargs.get('timeout', None)
+                    cache.set(cache_name, values, timeout)
 
         return values
 
     @abstractmethod
-    def create_game(self):
+    def create_game(self, *args):
         pass
 
     @staticmethod
@@ -94,7 +110,7 @@ class GameParameters(ABC):
 
 
 class RandomGameParameters(GameParameters):
-    def create_game(self, variant, lang):
+    def create_game(self, variant, lang, collection_id=None):
         game = {
             'type': variant['type'],
             'field': variant['field'],
@@ -108,6 +124,9 @@ class RandomGameParameters(GameParameters):
         valid_resources = Resource.objects \
             .filter(enabled=True) \
             .exclude(hash_id__exact='')
+
+        if collection_id is not None:
+            valid_resources = valid_resources.filter(collection_id=collection_id)
 
         if game['field'] == 'tags':
             if game['type'] == 'annotated-color':
@@ -231,7 +250,7 @@ class RandomGameParameters(GameParameters):
 
 
 class CollectionGameParameters(GameParameters):
-    def create_game(self, variant, lang):
+    def create_game(self, variant, lang, *args):
         game = {
             'path': variant['path'],
             'title': variant['title'],
