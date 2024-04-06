@@ -356,6 +356,10 @@ class Server:
             options=[
                 ('grpc.max_send_message_length', 50 * 1024 * 1024),
                 ('grpc.max_receive_message_length', 50 * 1024 * 1024),
+                ('grpc.keepalive_permit_without_calls', True),
+                ('grpc.keepalive_timeout_ms', 2 ** 31 - 1),
+                ('grpc.keepalive_time_ms', 2 ** 31 - 1),
+                ('grpc.http2.max_ping_strikes', 0),
             ],
         )
 
