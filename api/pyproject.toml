@@ -40,7 +40,7 @@ black = "*"
 flake8 = "*"
 isort = "*"
 pytest = "7.*"
-pytest-cov = "4.*"
+pytest-cov = "5.*"
 pytest-django = "4.*"
 
 [tool.black]
