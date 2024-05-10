@@ -1,23 +1,23 @@
-import axios from '@/plugins/axios';
+import axios from '@/plugins/axios'
 
 const home = {
   namespaced: true,
   state: {
-    data: {},
+    data: {}
   },
   actions: {
     get({ commit }, params) {
       axios.get('/home/', { params })
         .then(({ data }) => {
-          commit('updateData', data);
-        });
-    },
+          commit('updateData', data)
+        })
+    }
   },
   mutations: {
     updateData(state, data) {
-      state.data = data;
-    },
-  },
-};
+      state.data = data
+    }
+  }
+}
 
-export default home;
+export default home

@@ -1,144 +1,155 @@
 <template>
-  <Card
-    v-bind="$props"
-    v-on="$listeners"
+  <CardBase
     :title="$t('user.login.title')"
+    :is-dialog="isDialog"
+    theme="light"
+    @close="close"
   >
-    <p class="pb-4">{{ $t('user.login.note') }}</p>
+    <p class="pb-4 text-body-2 text-grey-darken-1">
+      {{ $t('user.login.note') }}
+    </p>
 
     <v-form
       v-model="isFormValid"
       @submit.prevent="login"
     >
       <v-text-field
-        v-model="user.email"
-        @keydown.enter="login"
+        v-model="email"
         :placeholder="$t('user.fields.email')"
-        :rules="[checkLength]"
+        :rules="[rules.length]"
+        clear-icon="mdi-close"
         tabindex="0"
         counter="75"
+        border="md"
+        variant="outlined"
+        density="compact"
         clearable
-        outlined
         rounded
-        dense
+        @keydown.enter="login"
       />
 
       <v-text-field
-        v-model="user.password"
-        @keydown.enter="login"
-        @click:append="showPassword = !showPassword"
+        v-model="password"
+        class="mt-2"
         :type="showPassword ? 'text' : 'password'"
         :placeholder="$t('user.fields.password')"
-        :rules="[checkLength]"
-        :append-icon="
-          showPassword ? 'mdi-eye-outline' : 'mdi-eye-off-outline'
-        "
+        :rules="[rules.length]"
+        :append-inner-icon="showPassword ? 'mdi-eye-outline' : 'mdi-eye-off-outline'"
+        clear-icon="mdi-close"
         tabindex="0"
         counter="75"
+        border="md"
+        variant="outlined"
+        density="compact"
         clearable
-        outlined
         rounded
-        dense
+        @keydown.enter="login"
+        @click:append-inner="showPassword = !showPassword"
       />
     </v-form>
 
-    <template v-slot:actions>
+    <template #actions>
       <v-row>
         <v-col>
           <v-btn
-            @click="login"
             :disabled="!isFormValid"
             type="submit"
             tabindex="0"
-            color="primary"
-            depressed
+            class="bg-primary"
             rounded
             block
+            @click="login"
           >
             {{ $t("user.login.title") }}
           </v-btn>
 
-          <v-btn
-            @click="resetPassword"
-            class="mt-2 ml-0"
-            tabindex="0"
-            rounded
-            small
-            plain
-            block
-            text
-          >
-            {{ $t("user.password-reset.title") }}
-          </v-btn>
+          <v-dialog max-width="400">
+            <template #activator="{ props: activatorProps }">
+              <v-btn
+                v-bind="activatorProps"
+                class="mt-2 ml-0"
+                tabindex="0"
+                variant="plain"
+                size="small"
+                rounded
+                block
+              >
+                {{ $t("user.password-reset.title") }}
+              </v-btn>
+            </template>
+
+            <template #default="{ isActive }">
+              <PasswordResetCard @close="isActive.value = false" />
+            </template>
+          </v-dialog>
         </v-col>
       </v-row>
     </template>
-
-    <template v-slot:dialogs>
-      <v-dialog
-        v-model="dialog.passwordReset"
-        max-width="400"
-      >
-        <PasswordResetCard v-model="dialog.passwordReset" />
-      </v-dialog>
-    </template>
-  </Card>
+  </CardBase>
 </template>
 
-<script>
-import Card from '@/components/utils/Card.vue';
+<script setup>
+import { ref, watch } from 'vue'
+import { useStore } from 'vuex'
+import { useI18n } from 'vue-i18n'
+import goTo from '@/composables/useGoTo'
+import useStatus from '@/composables/useStatus'
+import CardBase from '@/components/utils/CardBase.vue'
+import PasswordResetCard from '@/components/account/PasswordResetCard.vue'
 
-export default {
-  extends: Card,
-  props: {
-    ...Card.props,
-  },
-  data() {
-    return {
-      user: {},
-      isFormValid: false,
-      showPassword: false,
-      dialog: {
-        passwordReset: false,
-      },
-    };
-  },
-  methods: {
-    login() {
-      if (this.isFormValid) {
-        this.$store.dispatch('user/login', this.user);
+const store = useStore()
+const { t } = useI18n()
+
+const email = defineModel('email', { type: String })
+const password = defineModel('password', { type: String })
+const showPassword = ref(false)
+const rules = {
+  length: (v) => {
+    if (v) {
+      if (v.length < 4) {
+        return t('rules.min', 4)
       }
-    },
-    checkLength(value) {
-      if (value) {
-        if (value.length < 4) {
-          return this.$tc('rules.min', 4);
-        }
-        if (value.length > 75) {
-          return this.$tc('rules.max', 75);
-        }
-        return true;
+      if (v.length > 75) {
+        return t('rules.max', 75)
       }
-      return this.$t('field.required');
-    },
-    resetPassword() {
-      this.dialog.passwordReset = true;
-    },
-  },
-  watch: {
-    timestamp() {
-      if (this.isFormValid && this.status) {
-        if (this.isDialog) {
-          this.close();
-        } else {
-          this.$router.push({ name: 'home' });
-        }
-      }
-    },
-  },
-  components: {
-    PasswordResetCard: () => import('./PasswordResetCard.vue'),
-    Card,
-  },
-};
+      return true
+    }
+    return t('field.required')
+  }
+}
+
+const isFormValid = defineModel('isFormValid', {
+  type: Boolean,
+  default: false
+})
+function login() {
+  if (isFormValid.value) {
+    store.dispatch('user/login', {
+      email: email.value,
+      password: password.value
+    })
+  }
+}
+
+const emit = defineEmits(['close'])
+function close() {
+  emit('close')
+}
+
+const props = defineProps({
+  isDialog: {
+    type: Boolean,
+    default: true
+  }
+})
+const { isUpdated, isSuccessful } = useStatus()
+watch(isUpdated, () => {
+  if (isFormValid.value && isSuccessful.value) {
+    if (props.isDialog) {
+      close()
+    } else {
+      goTo('home')
+    }
+  }
+})
 </script>

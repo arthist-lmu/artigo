@@ -1,10 +1,13 @@
 <template>
-  <Card
-    v-bind="$props"
-    v-on="$listeners"
+  <CardBase
     :title="$t('collections.fields.change')"
+    :is-dialog="isDialog"
+    theme="light"
+    @close="close"
   >
-    <p class="pb-4">{{ $t('collections.note') }}</p>
+    <p class="pb-4 text-body-2 text-grey-darken-1">
+      {{ $t('collections.note') }}
+    </p>
 
     <v-form
       v-model="isFormValid"
@@ -12,148 +15,161 @@
     >
       <v-text-field
         v-model="params.title.de"
-        @keydown.enter="change"
         :placeholder="$t('user.upload.fields.name')"
-        :rules="[checkLength]"
-        class="mb-1"
+        :rules="[rules.length]"
+        clear-icon="mdi-close"
         tabindex="0"
         counter="75"
+        variant="outlined"
+        density="compact"
         clearable
-        outlined
         rounded
-        dense
+        @keydown.enter="change"
       >
-        <template v-slot:append>
+        <template #append>
           <span>DE</span>
         </template>
       </v-text-field>
 
       <v-text-field
         v-model="params.title.en"
-        @keydown.enter="change"
         :placeholder="$t('user.upload.fields.name')"
-        :rules="[checkLength]"
-        class="mb-1"
+        :rules="[rules.length]"
+        clear-icon="mdi-close"
+        class="mt-2"
         tabindex="0"
         counter="75"
+        variant="outlined"
+        density="compact"
         clearable
-        outlined
         rounded
-        dense
+        @keydown.enter="change"
       >
-        <template v-slot:append>
+        <template #append>
           <span>EN</span>
         </template>
       </v-text-field>
 
       <v-select
         v-model="params.access"
-        @keydown.enter="change"
         :placeholder="$t('user.upload.fields.access')"
-        :items="items.access"
-        item-text="name"
+        :items="accessItems"
+        item-title="name"
         item-value="value"
+        class="mt-2"
+        variant="outlined"
+        density="compact"
         hide-details
-        outlined
         rounded
-        dense
+        @keydown.enter="change"
       />
     </v-form>
 
-    <template v-slot:actions>
+    <template #actions>
       <v-row>
         <v-col>
           <v-btn
-            @click="change"
             :disabled="!isFormValid"
             type="submit"
             tabindex="0"
-            color="primary"
-            depressed
+            class="bg-primary"
             rounded
             block
+            @click="change"
           >
             {{ $t("collections.fields.change") }}
           </v-btn>
         </v-col>
       </v-row>
     </template>
-  </Card>
+  </CardBase>
 </template>
 
-<script>
-import Card from '@/components/utils/Card.vue';
+<script setup>
+import { ref, computed, watch } from 'vue'
+import { useStore } from 'vuex'
+import { useI18n } from 'vue-i18n'
+import useStatus from '@/composables/useStatus'
+import CardBase from '@/components/utils/CardBase.vue'
 
-export default {
-  extends: Card,
-  props: {
-    entry: Object,
-    ...Card.props,
+const store = useStore()
+const { t } = useI18n()
+
+const props = defineProps({
+  item: {
+    type: Object,
+    default: null
   },
-  data() {
-    return {
-      params: {
-        title: {
-          de: this.entry.title.de,
-          en: this.entry.title.en,
-        },
-        access: this.entry.access,
-      },
-      isFormValid: false,
+  isDialog: {
+    type: Boolean,
+    default: true
+  }
+})
+
+const rules = {
+  length: (v) => {
+    if (v) {
+      if (v.length < 4) {
+        return t('rules.min', 4)
+      }
+      if (v.length > 75) {
+        return t('rules.max', 75)
+      }
+      return true
+    }
+    return t('field.required')
+  }
+}
+
+const accessItems = computed(() => {
+  return [
+    {
+      name: t('collections.fields.accessOpen'),
+      value: 'O'
+    },
+    {
+      name: t('collections.fields.accessRestricted'),
+      value: 'R'
+    }
+  ]
+})
+
+const isFormValid = defineModel('isFormValid', {
+  type: Boolean,
+  default: false
+})
+const params = ref({
+  title: {
+    de: null,
+    en: null
+  },
+  access: null
+})
+function change() {
+  if (isFormValid.value) {
+    const entry = {
+      hash_id: props.item.hash_id,
+      ...params.value
     };
-  },
-  methods: {
-    change() {
-      if (this.isFormValid) {
-        const entry = { hash_id: this.entry.hash_id, ...this.params };
-        this.$store.dispatch('collection/change', entry);
-      }
-    },
-    checkLength(value) {
-      if (value) {
-        if (value.length < 4) {
-          return this.$tc('rules.min', 4);
-        }
-        if (value.length > 75) {
-          return this.$tc('rules.max', 75);
-        }
-        return true;
-      }
-      return true;
-    },
-  },
-  computed: {
-    items() {
-      return {
-        access: [
-          {
-            name: this.$t('collections.fields.access-open'),
-            value: 'O',
-          },
-          {
-            name: this.$t('collections.fields.access-restricted'),
-            value: 'R',
-          },
-        ],
-      };
-    },
-  },
-  watch: {
-    value(visible) {
-      if (!visible) {
-        this.$store.dispatch('collections/post', {});
-      }
-    },
-    timestamp() {
-      if (this.isFormValid && this.status) {
-        if (this.isDialog) {
-          this.close();
-        }
-      }
-    },
-  },
-  components: {
-    Card,
-  },
-};
+    store.dispatch('collection/change', entry)
+  }
+}
+watch(() => props.item, (value) => {
+  params.value = value
+}, { immediate: true })
+
+const emit = defineEmits(['close'])
+function close() {
+  emit('close')
+}
+
+const { isUpdated, isSuccessful } = useStatus()
+watch(isUpdated, () => {
+  store.dispatch('collections/post', {})
+  if (isFormValid.value && isSuccessful.value) {
+    if (props.isDialog) {
+      close()
+    }
+  }
+})
 </script>

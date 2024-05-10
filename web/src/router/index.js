@@ -1,208 +1,186 @@
-import Vue from 'vue';
-import VueRouter from 'vue-router';
-import i18n from '@/plugins/i18n';
-import store from '@/store';
-import RouterView from '@/views/RouterView.vue';
-import DefaultLayout from '@/layouts/Default.vue';
-import AccountLayout from '@/layouts/Account.vue';
+import { nextTick } from 'vue'
+import { createRouter, createWebHistory, RouterView } from 'vue-router'
+import i18n from '@/plugins/i18n'
+import store from '@/store'
+import DefaultLayout from '@/layouts/DefaultLayout.vue'
+import AccountLayout from '@/layouts/AccountLayout.vue'
 
-Vue.use(VueRouter);
+const { locale: currentLocale } = i18n.global
 
-const instituteUrl = 'https://www.kunstgeschichte.uni-muenchen.de';
-const router = new VueRouter({
-  mode: 'history',
-  base: process.env.BASE_URL,
+const router = createRouter({
+  history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
       path: '/',
-      redirect: `/${i18n.locale}`,
+      redirect: `/${currentLocale.value}`
     },
     {
-      path: '/:lang',
+      path: '/:locale',
       component: RouterView,
       beforeEnter(to, from, next) {
-        const { lang } = to.params;
-        if (!['en', 'de'].includes(lang)) {
-          return next('en');
+        const { locale } = to.params
+        if (!['en', 'de'].includes(locale)) {
+          return next('en')
         }
-        if (i18n.locale !== lang) {
-          i18n.locale = lang;
+        if (currentLocale.value !== locale) {
+          currentLocale.value = locale
         }
-        return next();
+        return next()
       },
       children: [
         {
           path: '',
           name: 'home',
-          component: () => import('@/views/Home.vue'),
+          component: () => import('@/views/HomeView.vue'),
           meta: {
             layout: DefaultLayout,
-            dark: true,
-          },
+            darkMode: true
+          }
         },
         {
           path: 'imprint',
           name: 'imprint',
           beforeEnter: () => {
-            window.open(`${instituteUrl}/funktionen/impressum`, '_blank');
-          },
-        },
-        {
-          path: 'privacy-policy',
-          name: 'privacy-policy',
-          beforeEnter: () => {
-            window.open(`${instituteUrl}/funktionen/datenschutz`, '_blank');
-          },
+            window.open('https://www.kunstgeschichte.uni-muenchen.de/funktionen/impressum', '_blank')
+            return false
+          }
         },
         {
           path: 'institute',
           name: 'institute',
           beforeEnter: () => {
-            window.open(`${instituteUrl}/`, '_blank');
-          },
+            window.open('https://www.kunstgeschichte.uni-muenchen.de/', '_blank')
+            return false
+          }
+        },
+        {
+          path: 'privacy-policy',
+          name: 'privacyPolicy',
+          beforeEnter: () => {
+            window.open('https://www.kunstgeschichte.uni-muenchen.de/funktionen/datenschutz', '_blank')
+            return false
+          }
         },
         {
           path: 'about',
           name: 'about',
-          component: () => import('@/views/About.vue'),
+          component: () => import('@/views/AboutView.vue'),
           meta: {
             title: 'about.title',
             layout: DefaultLayout,
-            dark: true,
-          },
+            darkMode: true
+          }
         },
         {
           path: 'search',
           name: 'search',
-          component: () => import('@/views/Search.vue'),
+          component: () => import('@/views/SearchView.vue'),
           meta: {
             title: 'search.title',
             layout: DefaultLayout,
-            hideSearchBar: true,
-          },
+            hideSearchBar: true
+          }
         },
         {
           path: 'collections',
           name: 'collections',
-          component: () => import('@/views/Collections.vue'),
+          component: () => import('@/views/CollectionsView.vue'),
           meta: {
             title: 'collections.title',
-            layout: DefaultLayout,
-          },
+            layout: DefaultLayout
+          }
         },
         {
           path: 'sessions',
           name: 'sessions',
-          component: () => import('@/views/Sessions.vue'),
+          component: () => import('@/views/SessionsView.vue'),
           meta: {
             title: 'sessions.title',
-            layout: DefaultLayout,
-          },
+            layout: DefaultLayout
+          }
         },
         {
           path: 'game/:id/',
           name: 'session',
-          component: () => import('@/views/Session.vue'),
+          component: () => import('@/views/SessionView.vue'),
           meta: {
             title: 'game.title',
             layout: DefaultLayout,
-            opaque: true,
-          },
+            opaque: true
+          }
         },
         {
           path: 'game',
           name: 'game',
-          component: () => import('@/views/Game.vue'),
+          component: () => import('@/views/GameView.vue'),
           meta: {
             title: 'game.title',
             layout: DefaultLayout,
-            opaque: true,
-          },
+            opaque: true
+          }
         },
         {
           path: 'login',
           name: 'login',
-          component: () => import('@/views/Login.vue'),
+          component: () => import('@/views/LoginView.vue'),
           meta: {
             title: 'user.login.title',
             layout: AccountLayout,
-            dark: true,
-          },
+            darkMode: true
+          }
         },
         {
           path: 'register',
           name: 'register',
-          component: () => import('@/views/Register.vue'),
+          component: () => import('@/views/RegisterView.vue'),
           meta: {
             title: 'user.register.title',
             layout: AccountLayout,
-            dark: true,
-          },
+            darkMode: true
+          }
         },
         {
           path: 'password/reset/confirm/:uid/:token/',
           name: 'password-reset-confirm',
-          component: () => import('@/views/PasswordResetConfirm.vue'),
+          component: () => import('@/views/PasswordResetConfirmView.vue'),
           meta: {
-            title: 'user.password-reset.title',
+            title: 'user.passwordReset.title',
             layout: AccountLayout,
-            dark: true,
-          },
+            darkMode: true
+          }
         },
         {
-          path: '404',
-          name: 'not-found',
-          component: () => import('@/views/NotFound.vue'),
+          path: ':pathMatch(.*)',
+          name: 'notFound',
+          component: () => import('@/views/NotFoundView.vue'),
           meta: {
-            title: 'not-found.title',
-            layout: DefaultLayout,
-          },
-        },
-        {
-          path: '*',
-          name: 'not-found-redirect',
-          beforeEnter: (to) => {
-            window.location = `/${to.params.lang}/404`;
-          },
-        },
-      ],
-    },
-  ],
-});
-
-const routerPush = VueRouter.prototype.push;
-VueRouter.prototype.push = function push(location) {
-  return new Promise((resolve, reject) => {
-    routerPush.call(this, location, () => {
-      resolve(this.currentRoute);
-    }, (error) => {
-      if (error.name === 'NavigationDuplicated') {
-        resolve(this.currentRoute);
-      } else {
-        reject(error);
-      }
-    });
-  });
-};
+            title: 'notFound.title',
+            layout: DefaultLayout
+          }
+        }
+      ]
+    }
+  ]
+})
 
 router.beforeResolve((to, from, next) => {
   if (to.name) {
-    const status = { loading: true, error: false };
-    store.dispatch('utils/setStatus', status, { root: true });
+    const status = { loading: true, error: false }
+    store.dispatch('utils/setStatus', status, { root: true })
   }
-  next();
-});
+  next()
+})
 
 router.afterEach((to) => {
-  Vue.nextTick(() => {
-    let title = 'ARTigo – Social Image Tagging';
+  nextTick(() => {
+    let title = 'ARTigo – Social Image Tagging'
     if (Object.keys(to.meta).length && to.meta.title) {
-      title = `${i18n.t(to.meta.title)} | ${title}`;
+      title = `${i18n.global.t(to.meta.title)} | ${title}`
     }
-    document.title = title;
-    const status = { loading: false, error: false };
-    store.dispatch('utils/setStatus', status, { root: true });
-  });
-});
+    document.title = title
+    const status = { loading: false, error: false }
+    store.dispatch('utils/setStatus', status, { root: true })
+  })
+})
 
-export default router;
+export default router

@@ -5,58 +5,62 @@
       :key="tag.id"
       :title="tag.name"
       :style="{ 'font-size': tag.size + 'px' }"
-      @click.stop="search(tag.name)"
       class="mr-1 mb-1"
       color="primary"
-      x-small
+      variant="flat"
+      size="x-small"
+      @click.stop="search(tag.name)"
     >
-     <span class="clip">{{ tag.name }}</span>
+      <span class="clip">
+        {{ tag.name }}
+      </span>
     </v-chip>
   </div>
 </template>
 
-<script>
-export default {
-  props: {
-    tags: Array,
-  },
-  methods: {
-    search(value) {
-      const query = { tags: value };
-      this.$store.dispatch('search/post', { query });
-    },
-  },
-  computed: {
-    tagSizes() {
-      let tags = {};
-      this.tags.forEach(({
-        id, language, name, count,
-      }) => {
-        let size = 12;
-        if (count > 4) {
-          size += 3;
-        } else if (count > 9) {
-          size += 6;
-        } else if (count > 14) {
-          size += 9;
-        }
-        if (
-          language === this.$i18n.locale
-          || language === undefined
-        ) {
-          if (!this.keyInObj(id, tags)) {
-            tags[id] = { id, name, size };
-          }
-        }
-      });
-      tags = Object.values(tags);
-      if (tags.length > 10) {
-        return tags.slice(0, 10);
+<script setup>
+import { computed } from 'vue'
+import { useStore } from 'vuex'
+import i18n from '@/plugins/i18n'
+import keyInObj from '@/composables/useKeyInObj'
+
+const store = useStore()
+
+const props = defineProps({
+  tags: {
+    type: Array,
+    default: null
+  }
+})
+
+function search(value) {
+  const query = { tags: value }
+  store.dispatch('search/post', { query })
+}
+
+const tagSizes = computed(() => {
+  const locale = i18n.global.locale.value
+  const tagMap = {}
+  props.tags.forEach(({
+    id, language, name, count,
+  }) => {
+    let size = 12
+    if (count > 4) {
+      size += 3
+    } else if (count > 9) {
+      size += 6
+    } else if (count > 14) {
+      size += 9
+    }
+    if (language === locale || language === undefined) {
+      if (!keyInObj(id, tagMap)) {
+        tagMap[id] = { id, name, size }
       }
-      return tags;
-    },
-  },
-};
+    }
+  })
+  const tags = Object.values(tagMap)
+  return tags.length > 10 ? tags.slice(0, 10) : tags
+})
 </script>
 
 <style scoped>
@@ -70,7 +74,7 @@ export default {
   -webkit-box-orient: vertical;
 }
 
-.v-chip.v-size--x-small {
+.v-chip--size-x-small {
   height: 20px;
 }
 </style>

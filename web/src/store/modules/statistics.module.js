@@ -1,23 +1,23 @@
-import axios from '@/plugins/axios';
+import axios from '@/plugins/axios'
 
 const statistics = {
   namespaced: true,
   state: {
-    data: {},
+    data: {}
   },
   actions: {
     get({ commit }, params) {
       axios.get('/statistics/', { params })
         .then(({ data }) => {
-          commit('updateData', data);
-        });
-    },
+          commit('updateData', data)
+        })
+    }
   },
   mutations: {
     updateData(state, data) {
-      state.data = data;
-    },
-  },
-};
+      state.data = data
+    }
+  }
+}
 
-export default statistics;
+export default statistics

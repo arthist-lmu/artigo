@@ -1,0 +1,29 @@
+$font-family: 'montserrat', sans-serif;
+$typography: (
+  'body-2': (
+    'line-height': 1.4rem
+  )
+);
+$border-radius: 28px;
+
+@use 'vuetify/settings' with (
+  $body-font-family: $font-family,
+  $typography: $typography,
+  $button-text-letter-spacing: 0,
+  $button-text-transform: none,
+  $alert-border-radius: $border-radius,
+  $menu-content-border-radius: $border-radius,
+  $snackbar-border-radius: $border-radius,
+  $list-padding: 0 0,
+  $dialog-border-radius: $border-radius,
+  $dialog-card-header-padding: 14px 24px,
+  $stepper-item-padding: 24px 0 16px,
+  $card-border-radius: $border-radius,
+  $card-item-padding: 14px 24px,
+  $card-title-word-break: break-word,
+  $expansion-panel-border-radius: $border-radius,
+  $expansion-panel-background-color: rgb(var(--v-theme-primary)),
+  $expansion-panel-color: rgba(var(--v-theme-surface-variant), var(--v-high-emphasis-opacity)),
+  $snackbar-background: rgb(var(--v-theme-surface)),
+  $snackbar-color: rgb(var(--v-theme-on-surface))
+)

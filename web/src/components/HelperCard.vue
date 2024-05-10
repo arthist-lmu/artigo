@@ -1,7 +1,7 @@
 <template>
-  <Card
-    v-bind="$props"
-    v-on="$listeners"
+  <CardBase
+    theme="light"
+    @close="close"
   >
     <v-row
       align="center"
@@ -13,18 +13,20 @@
       >
         <v-icon
           color="primary"
-          large
+          size="large"
         >
           {{ icon }}
         </v-icon>
       </v-col>
 
       <v-col>
-        <p class="mb-0">{{ text }}</p>
+        <p class="text-body-2 text-grey-darken-1">
+          {{ text }}
+        </p>
       </v-col>
     </v-row>
 
-    <template v-slot:actions>
+    <template #actions>
       <v-row>
         <v-col cols="6">
           <template v-if="$slots.button">
@@ -32,24 +34,22 @@
           </template>
           <template v-else>
             <v-btn
-              v-if="page"
-              @click="goTo(page)"
+              v-if="props.page"
               tabindex="0"
-              color="primary"
-              depressed
+              class="bg-primary"
               rounded
               block
+              @click="goTo(props.page, openInNewTab = true); close();"
             >
               {{ $t("field.okay") }}
             </v-btn>
             <v-btn
               v-else
-              @click="close"
               tabindex="0"
-              color="primary"
-              depressed
+              class="bg-primary"
               rounded
               block
+              @click="close"
             >
               {{ $t("field.okay") }}
             </v-btn>
@@ -58,46 +58,42 @@
 
         <v-col cols="6">
           <v-btn
-            @click="close"
             tabindex="0"
-            depressed
             rounded
             block
+            @click="close"
           >
             {{ $t("field.abort") }}
           </v-btn>
         </v-col>
       </v-row>
     </template>
-  </Card>
+  </CardBase>
 </template>
 
-<script>
-import Card from '@/components/utils/Card.vue';
+<script setup>
+import goTo from '@/composables/useGoTo'
+import CardBase from '@/components/utils/CardBase.vue'
 
-export default {
-  extends: Card,
-  props: {
-    text: String,
-    icon: {
-      type: String,
-      required: false,
-    },
-    page: {
-      type: String,
-      required: false,
-    },
-    ...Card.props,
+const props = defineProps({
+  text: {
+    type: String,
+    default: null
   },
-  methods: {
-    goTo(name) {
-      const route = this.$router.resolve({ name });
-      window.open(route.href, '_blank');
-      this.close();
-    },
+  icon: {
+    type: String,
+    required: false,
+    default: null
   },
-  components: {
-    Card,
-  },
-};
+  page: {
+    type: String,
+    required: false,
+    default: null
+  }
+})
+
+const emit = defineEmits(['update:modelValue'])
+function close() {
+  emit('update:modelValue', false)
+}
 </script>

@@ -1,58 +1,86 @@
 <template>
   <v-stepper
     v-model="stepper"
-    class="pb-0"
-    vertical
+    style="display: none;"
+  />
+
+  <v-stepper
+    v-model="stepper"
+    non-linear
     flat
   >
-    <div
+    <template
       v-for="(name, i) in Object.keys(data)"
       :key="name"
-      :class="{
-        'border-left': (i < (3 - 1) && !showMore) || (i < Object.keys(data).length - 1 && showMore),
-        active: stepper === i + 1
-      }"
     >
-      <template v-if="i < 3 || showMore">
-        <v-stepper-step
-          :class="{ disabled: data[name].default === undefined }"
-          :complete="stepper > i + 1"
-          :step="i + 1"
+      <v-stepper-header v-if="i < 3 || showMore">
+        <v-stepper-item
+          :complete="stepper > i"
+          :step="i"
+          :value="i"
+          :disabled="data[name].default === undefined"
           :editable="data[name].default !== undefined"
-          complete-icon="mdi-check"
-          edit-icon="mdi-check"
         >
-          {{ $t('game.params')[name].title }}
+          <template #icon="{ hasCompleted, step }">
+            <v-btn
+              v-if="hasCompleted"
+              class="bg-primary"
+              icon="mdi-check"
+            />
+            <v-avatar
+              v-else
+              color="primary"
+            >
+              {{ step + 1 }}
+            </v-avatar>
+          </template>
 
-          <small class="mt-1">
-            <span v-if="typeof data[name].default === 'string'">
-              {{ $t(`game.params.${name}.fields.${data[name].default}`) }}
-            </span>
+          <template #title>
+            {{ $t(`game.params.${name}.title`) }}
+          </template>
 
-            <span v-if="typeof data[name].default === 'number'">
-              {{ $tc(`game.params.${name}.suffix`, data[name].default) }}
-            </span>
-          </small>
-        </v-stepper-step>
+          <template #subtitle>
+            <div
+              v-if="data[name].default !== undefined"
+              class="mt-2"
+            >
+              <template v-if="typeof data[name].default === 'string'">
+                {{ $t(`game.params.${name}.fields.${data[name].default}`) }}
+              </template>
 
-        <v-stepper-content :step="i + 1">
+              <template v-if="typeof data[name].default === 'number'">
+                {{ $t(`game.params.${name}.suffix`, data[name].default) }}
+              </template>
+            </div>
+          </template>
+        </v-stepper-item>
+      </v-stepper-header>
+
+      <v-stepper-window
+        v-show="stepper == i"
+        direction="vertical"
+      >
+        <v-stepper-window-item :value="i">
           <template v-if="typeof data[name].default === 'string'">
             <v-select
               v-model="data[name].default"
               :items="data[name].items"
-              class="mt-1"
+              border="md"
+              variant="outlined"
+              density="compact"
               hide-details
               single-line
-              outlined
               rounded
-              dense
             >
-              <template v-slot:item="{ item }">
-                {{ $t(`game.params.${name}.fields.${item}`) }}
+              <template #item="{ props: propsSelect, item }">
+                <v-list-item
+                  v-bind="propsSelect"
+                  :title="$t(`game.params.${name}.fields.${item.raw}`)"
+                />
               </template>
 
-              <template v-slot:selection="{ item }">
-                {{ $t(`game.params.${name}.fields.${item}`) }}
+              <template #selection="{ item }">
+                {{ $t(`game.params.${name}.fields.${item.raw}`) }}
               </template>
             </v-select>
 
@@ -61,24 +89,24 @@
               v-model="data[name].params[`${data[name].default.split('_')[1]}_inputs`]"
               :placeholder="$t(`game.inputs.${data[name].default}`)"
               class="mt-2"
+              border="md"
+              variant="outlined"
+              density="compact"
               hide-details
               single-line
-              outlined
               multiple
               rounded
               chips
-              dense
             >
-              <template v-slot:selection="{ item }">
+              <template #selection="{ item }">
                 <v-chip
                   class="mr-1 ml-0"
                   color="primary"
-                  outlined
-                  dense
+                  variant="outlined"
+                  size="small"
                   close
-                  small
                 >
-                  {{ item }}
+                  {{ item.raw }}
                 </v-chip>
               </template>
             </v-combobox>
@@ -92,224 +120,236 @@
             :step="settings[name].step"
             append-icon="mdi-chevron-right"
             prepend-icon="mdi-chevron-left"
+            thumb-size="10"
+            track-size="2"
+            color="primary"
             hide-details
-            dense
           />
-        </v-stepper-content>
-      </template>
-    </div>
+        </v-stepper-window-item>
+      </v-stepper-window>
+    </template>
   </v-stepper>
 </template>
 
-<script>
+<script setup>
+import { ref, watch } from 'vue'
+import i18n from '@/plugins/i18n'
+import isArray from '@/composables/useIsArray'
+import keyInObj from '@/composables/useKeyInObj'
 // eslint-disable-next-line
-import configs from '/config.json';
+import defaultConfig from '/config.json'
 
-export default {
-  props: {
-    defaultParams: Object,
-    showMore: {
-      type: Boolean,
-      default: false,
-    },
+const { locale } = i18n.global
+
+const props = defineProps({
+  defaultParams: {
+    type: Object,
+    default: null
   },
-  data() {
-    return {
-      settings: {
-        game_type: {
-          default: 'tagging',
-        },
-        game_round_duration: {
-          min: 20,
-          max: 600,
-          step: 20,
-          default: 60,
-        },
-        resource_rounds: {
-          min: 1,
-          max: 25,
-          step: 1,
-        },
-        resource_type: {
+  showMore: {
+    type: Boolean,
+    default: false
+  }
+})
 
-        },
-        opponent_type: {
-          setNone: true,
-        },
-        input_type: {
+const data = ref({
+  game_type: {
+    default: null
+  }
+})
+const stepper = ref(0)
 
-        },
-        taboo_type: {
-
-        },
-        suggester_type: {
-          multiple: true,
-        },
-      },
-      isSetup: false,
-      configs: [],
-      stepper: 1,
-      data: {},
-    };
+const settings = ref({
+  game_type: {
+    default: 'tagging'
   },
-  methods: {
-    update() {
-      const input = {
-        score_type: [
-          'annotation_validated_score',
-          'opponent_validated_score',
-        ],
-        game_language: this.$i18n.locale,
-      };
-      Object.entries(this.data).forEach(([pluginType, { default: defaultValue, params }]) => {
-        if (defaultValue !== undefined) {
-          input[pluginType] = defaultValue;
-          if (params !== undefined) {
-            Object.entries(params).forEach(([configParam, values]) => {
-              if (!this.keyInObj(configParam, this.data)) {
-                if (
-                  (typeof values === 'string' && values.length)
-                  || (typeof values === 'number')
-                  || (this.isArray(values) && values.length)
-                ) {
-                  input[configParam] = values;
-                }
-              }
-            });
+  game_round_duration: {
+    min: 20,
+    max: 600,
+    step: 20,
+    default: 60
+  },
+  resource_rounds: {
+    min: 1,
+    max: 25,
+    step: 1,
+    default: 5
+  },
+  resource_type: {
+
+  },
+  opponent_type: {
+    setNone: true
+  },
+  input_type: {
+
+  },
+  taboo_type: {
+
+  },
+  suggester_type: {
+    multiple: true
+  }
+})
+
+function setDefaultParams(params) {
+  if (params) {
+    Object.entries(params).forEach(([name, values]) => {
+      if (keyInObj(name, data.value)) {
+        data.value[name].default = values
+      } else {
+        const configName = name.split('_')[0]
+        const pluginType = `${configName}_type`
+        if (keyInObj(pluginType, data.value)) {
+          if (!keyInObj('params', data.value[pluginType])) {
+            data.value[pluginType].params = {}
           }
-        }
-      });
-      this.$emit('input', input);
-    },
-    setDefault(params) {
-      if (params && Object.keys(params).length) {
-        Object.entries(params).forEach(([name, values]) => {
-          if (this.keyInObj(name, this.data)) {
-            this.$set(this.data[name], 'default', values);
+          if (isArray(values)) {
+            data.value[pluginType].params[name] = []
+            values.forEach((value, i) => {
+              data.value[pluginType].params[name][i] = value
+            })
           } else {
-            const configName = name.split('_')[0];
-            const pluginType = `${configName}_type`;
-            if (this.keyInObj(pluginType, this.data)) {
-              if (!this.keyInObj('params', this.data[pluginType])) {
-                this.$set(this.data[pluginType], 'params', {});
-              }
-              if (this.isArray(values)) {
-                this.$set(this.data[pluginType].params, name, []);
-                values.forEach((value, i) => {
-                  this.$set(this.data[pluginType].params[name], i, value);
-                });
-              } else {
-                this.$set(this.data[pluginType].params, name, values);
-              }
-            }
+            data.value[pluginType].params[name] = values
           }
-        });
-      }
-    },
-  },
-  watch: {
-    data: {
-      handler() {
-        this.update();
-      },
-      deep: true,
-    },
-    defaultParams(values) {
-      this.setDefault(values);
-    },
-    'data.game_type.default': {
-      handler(gameType) {
-        const validPluginTypes = new Set();
-        this.configs.forEach(({ name: configName, plugins }) => {
-          const pluginType = `${configName}_type`;
-          plugins.forEach((plugin) => {
-            if (plugin.game_types.includes(gameType)) {
-              validPluginTypes.add(pluginType);
-              if (this.keyInObj(pluginType, this.settings)) {
-                if (!this.keyInObj(pluginType, this.data)) {
-                  this.$set(this.data, pluginType, {});
-                }
-                if (!this.keyInObj('params', this.data[pluginType])) {
-                  this.$set(this.data[pluginType], 'params', {});
-                }
-                if (!this.keyInObj('items', this.data[pluginType])) {
-                  this.$set(this.data[pluginType], 'items', []);
-                }
-                this.data[pluginType].items.push(plugin.name);
-                if (!this.keyInObj('default', this.data[pluginType]) && plugin.default) {
-                  this.$set(this.data[pluginType], 'default', plugin.name);
-                }
-                if (plugin.params !== undefined) {
-                  Object.entries(plugin.params).forEach(([param, values]) => {
-                    const configParam = `${configName}_${param}`;
-                    if (this.keyInObj(configParam, this.settings)) {
-                      if (!this.keyInObj(configParam, this.data)) {
-                        this.$set(this.data, configParam, {});
-                      }
-                      if (!this.keyInObj('default', this.data[configParam])) {
-                        this.$set(this.data[configParam], 'default', values);
-                      }
-                    } else if (!this.keyInObj(configParam, this.data[pluginType].params)) {
-                      this.$set(this.data[pluginType].params, configParam, values);
-                    }
-                  });
-                }
-              }
-            }
-          });
-          if (
-            this.keyInObj(pluginType, this.data)
-            && this.keyInObj('items', this.data[pluginType])
-          ) {
-            if (!this.keyInObj('default', this.data[pluginType])) {
-              this.$set(this.data[pluginType], 'default', `no_${configName}`);
-              this.data[pluginType].items.unshift(`no_${configName}`);
-            } else if (this.settings[pluginType].setNone) {
-              this.data[pluginType].items.unshift(`no_${configName}`);
-            }
-          }
-        });
-        Object.keys(this.data).forEach((pluginType) => {
-          if (
-            !validPluginTypes.has(pluginType)
-            && pluginType.split('_')[0] !== 'game'
-            && pluginType.split('_')[1] === 'type'
-          ) {
-            this.$delete(this.data, pluginType);
-          }
-        });
-        if (!this.isSetup) {
-          // set default params only on setup
-          this.setDefault(this.defaultParams);
-          this.isSetup = true;
         }
-      },
-    },
-  },
-  created() {
-    this.configs = [];
-    let gameItems = new Set();
-    Object.keys(configs).forEach((configName) => {
-      const plugins = configs[configName];
-      this.configs.push({
-        name: configName,
-        plugins,
-      });
-      plugins.forEach(({ game_types }) => {
-        game_types.forEach((value) => {
-          gameItems.add(value);
-        });
-      });
-    });
-    gameItems = Array.from(gameItems);
-    this.$set(this.settings.game_type, 'items', gameItems);
-    Object.entries(this.settings).forEach(([configParam, values]) => {
-      this.$set(this.data, configParam, {});
-      if (this.keyInObj('default', values)) {
-        this.$set(this.data[configParam], 'default', values.default);
       }
-    });
-    this.$set(this.data.game_type, 'items', gameItems);
-  },
-};
+    })
+  }
+}
+
+watch(() => data.value.game_type.default, (value) => setDefaultConfig(value))
+const ensureObjectProperty = (obj, prop, defaultValue) => {
+  if (!Object.prototype.hasOwnProperty.call(obj, prop)) {
+    obj[prop] = defaultValue
+  }
+}
+function setDefaultConfig(gameType) {
+  const validPluginTypes = new Set()
+  currentConfig.value.forEach(({ name: configName, plugins }) => {
+    const pluginType = `${configName}_type`
+    plugins.forEach((plugin) => {
+      if (plugin.game_types.includes(gameType)) {
+        validPluginTypes.add(pluginType)
+        if (keyInObj(pluginType, settings.value)) {
+          ensureObjectProperty(data.value, pluginType, {})
+          ensureObjectProperty(data.value[pluginType], 'params', {})
+          ensureObjectProperty(data.value[pluginType], 'items', [])
+          data.value[pluginType].items.push(plugin.name)
+          if (!keyInObj('default', data.value[pluginType]) && plugin.default) {
+            data.value[pluginType].default = plugin.name
+          }
+          if (plugin.params) {
+            Object.entries(plugin.params).forEach(([param, values]) => {
+              const configParam = `${configName}_${param}`
+              if (keyInObj(configParam, settings.value)) {
+                if (!keyInObj(configParam, data.value)) {
+                  data.value[configParam] = {}
+                }
+                if (!keyInObj('default', data.value[configParam])) {
+                  data.value[configParam].default = values
+                }
+              } else if (!keyInObj(configParam, data.value[pluginType].params)) {
+                data.value[pluginType].params[configParam] = values
+              }
+            })
+          }
+        }
+      }
+    })
+    if (
+      keyInObj(pluginType, data.value)
+      && keyInObj('items', data.value[pluginType])
+    ) {
+      if (!keyInObj('default', data.value[pluginType])) {
+        data.value[pluginType].default = `no_${configName}`
+        data.value[pluginType].items.unshift(`no_${configName}`)
+      } else if (settings.value[pluginType].setNone) {
+        data.value[pluginType].items.unshift(`no_${configName}`)
+      }
+    }
+  })
+  Object.keys(data.value).forEach((pluginType) => {
+    const isType = pluginType.split('_')[1] === 'type'
+    const isNotGame = pluginType.split('_')[0] !== 'game'
+    if (!validPluginTypes.has(pluginType) && isNotGame && isType) {
+      delete data.value[pluginType]
+    }
+  })
+}
+
+watch(data, () => update(), { deep: true })
+const emit = defineEmits(['update:modelValue'])
+function update() {
+  const input = {
+    score_type: [
+      'annotation_validated_score',
+      'opponent_validated_score'
+    ],
+    game_language: locale.value
+  }
+  Object.entries(data.value).forEach(([pluginType, { default: defaultValue, params }]) => {
+    if (defaultValue !== undefined) {
+      input[pluginType] = defaultValue
+    }
+    if (params) {
+      Object.entries(params).forEach(([param, values]) => {
+        const isValid = typeof values === 'string' && values.length
+          || typeof values === 'number'
+          || (isArray(values) && values.length)
+        if (!keyInObj(param, data) && isValid) {
+          input[param] = values
+        }
+      })
+    }
+  })
+  emit('update:modelValue', input)
+}
+
+const currentConfig = ref([])
+const gameTypeItems = new Set()
+Object.entries(defaultConfig).forEach(([configName, plugins]) => {
+  currentConfig.value.push({
+    name: configName,
+    plugins
+  })
+  plugins.forEach(({ game_types }) => {
+    game_types.forEach((gameType) => {
+      gameTypeItems.add(gameType)
+    })
+  })
+})
+settings.value.game_type.items = [...gameTypeItems]
+Object.entries(settings.value).forEach(([configParam, values]) => {
+  const configData = data.value[configParam] = {}
+  if (keyInObj('default', values)) {
+    configData.default = values.default
+  }
+})
+data.value.game_type.items = gameTypeItems
+setDefaultParams(props.defaultParams)
 </script>
+
+<style>
+.v-stepper-item > .v-avatar {
+  margin-right: 24px !important;
+}
+</style>
+
+<style scoped>
+.v-stepper-header {
+  box-shadow: none;
+}
+
+.v-stepper-item {
+  text-align: left;
+}
+
+.v-stepper-item--disabled {
+  opacity: 0.15;
+}
+
+.v-window {
+  margin: 4px 0 4px 48px;
+}
+</style>

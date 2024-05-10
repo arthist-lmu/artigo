@@ -1,0 +1,28 @@
+{
+  "extends": [
+    "stylelint-config-standard-scss",
+    "stylelint-config-standard-vue/scss"
+  ],
+  "overrides": [
+    {
+      "files": ["**/*.(less|css|vue|html)"],
+      "customSyntax": "postcss-less"
+    },
+    {
+      "files": ["**/*.(html|vue)"],
+      "customSyntax": "postcss-html"
+    }
+  ],
+  "ignoreFiles": [
+    "**/*.js",
+    "**/*.jsx",
+    "**/*.tsx",
+    "**/*.ts",
+    "**/*.json",
+    "**/*.md",
+    "**/*.yaml"
+  ],
+  "rules": {
+    "selector-class-pattern": null
+  }
+}

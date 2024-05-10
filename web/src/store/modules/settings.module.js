@@ -3,19 +3,19 @@ const settings = {
   state: {
     display: {
       tags: true,
-      metadata: true,
-    },
+      metadata: true
+    }
   },
   actions: {
     setDisplay({ commit }, params) {
-      commit('updateDisplay', params);
-    },
+      commit('updateDisplay', params)
+    }
   },
   mutations: {
     updateDisplay(state, { type, value }) {
-      state.display[type] = value;
-    },
-  },
-};
+      state.display[type] = value
+    }
+  }
+}
 
-export default settings;
+export default settings

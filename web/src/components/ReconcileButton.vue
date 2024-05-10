@@ -1,31 +1,28 @@
 <template>
-  <span v-if="!isAnonymous">
+  <span v-if="!isUserAnonymous">
     <v-btn
-      v-if="type"
-      @click="reconcile(type)"
+      v-if="field"
       :title="$t('reconcile.title')"
-      color="grey lighten-2"
-      icon
-    >
-      <v-icon>mdi-wiper</v-icon>
-    </v-btn>
-
+      variant="plain"
+      density="comfortable"
+      icon="mdi-wiper"
+      size="small"
+      @click="reconcile(field)"
+    />
     <v-menu
       v-else
       open-on-hover
-      offset-y
     >
-      <template v-slot:activator="{ on, attrs }">
+      <template #activator="{ props: activatorProps }">
         <v-btn
+          v-bind="activatorProps"
           :title="$t('reconcile.title')"
-          v-bind="attrs"
-          v-on="on"
           class="ml-1 mr-n2"
-          color="primary"
-          icon
-        >
-          <v-icon>mdi-wiper</v-icon>
-        </v-btn>
+          variant="plain"
+          density="comfortable"
+          icon="mdi-wiper"
+          size="small"
+        />
       </template>
 
       <v-list>
@@ -45,66 +42,49 @@
   </span>
 </template>
 
-<script>
-export default {
-  props: {
-    entries: Array,
+<script setup>
+import { computed } from 'vue'
+import { useStore } from 'vuex'
+import getTitle from '@/composables/useGetTitle'
+import getCreators from '@/composables/useGetCreators'
+
+const store = useStore()
+
+const props = defineProps({
+  items: {
+    type: Array,
+    default: null
+  },
+  field: {
     type: String,
-  },
-  methods: {
-    reconcile(type) {
-      const queries = [];
-      this.entries.forEach(({ id, meta }) => {
-        switch (type) {
-          case 'creator':
-            queries.push({
-              id,
-              name: this.creators(meta),
-              type,
-            });
-            break;
-          case 'resource':
-            queries.push({
-              id,
-              name: this.titles(meta),
-              type,
-            });
-            break;
-          default:
-            break;
-        }
-      });
-      this.$store.dispatch('reconcile/post', { queries });
-    },
-    titles(meta) {
-      const titles = [];
-      meta.forEach(({ name, value_str }) => {
-        if (name === 'titles' && value_str) {
-          titles.push(value_str);
-        }
-      });
-      if (titles.length > 0) {
-        return titles[0];
-      }
-      return this.$t('resource.default.title');
-    },
-    creators(meta) {
-      const creators = [];
-      meta.forEach(({ name, value_str }) => {
-        if (name === 'creators' && value_str) {
-          creators.push(value_str);
-        }
-      });
-      if (creators.length > 0) {
-        return creators[0];
-      }
-      return this.$t('resource.default.creator');
-    },
-  },
-  computed: {
-    isAnonymous() {
-      return this.$store.state.user.isAnonymous;
-    },
-  },
-};
+    default: null
+  }
+})
+
+function reconcile(field) {
+  const queries = []
+  props.items.forEach((item) => {
+    switch (field) {
+      case 'creator':
+        queries.push({
+          id: item.id,
+          name: getCreators(item)[0],
+          type: field
+        })
+        break
+      case 'resource':
+        queries.push({
+          id: item.id,
+          name: getTitle(item),
+          type: field
+        })
+        break
+      default:
+        break
+    }
+  })
+  store.dispatch('reconcile/post', { queries })
+}
+
+const isUserAnonymous = computed(() => store.state.user.isAnonymous)
 </script>

@@ -1,54 +1,59 @@
 <template>
-  <v-hover v-slot="{ hover }">
+  <v-hover
+    v-if="!isDisabled"
+    v-slot="{ props: activatorProps }"
+  >
     <div
+      v-bind="activatorProps"
+      class="grid-item"
+      :disabled="isDisabled ? true : undefined"
       @click="goTo('session')"
       @keyDown="goTo('session')"
-      class="grid-item"
-      :disabled="isDisabled"
     >
       <img
-        :src="entry.path"
-        v-on:error="onError"
+        :src="item.path"
         alt=""
-      />
+        @error="onError"
+      >
 
       <v-container class="overlay">
         <v-row style="flex: 0;">
           <v-col class="pa-4">
             <div class="text-subtitle-1 white--text">
-              <b>{{ date }}</b>
+              <b>{{ itemDate }}</b>
             </div>
 
             <div class="text-caption">
               <v-icon
-                class="mt-n1"
+                class="mr-1"
                 color="white"
-                x-small
-                left
+                size="x-small"
               >
                 mdi-clock-outline
               </v-icon>
 
-              <span>{{ time }}</span>
+              <span>{{ itemTime }}</span>
             </div>
           </v-col>
         </v-row>
 
-        <v-row></v-row>
+        <v-row />
 
         <v-row style="flex: 0;">
-          <v-col class="pa-4" align="right">
+          <v-col
+            class="pa-4"
+            align="right"
+          >
             <v-btn
               color="primary"
-              style="min-width: 50px !important;"
-              depressed
               rounded
+              flat
             >
-              <v-icon left>
+              <v-icon class="mr-2">
                 mdi-tag-outline
               </v-icon>
 
-              {{ entry.annotations }}
+              {{ item.annotations }}
             </v-btn>
           </v-col>
         </v-row>
@@ -57,73 +62,76 @@
   </v-hover>
 </template>
 
-<script>
-export default {
-  props: {
-    entry: Object,
-    height: {
-      type: String,
-      default: '225',
-    },
+<script setup>
+import { computed } from 'vue'
+import { useRouter } from 'vue-router'
+import i18n from '@/plugins/i18n'
+import useResource from '@/composables/useResource'
+
+const router = useRouter()
+const { locale } = i18n.global
+
+const props = defineProps({
+  item: {
+    type: Object,
+    default: null,
+    required: true
   },
-  data() {
-    return {
-      isDisabled: false,
-    };
-  },
-  methods: {
-    goTo(name) {
-      const params = { id: this.entry.id };
-      this.$router.push({ name, params });
-    },
-    onError() {
-      this.isDisabled = true;
-    },
-  },
-  computed: {
-    lang() {
-      return this.$i18n.locale;
-    },
-    date() {
-      const created = new Date(this.entry.created);
-      return created.toLocaleDateString(this.lang);
-    },
-    time() {
-      const created = new Date(this.entry.created);
-      return created.toLocaleTimeString(this.lang);
-    },
-  },
-};
+  height: {
+    type: String,
+    default: '225'
+  }
+})
+
+const {
+  isDisabled,
+  onError
+} = useResource(props.item)
+
+function goTo(name) {
+  router.push({
+    name,
+    params: {
+      id: props.item.id
+    }
+  })
+}
+
+const itemDate = computed(() => {
+  const created = new Date(props.item.created)
+  return created.toLocaleDateString(locale.value)
+})
+const itemTime = computed(() => {
+  const created = new Date(props.item.created)
+  return created.toLocaleTimeString(locale.value)
+})
 </script>
 
 <style scoped>
-.container {
+.v-container {
   position: absolute;
+  flex-direction: column;
+  display: flex;
   width: 100%;
+  height: 100%;
   bottom: 0;
   left: 0;
 }
 
-.container {
-  flex-direction: column;
-  display: flex;
-  height: 100%;
-}
-
-.container .overlay {
-  background: linear-gradient(to bottom, black, #00000000 40%);
+.v-container .overlay {
+  background: linear-gradient(to bottom, black, #0000 40%);
   transform: translate(-50%, -50%);
   position: absolute;
   object-fit: cover;
   min-width: 100%;
   max-width: 100%;
-  color: #ffffff;
+  color: #fff;
   height: 100%;
   left: 50%;
   top: 50%;
 }
 
-.container .overlay .col > * {
+.v-container .overlay .v-col > * {
   text-overflow: ellipsis;
   line-height: 1.25rem;
   white-space: nowrap;

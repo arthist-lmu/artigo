@@ -10,15 +10,15 @@
   "field": {
     "okay": "Okay",
     "abort": "Abort",
-    "off-we-go": "Off we go",
+    "offWeGo": "Off we go",
     "required": "This is a required field."
   },
   "rules": {
     "min": "Min. {n} characters.",
     "max": "Max. {n} characters.",
-    "file-size": "Max. file size {n} MB.",
-    "file-types": "Supported are the following file types: {n}.",
-    "password-repeat": "Passwords don't match."
+    "fileSize": "Max. file size {n} MB.",
+    "fileTypes": "Supported are the following file types: {n}.",
+    "passwordRepeat": "Passwords don't match."
   },
   "messages": {
     "unknown_error": "An unknown error occurred. Please try again.",
@@ -39,6 +39,8 @@
     "this_name_is_too_long": "Your name contains too many characters.",
     "no_valid_colnames_found": "No valid colnames were found.",
     "corrupt_archives_file": "Please enter a valid archives file.",
-    "no_matching_images_found": "No matching images were found."
+    "no_matching_images_found": "No matching images were found.",
+    "game_options_are_invalid": "The game options are invalid.",
+    "multiple_valid_gamesessions": "Multiple valid game sessions were found."
   }
 }

@@ -1,39 +1,40 @@
 <template>
   <v-data-iterator
-    :items="entries"
-    :items-per-page.sync="itemsPerPage"
-    :page.sync="page"
+    class="px-2"
+    :items="entries || []"
+    :items-per-page="itemsPerPage"
     hide-default-footer
   >
-    <template v-slot:default="props">
-      <v-row :class="{ 'ma-n1': $vuetify.breakpoint.mdAndUp }">
+    <template #default="{ items }">
+      <v-row>
         <v-col
-          v-for="entry in props.items"
-          :key="entry.resource_id"
+          v-for="item in items"
+          :key="item.raw.resource_id"
           :cols="(12 / itemsPerRow)"
           class="pa-1"
         >
           <component
             :is="component"
-            :entry="entry"
+            :item="item.raw"
           />
         </v-col>
       </v-row>
     </template>
 
-    <template v-slot:no-data>
-      <v-row justify="center">
+    <template #no-data>
+      <v-row
+        v-if="entries && entries.length == 0"
+        justify="center"
+      >
         <v-col
           :cols="noDataCols"
           align-self="center"
         >
           <v-alert
-            class="mb-0"
             type="error"
             icon="mdi-alert-circle-outline"
-            colored-border
           >
-            {{ $t(`${store}.fields.no-results`) }}
+            {{ $t(`${storeName}.fields.noResults`) }}
           </v-alert>
         </v-col>
       </v-row>
@@ -41,112 +42,83 @@
   </v-data-iterator>
 </template>
 
-<script>
-export default {
-  props: {
-    component: {
-      required: true,
-    },
-    store: {
-      type: String,
-      required: true,
-    },
-    reload: {
-      type: Boolean,
-      default: false,
-      required: false,
-    },
+<script setup>
+import { computed, watch, onMounted, onBeforeUnmount } from 'vue'
+import { useStore } from 'vuex'
+import useDisplayItems from '@/composables/useDisplayItems'
+
+const store = useStore()
+
+const props = defineProps({
+  component: {
+    type: Object,
+    required: true
   },
-  data() {
-    return {
-      page: 1,
-      checkInterval: null,
-    };
+  storeName: {
+    type: String,
+    required: true
   },
-  methods: {
-    setReload() {
-      if (this.checkInterval === null) {
-        this.checkInterval = setInterval(() => {
-          this.$store.dispatch(`${this.store}/post`, {});
-        }, 10 * 1000);
-      }
-    },
-    removeReload() {
-      clearInterval(this.checkInterval);
-      this.checkInterval = null;
-    },
-  },
-  computed: {
-    entries() {
-      return this.$store.state[this.store].data.entries;
-    },
-    itemsPerPage() {
-      return this.$store.state[this.store].itemsPerPage;
-    },
-    itemsPerRow() {
-      switch (this.$vuetify.breakpoint.name) {
-        case 'xs': return 1;
-        case 'sm': return 2;
-        case 'md': return 3;
-        case 'lg': return 4;
-        default: return 6;
-      }
-    },
-    noDataCols() {
-      switch (this.$vuetify.breakpoint.name) {
-        case 'xs': return 12;
-        case 'sm': return 9;
-        case 'md': return 6;
-        case 'lg': return 4;
-        default: return 3;
-      }
-    },
-  },
-  watch: {
-    reload: {
-      handler(value) {
-        if (value) {
-          this.setReload();
-        } else {
-          this.removeReload();
-        }
-      },
-      immediate: true,
-    },
-  },
-  beforeDestroy() {
-    this.observer.disconnect();
-    this.removeReload();
-  },
-  mounted() {
-    this.observer = new MutationObserver(() => {
-      const overlay = document.querySelector('.v-overlay');
-      if (overlay !== null) {
-        this.removeReload();
-      } else {
-        this.setReload();
-      }
-    });
-    const app = document.querySelector('#app');
-    this.observer.observe(app, {
-      childList: true,
-    });
-    window.scrollTo(0, 0);
-  },
-  created() {
-    this.$store.dispatch(`${this.store}/post`, {});
-  },
-};
+  reload: {
+    type: Boolean,
+    default: false
+  }
+})
+
+const entries = computed(() => store.state[props.storeName].data.entries)
+
+const {
+  itemsPerPage,
+  itemsPerRow,
+  noDataCols
+} = useDisplayItems(props.storeName)
+
+let checkInterval = null
+function setReload() {
+  if (checkInterval === null) {
+    checkInterval = setInterval(() => {
+      store.dispatch(`${props.storeName}/post`, {})
+    }, 10 * 1000)
+  }
+}
+function removeReload() {
+  clearInterval(checkInterval)
+  checkInterval = null
+}
+watch(props.reload, (value) => {
+  if (value) {
+    setReload()
+  } else {
+    removeReload()
+  }
+}, { immediate: true })
+
+let observer = null
+onMounted(() => {
+  observer = new MutationObserver(() => {
+    const overlay = document.querySelector('.v-overlay')
+    if (overlay !== null) {
+      removeReload()
+    } else {
+      setReload()
+    }
+  })
+  const app = document.querySelector('#app')
+  observer.observe(app, {
+    childList: true
+  })
+  window.scrollTo(0, 0)
+})
+onBeforeUnmount(() => {
+  observer.disconnect()
+  removeReload()
+})
+
+store.dispatch(`${props.storeName}/post`, {})
 </script>
 
 <style>
-.v-data-iterator > div:not(.row) {
-  height: 100%;
-}
-</style>
-
-<style scoped>
-.row.justify-center {
+.v-data-iterator > div:not(.v-row),
+.v-data-iterator > div > .v-row {
   height: 100%;
 }
 </style>

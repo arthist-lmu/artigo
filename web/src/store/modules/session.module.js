@@ -1,28 +1,28 @@
-import axios from '@/plugins/axios';
+import axios from '@/plugins/axios'
 
 const session = {
   namespaced: true,
   state: {
-    data: [],
+    data: []
   },
   actions: {
     get({ commit, rootState }, params) {
       axios.get('/session/', {
         params,
         headers: {
-          'Authorization': `Token ${rootState.user.token}`,
-        },
+          'Authorization': `Token ${rootState.user.token}`
+        }
       })
         .then(({ data }) => {
-          commit('updateData', data);
-        });
-    },
+          commit('updateData', data)
+        })
+    }
   },
   mutations: {
     updateData(state, data) {
-      state.data = data;
-    },
-  },
-};
+      state.data = data
+    }
+  }
+}
 
-export default session;
+export default session

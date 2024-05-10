@@ -7,177 +7,167 @@
       <v-expansion-panels
         v-if="reconciliations.length"
         v-model="panel"
+        theme="dark"
         mandatory
+        flat
       >
         <v-expansion-panel
           v-for="reconciliation in reconciliations"
           :key="reconciliation.name"
           :disabled="reconciliation.entries.length === 0"
         >
-          <v-expansion-panel-header :disable-icon-rotate="keyInObj(reconciliation.name, isSubmitted)">
+          <v-expansion-panel-title
+            :disable-icon-rotate="keyInObj(reconciliation.name, isSubmitted)"
+          >
             <span class="clip w100">
-              {{ $tc('reconcile.fields.results', reconciliation.entries.length) }}
+              {{ $t('reconcile.fields.results', reconciliation.entries.length) }}
               {{ reconciliation.name }}
             </span>
 
-            <template v-slot:actions>
+            <template #actions>
               <v-icon
                 v-if="keyInObj(reconciliation.name, isSubmitted)"
                 color="success"
+                variant="text"
               >
                 mdi-check-circle-outline
               </v-icon>
-              <v-icon v-else>
+              <v-icon
+                v-else
+                variant="text"
+              >
                 mdi-menu-down
               </v-icon>
             </template>
-          </v-expansion-panel-header>
+          </v-expansion-panel-title>
 
-          <v-expansion-panel-content>
+          <v-expansion-panel-text>
             <v-list
               v-if="reconciliation.entries.length"
-              two-line
-              flat
+              lines="two"
+              theme="light"
             >
-              <template v-for="(entry, index) in reconciliation.entries">
-                <v-list-item :key="entry.id">
-                  <v-list-item-avatar color="primary">
-                    <span class="white--text">{{ entry.score }}</span>
-                  </v-list-item-avatar>
+              <template
+                v-for="(entry, i) in reconciliation.entries"
+                :key="i"
+              >
+                <v-list-item>
+                  <template #prepend>
+                    <v-avatar color="primary">
+                      {{ entry.score }}
+                    </v-avatar>
+                  </template>
 
-                  <v-list-item-content>
-                    <v-list-item-title class="text-h6">
-                      <v-btn
-                        v-if="reconciliation.service === 'Wikidata'"
-                        :href="`https://www.wikidata.org/wiki/${entry.id}`"
-                        target="_blank"
-                        small
-                        icon
-                      >
-                        <v-icon small>
-                          mdi-link-variant
-                        </v-icon>
-                      </v-btn>
+                  <v-list-item-title>
+                    {{ entry.name }}
 
-                      {{ entry.name }}
-                    </v-list-item-title>
+                    <v-btn
+                      v-if="reconciliation.service === 'Wikidata'"
+                      :href="`https://www.wikidata.org/wiki/${entry.id}`"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="ml-1"
+                      variant="text"
+                      density="comfortable"
+                      icon="mdi-link-variant"
+                      size="small"
+                    />
+                  </v-list-item-title>
 
-                    <v-list-item-subtitle
-                      v-if="entry.description"
-                      :title="capitalize(entry.description)"
-                      class="mt-2"
-                    >
-                      {{ capitalize(entry.description) }}
-                    </v-list-item-subtitle>
-                  </v-list-item-content>
+                  <v-list-item-subtitle
+                    v-if="entry.description"
+                    style="line-height: 1.25;"
+                    :title="capitalize(entry.description)"
+                    class="mt-2"
+                  >
+                    {{ capitalize(entry.description) }}
+                  </v-list-item-subtitle>
 
-                  <v-list-item-action>
+                  <template #append>
                     <v-btn
                       v-if="isSubmitted[reconciliation.name] === entry.id"
-                      @click="remove(reconciliation)"
-                      class="remove"
+                      class="remove ml-1"
                       color="success"
-                      icon
-                    >
-                      <v-icon>
-                        mdi-check-circle-outline
-                      </v-icon>
-                    </v-btn>
-
+                      variant="text"
+                      density="comfortable"
+                      icon="mdi-check-circle-outline"
+                      @click="remove(reconciliation)"
+                    />
                     <v-btn
                       v-else
+                      class="add ml-1"
+                      variant="text"
+                      density="comfortable"
+                      icon="mdi-checkbox-blank-circle-outline"
                       @click="add(entry.id, reconciliation)"
-                      class="add"
-                      icon
-                    >
-                      <v-icon>
-                        mdi-checkbox-blank-circle-outline
-                      </v-icon>
-                    </v-btn>
-                  </v-list-item-action>
+                    />
+                  </template>
                 </v-list-item>
 
                 <v-divider
-                  v-if="index + 1 < reconciliation.entries.length"
+                  v-if="i + 1 < reconciliation.entries.length"
                   :key="`${entry.id}:divider`"
                   inset
                 />
               </template>
             </v-list>
-          </v-expansion-panel-content>
+          </v-expansion-panel-text>
         </v-expansion-panel>
       </v-expansion-panels>
     </v-card>
   </v-dialog>
 </template>
 
-<script>
-import Vue from 'vue';
+<script setup>
+import { ref, nextTick, computed, watch } from 'vue'
+import { useStore } from 'vuex'
+import keyInObj from '@/composables/useKeyInObj'
+import capitalize from '@/composables/useCapitalize'
 
-export default {
-  data() {
-    return {
-      isSubmitted: {},
-      dialog: false,
-      panel: 0,
-    };
-  },
-  methods: {
-    add(entryId, {
-      ids, type, name, service,
-    }) {
-      const params = {
-        ids,
-        type,
-        service,
-        entry_id: entryId,
-      };
-      this.$store.dispatch('reconcile/add', params);
-      Vue.set(this.isSubmitted, name, entryId);
-    },
-    remove({
-      ids, type, name, service,
-    }) {
-      const params = {
-        ids,
-        type,
-        service,
-      };
-      this.$store.dispatch('reconcile/remove', params);
-      Vue.delete(this.isSubmitted, name);
-    },
-  },
-  computed: {
-    reconciliations() {
-      return this.$store.state.reconcile.data.reconciliations;
-    },
-  },
-  watch: {
-    reconciliations() {
-      this.dialog = true;
-      this.isSubmitted = {};
-      this.$nextTick(() => {
-        this.panel = 0;
-      });
-    },
-    panel(value) {
-      if (value === undefined) {
-        this.panel = 0;
-      }
-    },
-  },
-};
+const store = useStore()
+
+const isSubmitted = ref({})
+function add(entryId, {
+  ids, type, name, service
+}) {
+  const params = {
+    ids,
+    type,
+    service,
+    entry_id: entryId
+  }
+  store.dispatch('reconcile/add', params)
+  isSubmitted.value[name] = entryId
+}
+function remove({
+  ids, type, name, service
+}) {
+  const params = {
+    ids,
+    type,
+    service
+  };
+  store.dispatch('reconcile/remove', params)
+  delete isSubmitted.value[name]
+}
+
+const panel = ref(0)
+const dialog = ref(false)
+const reconciliations = computed(() => store.state.reconcile.data.reconciliations)
+watch(reconciliations, () => {
+  dialog.value = true
+  isSubmitted.value = {}
+  nextTick(() => {
+    panel.value = 0
+  })
+})
 </script>
 
-<style>
-.v-expansion-panel::before {
-  box-shadow: 0 0 0 0 rgba(0, 0, 0, .2),
-    0 0 0 0 rgba(0, 0, 0, .14),
-    0 0 0 0 rgba(0, 0, 0, .12);
-}
-</style>
-
 <style scoped>
+.v-expansion-panel-text {
+  background-color: #f7f8fb;
+}
+
 .v-btn.add:hover .v-icon::before {
   content: "\F05E1";
 }

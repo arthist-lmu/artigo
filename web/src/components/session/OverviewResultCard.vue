@@ -1,25 +1,28 @@
 <template>
   <v-hover
     v-if="!isDisabled"
-    v-slot="{ hover }"
+    v-slot="{ isHovering, props: activatorProps }"
   >
     <v-card
-      :class="{ 'opaque': opaque }"
-      :disabled="isDisabled"
+      v-bind="activatorProps"
+      :class="{ opaque: opaque }"
+      :disabled="isDisabled ? true : undefined"
+      class="bg-surface-variant text-primary-darken-1"
       flat
     >
       <v-img
-        @click="showDialog"
-        @keyDown="showDialog"
-        :src="entry.path"
-        v-on:error="onError"
-        v-on:load="onLoad"
+        :src="item.path"
+        alt=""
         style="cursor: pointer;"
-        class="grey lighten-2"
+        class="bg-grey-lighten-2"
         :height="height"
         contain
+        @error="onError"
+        @load="onLoad"
+        @click="showDialog"
+        @key-down="showDialog"
       >
-        <template v-slot:placeholder>
+        <template #placeholder>
           <v-row
             class="fill-height ma-0"
             justify="center"
@@ -30,15 +33,14 @@
         </template>
 
         <v-btn
+          style="bottom: 0; right: 0;"
+          class="ma-4"
           color="primary"
-          style="min-width: 50px !important;"
-          depressed
-          absolute
+          position="absolute"
           rounded
-          bottom
-          right
+          flat
         >
-          <v-icon left>
+          <v-icon class="mr-2">
             mdi-tag-outline
           </v-icon>
 
@@ -46,7 +48,7 @@
         </v-btn>
 
         <v-fade-transition>
-          <div v-if="isLoaded && hover">
+          <div v-if="isLoaded && isHovering">
             <div class="pa-4">
               <TagCloud :tags="tags" />
             </div>
@@ -54,72 +56,61 @@
         </v-fade-transition>
       </v-img>
 
-      <v-card-title class="metadata">
-        <div
-          class="text-subtitle-1"
-          :title="title"
-        >
-          <b>{{ title }}</b>
-        </div>
-
-        <div class="text-caption">
-          <span
-            v-for="creator in creators"
-            :key="creator"
-            :title="creator"
-          >
-            {{ creator }}
-          </span>
-        </div>
+      <v-card-title
+        class="text-subtitle-1 pb-0"
+        :title="title"
+      >
+        {{ title }}
       </v-card-title>
+
+      <v-card-subtitle class="pb-4">
+        <span
+          v-for="creator in creators"
+          :key="creator"
+          :title="creator"
+        >
+          {{ creator }}
+        </span>
+      </v-card-subtitle>
     </v-card>
   </v-hover>
 </template>
 
-<script>
-import tool from '@/mixins/resource';
+<script setup>
+import useResource from '@/composables/useResource'
+import TagCloud from '@/components/TagCloud.vue'
 
-export default {
-  mixins: [tool],
-  props: {
-    height: {
-      type: String,
-      default: '225',
-    },
+const props = defineProps({
+  item: {
+    type: Object,
+    default: null,
+    required: true
   },
-  computed: {
-    score() {
-      const scores = this.tags.map(({ score }) => score);
-      return scores.reduce((x, y) => x + y, 0);
-    },
+  opaque: {
+    type: Boolean,
+    default: false
   },
-  components: {
-    TagCloud: () => import('@/components/TagCloud.vue'),
-  },
-};
+  height: {
+    type: String,
+    default: '225'
+  }
+})
+
+const {
+  isLoaded,
+  isDisabled,
+  onLoad,
+  onError,
+  showDialog,
+  title,
+  creators,
+  tags
+} = useResource(props.item)
 </script>
 
 <style scoped>
 .v-card {
-  -webkit-transition: opacity 0.25s linear;
-  -ms-transition: opacity 0.25s linear;
   transition: opacity 0.25s linear;
-}
-
-.metadata,
-.metadata > div {
-  width: 100%;
-}
-
-.metadata * {
-  text-overflow: ellipsis;
-  line-height: 1.25rem;
-  white-space: nowrap;
-  overflow: hidden;
-}
-
-.metadata span:not(:first-child):before {
-  content: ", ";
 }
 
 .opaque {

@@ -4,8 +4,8 @@
     "note": "Your game is already pre-configured. However, you are welcome to change individual parameters to personalise it.",
     "helper": "Are you already familiar with ARTigo? If not, get to know the project first.",
     "fields": {
-      "new-game-default": "New game",
-      "new-game-search": "Play with these images",
+      "newGameDefault": "New game",
+      "newGameSearch": "Play with these images",
       "settings": "Settings",
       "basic": {
         "skip": "Skip game round",
@@ -14,20 +14,20 @@
         "rounds": "Round {i} of {total}",
         "suggest": "Click to add similar tags",
         "invalid": "This tag must not be entered (again)",
-        "seconds-left": "You have {n} seconds left."
+        "secondsLeft": "You have {n} seconds left."
       },
       "tagging": {
         "post": "Enter tag",
         "intro": "How would you describe this image? You can describe what you see, but also what feelings or associations the image triggers.",
-        "opponent": "Your fellow player’s tags are always displayed on the left.",
-        "no-opponent": "You play without another player.",
+        "opponent": "The fellow player’s tags are always displayed on the left.",
+        "noOpponent": "You play without another player.",
         "taboo": "You may not use the following tags: {tags}."
       },
       "roi": {
         "post": "Annotate image region",
         "intro": "Do you see the tags above the displayed image? Draw with the mouse over the corresponding image regions.",
         "opponent": "Your fellow player’s tags are always displayed on the left.",
-        "no-opponent": "You play without another player",
+        "noOpponent": "You play without another player",
         "taboo": "You may not use the following tags: {tags}."
       }
     },

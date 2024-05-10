@@ -1,13 +1,9 @@
-import Vue from 'vue';
-import Vuex from 'vuex';
-import Cookies from 'js-cookie';
-import createPersistedState from 'vuex-persistedstate';
-import modules from './modules';
+import { createStore } from 'vuex'
+import Cookies from 'js-cookie'
+import createPersistedState from 'vuex-persistedstate'
+import modules from '@/store/modules'
 
-Vue.use(Vuex);
-Vue.config.devtools = true;
-
-export default new Vuex.Store({
+export default createStore({
   modules,
   plugins: [
     createPersistedState({
@@ -18,10 +14,13 @@ export default new Vuex.Store({
       storage: {
         getItem: (key) => Cookies.get(key),
         setItem: (key, value) => {
-          Cookies.set(key, value, { expires: 3, secure: false });
+          Cookies.set(key, value, {
+            expires: 3,
+            secure: false
+          })
         },
-        removeItem: (key) => Cookies.remove(key),
-      },
-    }),
-  ],
-});
+        removeItem: (key) => Cookies.remove(key)
+      }
+    })
+  ]
+})

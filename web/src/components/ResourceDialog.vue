@@ -6,43 +6,35 @@
     scrollable
   >
     <ResourceCard
-      key="entry.id"
-      :entry="entry"
+      v-if="resourceData"
+      :key="resourceData.id"
+      :item="resourceData"
+      @close="dialog = false;"
     />
   </v-dialog>
 </template>
 
-<script>
-export default {
-  data() {
-    return {
-      entry: null,
-      dialog: false,
-    };
-  },
-  computed: {
-    show() {
-      return this.$store.state.resource.data;
-    },
-  },
-  watch: {
-    dialog(value) {
-      if (!value) {
-        this.$store.commit('resource/updateData', null);
-      }
-    },
-    show(value) {
-      if (value) {
-        this.entry = value;
-        this.dialog = true;
-      }
-    },
-    $route() {
-      this.dialog = false;
-    },
-  },
-  components: {
-    ResourceCard: () => import('@/components/ResourceCard.vue'),
-  },
-};
+<script setup>
+import { ref, computed, watch } from 'vue'
+import { useRoute } from 'vue-router'
+import { useStore } from 'vuex'
+import ResourceCard from '@/components/ResourceCard.vue'
+
+const route = useRoute()
+const store = useStore()
+
+const resourceData = computed(() => store.state.resource.data)
+watch(resourceData, (value) => {
+  if (value) {
+    dialog.value = true
+  }
+})
+
+const dialog = ref(false)
+watch(dialog, (value) => {
+  if (!value) {
+    store.commit('resource/updateData', null)
+  }
+})
+watch(route, () => dialog.value = false)
 </script>

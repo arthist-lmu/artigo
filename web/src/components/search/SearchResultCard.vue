@@ -1,24 +1,25 @@
 <template>
   <v-hover
     v-if="!isDisabled"
-    v-slot="{ hover }"
+    v-slot="{ isHovering, props: activatorProps }"
   >
     <div
-      @click="showDialog"
-      @keyDown="showDialog"
+      v-bind="activatorProps"
       class="grid-item"
-      :disabled="isDisabled"
+      :disabled="isDisabled ? true : undefined"
+      @click="showDialog"
+      @key-down="showDialog"
     >
       <img
-        :src="entry.path"
-        v-on:error="onError"
-        v-on:load="onLoad"
+        :src="item.path"
         alt=""
-      />
+        @error="onError"
+        @load="onLoad"
+      >
 
       <v-fade-transition>
         <v-container
-          v-if="isLoaded && (hover || selected)"
+          v-if="isLoaded && (isHovering || isSelected)"
           class="overlay"
         >
           <v-row style="flex: 0;">
@@ -27,7 +28,7 @@
             </v-col>
           </v-row>
 
-          <v-row></v-row>
+          <v-row />
 
           <v-row style="flex: 0;">
             <v-col class="pa-4">
@@ -55,57 +56,72 @@
   </v-hover>
 </template>
 
-<script>
-import tool from '@/mixins/resource';
+<script setup>
+import { computed, watch } from 'vue'
+import useResource from '@/composables/useResource'
+import TagCloud from '@/components/TagCloud.vue'
 
-export default {
-  mixins: [tool],
-  computed: {
-    selected() {
-      return Math.random() < 0.15;
-    },
-  },
-  components: {
-    TagCloud: () => import('@/components/TagCloud.vue'),
-  },
-};
+const props = defineProps({
+  item: {
+    type: Object,
+    default: null,
+    required: true
+  }
+})
+
+const {
+  isLoaded,
+  isDisabled,
+  onLoad,
+  onError,
+  showDialog,
+  title,
+  creators,
+  tags
+} = useResource(props.item)
+
+const isSelected = computed(() => Math.random() < 0.15)
+
+const emit = defineEmits(['disabled'])
+watch(isDisabled, (value) => {
+  if (value) {
+    emit('disabled', true)
+  }
+})
 </script>
 
 <style scoped>
-.container {
+.v-container {
   position: absolute;
+  flex-direction: column;
+  display: flex;
   width: 100%;
+  height: 100%;
   bottom: 0;
   left: 0;
 }
 
-.container {
-  flex-direction: column;
-  display: flex;
-  height: 100%;
-}
-
-.container .overlay {
-  background: linear-gradient(to top, black, #00000000 40%);
+.v-container .overlay {
+  background: linear-gradient(to top, black, #0000 40%);
   transform: translate(-50%, -50%);
   position: absolute;
   object-fit: cover;
   min-width: 100%;
   max-width: 100%;
-  color: #ffffff;
+  color: #fff;
   height: 100%;
   left: 50%;
   top: 50%;
 }
 
-.container .overlay .col:not(.tags) > * {
+.v-container .overlay .v-col:not(.tags) > * {
   text-overflow: ellipsis;
   line-height: 1.25rem;
   white-space: nowrap;
   overflow: hidden;
 }
 
-.container .overlay span:not(:first-child):before {
+.v-container .overlay span:not(:first-child)::before {
   content: ", ";
 }
 </style>

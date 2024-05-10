@@ -1,17 +1,13 @@
 <template>
-  <v-card
-    v-bind="computedProps"
-    v-on="listeners$"
-    flat
-  >
+  <v-card flat>
     <v-img
       v-if="showImage"
-      :src="entry.path"
-      class="grey lighten-2"
+      :src="item.path"
+      class="bg-grey-lighten-2"
       :max-height="imageHeight"
       contain
     >
-      <template v-slot:placeholder>
+      <template #placeholder>
         <v-row
           class="fill-height ma-0"
           justify="center"
@@ -22,114 +18,104 @@
       </template>
     </v-img>
 
-    <v-card-title class="mb-2">
-      <div class="text-h5 max-w">
-        <b>{{ title }}</b>
+    <v-card-item>
+      <v-card-title>
+        <span class="text-h5">
+          {{ title }}
+        </span>
 
         <ReconcileButton
-          :entries="[entry]"
+          :items="[item]"
           type="resource"
           class="ml-1"
         />
-      </div>
+      </v-card-title>
 
-      <div class="text-h6 max-w grey--text">
+      <v-card-subtitle>
         <span
           v-for="creator in creators"
           :key="creator"
-          class="creator"
+          class="text-h6"
         >
           {{ creator }}
 
           <v-btn
+            class="ml-1"
+            variant="plain"
+            density="comfortable"
+            icon="mdi-magnify"
+            size="small"
             @click="search(creator, 'creators')"
             @keydown="search(creator, 'creators')"
-            class="ml-1"
-            color="grey lighten-2"
-            height="32"
-            depressed
-            small
-            icon
-          >
-            <v-icon>
-              mdi-magnify
-            </v-icon>
-          </v-btn>
+          />
 
           <ReconcileButton
-            :entries="[entry]"
-            type="creator"
+            :items="[item]"
+            field="creator"
           />
         </span>
-      </div>
-    </v-card-title>
+      </v-card-subtitle>
+    </v-card-item>
 
-    <v-card-text>
+    <v-card-text class="pb-6">
       <div
-        v-if="tags.length"
-        class="mb-2"
+        v-if="filteredTags.length"
+        class="mb-8"
       >
         <v-chip
-          v-for="tag in tags"
+          v-for="tag in filteredTags"
           :key="tag.id"
-          @click="search(tag.name, 'tags')"
           :title="tag.name"
           class="mr-1 mb-1"
           color="primary"
+          variant="flat"
+          @click="search(tag.name, 'tags')"
         >
           {{ tag.name }}
 
           <v-avatar
             v-if="tag.count > 1"
-            :title="$t('resource.metadata.fields.has-tag', { tag: tag.name, n: tag.count })"
-            class="primary lighten-1"
-            right
+            :title="$t('resource.metadata.fields.hasTag', { tag: tag.name, n: tag.count })"
+            color="primary"
+            class="ml-1 mr-n2"
           >
             {{ tag.count }}
           </v-avatar>
         </v-chip>
 
         <v-btn
-          v-if="moreTags"
-          @click="moreTags = false;"
+          v-if="showAllTags"
           class="mb-1"
-          color="grey lighten-2"
-          height="32"
-          depressed
-          small
-          icon
-        >
-          <v-icon>mdi-tag-plus</v-icon>
-        </v-btn>
+          variant="plain"
+          density="comfortable"
+          icon="mdi-tag-minus"
+          size="small"
+          @click="showAllTags = false;"
+        />
         <v-btn
           v-else
-          @click="moreTags = true;"
           class="mb-1"
-          color="grey lighten-2"
-          height="32"
-          depressed
-          small
-          icon
-        >
-          <v-icon>mdi-tag-minus</v-icon>
-        </v-btn>
+          variant="plain"
+          density="comfortable"
+          icon="mdi-tag-plus"
+          size="small"
+          @click="showAllTags = true;"
+        />
       </div>
 
       <v-expansion-panels
+        v-if="Object.keys(metadata).length"
         v-model="panels"
-        accordion
+        variant="accordion"
+        theme="dark"
         multiple
         flat
       >
-        <v-expansion-panel
-          v-if="Object.keys(metadata).length"
-          class="mb-n2"
-        >
-          <v-expansion-panel-header class="pa-0">
+        <v-expansion-panel>
+          <v-expansion-panel-title>
             <v-icon
-              class="mr-3"
-              color="grey lighten-2"
-              size="18"
+              class="mr-2"
+              size="small"
             >
               mdi-information-outline
             </v-icon>
@@ -137,20 +123,15 @@
             <span class="text-subtitle-1">
               {{ $t("resource.metadata.title") }}
             </span>
-          </v-expansion-panel-header>
+          </v-expansion-panel-title>
 
-          <v-expansion-panel-content>
+          <v-expansion-panel-text>
             <v-row
               v-for="(value, field) in metadata"
               :key="`${field}:${value}`"
-              class="mb-2"
-              justify="space-around"
               no-gutters
             >
-              <v-col
-                class="align-center d-flex"
-                cols="4"
-              >
+              <v-col cols="4">
                 <span class="capitalize">
                   {{ $t(`resource.metadata.fields.${field}`) }}
                 </span>
@@ -159,138 +140,70 @@
               <v-col cols="8">
                 <v-chip
                   :title="value"
+                  class="ml-1 mb-1"
+                  border="secondary md opacity-100"
+                  color="primary-darken-1"
+                  variant="outlined"
+                  theme="light"
                   @click="search(value, field)"
-                  class="mr-1"
-                  outlined
                 >
                   <span class="clip">{{ value }}</span>
                 </v-chip>
               </v-col>
             </v-row>
-          </v-expansion-panel-content>
+          </v-expansion-panel-text>
         </v-expansion-panel>
       </v-expansion-panels>
     </v-card-text>
   </v-card>
 </template>
 
-<script>
-import { VCard } from 'vuetify/lib';
+<script setup>
+import { ref, watch, onMounted, onBeforeUnmount } from 'vue'
+import { useStore } from 'vuex'
+import useResource from '@/composables/useResource'
+import ReconcileButton from '@/components/ReconcileButton.vue'
 
-export default {
-  extends: VCard,
-  props: {
-    ...VCard.props,
-    entry: Object,
-    showImage: {
-      type: Boolean,
-      default: true,
-    },
+const store = useStore()
+
+const props = defineProps({
+  item: {
+    type: Object,
+    default: null
   },
-  data() {
-    return {
-      ...VCard.data,
-      imageHeight: 500,
-      moreTags: true,
-      panels: [0],
-    };
-  },
-  methods: {
-    search(value, field) {
-      const query = { [field]: value };
-      this.$store.dispatch('search/post', { query });
-    },
-    setImageHeight() {
-      this.imageHeight = window.innerHeight / 3;
-    },
-  },
-  computed: {
-    computedProps() {
-      return { ...this.$props };
-    },
-    metadata() {
-      const metadata = {};
-      const fields = [
-        'location',
-        'institution',
-        'source',
-      ];
-      if (this.keyInObj('meta', this.entry)) {
-        this.entry.meta.forEach(({ name, value_str }) => {
-          if (fields.includes(name) && value_str) {
-            metadata[name] = value_str;
-          }
-        });
-        if (this.entry.source && this.entry.source.id) {
-          metadata.source = this.entry.source.name;
-        }
-      }
-      return metadata;
-    },
-    title() {
-      const titles = [];
-      if (this.keyInObj('meta', this.entry)) {
-        this.entry.meta.forEach(({ name, value_str }) => {
-          if (name === 'titles' && value_str) {
-            titles.push(value_str);
-          }
-        });
-        if (titles.length > 0) {
-          return titles[0];
-        }
-      }
-      return this.$t('resource.default.title');
-    },
-    creators() {
-      const creators = [];
-      if (this.keyInObj('meta', this.entry)) {
-        this.entry.meta.forEach(({ name, value_str }) => {
-          if (name === 'creators' && value_str) {
-            creators.push(value_str);
-          }
-        });
-        if (creators.length > 0) {
-          return Array.from(new Set(creators));
-        }
-      }
-      return [this.$t('resource.default.creator')];
-    },
-    tags() {
-      let tags = {};
-      if (this.keyInObj('tags', this.entry)) {
-        this.entry.tags.forEach(({
-          id, language, name, count,
-        }) => {
-          if (
-            language === this.$i18n.locale
-            || language === undefined
-          ) {
-            if (count === undefined) count = 1;
-            if (!this.keyInObj(id, tags)) {
-              tags[id] = { id, name, count };
-            }
-          }
-        });
-        tags = Object.values(tags);
-        tags.sort((a, b) => b.count - a.count);
-        if (this.moreTags && tags.length > 15) {
-          return tags.slice(0, 15);
-        }
-      }
-      return tags;
-    },
-  },
-  mounted() {
-    this.setImageHeight();
-  },
-  created() {
-    window.addEventListener('resize', this.setImageHeight);
-  },
-  destroyed() {
-    window.removeEventListener('resize', this.setImageHeight);
-  },
-  components: {
-    ReconcileButton: () => import('@/components/ReconcileButton.vue'),
-  },
-};
+  showImage: {
+    type: Boolean,
+    default: true
+  }
+})
+
+const {
+  title,
+  creators,
+  orderedTags,
+  metadata
+} = useResource(props.item)
+
+const panels = ref([0])
+
+const filteredTags = ref([])
+const showAllTags = ref(false)
+watch(showAllTags, (value) => {
+  filteredTags.value = value ? orderedTags.value : orderedTags.value.slice(0, 15)
+}, { immediate: true })
+
+const imageHeight = ref(500)
+window.addEventListener('resize', setImageHeight)
+function setImageHeight() {
+  imageHeight.value = window.innerHeight / 3
+}
+onMounted(() => setImageHeight())
+onBeforeUnmount(() => window.removeEventListener('resize', setImageHeight))
+
+const emit = defineEmits(['close'])
+function search(value, field) {
+  const query = { [field]: value }
+  store.dispatch('search/post', { query })
+  emit('close')
+}
 </script>

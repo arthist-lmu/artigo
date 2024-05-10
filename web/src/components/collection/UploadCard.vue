@@ -1,10 +1,13 @@
 <template>
-  <Card
-    v-bind="$props"
-    v-on="$listeners"
+  <CardBase
+    v-model="card"
     :title="$t('user.upload.title')"
+    theme="light"
+    @close="close"
   >
-    <p class="pb-4">{{ $t('user.upload.note') }}</p>
+    <p class="pb-4 text-body-2 text-grey-darken-1">
+      {{ $t('user.upload.note') }}
+    </p>
 
     <v-form
       v-model="isFormValid"
@@ -12,160 +15,170 @@
     >
       <v-text-field
         v-model="collection.title.de"
-        @keydown.enter="upload"
         :placeholder="$t('user.upload.fields.name')"
-        :rules="[checkLength]"
-        class="mb-1"
+        :rules="[rules.length]"
+        clear-icon="mdi-close"
         tabindex="0"
         counter="75"
+        border="md"
+        variant="outlined"
+        density="compact"
         clearable
-        outlined
         rounded
-        dense
+        @keydown.enter="upload"
       >
-        <template v-slot:append>
+        <template #append>
           <span>DE</span>
         </template>
       </v-text-field>
 
       <v-text-field
         v-model="collection.title.en"
-        @keydown.enter="upload"
+        class="mt-2"
         :placeholder="$t('user.upload.fields.name')"
-        :rules="[checkLength]"
-        class="mb-1"
+        :rules="[rules.length]"
+        clear-icon="mdi-close"
         tabindex="0"
         counter="75"
+        border="md"
+        variant="outlined"
+        density="compact"
         clearable
-        outlined
         rounded
-        dense
+        @keydown.enter="upload"
       >
-        <template v-slot:append>
+        <template #append>
           <span>EN</span>
         </template>
       </v-text-field>
 
       <UploadInput
         v-model="collection.files"
-        :rules="[checkFiles]"
+        class="mt-2"
+        :rules="[rules.fileSize]"
       />
     </v-form>
 
-    <template v-slot:helper>
+    <template #helper>
       <v-btn
-        @click="goTo('about', '#collections')"
         :title="$t('user.upload.helper')"
-        icon
-      >
-        <v-icon>
-          mdi-help-circle-outline
-        </v-icon>
-      </v-btn>
+        variant="text"
+        density="comfortable"
+        icon="mdi-help-circle-outline"
+        @click="goTo('about', '#collections')"
+      />
     </template>
 
-    <template v-slot:actions>
+    <template #actions>
       <v-row>
         <v-col>
           <v-btn
-            @click="upload"
             :disabled="!isFormValid"
             type="submit"
             tabindex="0"
-            color="primary"
-            depressed
+            class="bg-primary"
             rounded
             block
+            @click="upload"
           >
             {{ $t("user.upload.title") }}
           </v-btn>
         </v-col>
       </v-row>
     </template>
-  </Card>
+  </CardBase>
 </template>
 
-<script>
-import Card from '@/components/utils/Card.vue';
+<script setup>
+import { ref, watch } from 'vue'
+import { useRouter } from 'vue-router'
+import { useStore } from 'vuex'
+import { useI18n } from 'vue-i18n'
+import useStatus from '@/composables/useStatus'
+import CardBase from '@/components/utils/CardBase.vue'
+import UploadInput from '@/components/collection/UploadInput.vue'
 
-export default {
-  extends: Card,
-  props: {
-    ...Card.props,
-  },
-  data() {
-    return {
-      collection: {
-        title: {
-          'de': null,
-          'en': null,
-        },
-      },
-      isFormValid: false,
-    };
-  },
-  methods: {
-    goTo(name, anchor = '') {
-      const route = this.$router.resolve({ name });
-      window.open(`${route.href}${anchor}`, '_blank');
-      this.close();
-    },
-    upload() {
-      if (this.isFormValid) {
-        this.$store.dispatch('collection/add', this.collection);
-      }
-    },
-    checkLength(value) {
-      if (value) {
-        if (value.length < 4) {
-          return this.$tc('rules.min', 4);
-        }
-        if (value.length > 75) {
-          return this.$tc('rules.max', 75);
-        }
-        return true;
-      }
-      return this.$t('field.required');
-    },
-    checkFiles(value) {
-      if (value && value.length) {
-        for (let i = 0; i < value.length; i += 1) {
-          if (value[i].size >= (50 * 1024 * 1024)) {
-            return this.$tc('rules.file-size', 50);
-          }
-        }
-        return true;
-      }
-      return this.$t('field.required');
-    },
-  },
-  watch: {
-    value(visible) {
-      if (!visible) {
-        this.$store.dispatch('collections/post', {});
-      }
-    },
-    timestamp() {
-      if (this.value && this.isFormValid && this.status) {
-        this.$router.push({ name: 'collections' });
-        if (this.isDialog) {
-          this.close();
-        }
-      }
-    },
-  },
-  components: {
-    UploadInput: () => import('@/components/collection/UploadInput.vue'),
-    Card,
-  },
-};
-</script>
+const router = useRouter()
+const store = useStore()
+const { t } = useI18n()
 
-<style>
-.v-input__append-inner {
-  margin-top: 0 !important;
-  height: 40px !important;
-  align-items: center;
-  display: flex;
+const collection = ref({
+  title: {
+    de: null,
+    en: null
+  },
+  files: []
+})
+const rules = {
+  length: (v) => {
+    if (v) {
+      if (v.length < 4) {
+        return t('rules.min', 4)
+      }
+      if (v.length > 75) {
+        return t('rules.max', 75)
+      }
+      return true
+    }
+    return t('field.required')
+  },
+  fileSize(files) {
+    if (files && files.length) {
+      for (const file of files) {
+        if (file.size >= (50 * 1024 * 1024)) {
+          return t('rules.file-size', 50)
+        }
+      }
+      return true
+    }
+    return t('field.required')
+  }
 }
-</style>
+
+const isFormValid = defineModel('isFormValid', {
+  type: Boolean,
+  default: false
+})
+function upload() {
+  if (isFormValid.value) {
+    console.log(collection)
+    store.dispatch('collection/add', collection)
+  }
+}
+
+function goTo(name, anchor = '') {
+  window.open(`${router.resolve({ name }).href}${anchor}`, '_blank')
+  close()
+}
+
+const emit = defineEmits(['close'])
+function close() {
+  emit('close')
+}
+
+const card = defineModel('card', {
+  type: Boolean,
+  default: false
+})
+watch(card, (value) => {
+  if (!value) {
+    store.dispatch('collections/post', {})
+  }
+})
+
+const props = defineProps({
+  isDialog: {
+    type: Boolean,
+    default: true
+  }
+})
+const { isUpdated, isSuccessful } = useStatus()
+watch(isUpdated, () => {
+  if (isFormValid.value && isSuccessful.value) {
+    router.push({ name: 'collections' })
+    if (props.isDialog) {
+      close()
+    }
+  }
+})
+</script>

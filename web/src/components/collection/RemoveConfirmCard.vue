@@ -1,17 +1,16 @@
 <template>
-  <Card
-    v-bind="$props"
-    v-on="$listeners"
+  <CardBase
+    theme="light"
+    @close="close"
   >
-    <template v-slot:actions>
+    <template #actions>
       <v-col cols="6">
         <v-btn
-          @click="remove"
           tabindex="0"
-          color="primary"
-          depressed
+          class="bg-primary"
           rounded
           block
+          @click="remove"
         >
           {{ $t("collections.fields.remove") }}
         </v-btn>
@@ -19,39 +18,41 @@
 
       <v-col cols="6">
         <v-btn
-          @click="close"
           tabindex="0"
-          depressed
           rounded
           block
+          @click="close"
         >
           {{ $t("field.abort") }}
         </v-btn>
       </v-col>
     </template>
-  </Card>
+  </CardBase>
 </template>
 
-<script>
-import Card from '@/components/utils/Card.vue';
+<script setup>
+import { useStore } from 'vuex'
+import CardBase from '@/components/utils/CardBase.vue'
 
-export default {
-  extends: Card,
-  props: {
-    entry: Object,
-    ...Card.props,
-  },
-  methods: {
-    remove() {
-      const entry = { hash_id: this.entry.hash_id };
-      this.$store.dispatch('collection/remove', entry).then(() => {
-        this.$store.dispatch('collections/post', {});
-        this.close();
-      });
-    },
-  },
-  components: {
-    Card,
-  },
-};
+const store = useStore()
+
+const props = defineProps({
+  item: {
+    type: Object,
+    default: null
+  }
+})
+
+function remove() {
+  const entry = { hash_id: props.item.hash_id }
+  store.dispatch('collection/remove', entry).then(() => {
+    store.dispatch('collections/post', {})
+    close()
+  })
+}
+
+const emit = defineEmits(['close'])
+function close() {
+  emit('close')
+}
 </script>

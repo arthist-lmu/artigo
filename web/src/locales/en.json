@@ -10,7 +10,7 @@
         "institution": "Institution",
         "source": "Collection",
         "tags": "Tags",
-        "has-tag": "The tag “{tag}” has been annotated {n} times"
+        "hasTag": "The tag “{tag}” has been annotated {n} times"
       }
     },
     "default": {
@@ -23,9 +23,9 @@
       "username": "Username",
       "email": "E-Mail",
       "password": "Password",
-      "new-password": "New password",
-      "password-repeat": "Repeat password",
-      "privacy-policy": "Agree to privacy policy"
+      "newPassword": "New password",
+      "passwordRepeat": "Repeat password",
+      "privacyPolicy": "Agree to privacy policy"
     },
     "menu": {
       "title": "Account",
@@ -47,14 +47,14 @@
         "access": "Access",
         "count": "Objects",
         "actions": "Actions",
-        "drag-file": "Drag files to upload or",
-        "browse-file": "Browse files"
+        "dragFile": "Drag files to upload or",
+        "browseFile": "Browse files"
       }
     },
     "logout": {
       "title": "Logout"
     },
-    "password-reset": {
+    "passwordReset": {
       "title": "Reset password",
       "note": "Please note that for security reasons, no error will be raised if the email address is not linked to an account."
     },
@@ -65,8 +65,8 @@
       "headers": {
         "username": "Name",
         "is_anonymous": "Anonymous",
-        "sum-score": "Points",
-        "sum-count": "Taggings"
+        "sumScore": "Points",
+        "sumCount": "Taggings"
       }
     }
   },
@@ -78,17 +78,17 @@
       "query": "Search for collections",
       "remove": "Remove collection",
       "change": "Change collection",
-      "hide-empty": "Hide results without images",
-      "no-results": "No collections could be found.",
-      "access-open": "Public",
-      "access-pending": "Pending",
-      "access-restricted": "Restricted"
+      "hideEmpty": "Hide results without images",
+      "noResults": "No collections could be found.",
+      "accessOpen": "Public",
+      "accessPending": "Pending",
+      "accessRestricted": "Restricted"
     },
     "texts": {
       "preface": "The images you see during the game are from the Staatliche Kunsthalle Karlsruhe, the Rijksmuseum and the Institute for Art History at the University of Cologne, for example.",
       "principle": "If you are logged in, you can also upload your own collections via the user menu. To add images, simply drag and drop the relevant files onto the interface. Two types of files are supported: images in the formats <code>.jpg</code>, <code>.jpeg</code>, <code>.png</code> and <code>.gif</code>; and metadata for the images in the formats <code>.csv</code>, <code>.json</code> or <code>.jsonl</code>. Images can also be submitted as <code>.zip</code> archives.",
       "mapping": "For the metadata to be assigned correctly, the column names in the file must correspond to the following:",
-      "file-path": "<code>file</code>, <code>path</code>, or <code>file_path</code>: file path of the image",
+      "filePath": "<code>file</code>, <code>path</code>, or <code>file_path</code>: file path of the image",
       "title": "<code>title</code>, <code>titles</code>, <code>meta.title</code>, or <code>titel</code>: title of the image",
       "creator": "<code>creator</code>, <code>artist</code>, <code>meta.creator</code>, or <code>künstler</code>: artist of the image",
       "created": "<code>date</code>, <code>created</code>, <code>created_start</code>, <code>created_end</code>, <code>meta.created</code>, <code>entstehung</code>, <code>entstehung_beginn</code>, or <code>entstehung_ende</code>: creation date of the image",
@@ -101,7 +101,10 @@
   "imprint": {
     "title": "Imprint"
   },
-  "privacy-policy": {
+  "institute": {
+    "title": "LMU Munich"
+  },
+  "privacyPolicy": {
     "title": "Data privacy"
   },
   "search": {
@@ -110,9 +113,9 @@
       "of": "of",
       "reset": "Reset",
       "query": "Search for images",
-      "hide-empty": "Hide results without annotations",
-      "show-empty": "Show results without annotations",
-      "no-results": "No results could be found for your search query.",
+      "hideEmpty": "Hide results without annotations",
+      "showEmpty": "Show results without annotations",
+      "noResults": "No results could be found for your search query.",
       "game": "Would you like to play with these images?"
     }
   },
@@ -122,7 +125,7 @@
       "creator": "Reconcile creators",
       "resource": "Reconcile titles",
       "results": "{n} entries for|{n} entry for|{n} entries for",
-      "no-results": "Unfortunately, no third-party results were found for your search query."
+      "noResults": "Unfortunately, no third-party results were found for your search query."
     }
   },
   "about": {
@@ -136,10 +139,31 @@
     "texts": {
       "preface": "Art history thrives on working with artworks and their digital reproductions. These are collected online in image catalogues, some of which contain several million objects. To search for images in such directories, descriptive texts are needed: a task you can help us with in a playful way—and at the same time learn a lot about art!",
       "principle": "ARTigo is a collaborative platform and an example of open university research in which you participate as a player. All ARTigo games work like this: You are presented with an image. The goal is to describe this image within a certain time with keywords (<i>tags</i>) in such a way that as many points as possible are scored:",
-      "score-validated": "You get {n} points if the tag for this image was already given in an earlier game round",
-      "score-opponent": "You get {n} more points if you are playing with another player, and you use the same tag",
-      "score-first": "If you are the first to describe an image, you always get {n} points per tag",
+      "scoreValidated": "You get {n} points if the tag for this image was already given in an earlier game round",
+      "scoreOpponent": "You get {n} more points if you are playing with another player, and you use the same tag",
+      "scoreFirst": "If you are the first to describe an image, you always get {n} points per tag",
       "motivation": "After you have played a predefined number of rounds, the metadata for the images become visible. In this way, you not only generate art-historical knowledge, but also collect it. Every tag you enter is saved and improves the search for artworks—a win-win situation. So, go for it!"
+    }
+  },
+  "feedback": {
+    "title": "Feedback",
+    "texts": {
+      "example1": {
+        "name": "Mechthild",
+        "value": "I like the intensive engagement with the sensory perception of the artworks. The challenge of putting what you see into words is still exciting years later and anything but trivial."
+      },
+      "example2": {
+        "name": "Johannes",
+        "value": "The variety of perceptions does not allow boredom to set in, on the contrary. It brings art into everyday life and enriches it in an uncomplicated way. An advantage that connects digital and analogue life."
+      },
+      "example3": {
+        "name": "Elke",
+        "value": "It is nice to recognise the familiar. But it's even more exciting to discover the unknown and look it up using the metadata—and it is wonderfully simple, accessible and fun."
+      },
+      "example4": {
+        "name": "Michaël",
+        "value": "In addition to the need for collaboration, ARTigo allows you to practice and discover lesser known artists and works. As the same themes can recur, it becomes easier to decipher movements, symbols, or characters."
+      }
     }
   },
   "contact": {
@@ -156,19 +180,20 @@
       "leader": "Current project leader",
       "informatics": "Institute for Informatics",
       "cis": "Center for Information and Language Processing",
-      "art-history": "Institute for Art History",
-      "romance-studies": "Institute for Romance Studies",
+      "artHistory": "Institute for Art History",
+      "romanceStudies": "Institute for Romance Studies",
       "itg": "IT-Group for the Humanities"
     }
   },
   "history": {
-    "title": "Project history",
+    "title": "History",
     "texts": {
       "prototype": "<a href=\"https://www.itg.uni-muenchen.de/personen/schoen_gerhard/index.html\" target=\"_blank\">Gerhard Schön</a> (IT-Group Humanities) develops a first prototype of a <i>social tagging</i> platform as a <i>proof-of-concept</i>.",
       "dfg": "ARTigo is funded by the German Research Foundation (DFG). Under the direction of <a href=\"https://www.kunstgeschichte.uni-muenchen.de/personen/professoren_innen/kohle/index.html\" target=\"_blank\">Hubertus Kohle</a> (Institute for Art History), <a href=\"https://www.pms.ifi.lmu.de/mitarbeiter/derzeitige/francois-bry/\" target=\"_blank\">François Bry</a> (Institute for Informatics), <a href=\"https://www.romanistik.uni-muenchen.de/personen/emeriti/krefeld/index.html\" target=\"_blank\">Thomas Krefeld</a> (Institute for Romance Studies), <a href=\"https://www.cis.lmu.de/personen/professoren/schulz/\" target=\"_blank\">Klaus Schulz</a> (Center for Information and Language Processing) and <a href=\"https://www.itg.uni-muenchen.de/personen/riepl_christian/index.html\" target=\"_blank\">Christian Riepl</a> (IT-Group Humanities) are realising the project.",
       "spiegel": "Der Spiegel presents ARTigo in the article “<a href=\"https://www.spiegel.de/lebenundlernen/job/lmu-muenchen-laesst-mit-crowdsourcing-bilder-verschlagworten-a-817439.html\" target=\"_blank\">Lass das mal den Schwarm machen</a>”.",
       "slb": "As part of the <a href=\"https://www.volkskundemuseum.at/stadt_land_bild\" target=\"_blank\"><i>Stadt-Land-Bild</i>-project</a>, ARTigo can be played in the Austrian Museum of Folk Life and Folk Art via a multimedia installation consisting of extensive <i>touch-screen</i> walls.",
       "relaunch": "Under the directon of <a href=\"https://www.kunstgeschichte.uni-muenchen.de/personen/wiss_ma/schneider/index.html\" target=\"_blank\">Stefanie Schneider</a> (Institute for Art History), ARTigo is being re-designed and adapted to the technical <i>state-of-the-art</i>.",
+      "provenance": "To mark the 5th International Day of Provenance Research, a collection of reverse sides of artworks is offered for indexing.",
       "eu": "ARTigo is awarded an „<a href=\"https://ars.electronica.art/citizenscience/en/winners/\" target=\"_blank\">European Union Prize for Citizen Science</a>“ (Honorary Mention)."
     }
   },
@@ -182,20 +207,20 @@
   "home": {
     "title": "Home",
     "fields": {
-      "annotated-color": "Play it {value}",
-      "annotated-epoch": "{value} everywhere",
-      "annotated-creator": "Get to know {value}",
-      "not-annotated": "First come, first serve",
-      "try-out": "Try it out"
+      "annotatedColor": "Play it {value}",
+      "annotatedEpoch": "{value} everywhere",
+      "annotatedCreator": "Get to know {value}",
+      "notAnnotated": "First come, first serve",
+      "tryOut": "Try it out"
     },
     "texts": {
       "intro": "We show you an image by",
       "prefix": "Tell us",
-      "example-1": "what you see on it",
-      "example-2": "what feelings it triggers in you",
-      "example-3": "what associations it evokes",
-      "example-4": "whether it appeals to you",
-      "example-5": "if it repels you"
+      "example1": "what you see on it",
+      "example2": "what feelings it triggers in you",
+      "example3": "what associations it evokes",
+      "example4": "whether it appeals to you",
+      "example5": "if it repels you"
     },
     "game_type": {
       "tagging": "Images are annotated with tags",
@@ -220,8 +245,8 @@
       "score": "Points",
       "users": "Players",
       "images": "Images",
-      "per-image": "per image",
-      "filter-tags": "Filter by assigned tags"
+      "perImage": "per image",
+      "filterTags": "Filter by assigned tags"
     }
   },
   "sessions": {
@@ -229,15 +254,15 @@
     "fields": {
       "of": "of",
       "query": "Search for game sessions",
-      "hide-empty": "Hide results without annotations",
-      "no-results": "No game sessions could be found."
+      "hideEmpty": "Hide results without annotations",
+      "noResults": "No game sessions could be found."
     }
   },
-  "not-found": {
+  "notFound": {
     "title": "Whoops, 404",
     "fields": {
-      "not-exist": "The page you were looking for does not (yet) exist",
-      "go-home": "Get me out of here"
+      "notExist": "The page you were looking for does not (yet) exist",
+      "goHome": "Get me out of here"
     }
   }
 }

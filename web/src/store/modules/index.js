@@ -1,10 +1,8 @@
-const requireModule = require.context('.', false, /\.module\.js$/);
-const modules = {};
-requireModule.keys().forEach((fileName) => {
-  const moduleName = fileName.replace(/(\.\/|\.module\.js)/g, '');
-  modules[moduleName] = requireModule(fileName).default || requireModule(
-    fileName,
-  );
-});
+const modules = {}
+const files = import.meta.glob('./*.module.js', { eager: true })
+for (let [fileName, fileContent] of Object.entries(files)) {
+  const moduleName = fileName.replace(/(\.\/|\.module\.js)/g, '')
+  modules[moduleName] = fileContent.default || fileContent
+}
 
-export default modules;
+export default modules

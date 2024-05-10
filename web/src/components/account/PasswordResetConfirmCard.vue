@@ -1,142 +1,137 @@
 <template>
-  <Card
-    v-bind="$props"
-    v-on="$listeners"
+  <CardBase
     :title="$t('user.password-reset.title')"
+    theme="light"
+    @close="close"
   >
     <v-form
       v-model="isFormValid"
       @submit.prevent="resetPassword"
     >
       <v-text-field
-        v-model="user.new_password1"
-        @click:append="showPassword = !showPassword"
+        v-model="newPassword1"
         :type="showPassword ? 'text' : 'password'"
         :placeholder="$t('user.fields.new-password')"
-        :rules="[checkLength]"
-        :append-icon="
-          showPassword ? 'mdi-eye-outline' : 'mdi-eye-off-outline'
-        "
+        :rules="[rules.length]"
+        clear-icon="mdi-close"
+        :append-icon="showPassword ? 'mdi-eye-outline' : 'mdi-eye-off-outline'"
         tabindex="0"
         counter="75"
+        variant="outlined"
+        density="compact"
         clearable
-        outlined
         rounded
-        dense
+        @click:append="showPassword = !showPassword"
       />
 
       <v-text-field
-        v-model="user.new_password2"
-        @click:append="showPassword = !showPassword"
+        v-model="newPassword2"
         :type="showPassword ? 'text' : 'password'"
         :placeholder="$t('user.fields.password-repeat')"
-        :rules="[checkLength, checkPasswordRepeat]"
-        :append-icon="
-          showPassword ? 'mdi-eye-outline' : 'mdi-eye-off-outline'
-        "
+        :rules="[rules.length, rules.repeat]"
+        clear-icon="mdi-close"
+        :append-icon="showPassword ? 'mdi-eye-outline' : 'mdi-eye-off-outline'"
         tabindex="0"
         counter="75"
+        variant="outlined"
+        density="compact"
         clearable
-        outlined
         rounded
-        dense
+        @click:append="showPassword = !showPassword"
       />
-      </v-form>
+    </v-form>
 
-    <template v-slot:actions>
+    <template #actions>
       <v-row>
         <v-col>
           <v-btn
-            @click="resetPassword"
             :disabled="!isFormValid"
             type="submit"
             tabindex="0"
-            color="primary"
-            depressed
+            class="bg-primary"
             rounded
             block
+            @click="resetPassword"
           >
             {{ $t("user.password-reset.title") }}
           </v-btn>
         </v-col>
       </v-row>
     </template>
-  </Card>
+  </CardBase>
 </template>
 
-<script>
-import Card from '@/components/utils/Card.vue';
+<script setup>
+import { ref, watch } from 'vue'
+import { useStore } from 'vuex'
+import { useI18n } from 'vue-i18n'
+import CardBase from '@/components/utils/CardBase.vue'
 
-export default {
-  extends: Card,
-  props: {
-    ...Card.props,
-  },
-  data() {
-    return {
-      user: {},
-      isFormValid: false,
-      showPassword: false,
-    };
-  },
-  methods: {
-    resetPassword() {
-      if (this.isFormValid) {
-        this.$store.dispatch('user/resetPasswordConfirm', this.user);
+const store = useStore()
+const { t } = useI18n()
+
+const newPassword1 = defineModel('newPassword1', { type: String })
+const newPassword2 = defineModel('newPassword2', { type: String })
+const showPassword = ref(false)
+const rules = {
+  length: (v) => {
+    if (v) {
+      if (v.length < 4) {
+        return t('rules.min', 4)
       }
-    },
-    close() {
-      this.$emit('input', false);
-    },
-    checkLength(value) {
-      if (value) {
-        if (value.length < 5) {
-          return this.$tc('rules.min', 5);
-        }
-        if (value.length > 75) {
-          return this.$tc('rules.max', 75);
-        }
-        return true;
+      if (v.length > 75) {
+        return t('rules.max', 75)
       }
-      return this.$t('field.required');
-    },
-    checkPasswordRepeat(value) {
-      if (value && value === this.user.new_password1) {
-        return true;
-      }
-      return this.$t('rules.password-repeat');
-    },
+      return true
+    }
+    return t('field.required')
   },
-  computed: {
-    status() {
-      const { error, loading } = this.$store.state.utils.status;
-      return !loading && !error;
-    },
-    timestamp() {
-      return this.$store.state.utils.status.timestamp;
-    },
-  },
-  watch: {
-    timestamp() {
-      if (this.isFormValid && this.status) {
-        if (this.isDialog) {
-          this.close();
-        } else {
-          this.$router.push({ name: 'home' });
-        }
-      }
-    },
-  },
-  created() {
-    let path = this.$route.path.split('/');
-    path = path.filter((item) => item);
-    this.user = {
+  repeat: (v) => {
+    if (v && v === newPassword1.value) {
+      return true;
+    }
+    return t('rules.password-repeat')
+  }
+}
+
+const isFormValid = defineModel('isFormValid', {
+  type: Boolean,
+  default: false
+})
+function resetPassword() {
+  if (isFormValid.value) {
+    let path = this.$route.path.split('/')
+    path = path.filter((item) => item)
+
+    store.dispatch('user/resetPasswordConfirm', {
       uid: path[path.length - 2],
       token: path[path.length - 1],
-    };
-  },
-  components: {
-    Card,
-  },
-};
+      new_password1: newPassword1,
+      new_password2: newPassword2
+    })
+  }
+}
+
+const props = defineProps({
+  isDialog: {
+    type: Boolean,
+    default: true
+  }
+})
+const emit = defineEmits(['close'])
+function close() {
+  emit('close')
+}
+import useStatus from '@/composables/useStatus'
+const { isUpdated, isSuccessful } = useStatus()
+import goTo from '@/composables/useGoTo'
+watch(isUpdated, () => {
+  if (isFormValid.value && isSuccessful.value) {
+    if (props.isDialog) {
+      close()
+    } else {
+      goTo('home')
+    }
+  }
+})
 </script>

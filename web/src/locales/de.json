@@ -10,7 +10,7 @@
         "institution": "Institution",
         "source": "Sammlung",
         "tags": "Schlagwörter",
-        "has-tag": "Das Schlagwort „{tag}“ wurde {n}-mal annotiert"
+        "hasTag": "Das Schlagwort „{tag}“ wurde {n}-mal annotiert"
       }
     },
     "default": {
@@ -23,9 +23,9 @@
       "username": "Benutzername",
       "email": "E-Mail",
       "password": "Passwort",
-      "new-password": "Neues Passwort",
-      "password-repeat": "Passwort wiederholen",
-      "privacy-policy": "Datenschutzerklärung zustimmen"
+      "newPassword": "Neues Passwort",
+      "passwordRepeat": "Passwort wiederholen",
+      "privacyPolicy": "Datenschutzerklärung zustimmen"
     },
     "menu": {
       "title": "Benutzerkonto",
@@ -47,8 +47,8 @@
         "access": "Zugriff",
         "count": "Objekte",
         "actions": "Aktionen",
-        "drag-file": "Dateien zum Hochladen ziehen oder",
-        "browse-file": "Dateien durchsuchen"
+        "dragFile": "Dateien zum Hochladen ziehen oder",
+        "browseFile": "Dateien durchsuchen"
       }
     },
     "logout": {
@@ -65,8 +65,8 @@
       "headers": {
         "username": "Name",
         "is_anonymous": "Anonym",
-        "sum-score": "Punkte",
-        "sum-count": "Schlagwörter"
+        "sumScore": "Punkte",
+        "sumCount": "Schlagwörter"
       }
     }
   },
@@ -78,18 +78,18 @@
       "query": "Nach Sammlungen suchen",
       "remove": "Sammlung entfernen",
       "change": "Sammlung ändern",
-      "hide-empty": "Blende Ergebnisse ohne Bilder aus",
-      "show-empty": "Zeige Ergebnisse ohne Bilder an",
-      "no-results": "Es konnten keine Sammlungen gefunden werden.",
-      "access-open": "Öffentlich",
-      "access-pending": "Ausstehend",
-      "access-restricted": "Eingeschränkt"
+      "hideEmpty": "Blende Ergebnisse ohne Bilder aus",
+      "showEmpty": "Zeige Ergebnisse ohne Bilder an",
+      "noResults": "Es konnten keine Sammlungen gefunden werden.",
+      "accessOpen": "Öffentlich",
+      "accessPending": "Ausstehend",
+      "accessRestricted": "Eingeschränkt"
     },
     "texts": {
       "preface": "Die Bilder, die Du während des Spiels siehst, stammen zum Beispiel aus der Staatlichen Kunsthalle Karlsruhe, dem Rijksmuseum und dem Kunsthistorischen Institut der Universität zu Köln.",
       "principle": "Wenn Du eingeloggt bist, kannst Du über das Benutzermenü auch eigene Sammlungen hochladen. Um Bilder hinzuzufügen, ziehst Du die entsprechenden Dateien einfach per <i>Drag & Drop</i> auf die Oberfläche. Es werden zwei Arten von Dateien unterstützt: Bilder in den Formaten <code>.jpg</code>, <code>.jpeg</code>, <code>.png</code> und <code>.gif</code>; und Metadaten zu den Bildern in den Formaten <code>.csv</code>, <code>.json</code> oder <code>.jsonl</code>. Bilder können auch als <code>.zip</code>-Archive übergeben werden.",
       "mapping": "Damit die Metadaten richtig zugeordnet werden können, müssen die Spaltennamen in der Datei den folgenden Angaben entsprechen:",
-      "file-path": "<code>file</code>, <code>path</code> oder <code>file_path</code>: Dateiname des Bildes",
+      "filePath": "<code>file</code>, <code>path</code> oder <code>file_path</code>: Dateiname des Bildes",
       "title": "<code>title</code>, <code>titles</code>, <code>meta.title</code> oder <code>titel</code>: Titel des Bildes",
       "creator": "<code>creator</code>, <code>artist</code>, <code>meta.creator</code> oder <code>künstler</code>: Künstler:in des Bildes",
       "created": "<code>date</code>, <code>created</code>, <code>created_start</code>, <code>created_end</code>, <code>meta.created</code>, <code>entstehung</code>, <code>entstehung_beginn</code> oder <code>entstehung_ende</code>: Entstehungszeitpunkt des Bildes",
@@ -102,7 +102,10 @@
   "imprint": {
     "title": "Impressum"
   },
-  "privacy-policy": {
+  "institute": {
+    "title": "Ludwig-Maximilians-Universität München"
+  },
+  "privacyPolicy": {
     "title": "Datenschutz"
   },
   "search": {
@@ -111,9 +114,9 @@
       "of": "von",
       "reset": "Zurücksetzen",
       "query": "Nach Bildern suchen",
-      "hide-empty": "Blende Ergebnisse ohne Annotationen aus",
-      "show-empty": "Zeige Ergebnisse ohne Annotationen an",
-      "no-results": "Für Deine Suchanfrage konnten keine Ergebnisse gefunden werden.",
+      "hideEmpty": "Blende Ergebnisse ohne Annotationen aus",
+      "showEmpty": "Zeige Ergebnisse ohne Annotationen an",
+      "noResults": "Für Deine Suchanfrage konnten keine Ergebnisse gefunden werden.",
       "game": "Möchtest Du mit diesen Bildern spielen?"
     }
   },
@@ -123,7 +126,7 @@
       "creator": "Künstler:innen abgleichen",
       "resource": "Titel abgleichen",
       "results": "{n} Einträge für|{n} Eintrag für|{n} Einträge für",
-      "no-results": "Für Deine Suchanfrage wurden leider keine Einträge bei Drittanbietern gefunden."
+      "noResults": "Für Deine Suchanfrage wurden leider keine Einträge bei Drittanbietern gefunden."
     }
   },
   "about": {
@@ -137,10 +140,31 @@
     "texts": {
       "preface": "Kunstgeschichte lebt von der Arbeit mit Kunstwerken und ihren digitalen Reproduktionen. Diese werden online in Bildkatalogen gesammelt, die teilweise mehrere Millionen Objekte umfassen. Um Bilder in solchen Verzeichnissen suchen zu können, braucht es beschreibende Texte: eine Aufgabe, bei der Du uns spielerisch helfen kannst – und gleichzeitig viel über Kunst lernst!",
       "principle": "ARTigo ist eine kollaborative Plattform und ein Beispiel für offene universitäre Forschung, an der Du als Spieler:in teilnimmst. Alle ARTigo-Spiele funktionieren so: Dir wird ein Bild vorgelegt. Ziel ist es, dieses Bild innerhalb einer bestimmten Zeit mit Schlagwörtern (<i>Tags</i>) so zu beschreiben, dass möglichst viele Punkte erzielt werden:",
-      "score-validated": "{n} Punkte erhältst Du, wenn der Tag für dieses Bild bereits in einer früheren Spielrunde vergeben wurde",
-      "score-opponent": "{n} weitere Punkte gibt es, wenn Du mit einem:r Mitspieler:in spielst und ihr denselben Tag verwendet",
-      "score-first": "Wenn Du als Erste:r ein Bild beschreibst, erhältst Du immer {n} Punkte pro Tag",
+      "scoreValidated": "{n} Punkte erhältst Du, wenn der Tag für dieses Bild bereits in einer früheren Spielrunde vergeben wurde",
+      "scoreOpponent": "{n} weitere Punkte gibt es, wenn Du mit einem:r Mitspieler:in spielst und ihr denselben Tag verwendet",
+      "scoreFirst": "Wenn Du als Erste:r ein Bild beschreibst, erhältst Du immer {n} Punkte pro Tag",
       "motivation": "Nach einer von Dir festgelegten Anzahl von Spielrunden werden die Metadaten zu den Bildern sichtbar. So generierst Du nicht nur kunsthistorisches Wissen, sondern sammelst es auch. Jeder Tag, den Du eingibst, wird gespeichert und verbessert die Suche nach Kunstwerken – eine Win-Win-Situation. Also, nichts wie ran!"
+    }
+  },
+  "feedback": {
+    "title": "Feedback",
+    "texts": {
+      "example1": {
+        "name": "Mechthild",
+        "value": "Mir gefällt die intensive Auseinandersetzung mit der sinnlichen Wahrnehmung der Kunstwerke. Die Herausforderung, das Gesehene in Worte zu fassen, ist auch nach Jahren noch spannend und alles andere als trivial."
+      },
+      "example2": {
+        "name": "Johannes",
+        "value": "Die Vielfalt der Wahrnehmungen lässt keine Langeweile aufkommen, im Gegenteil. So kommt Kunst in den Alltag und bereichert ihn auf unkomplizierte Weise. Ein Gewinn, der digitales und analoges Leben verbindet."
+      },
+      "example3": {
+        "name": "Elke",
+        "value": "Es ist schön, Bekanntes wieder zu erkennen. Aber noch spannender ist es, Unbekanntes zu entdecken und mit Hilfe der Metadaten nachzuschlagen – und das wunderbar einfach, leicht zugänglich und spielerisch."
+      },
+      "example4": {
+        "name": "Michaël",
+        "value": "Neben der Notwendigkeit der Zusammenarbeit ermöglicht ARTigo das Üben und Entdecken weniger bekannter Künstler und Werke. Die Wiederholung von Themen erleichtert das Entziffern von Stilrichtungen, Symbolen oder Figuren."
+      }
     }
   },
   "contact": {
@@ -157,19 +181,20 @@
       "leader": "Aktuelle Projektleiterin",
       "informatics": "Institut für Informatik",
       "cis": "Centrum für Informations- und Sprachverarbeitung",
-      "art-history": "Institut für Kunstgeschichte",
-      "romance-studies": "Institut für Romanische Philologie",
+      "artHistory": "Institut für Kunstgeschichte",
+      "romanceStudies": "Institut für Romanische Philologie",
       "itg": "IT-Gruppe Geisteswissenschaften"
     }
   },
   "history": {
-    "title": "Projekthistorie",
+    "title": "Historie",
     "texts": {
       "prototype": "<a href=\"https://www.itg.uni-muenchen.de/personen/schoen_gerhard/index.html\" target=\"_blank\">Gerhard Schön</a> (IT-Gruppe Geisteswissenschaften) entwickelt einen ersten Prototyp einer <i>Social-Tagging</i>-Plattform als <i>Proof-of-Concept</i>.",
       "dfg": "ARTigo wird von der Deutschen Forschungsgemeinschaft (DFG) gefördert. Unter der Leitung von <a href=\"https://www.kunstgeschichte.uni-muenchen.de/personen/professoren_innen/kohle/index.html\" target=\"_blank\">Hubertus Kohle</a> (Institut für Kunstgeschichte) realisieren <a href=\"https://www.pms.ifi.lmu.de/mitarbeiter/derzeitige/francois-bry/\" target=\"_blank\">François Bry</a> (Institut für Informatik), <a href=\"https://www.romanistik.uni-muenchen.de/personen/emeriti/krefeld/index.html\" target=\"_blank\">Thomas Krefeld</a> (Institut für Romanische Philologie), <a href=\"https://www.cis.lmu.de/personen/professoren/schulz/\" target=\"_blank\">Klaus Schulz</a> (Centrum für Informations- und Sprachverarbeitung) und <a href=\"https://www.itg.uni-muenchen.de/personen/riepl_christian/index.html\" target=\"_blank\">Christian Riepl</a> (IT-Gruppe-Geistes&shy;wissen&shy;schaften) das Projekt.",
       "spiegel": "Der Spiegel stellt ARTigo im Artikel „<a href=\"https://www.spiegel.de/lebenundlernen/job/lmu-muenchen-laesst-mit-crowdsourcing-bilder-verschlagworten-a-817439.html\" target=\"_blank\">Lass das mal den Schwarm machen</a>“ vor.",
       "slb": "Im Rahmen des Projekts <a href=\"https://www.volkskundemuseum.at/stadt_land_bild\" target=\"_blank\"><i>Stadt-Land-Bild</i></a> ist ARTigo im Österreichischen Museum für Volkskunde über eine multimediale Installation aus weitläufigen <i>Touch-Screen</i>-Wänden spielbar.",
       "relaunch": "Unter der Leitung von <a href=\"https://www.kunstgeschichte.uni-muenchen.de/personen/wiss_ma/schneider/index.html\" target=\"_blank\">Stefanie Schneider</a> (Institut für Kunstgeschichte) wird ARTigo neu konzipiert und an den technischen <i>State-of-the-Art</i> angepasst.",
+      "provenance": "Zum 5. internationalen Tag der Provenienzforschung wird eine Sammlung von Rückseiten von Kunstwerken zur Verschlagwortung angeboten.",
       "eu": "ARTigo wird mit einem „<a href=\"https://ars.electronica.art/citizenscience/en/winners/\" target=\"_blank\">European Union Prize for Citizen Science</a>“ (Honorary Mention) ausgezeichnet."
     }
   },
@@ -183,20 +208,20 @@
   "home": {
     "title": "Startseite",
     "fields": {
-      "annotated-color": "Treib’s mal {value}",
-      "annotated-epoch": "{value} überall",
-      "annotated-creator": "Lerne {value} kennen",
-      "not-annotated": "Wer zuerst kommt, malt zuerst",
-      "try-out": "Probiere es aus"
+      "annotatedColor": "Treib’s mal {value}",
+      "annotatedEpoch": "{value} überall",
+      "annotatedCreator": "Lerne {value} kennen",
+      "notAnnotated": "Wer zuerst kommt, malt zuerst",
+      "tryOut": "Probiere es aus"
     },
     "texts": {
       "intro": "Wir zeigen Dir ein Bild von",
       "prefix": "Sage uns,",
-      "example-1": "was Du darauf siehst",
-      "example-2": "welche Gefühle es bei Dir auslöst",
-      "example-3": "welche Assoziationen es weckt",
-      "example-4": "ob es Dich anspricht",
-      "example-5": "ob es Dich abstößt"
+      "example1": "was Du darauf siehst",
+      "example2": "welche Gefühle es bei Dir auslöst",
+      "example3": "welche Assoziationen es weckt",
+      "example4": "ob es Dich anspricht",
+      "example5": "ob es Dich abstößt"
     },
     "game_type": {
       "tagging": "Bilder werden mit Schlagwörtern annotiert",
@@ -221,8 +246,8 @@
       "score": "Punkte",
       "users": "Spieler:innen",
       "images": "Bilder",
-      "per-image": "pro Bild",
-      "filter-tags": "Filtere nach vergebenen Schlagwörtern"
+      "perImage": "pro Bild",
+      "filterTags": "Filtere nach vergebenen Schlagwörtern"
     }
   },
   "sessions": {
@@ -230,16 +255,16 @@
     "fields": {
       "of": "von",
       "query": "Nach Spielsitzungen suchen",
-      "hide-empty": "Blende Ergebnisse ohne Annotationen aus",
-      "show-empty": "Zeige Ergebnisse ohne Annotationen an",
-      "no-results": "Es konnten keine Spielsitzungen gefunden werden."
+      "hideEmpty": "Blende Ergebnisse ohne Annotationen aus",
+      "showEmpty": "Zeige Ergebnisse ohne Annotationen an",
+      "noResults": "Es konnten keine Spielsitzungen gefunden werden."
     }
   },
-  "not-found": {
+  "notFound": {
     "title": "Ups, 404",
     "fields": {
-      "not-exist": "Die gesuchte Seite existiert (noch) nicht",
-      "go-home": "Bring mich weg von hier"
+      "notExist": "Die gesuchte Seite existiert (noch) nicht",
+      "goHome": "Bring mich weg von hier"
     }
   }
 }

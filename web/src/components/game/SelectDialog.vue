@@ -1,50 +1,43 @@
 <template>
   <v-dialog
-    v-model="dialog"
+    v-model="showDialog"
     :retain-focus="false"
     max-width="625"
     scrollable
     persistent
   >
     <SelectCard
-      v-model="dialog"
-      :key="dialog"
-      :defaultParams="params"
+      v-model="showDialog"
+      :default-params="defaultParams"
     />
   </v-dialog>
 </template>
 
-<script>
-export default {
-  props: {
-    value: Boolean,
-  },
-  data() {
-    return {
-      dialog: false,
-    };
-  },
-  computed: {
-    params() {
-      return this.$store.state.game.dialog.params;
-    },
-  },
-  watch: {
-    dialog(value) {
-      if (!value) {
-        this.$store.commit('game/updateDialog', { params: {} });
-      }
-      this.$emit('input', value);
-    },
-    value: {
-      handler(value) {
-        this.dialog = value;
-      },
-      immediate: true,
-    },
-  },
-  components: {
-    SelectCard: () => import('./SelectCard.vue'),
-  },
-};
+<script setup>
+import { ref, computed, watch } from 'vue'
+import { useStore } from 'vuex'
+import SelectCard from './SelectCard.vue'
+
+const store = useStore()
+
+const defaultParams = computed(() => store.state.game.dialog.params)
+
+const emit = defineEmits(['update:modelValue'])
+const showDialog = ref(false)
+watch(showDialog, (value) => {
+  if (!value) {
+    store.commit('game/updateDialog', { params: {} })
+  }
+  emit('update:modelValue', value)
+})
+
+const props = defineProps({
+  modelValue: {
+    type: Boolean,
+    default: false
+  }
+})
+watch(() => props.modelValue, (value) => {
+  showDialog.value = value
+}, { immediate: true })
 </script>

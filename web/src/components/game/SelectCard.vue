@@ -1,36 +1,31 @@
 <template>
-  <v-card flat>
-    <v-card-title>
-      {{ $t("game.fields.new-game-default") }}
+  <v-card>
+    <template #title>
+      {{ $t("game.fields.newGameDefault") }}
+    </template>
 
-      <v-col
-        class="pa-0"
-        align="right"
-      >
-        <v-btn
-          @click="goTo('about')"
-          :title="$t('about.title')"
-          icon
-        >
-          <v-icon>
-            mdi-help-circle-outline
-          </v-icon>
-        </v-btn>
-      </v-col>
-    </v-card-title>
-
-    <v-card-text class="my-4 pb-0">
+    <template #append>
+      <v-btn
+        :title="$t('about.title')"
+        density="comfortable"
+        icon="mdi-help-circle-outline"
+        variant="text"
+        @click="goTo('about', openInNewTab = true)"
+      />
+    </template>
+    
+    <template #text>
       <p
         v-if="Object.keys(defaultParams).length"
-        class="pb-4"
+        class="pb-4 text-body-2 text-grey-darken-1"
       >
         {{ $t('game.note') }}
       </p>
 
       <SelectStepper
         v-model="params"
-        :showMore="showMore"
-        :defaultParams="defaultParams"
+        :show-more="showMore"
+        :default-params="defaultParams"
       />
 
       <v-row
@@ -40,25 +35,22 @@
       >
         <v-col cols="auto">
           <v-btn
-            @click="showMore = true"
-            icon
-          >
-            <v-icon>
-              mdi-plus-circle-outline
-            </v-icon>
-          </v-btn>
+            density="comfortable"
+            icon="mdi-plus-circle-outline"
+            variant="text"
+            @click="showMore = true;"
+          />
         </v-col>
       </v-row>
-    </v-card-text>
+    </template>
 
     <v-card-actions class="pb-6 px-6">
       <v-btn
-        @click="play"
         tabindex="0"
-        color="primary"
-        depressed
+        class="bg-primary"
         rounded
         block
+        @click="play"
       >
         {{ $t("game.title") }}
       </v-btn>
@@ -66,34 +58,38 @@
   </v-card>
 </template>
 
-<script>
-export default {
-  props: {
-    defaultParams: Object,
-  },
-  data() {
-    return {
-      params: {},
-      showMore: false,
-    };
-  },
-  methods: {
-    play() {
-      this.$store.dispatch('game/get', this.params).then(() => {
-        this.close();
-        this.$router.push({ name: 'game' });
-      });
-    },
-    close() {
-      this.$emit('input', false);
-    },
-    goTo(name) {
-      const route = this.$router.resolve({ name });
-      window.open(route.href, '_blank');
-    },
-  },
-  components: {
-    SelectStepper: () => import('./SelectStepper.vue'),
-  },
-};
+<script setup>
+import { ref } from 'vue'
+import { useRouter } from 'vue-router'
+import { useStore } from 'vuex'
+import goTo from '@/composables/useGoTo'
+import SelectStepper from './SelectStepper.vue'
+
+const router = useRouter()
+const store = useStore()
+
+const params = defineModel('params', {
+  type: Object,
+  default: {}
+})
+const showMore = ref(false)
+
+defineProps({
+  defaultParams: {
+    type: Object,
+    default: null
+  }
+})
+
+const emit = defineEmits(['update:modelValue'])
+function close() {
+  emit('update:modelValue', false)
+}
+
+function play() {
+  store.dispatch('game/get', params.value).then(() => {
+    close()
+    router.push({ name: 'game' })
+  })
+}
 </script>
