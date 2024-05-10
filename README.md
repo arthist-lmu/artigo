@@ -53,24 +53,24 @@ Copy the contents of `.env.example` to `.env` and adjust the settings.
 
 5. Build and start the container:
 	```sh
-	sudo docker-compose up --build
+	sudo docker compose up --build
 	```
 
 6. Install `npm`:
 	```sh
-	sudo docker-compose exec web npm install
+	sudo docker compose exec web npm install
 	```
 
 7. Apply necessary Django operations and import fixtures:
 	```sh
-	sudo docker-compose exec api python3 manage.py migrate
-	sudo docker-compose exec api python3 manage.py loaddata sites.json
+	sudo docker compose exec api python3 manage.py migrate
+	sudo docker compose exec api python3 manage.py loaddata sites.json
 	```
 
 8. Import the data into `api` and `search`:
 	```sh
-	sudo docker-compose exec api python3 manage.py import_data
-	sudo docker-compose exec search python3 -m artigo_search --mode client --task insert
+	sudo docker compose exec api python3 manage.py import_data
+	sudo docker compose exec search python3 -m artigo_search --mode client --task insert
 	```
 
 
@@ -79,36 +79,36 @@ Copy the contents of `.env.example` to `.env` and adjust the settings.
 ### Code reloading
 Hot reloading is enabled for `api`. To display changes of `web` (`http://localhost:8080/`), run:
 ```sh
-sudo docker-compose exec web npm run build
+sudo docker compose exec web npm run build
 ```
 
-Alternatively, use `serve` to enable a hot reloaded instance on `http://localhost:8081/`:
+Alternatively, use `serve` to enable a hot reloaded instance on `http://localhost:8080/`:
 ```sh
-sudo docker-compose exec web npm run serve
+sudo docker compose exec web npm run serve
 ```
 
 ### Schema updating
 To re-generate the OpenAPI 3.0 schema file, use the following command:
 ```sh
-sudo docker-compose exec api python3 manage.py spectacular --file schema.yml
+sudo docker compose exec api python3 manage.py spectacular --file schema.yml
 ```
 
 ### Database schema migration
 To generate database schema migration files, use the following command:
 ```sh
-sudo docker-compose exec api python3 manage.py migrate
+sudo docker compose exec api python3 manage.py migrate
 ```
 
 ### Formatting
 Lint can be used to help with standardized formatting:
 ```sh
-sudo docker-compose exec web npm run lint --fix
+sudo docker compose exec web npm run lint --fix
 ```
 
 ### UML class diagram
 To create an UML class diagram from the Django models, run:
 ```sh
-sudo docker-compose exec api python3 manage.py graph_models frontend --hide-edge-labels -o /dump/models.png
+sudo docker compose exec api python3 manage.py graph_models frontend --hide-edge-labels -o /dump/models.png
 ```
 
 
