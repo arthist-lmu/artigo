@@ -31,7 +31,7 @@
     "@vue/test-utils": "^2.4.6",
     "eslint": "^8.57.0",
     "eslint-config-stylelint": "^21.0.0",
-    "eslint-plugin-vitest": "^0.2.8",
+    "eslint-plugin-vitest": "^0.5.4",
     "eslint-plugin-vue": "^9.26.0",
     "eslint-plugin-vuetify": "^2.4.0",
     "jsdom": "^24.0.0",
