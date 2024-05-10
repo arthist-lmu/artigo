@@ -129,7 +129,7 @@ class RandomGameParameters(GameParameters):
             valid_resources = valid_resources.filter(collection_id=collection_id)
 
         if game['field'] == 'tags':
-            if game['type'] == 'annotated-color':
+            if game['type'] == 'annotatedColor':
                 colors = [
                     { 'de': 'schwarz',           'en': 'black' },
                     { 'de': 'weiß',              'en': 'white'} ,
@@ -142,7 +142,7 @@ class RandomGameParameters(GameParameters):
                 ]
 
                 game['query'] = random.choice(colors)
-            elif game['type'] == 'annotated-epoch':
+            elif game['type'] == 'annotatedEpoch':
                 epochs = [
                     { 'de': 'renaissance',       'en': 'renaissance' },
                     { 'de': 'manierismus',       'en': 'mannerism' },
@@ -227,19 +227,19 @@ class RandomGameParameters(GameParameters):
     def get_variants(self, lang):
         values = [
             {
-                'type': 'annotated-color',
+                'type': 'annotatedColor',
                 'field': 'tags',
             },
             {
-                'type': 'annotated-epoch',
+                'type': 'annotatedEpoch',
                 'field': 'tags',
             },
             {
-                'type': 'not-annotated',
+                'type': 'notAnnotated',
                 'field': 'resources',
             },
             {
-                'type': 'annotated-creator',
+                'type': 'annotatedCreator',
                 'field': 'creators',
             },
         ]
