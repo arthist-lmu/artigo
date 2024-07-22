@@ -39,7 +39,7 @@ asyncio = "3.*"
 black = "*"
 flake8 = "*"
 isort = "*"
-pytest = "7.*"
+pytest = "8.*"
 pytest-cov = "4.*"
 pytest-django = "4.*"
 
