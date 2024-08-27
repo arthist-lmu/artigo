@@ -13,7 +13,7 @@
         "score": "{n} Punkte|{n} Punkt|{n} Punkte",
         "rounds": "Runde {i} von {total}",
         "suggest": "Füge ähnliche Schlagwörter hinzu",
-        "invalid": "Dieses Schlagwort darf nicht (nochmal) eingegeben werden",
+        "invalid": "Dieses Schlagwort darf nicht (nochmal) eingegeben werden.",
         "secondsLeft": "Du hast noch {n} Sekunden."
       },
       "tagging": {

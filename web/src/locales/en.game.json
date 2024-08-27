@@ -13,7 +13,7 @@
         "score": "{n} Points|{n} Point|{n} Points",
         "rounds": "Round {i} of {total}",
         "suggest": "Click to add similar tags",
-        "invalid": "This tag must not be entered (again)",
+        "invalid": "This tag must not be entered (again).",
         "secondsLeft": "You have {n} seconds left."
       },
       "tagging": {
@@ -27,7 +27,7 @@
         "post": "Annotate image region",
         "intro": "Do you see the tags above the displayed image? Draw with the mouse over the corresponding image regions.",
         "opponent": "Your fellow player’s tags are always displayed on the left.",
-        "noOpponent": "You play without another player",
+        "noOpponent": "You play without another player.",
         "taboo": "You may not use the following tags: {tags}."
       }
     },
