@@ -44,7 +44,7 @@ except:
     FRONTEND = 'http://localhost:8080'
     FRONTEND_URL = FRONTEND
 
-logger.warning(f'API URL set to {API_URL}.')
+logger.warning(f'API URL set to: {API_URL}.')
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -137,6 +137,8 @@ except:
         'http://localhost:8080',
         'http://localhost:8081',
     ])
+    
+logger.warning(f'CORS allowed origins set to: {", ".join(CORS_ALLOWED_ORIGINS)}.')
 
 ROOT_URLCONF = 'core.urls'
 

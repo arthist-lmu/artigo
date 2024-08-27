@@ -108,6 +108,8 @@ services:
       - api
     ports:
       - "8081:80"
+    env_file:
+      - ./.testing_api.env
     labels:
       com.centurylinklabs.watchtower.enable: "true"
 

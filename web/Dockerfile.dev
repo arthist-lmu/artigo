@@ -1,6 +1,6 @@
 FROM nginx:1.25-alpine
 
-ARG VITE_APP_API
+ARG VUE_APP_API
 ENV VITE_APP_API=$VUE_APP_API
 
 RUN apk add --update npm
