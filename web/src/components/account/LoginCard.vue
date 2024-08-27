@@ -74,7 +74,7 @@
                 rounded
                 block
               >
-                {{ $t("user.password-reset.title") }}
+                {{ $t("user.passwordReset.title") }}
               </v-btn>
             </template>
 

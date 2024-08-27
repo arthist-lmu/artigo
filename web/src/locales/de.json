@@ -54,7 +54,7 @@
     "logout": {
       "title": "Abmelden"
     },
-    "password-reset": {
+    "passwordReset": {
       "title": "Passwort zurücksetzen",
       "note": "Bitte beachte, dass aus Sicherheitsgründen kein Fehler ausgelöst wird, wenn die E-Mail-Adresse nicht mit einem Konto verknüpft ist."
     },

@@ -3,9 +3,9 @@ import store from '@/store'
 import useIsArray from '@/composables/useIsArray'
 
 let baseURL = 'http://localhost:8000'
-const { VUE_APP_API } = import.meta.env
-if (VUE_APP_API) {
-  baseURL = `https://${VUE_APP_API}`
+const { VITE_APP_API } = import.meta.env
+if (VITE_APP_API) {
+  baseURL = `https://${VITE_APP_API}`
 }
 
 const instance = axios.create({
