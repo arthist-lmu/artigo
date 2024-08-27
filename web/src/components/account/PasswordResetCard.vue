@@ -1,11 +1,11 @@
 <template>
   <CardBase
-    :title="$t('user.password-reset.title')"
+    :title="$t('user.passwordReset.title')"
     theme="light"
     @close="close"
   >
     <p class="pb-4 text-body-2 text-grey-darken-1">
-      {{ $t('user.password-reset.note') }}
+      {{ $t('user.passwordReset.note') }}
     </p>
 
     <v-form
@@ -40,7 +40,7 @@
             block
             @click="resetPassword"
           >
-            {{ $t("user.password-reset.title") }}
+            {{ $t("user.passwordReset.title") }}
           </v-btn>
         </v-col>
       </v-row>
