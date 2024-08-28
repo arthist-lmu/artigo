@@ -92,8 +92,8 @@ const props = defineProps({
   }
 })
 
-const emit = defineEmits(['update:modelValue'])
+const emit = defineEmits(['close'])
 function close() {
-  emit('update:modelValue', false)
+  emit('close')
 }
 </script>

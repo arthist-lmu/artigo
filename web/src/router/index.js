@@ -1,7 +1,6 @@
 import { nextTick } from 'vue'
 import { createRouter, createWebHistory, RouterView } from 'vue-router'
 import i18n from '@/plugins/i18n'
-import store from '@/store'
 import DefaultLayout from '@/layouts/DefaultLayout.vue'
 import AccountLayout from '@/layouts/AccountLayout.vue'
 
@@ -163,14 +162,6 @@ const router = createRouter({
   ]
 })
 
-router.beforeResolve((to, from, next) => {
-  if (to.name) {
-    const status = { loading: true, error: false }
-    store.dispatch('utils/setStatus', status, { root: true })
-  }
-  next()
-})
-
 router.afterEach((to) => {
   nextTick(() => {
     let title = 'ARTigo – Social Image Tagging'
@@ -178,8 +169,6 @@ router.afterEach((to) => {
       title = `${i18n.global.t(to.meta.title)} | ${title}`
     }
     document.title = title
-    const status = { loading: false, error: false }
-    store.dispatch('utils/setStatus', status, { root: true })
   })
 })
 
