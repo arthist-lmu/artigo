@@ -13,8 +13,6 @@ grpcio-tools = "1.*"
 django-environ = "0.*"
 aiohttp = "3.*"
 celery = "5.*"
-pytest = "7.*"
-pytest-cov = "4.*"
 redis = "5.*"
 urllib3 = "2.*"
 
@@ -24,6 +22,8 @@ flake8 = "*"
 isort = "*"
 mypy-protobuf = "3.*"
 pytz = "*"
+pytest = "*"
+pytest-cov = "*"
 
 [tool.black]
 line-length = 120
