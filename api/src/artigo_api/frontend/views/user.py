@@ -88,8 +88,8 @@ class CustomRegisterView(RegisterView):
                     serializer.is_valid(raise_exception=True)
 
                     is_valid = True
-                except:
-                    pass
+                except Exception as error:
+                    logger.warning(f'RegisterSerializer failed with {error}')
         else:
             serializer = self.get_serializer(data=request.data)
             serializer.is_valid(raise_exception=True)

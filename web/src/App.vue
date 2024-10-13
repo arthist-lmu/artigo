@@ -8,14 +8,20 @@
   >
     <RouterView />
   </component>
+  <component
+    :is="AccountLayout"
+    v-else
+    :dark-mode="true"
+  />
 </template>
 
 <script setup>
-import { computed, watch } from 'vue'
+import { defineAsyncComponent, computed, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { useStore } from 'vuex'
 import i18n from '@/plugins/i18n'
 import isArray from '@/composables/useIsArray'
+const AccountLayout = defineAsyncComponent(() => import('@/layouts/AccountLayout.vue')) // to avoid circular import
 
 const route = useRoute()
 const store = useStore()

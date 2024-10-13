@@ -38,8 +38,8 @@ function goToGame() {
 .play {
   position: absolute;
   width: 44px !important;
-  left: 164px;
-  top: 14px;
+  left: 152px;
+  top: 2px;
 }
 
 .play,

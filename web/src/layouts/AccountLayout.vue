@@ -3,8 +3,8 @@
     <v-layout>
       <v-main>
         <v-container class="fill-height">
-          <v-row>
-            <v-col cols="6">
+          <v-row justify="center">
+            <v-col :cols="$slots.default ? 6 : 'auto'">
               <v-container class="fill-height">
                 <v-row
                   align="center"
@@ -15,7 +15,10 @@
               </v-container>
             </v-col>
 
-            <v-col cols="6">
+            <v-col
+              v-if="$slots.default"
+              cols="6"
+            >
               <slot />
             </v-col>
           </v-row>

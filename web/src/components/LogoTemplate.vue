@@ -1,13 +1,15 @@
 <template>
-  <img
-    alt="ARTigo – Social Image Tagging"
-    src="/assets/images/logo.svg"
-    height="32"
-    @click="goTo('home')"
-    @keydown="goTo('home')"
-  >
+  <div style="position: relative;">
+    <img
+      alt="ARTigo – Social Image Tagging"
+      src="/assets/images/logo.svg"
+      height="32"
+      @click="goTo('home')"
+      @keydown="goTo('home')"
+    >
 
-  <GameMenu />
+    <GameMenu />
+  </div>
 </template>
 
 <script setup>
