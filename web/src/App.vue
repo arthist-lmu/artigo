@@ -1,7 +1,7 @@
 <template>
   <component
     :is="layout"
-    v-if="token"
+    v-if="existsUserData"
     :opaque="opaque"
     :dark-mode="darkMode"
     :hide-search-bar="hideSearchBar"
@@ -11,7 +11,7 @@
   <component
     :is="AccountLayout"
     v-else
-    :dark-mode="true"
+    :dark-mode="darkMode"
   />
 </template>
 
@@ -57,6 +57,11 @@ watch(isInvalidToken, (value) => {
   if (value) {
     registerAnonymous()
   }
+})
+
+const existsUserData = computed(() => {
+  const { data } = store.state.user
+  return Object.keys(data).length !== 0
 })
 
 watch(locale, (value) => {

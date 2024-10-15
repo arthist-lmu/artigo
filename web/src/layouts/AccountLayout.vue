@@ -25,7 +25,7 @@
         </v-container>
       </v-main>
 
-      <FooterBar />
+      <FooterBar v-if="$slots.default" />
     </v-layout>
 
     <LoaderTemplate />
