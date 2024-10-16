@@ -80,10 +80,10 @@
       max-width="400"
     >
       <HelperCard
-        v-model="dialog.helper"
         :text="$t('game.helper')"
         icon="mdi-help-circle-outline"
         page="about"
+        @close="dialog.helper = false;"
       />
     </v-dialog>
   </v-container>
