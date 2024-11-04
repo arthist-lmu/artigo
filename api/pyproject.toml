@@ -18,7 +18,7 @@ django-cors-headers = "4.*"
 django-extensions = "3.*"
 djangorestframework = "3.*"
 drf-jwt = "1.*"
-dj-rest-auth = "4.*"
+dj-rest-auth = "7.*"
 Markdown = "3.*"
 psycopg2-binary = { version = "^2.9.5", platform = "linux" }
 psycopg2 = { version = "^2.9.5", markers = "platform_machine != 'x86_64'"}
