@@ -33,7 +33,7 @@
     "eslint-config-stylelint": "^21.0.0",
     "eslint-plugin-vue": "^9.33.0",
     "eslint-plugin-vuetify": "^2.5.3",
-    "jsdom": "^25.0.1",
+    "jsdom": "^26.1.0",
     "postcss": "^8.5.6",
     "postcss-html": "^1.8.0",
     "postcss-less": "^6.0.0",
