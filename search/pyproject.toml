@@ -6,7 +6,7 @@ authors = ["Your Name <you@example.com>"]
 
 [tool.poetry.dependencies]
 python = "^3.10"
-opensearch-py = "2.*"
+opensearch-py = "3.*"
 opensearch-dsl = "2.*"
 grpcio = "1.*,!=1.72.0"
 grpcio-tools = "> 1.30.0"
