@@ -7,18 +7,18 @@ authors = ["Your Name <you@example.com>"]
 [tool.poetry.dependencies]
 python = "^3.10"
 python-dateutil = "2.*"
-grpcio = "1.*"
-grpcio-tools = "1.*"
+grpcio = "1.*,!=1.72.0"
+grpcio-tools = "*"
 drf-spectacular = "0.*"
-django = "4.*"
-django-allauth = "^0.54.0"
+django = "5.*"
+django-allauth = "*"
 django-environ = "0.*"
 django-filter = "24.*"
 django-cors-headers = "4.*"
 django-extensions = "3.*"
 djangorestframework = "3.*"
 drf-jwt = "1.*"
-dj-rest-auth = "4.*"
+dj-rest-auth = "*"
 Markdown = "3.*"
 psycopg2-binary = { version = "^2.9.5", platform = "linux" }
 psycopg2 = { version = "^2.9.5", markers = "platform_machine != 'x86_64'"}

@@ -40,12 +40,6 @@
         <template #bottom />
       </v-data-table>
     </template>
-
-    <template #actions>
-      <p class="text-caption text-grey-darken-1">
-        {{ $t("user.score.helper") }}
-      </p>
-    </template>
   </CardBase>
 </template>
 

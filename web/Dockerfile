@@ -1,4 +1,4 @@
-FROM nginx:1.25-alpine
+FROM nginx:1.28-alpine
 
 ARG VUE_APP_API
 ENV VITE_APP_API=$VUE_APP_API

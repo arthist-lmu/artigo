@@ -11,6 +11,7 @@ from .data import (
 
 class Command(BaseCommand):
     def add_arguments(self, parser):
+        parser.add_argument('-f', '--format', choices=['csv'], default='csv')
         parser.add_argument('--data', choices=['legacy', 'belvedere'])
         parser.add_argument('--input', type=str, default='/dump')
         parser.add_argument('--clean', action='store_true')

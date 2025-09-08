@@ -178,6 +178,13 @@ const items = computed(() => {
           url: 'https://schefels.de/research/schefels_-_eine_offene_Universitaet_fuer_eine_offene_gesellschaft.pdf'
         },
         {
+          author: 'Schneider, Stefanie',
+          title: 'ARTigo. Lessons from Social Image Tagging in an Art-historical Game With a Purpose',
+          year: 2025,
+          journal: 'IEEE Transactions on Games',
+          url: 'http://doi.org/10.1109/TG.2025.3534618'
+        },
+        {
           author: 'Schneider, Stefanie; Kohle, Hubertus',
           title: 'The Computer as Filter Machine. A Clustering Approach to Categorize Artworks Based on a Social Tagging Network',
           year: 2017,

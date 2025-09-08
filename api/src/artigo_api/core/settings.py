@@ -92,6 +92,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.locale.LocaleMiddleware',
     'frontend.middleware.QueryPrintMiddleware',
+    'allauth.account.middleware.AccountMiddleware',
 ]
 
 X_FRAME_OPTIONS = 'SAMEORIGIN'
@@ -315,10 +316,9 @@ if env('WHERE') in ('prod', 'production'):
 # Custom user model
 AUTH_USER_MODEL = 'frontend.CustomUser'
 
-ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_SIGNUP_FIELDS = ['email*', 'username*', 'password1*', 'password2*']
 ACCOUNT_UNIQUE_EMAIL = True
-ACCOUNT_AUTHENTICATION_METHOD = 'email'
-ACCOUNT_USERNAME_REQUIRED = True
+ACCOUNT_LOGIN_METHODS = {'email'}
 ACCOUNT_USER_MODEL_USERNAME_FIELD = 'username'
 
 # Email confirmation
@@ -326,8 +326,7 @@ ACCOUNT_EMAIL_SUBJECT_PREFIX = '[ARTigo.org] '
 ACCOUNT_LOGIN_ON_EMAIL_CONFIRMATION = True
 
 # After 10 failed login attempts, restrict logins for 30 minutes
-ACCOUNT_LOGIN_ATTEMPTS_LIMIT = 10
-ACCOUNT_LOGIN_ATTEMPTS_TIMEOUT = 1800
+ACCOUNT_RATE_LIMITS = {'login_failed': '10/30m'}
 ACCOUNT_PASSWORD_MIN_LENGTH = 12
 
 # Other settings

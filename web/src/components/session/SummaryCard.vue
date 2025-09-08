@@ -75,6 +75,6 @@ setTimeout(() => {
 }
 
 .v-alert:hover .v-progress-circular {
-  background-color: rgba(66 71 152 15%);
+  background-color: rgba(66 71 152 / 15%);
 }
 </style>

@@ -121,37 +121,6 @@
         </v-slide-group-item>
       </v-slide-group>
     </v-row>
-
-    <v-dialog
-      v-model="showDialog"
-      max-width="400"
-    >
-      <HelperCard
-        :text="$t('user.score.helper')"
-        icon="mdi-account-circle-outline"
-        @close="showDialog = false;"
-      >
-        <template #button>
-          <v-dialog max-width="450">
-            <template #activator="{ props: activatorProps }">
-              <v-btn
-                v-bind="activatorProps"
-                tabindex="0"
-                class="bg-primary"
-                rounded
-                block
-              >
-                {{ $t("user.score.title") }}
-              </v-btn>
-            </template>
-
-            <template #default="{ isActive }">
-              <ScoreCard @close="isActive.value = false" />
-            </template>
-          </v-dialog>
-        </template>
-      </HelperCard>
-    </v-dialog>
   </v-container>
 </template>
 
@@ -160,7 +129,6 @@ import { ref, computed, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { useStore } from 'vuex'
 import { useDisplay } from 'vuetify'
-import HelperCard from '@/components/HelperCard.vue'
 import ScoreCard from '@/components/account/ScoreCard.vue'
 import SummaryCard from '@/components/session/SummaryCard.vue'
 import OverviewResultCard from '@/components/session/OverviewResultCard.vue'
@@ -217,10 +185,4 @@ const score = computed(() => {
   const tagScores = tags.value.map(({ score }) => score)
   return tagScores.reduce((x, y) => x + y, 0)
 })
-
-const showDialog = ref(false)
-if (localStorage.getItem('scoreHelper') === null) {
-  localStorage.setItem('scoreHelper', true)
-  showDialog.value = true
-}
 </script>
