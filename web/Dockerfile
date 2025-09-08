@@ -3,7 +3,7 @@ FROM nginx:1.28-alpine
 ARG VUE_APP_API
 ENV VITE_APP_API=$VUE_APP_API
 
-RUN apk add --update npm
+RUN apk add --no-cache nodejs npm
 
 COPY /web/default.conf /etc/nginx/conf.d/default.conf
 COPY /plugin.config.json /config.json
