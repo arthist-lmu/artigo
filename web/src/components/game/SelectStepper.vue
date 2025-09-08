@@ -136,7 +136,6 @@ import { ref, watch } from 'vue'
 import i18n from '@/plugins/i18n'
 import isArray from '@/composables/useIsArray'
 import keyInObj from '@/composables/useKeyInObj'
-// eslint-disable-next-line
 import defaultConfig from '/config.json'
 
 const { locale } = i18n.global
