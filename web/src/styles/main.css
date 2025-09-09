@@ -21,7 +21,7 @@ strong {
 }
 
 code {
-  background-color: rgba(0 0 0 / 5%);
+  background-color: rgb(0 0 0 / 5%);
   border-radius: 3px;
   padding: .2em .4em;
   font-size: 85%;
@@ -76,7 +76,7 @@ span.clip.w100 {
 }
 
 .v-chip.blur {
-  text-shadow: 0 0 7.5px rgba(0 0 0 / 87%);
+  text-shadow: 0 0 7.5px rgb(0 0 0 / 87%);
   color: transparent !important;
   -webkit-touch-callout: none;
   user-select: none;

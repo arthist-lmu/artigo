@@ -21,7 +21,7 @@ const isLoading = computed(() => store.state.utils.status.loading)
 
 <style scoped>
 .loading {
-  background-color: rgba(0 0 0 / 30%);
+  background-color: rgb(0 0 0 / 30%);
   text-align: center;
   position: fixed;
   z-index: 999;

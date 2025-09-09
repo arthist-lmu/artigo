@@ -97,7 +97,7 @@ store.dispatch('statistics/get')
 
 <style>
 tr.transparent > td {
-  color: rgba(0 0 0 / 25%);
+  color: rgb(0 0 0 / 25%);
 }
 
 .v-data-table > .v-data-table__wrapper > table > tbody > tr > td {
@@ -120,7 +120,7 @@ tr.transparent > td {
 
 <style scoped>
 .v-data-table {
-  border: 2px solid rgba(0 0 0 / 15%) !important;
+  border: 2px solid rgb(0 0 0 / 15%) !important;
   border-radius: 24px;
   overflow: hidden;
 }
