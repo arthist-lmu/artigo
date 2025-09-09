@@ -32,7 +32,7 @@
     "@vue/test-utils": "^2.4.6",
     "eslint": "^9.34.0",
     "eslint-config-stylelint": "^25.0.0",
-    "eslint-plugin-vue": "^9.33.0",
+    "eslint-plugin-vue": "^10.4.0",
     "eslint-plugin-vuetify": "^2.5.3",
     "jsdom": "^26.1.0",
     "postcss": "^8.5.6",
