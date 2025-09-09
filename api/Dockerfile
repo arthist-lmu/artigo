@@ -36,4 +36,4 @@ COPY --chown=artigo:artigo plugin.config.json /config.json
 WORKDIR /api/src/artigo_api
 
 COPY /api/docker-entrypoint.sh /api/docker-entrypoint.sh
-ENTRYPOINT ["/api/docker-entrypoint.dev.sh"]
+ENTRYPOINT ["/api/docker-entrypoint.sh"]
