@@ -9,14 +9,14 @@ RUN addgroup --system --gid 1998 artigo \
 RUN apt update && apt install -y build-essential graphviz graphviz-dev
 RUN pip install --no-cache-dir poetry pytest pytest-cov
 
-COPY /api/pyproject.toml /api/poetry.lock /api/
-RUN cd /api; poetry install -vvv
-
-COPY /search/pyproject.toml /search/poetry.lock /search/
-RUN cd /search; poetry install -vvv
-
 COPY --chown=artigo:artigo /api /api/
+COPY /api/pyproject.toml /api/poetry.lock /api/
+RUN cd /api && poetry install -vvv
+
 COPY --chown=artigo:artigo /search /search/
+COPY /search/pyproject.toml /search/poetry.lock /search/
+RUN cd /search && poetry install -vvv
+
 RUN pip install /search
 
 COPY --chown=artigo:artigo plugin.config.json /config.json

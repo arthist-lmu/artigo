@@ -15,14 +15,12 @@ ENV VUE_APP_API=$VUE_APP_API
 ARG VUE_APP_FRONTEND
 ENV VUE_APP_FRONTEND=$VUE_APP_FRONTEND
 
-COPY /api/pyproject.toml /api/poetry.lock /api/
-RUN cd /api; poetry install
-
-COPY /search/pyproject.toml /search/poetry.lock /search/
-RUN cd /search; poetry install
-
 COPY --chown=artigo:artigo /api /api/
+RUN cd /api && poetry install
+
 COPY --chown=artigo:artigo /search /search/
+RUN cd /search && poetry install
+
 RUN pip install /search
 
 COPY --chown=artigo:artigo plugin.config.json /config.json
