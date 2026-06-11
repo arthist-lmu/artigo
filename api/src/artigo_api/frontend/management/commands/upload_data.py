@@ -17,7 +17,10 @@ class Zenodo:
     url = 'https://zenodo.org/api/deposit/depositions'
 
     def __init__(self, query, access_token):
-        self.params = {'access_token': access_token}
+        self.session = requests.Session()
+        self.session.headers.update({
+            "Authorization": f"Bearer {access_token}",
+        })
 
         self.deposition = self.get_deposition(query)
         self.draft_id = self.get_draft_id()
@@ -25,36 +28,101 @@ class Zenodo:
     def __repr__(self):
         return str(self.deposition['id'])
 
+    def _raise_for_status(self, response):
+        try:
+            response.raise_for_status()
+        except HTTPError as exc:
+            try:
+                details = response.json()
+            except ValueError:
+                details = response.text
+            raise HTTPError(
+                f"{response.status_code} error: {details}",
+                response=response,
+            ) from exc
+
+    def _request(self, method, url, **kwargs):
+        response = self.session.request(method, url, **kwargs)
+        self._raise_for_status(response)
+        return response
+
+    def refresh(self):
+        self.deposition = self._request(
+            "GET",
+            f"{self.url}/{self.deposition['id']}",
+        ).json()
+        self.draft_id = self.get_draft_id()
+        return self.deposition
+
     def get_deposition(self, query):
-        response = requests.get(
+        response = self._request(
+            "GET",
             self.url,
             params={
-                'q': query,
-                'sort': 'mostrecent',
-                'size': 1,
-                **self.params,
+                "q": query,
+                "sort": "mostrecent",
+                "size": 1,
             },
         )
-        response.raise_for_status()
 
-        return response.json()[0]
+        results = response.json()
+        if not results:
+            raise LookupError(f"No deposition found")
+
+        return results[0]
 
     def get_draft_id(self):
-        if self.deposition['links'].get('latest_draft'):
-            url = self.deposition['links']['latest_draft']
-
-            return url.rsplit('/', 1)[-1]
+        latest_draft = self.deposition.get("links", {}).get("latest_draft")
+        if latest_draft:
+            return latest_draft.rsplit("/", 1)[-1]
+        return None
 
     def get_version(self, update=False):
-        version = self.deposition['metadata']['version']
+        version = self.deposition.get("metadata", {}).get("version", "0.0.0")
 
         if update:
-            prefix, suffix = version.rsplit('.', 1)
-            version = f'{prefix}.{int(suffix) + 1}'
+            prefix, suffix = version.rsplit(".", 1)
+            version = f"{prefix}.{int(suffix) + 1}"
 
         return version
 
     def new_version(self):
+        old_version = self.get_version(update=True)
+
+        response = self._request(
+            "POST",
+            f"{self.url}/{self.deposition['id']}/actions/newversion",
+        )
+
+        original = response.json()
+        latest_draft_url = original.get("links", {}).get("latest_draft")
+        if not latest_draft_url:
+            raise RuntimeError("Zenodo did not return links.latest_draft")
+
+        draft = self._request("GET", latest_draft_url).json()
+        draft_id = draft["id"]
+
+        metadata = {
+            **draft.get("metadata", {}),
+            "version": old_version,
+            "publication_date": date.today().isoformat(),
+        }
+
+        self.deposition = self._request(
+            "PUT",
+            f"{self.url}/{draft_id}",
+            json={"metadata": metadata},
+            headers={
+                **self.session.headers,
+                "Content-Type": "application/json",
+            },
+        ).json()
+
+        self.draft_id = self.get_draft_id()
+        return self.deposition
+
+
+
         response = requests.post(
             f'{self.url}/{self.deposition["id"]}/actions/newversion',
             params=self.params,
@@ -105,38 +173,50 @@ class Zenodo:
         self.deposition = response.json()
 
     def publish(self):
-        response = requests.post(
-            f'{self.url}/{self.deposition["id"]}/actions/publish',
-            params=self.params,
+        response = self._request(
+            "POST",
+            f"{self.url}/{self.deposition['id']}/actions/publish",
         )
-        response.raise_for_status()
 
         self.deposition = response.json()
         self.draft_id = self.get_draft_id()
+        return self.deposition
+
+    def list_files(self):
+        response = self._request(
+            "GET",
+            f"{self.url}/{self.deposition['id']}/files",
+        )
+        return response.json()
 
     def delete_files(self, file_name=None):
-        for file in self.deposition['files']:
-            if file_name is None or file_name in file['filename']:
-                response = requests.delete(
-                    f'{self.url}/{self.deposition["id"]}/files/{file["id"]}',
-                    params=self.params,
+        for file in self.list_files():
+            name = file.get("filename") or file.get("name")
+            if file_name is None or file_name in name:
+                file_id = file["id"]
+                self._request(
+                    "DELETE",
+                    f"{self.url}/{self.deposition['id']}/files/{file_id}",
                 )
-                response.raise_for_status()
+
+        self.refresh()
 
     def upload_file(self, data, file_path):
-        url = self.deposition['links']['bucket']
+        bucket_url = self.deposition.get("links", {}).get("bucket")
+        if not bucket_url:
+            raise RuntimeError()
 
-        try:
-            response = requests.put(
-                f'{url}/{file_path}',
-                params=self.params,
-                data=data,
-            )
-            response.raise_for_status()
-        except HTTPError:
-            data = response.json()
+        filename = str(file_path).replace("\\", "/").lstrip("/")
 
-            raise HTTPError(f'{response.status_code} Client Error: {data}')
+        response = self._request(
+            "PUT",
+            f"{bucket_url.rstrip('/')}/{filename}",
+            data=data,
+        )
+
+        self.refresh()
+
+        return response.json()
 
 
 def get_latest_dump(dump_folder, raw=False):
