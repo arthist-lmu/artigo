@@ -97,7 +97,7 @@ class Zenodo:
         original = response.json()
         latest_draft_url = original.get("links", {}).get("latest_draft")
         if not latest_draft_url:
-            raise RuntimeError("Zenodo did not return links.latest_draft")
+            raise RuntimeError("Zenodo did not return latest_draft")
 
         draft = self._request("GET", latest_draft_url).json()
         draft_id = draft["id"]
@@ -105,47 +105,7 @@ class Zenodo:
         metadata = {
             **draft.get("metadata", {}),
             "version": old_version,
-            "publication_date": date.today().isoformat(),
-        }
-
-        self.deposition = self._request(
-            "PUT",
-            f"{self.url}/{draft_id}",
-            json={"metadata": metadata},
-            headers={
-                **self.session.headers,
-                "Content-Type": "application/json",
-            },
-        ).json()
-
-        self.draft_id = self.get_draft_id()
-        return self.deposition
-
-
-
-        response = requests.post(
-            f'{self.url}/{self.deposition["id"]}/actions/newversion',
-            params=self.params,
-        )
-        response.raise_for_status()
-
-        version = self.get_version(update=True)
-        publication_date = datetime.today().strftime('%Y-%m-%d')
-
-        self.deposition = response.json()
-        self.draft_id = self.get_draft_id()
-
-        response = requests.get(
-            f'{self.url}/{self.draft_id}',
-            params=self.params,
-        )
-        response.raise_for_status()
-
-        data = response.json()
-        data['metadata'] = {
-            **data['metadata'],
-            'version': version,
-            'publication_date': publication_date,
+            "publication_date": datetime.today().strftime('%Y-%m-%d'),
         }
 
         for key in (
@@ -161,16 +121,20 @@ class Zenodo:
             'conceptdoi',
             'modified',
         ):
-            data.pop(key)
+            metadata.pop(key)
 
-        response = requests.put(
-            f'{self.url}/{self.draft_id}',
-            params=self.params,
-            json=data,
-        )
-        response.raise_for_status()
+        self.deposition = self._request(
+            "PUT",
+            f"{self.url}/{draft_id}",
+            json={"metadata": metadata},
+            headers={
+                **self.session.headers,
+                "Content-Type": "application/json",
+            },
+        ).json()
 
-        self.deposition = response.json()
+        self.draft_id = self.get_draft_id()
+        return self.deposition
 
     def publish(self):
         response = self._request(
@@ -274,7 +238,7 @@ class Command(BaseCommand):
 
         if options['zenodo'] in ('prepare', 'publish'):
             zenodo = Zenodo(
-                query='ARTigo +Aggregated',
+                query='+title:"ARTigo" +title:"Aggregated Data"',
                 access_token=settings.ZENODO_ACCESS_TOKEN,
             )
 
@@ -294,7 +258,7 @@ class Command(BaseCommand):
 
         if options['zenodo'] in ('prepare', 'publish'):
             zenodo = Zenodo(
-                query='ARTigo +Raw',
+                query='+title:"ARTigo" +title:"Raw Data"',
                 access_token=settings.ZENODO_ACCESS_TOKEN,
             )
 
