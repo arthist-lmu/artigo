@@ -109,13 +109,11 @@ class Zenodo:
         }
 
         for key in (
-            'owner',
             'id',
             'submitted',
             'created',
             'state',
             'links',
-            'title',
             'conceptrecid',
             'record_id',
             'conceptdoi',
