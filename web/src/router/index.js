@@ -40,7 +40,7 @@ const router = createRouter({
           path: 'imprint',
           name: 'imprint',
           beforeEnter: () => {
-            window.open('https://www.kunstgeschichte.uni-muenchen.de/funktionen/impressum', '_blank')
+            window.open('https://www.lmu.de/kunstwissenschaften/de/footer/impressum/', '_blank')
             return false
           }
         },
@@ -56,7 +56,7 @@ const router = createRouter({
           path: 'privacy-policy',
           name: 'privacyPolicy',
           beforeEnter: () => {
-            window.open('https://www.kunstgeschichte.uni-muenchen.de/funktionen/datenschutz', '_blank')
+            window.open('https://www.lmu.de/kunstwissenschaften/de/footer/datenschutz/', '_blank')
             return false
           }
         },

@@ -79,7 +79,7 @@ const items = computed(() => {
         { name: 'Martin Bogner' },
         { name: 'Martin Josko', url: 'http://www.pms.ifi.lmu.de/mitarbeiter/martin-josko' },
         { name: 'Dr. Fabian Kneißl' },
-        { name: 'Maximilian Kristen' },
+        { name: 'Maximilian Kristen', url: 'https://www.lmu.de/kunstwissenschaften/de/personen/kontaktseite/max-kristen-af33bf63.html' },
         { name: 'Anke Regner' },
         { name: 'Dr. Clemens Schefels' },
         { name: 'Corina Schemainda' },
@@ -100,12 +100,12 @@ const items = computed(() => {
     {
       group: t('contributors.fields.artHistory'),
       values: [
-        { name: 'Prof. Dr. Hubertus Kohle', url: 'http://www.kunstgeschichte.uni-muenchen.de/personen/professoren_innen/kohle/' },
+        { name: 'Prof. Dr. Hubertus Kohle', url: 'https://www.lmu.de/kunstwissenschaften/de/personen/kontaktseite/hubertus-kohle-0dc744e7.html' },
         { name: 'Matthias Becker' },
         { name: 'Fabian Bross' },
         { name: 'Laura Commare' },
-        { name: 'Dr. Stefanie Schneider', url: 'https://www.kunstgeschichte.uni-muenchen.de/personen/wiss_ma/schneider/index.html', leader: true },
-        { name: 'Ricarda Vollmer' }
+        { name: 'Dr. Stefanie Schneider', url: 'https://www.uni-marburg.de/de/fb09/khi/dr-stefanie-schneider', leader: true },
+        { name: 'Ricarda Vollmer', url: 'https://www.lmu.de/kunstwissenschaften/de/personen/kontaktseite/ricarda-vollmer-60c85722.html' }
       ]
     },
     {
