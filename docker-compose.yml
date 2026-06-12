@@ -46,8 +46,8 @@ services:
       - PYTHONPATH=/search/src/
       - C_FORCE_ROOT=true
     depends_on:
-      - api
       - redisai
+      - opensearch
     env_file:
       - ./.env
 
@@ -70,6 +70,7 @@ services:
       - db
       - redisai
       - memcached
+      - search
     env_file:
       - ./.env
     ports:

@@ -121,7 +121,7 @@ class Zenodo:
             'conceptdoi',
             'modified',
         ):
-            metadata.pop(key)
+            metadata.pop(key, None)
 
         self.deposition = self._request(
             "PUT",

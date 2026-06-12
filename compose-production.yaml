@@ -54,8 +54,8 @@ services:
       - POETRY_VIRTUALENVS_CREATE=False
       - PYTHONPATH=/search/src/
     depends_on:
-      - api
       - redisai
+      - opensearch
     env_file:
       - ./.production_api.env
     labels:
@@ -75,6 +75,7 @@ services:
       - db
       - redisai
       - memcached
+      - search
     env_file:
       - ./.production_api.env
     labels:
