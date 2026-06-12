@@ -33,7 +33,7 @@ uwsgi = "2.*"
 imageio = "2.*"
 urllib3 = "2.*"
 aiohttp = "3.*"
-asyncio = "3.*"
+asyncio = ">=3,<5"
 
 [tool.poetry.dev-dependencies]
 black = "*"
